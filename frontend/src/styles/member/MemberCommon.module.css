@@ -1,0 +1,41 @@
+.memberContainer {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+    max-width: 1350px;
+    width:100%;
+    height: 100%;
+    margin: 0 auto;
+    
+}
+
+.mainTitleContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+.mainTitle {
+    font-size: 25px;
+    padding-top: 50px;
+}
+
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+    max-width: 1200px;
+    height: 100%;
+    margin: 20px auto;
+  }
+
+  @media (max-width: 768px) {
+    .memberContainer {
+      gap: 0px;
+      
+  }
+  }

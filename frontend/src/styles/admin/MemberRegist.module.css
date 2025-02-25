@@ -1,0 +1,37 @@
+.heading {
+    border-top: 1px solid #D1D5DB; 
+    padding-top: 1rem;
+  }
+  
+.processContainer {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+align-items: center;
+}
+.noteLabel {
+color: #6B7280;
+font-size: 0.875rem; 
+margin-bottom: 0.5rem; 
+}
+.commonInput {
+  padding: 0.5rem 0.75rem; 
+  margin-top: 0.25rem; 
+  border: 1px solid #ccc; 
+  outline: none; 
+}
+.input100 {
+  width: 100%; 
+
+}
+@media (min-width: 640px) { 
+.noteLabel {
+    margin-bottom: 0;
+}
+.processContainer {
+    flex-direction: row; 
+  }
+  .confirmButtonContainer {
+    margin-left: auto;
+}
+}

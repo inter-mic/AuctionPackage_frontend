@@ -1,0 +1,13 @@
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 16px; /* Add some space below the breadcrumb */
+
+}
+
+.breadcrumbItem {
+  margin-right: 8px;
+}

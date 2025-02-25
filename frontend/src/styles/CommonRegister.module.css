@@ -1,0 +1,19 @@
+
+
+.commonInput {
+  padding: 0.5rem 0.75rem; 
+  margin-top: 0.25rem; 
+  border: 1px solid #ccc; 
+  outline: none; 
+}
+.input50 {
+  width: 100%; 
+  @media (min-width: 1024px) { 
+    width: 50%;
+  }
+}
+.input100 {
+  width: 100%; 
+
+}
+

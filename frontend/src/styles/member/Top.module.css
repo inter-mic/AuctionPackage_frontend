@@ -1,0 +1,59 @@
+.title {
+    
+    font-size: 2.2rem;
+    display: block;  
+    text-align: center;
+    width: 100%;
+    margin: 20px auto; 
+
+}
+.infoRow{
+    margin: 5px 0px;
+    padding:0px 20px;
+}
+
+.infoTime{
+    margin-right: 20px;
+}
+.infoContainer{
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex; 
+    flex-direction: column;
+    background-color: #EAEAEA;
+    padding:15px 0px;
+   
+}
+.infoText {
+    color: #333; 
+  }
+  
+  .link {
+    color: #0070f3; 
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .link:hover {
+    text-decoration: none; 
+  }
+.imageListContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%; 
+  }
+  
+  .imageListContainer .MuiImageList-root {
+    width: 100%;  
+    max-width: 600px;  
+  }
+  .slick-prev {
+    left: 10px; /* スライダー左端から10px */
+    transform: translateY(-50%); /* 中央揃え */
+  }
+  
+  /* 右矢印の位置 */
+  .slick-next {
+    right: 10px; /* スライダー右端から10px */
+    transform: translateY(-50%); /* 中央揃え */
+  }

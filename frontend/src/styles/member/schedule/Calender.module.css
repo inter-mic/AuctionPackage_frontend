@@ -1,0 +1,161 @@
+.kaisaiStatusLabel{
+  font-size: 1.3rem;
+  padding: 30px 0px;
+}
+
+.auctionContainer {
+  display: flex;
+  flex-direction: column; 
+  gap: 16px;
+  margin: 20px 0px;
+}
+
+.imageContainer {
+  position: relative;
+  flex: 0 0 auto; /* コンテナのサイズを固定 */
+  aspect-ratio: 16 / 9; /* アスペクト比を維持 */
+  background-color: #f0f0f0; /* プレースホルダーの背景色 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width:50%;
+}
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background-color: #ffff; /* プレースホルダーの色 */
+}
+
+.imageContainer img {
+  object-fit: cover; /* 画像の比率を維持しつつ収まるようにする */
+  width: 100%;
+  height: 100%;
+}
+.auctionBlock {
+  padding:10px;
+  background-color: #EAEAEA;
+}
+
+.auctionName{
+  font-size: 2rem;
+  margin: 12px 0px;
+}
+
+
+.textContainer {
+  flex: 1; 
+  position: relative; 
+}
+
+.toggleButton,
+.auctionGaiyo {
+  margin-top: 16px; 
+  width: 50%;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.auctionGaiyo {
+  max-height: 0; 
+  overflow: hidden; 
+  transition: max-height 0.3s ease; 
+
+}
+
+.auctionGaiyoExpanded {
+  max-height: 10000px; 
+  width: 100%;
+}
+.statusContainer {
+  display: flex;
+  flex-wrap: nowrap; /* 要素が横に並び続けるように設定 */
+  justify-content: flex-start; /* 必要に応じて調整 (center, space-betweenなど) */
+  align-items: center; /* 垂直方向の揃え */
+  gap: 8px; /* 要素間の余白 */
+}
+.spnKbn,
+.status {
+  background-color: #61656f;
+  color: #fff;
+  padding: 8px 8px;
+  font-size: 0.8rem;
+  border-radius: 50px;
+  font-weight: bold;
+  width: 200px;
+  text-align: center;
+}
+.statusBefore {
+  background-color: #f6ccad; 
+}
+
+.statusDuring {
+  background-color: #fd7430;
+}
+
+.statusAfter {
+  background-color: #bebfc1; 
+}
+
+.kikan{
+  font-size: 1.2rem;
+}
+
+.goodsList{
+  font-size: 1.2rem;
+  margin: 12px 0px;
+}
+
+@media (max-width: 1024px) {
+  .imageContainer {
+    position: relative;
+    width: 100%;  
+  }
+  .textContainer {
+    text-align: center;
+  }
+  .spnKbn {
+    width: 50%;
+    margin-left: 25%;
+  }
+  .auctionGaiyo {
+    text-align: left;
+    padding: 0px 5px ;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .textContainer {
+    text-align: center;
+  }
+
+  .auctionGaiyo {
+    text-align: left;
+    padding: 0px 5px ;
+  }
+  .toggleButton{
+    font-size: 1rem;
+    text-align: center;
+  }
+  .kikan{
+    font-size: 13px;
+  }
+  .statusContainer {
+    flex-direction: column; /* 縦並びにする */
+    align-items: flex-start; /* 必要に応じて調整 */
+  }
+
+  .spnKbn,
+  .status {
+    width: 100%; /* スマホの場合、全幅に広げる */
+    text-align: center; /* 左揃えにする */
+    margin-left: 0px;
+  }
+
+  .toggleButton,
+  .auctionGaiyo {
+  margin-left: 0px;
+}
+
+}

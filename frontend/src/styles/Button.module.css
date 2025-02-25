@@ -1,0 +1,168 @@
+.loginButton
+,.signupButton
+,.sendButton {
+  margin-top: 1.25rem; 
+  margin-bottom: 1.25rem;
+  background-color: #2d3748; 
+  color: #ffffff;
+  font-weight: bold;
+  min-width: 300px; 
+  padding: 1rem; 
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease; 
+}
+.passwordChangeButton {
+  margin-top: 1.25rem; 
+  margin-bottom: 1.25rem;
+  background-color: #2d3748; 
+  color: #ffffff;
+  font-weight: bold;
+  width: 100%; 
+  padding: 1rem; 
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease; 
+}
+.adminLoginButton
+{
+  margin-top: 1.25rem; 
+  margin-bottom: 1.25rem;
+  background-color: #2d3748; 
+  color: #ffffff;
+  font-weight: bold;
+  min-width: 100%; 
+  padding: 1rem; 
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease; 
+}
+.diaLogCancelButton {
+  margin: 0; 
+  min-width: 45%; 
+  background-color: #ffffff;; 
+  color: #2d3748;
+  font-weight: bold;
+  padding: 1rem; 
+  border-radius: 0.25rem;
+  border: #2d3748 0.5px solid;
+  transition: background-color 0.3s ease; 
+}
+.diaLogSendButton {
+  margin: 0; 
+  min-width: 45%; 
+  background-color: #2d3748; 
+  color: #ffffff;
+  font-weight: bold;
+  padding: 1rem; 
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease; 
+}
+.diaLogCancelButton:hover {
+  opacity: .65;
+}
+
+.loginButton:hover
+,.signupButton:hover
+,.sendButton:hover
+,.diaLogSendButton:hover
+,.adminLoginButton:hover
+,.passwordChangeButton:hover {
+  opacity: .65;
+}
+
+
+.toGoodsListButton {
+  background-color: #ffffff;
+  color: #999; 
+  border: 1px solid #d1d5db; 
+  padding: 1rem; 
+  padding-left: 1rem; 
+  padding-right: 1rem;
+  margin: 10px 0px; 
+  width: 15rem; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+
+
+}
+
+.toGoodsListButton:hover
+,.searchButton:hover
+,.clearButton:hover  {
+  background-color: #d1d5db; 
+  color: #ffffff; 
+}
+.searchButton
+,.clearButton
+{
+  height: 2.5rem;
+  background-color: #ffffff;
+  color: #999; 
+  border: 1px solid #d1d5db; 
+  padding-left: 1rem; 
+  padding-right: 1rem;
+  margin: 1rem; 
+  width: 15rem; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.confirmButtonContainer{
+  padding: 50px 90px;
+  margin: 0 auto;
+  display: flex;
+  gap: 27px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.bidModalButton {
+  margin: 0; 
+  min-width: 45%; 
+  background-color: #DCA42F;
+  color: #fff; 
+  font-weight: bold;
+  padding: 1rem; 
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease; 
+}
+
+.bidButton{
+  height: 2.5rem;
+  background-color: #DCA42F;
+  color: #fff; 
+  padding-left: 1rem; 
+  padding-right: 1rem;
+  width: 100%; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+  margin: 5px 0;
+}
+.bidDetailButton{
+  height: 3.5rem;
+  text-align: center;
+  width: 50%;
+  margin-left: 25%;
+    font-size: 2rem;
+    font-weight: 600;
+    font-size: 2rem;
+}
+.bidButton:hover {
+  opacity: .65; 
+}
+
+@media (max-width: 768px) {
+  .loginButton
+,.signupButton
+,.sendButton {
+  width: 100%;
+  min-width: 0px; 
+}
+  .toGoodsListButton {
+    width: 100%;
+    margin-left:0;
+  }
+  .bidDetailButton{
+    width: 90%;
+    margin-left: 5%;
+
+  }
+}
+

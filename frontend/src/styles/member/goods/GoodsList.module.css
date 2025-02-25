@@ -1,0 +1,185 @@
+.goodsCard {
+  width: 24%;
+  padding: 5px;
+  text-align: left;
+  border: 1px solid #D2D2D2;
+  height: 660px;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.goodsCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+.GoodsPointer:hover {
+  cursor: pointer; 
+}
+
+
+.imageWrapper {
+  position: relative;
+  width: 100%; 
+  height: 300px;
+  transition: background-color 0.3s ease; 
+}
+.imageWrapper:hover {
+  cursor: pointer; 
+}
+
+.goodsImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  
+}
+.imageWrapper:hover .goodsImage {
+  opacity: 0.8; /* 画像を少し暗くする */
+}
+
+.chumokuBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #ffffff;
+  color: #ffa5009e;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  border-radius: 12px;
+  font-weight: bold;
+  border: 1px solid #f5f5f5;
+}
+
+.lotContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+  margin-top: 8px;  
+}
+
+.lot {
+  font-size: 1.1rem;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.goodsName {
+  font-size: 1.1rem;
+  text-align: left;
+  height:50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: inherit;
+}
+
+.goodsRowInfo {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 25px;
+}
+
+
+
+
+.currentPrice
+,.bidPrice {
+  color: #cb5201;
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.bidPrice {
+  color: #cb5201;
+
+}
+.bidPrice {
+  color: #808080;
+}
+
+.remainingTime,
+.bidCount {
+  font-size: 1.2rem;
+}
+
+.goodsSetsumei {
+  font-size: 0.9rem;
+  color: #999;
+  text-align: left;
+  padding: 5px 0 5px 0;
+  border-bottom: 1px rgb(172, 167, 167) dashed;
+  display: -webkit-box;
+  height: 95px;
+  overflow: hidden; /* 溢れた部分を隠す */
+  text-overflow: ellipsis; /* 溢れた部分を...で表示 */
+  white-space: pre-wrap; /* 改行をそのまま表示 */
+  word-wrap: break-word; /* 長い単語を適切に折り返し */
+}
+
+
+.auctionStatus {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+  padding: 4px 0;
+  font-weight: bold;
+  font-size: 1rem;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.bidButton{
+  height: 2.5rem;
+  width: 100%; 
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; 
+  padding: 0px 5px;
+}
+
+.sortContainer {
+  display: flex;
+  gap: 8px; 
+  align-items: center;
+}
+
+.priceUpdated {
+  animation: priceChange 1.5s ease-in-out;
+}
+
+@keyframes priceChange {
+  0% { color: red; transform: scale(1.1); }
+  50% { color: orange; transform: scale(1.5); }
+  100% { color: #cb5201; transform: scale(1); }
+}
+
+@media (max-width: 1024px) {
+  .goodsCard {
+    flex: 1 1 calc(50% - 16px); 
+  }
+}
+
+@media (max-width: 768px) {
+  .goodsCard {
+    flex: 1 1 100%; 
+    margin-top: 20px;
+  }
+
+  .goodsCard:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

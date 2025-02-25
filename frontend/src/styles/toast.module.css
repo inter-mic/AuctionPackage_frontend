@@ -1,0 +1,6 @@
+.toastCustomWidth {
+    max-width: 400px; /* 幅を指定 */
+    width: 100%; /* 幅のデフォルト値を設定 */
+    z-index: 1000;
+    position: fixed; 
+  }

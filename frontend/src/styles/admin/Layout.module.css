@@ -1,0 +1,39 @@
+.Toastify__toast-container {
+  z-index: 1100; 
+}
+
+.contentWrapper {
+  display: flex;
+  background-color: #f4f4f4;
+}
+
+
+.mainContent {
+  flex: 1;
+  padding: 40px 10px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 60px); 
+  top: 50px;
+  width:100%;
+ 
+}
+
+.noHeaderMainContent {
+  flex: 1;
+  padding: 5px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 60px); 
+  top: 50px;
+  width:100%;
+ 
+}
+
+
+@media (max-width: 768px) {
+
+  .mainContent {
+    margin-left: 0;
+  }
+
+
+}

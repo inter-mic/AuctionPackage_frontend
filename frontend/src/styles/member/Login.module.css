@@ -1,0 +1,129 @@
+.pageContainer {
+  margin: 0 auto;
+  background-color: #f5f5f5;
+  padding: 50px;
+  border-radius: 8px;
+}
+
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.formContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Enable wrapping of the containers */
+}
+
+.loginSection, .newCustomerContainer {
+  width: 45%; /* Side-by-side on larger screens */
+}
+
+.newCustomerContainer {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.loginInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.registerButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.forgotPasswordButton, .registerButton {
+  margin-top: 10px;
+}
+
+.loginTitle, .newCustomerTitle {
+  text-align: center;
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.loginButtonContainer {
+  
+  width: 100%;
+  text-align: center;
+}
+
+.forgotPasswordButton {
+  margin-top: 20px;
+  background-color: transparent;
+  border: none;
+  color: rgb(63, 63, 65);
+  cursor: pointer;
+  text-decoration: underline;
+  width: 100%;
+  text-align: center;
+}
+
+.forgotPasswordButton:hover {
+  color: rgb(2, 2, 2);
+}
+
+.label {
+  margin-bottom: 5px;
+}
+
+.passwordWrapper {
+  display: flex; /* 横並びにする */
+  position: relative;
+}
+
+.passwordInput {
+  flex: 1; /* 入力フィールドが余白を占有する */
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.passwordIconButton {
+  border: 1px solid #ddd;
+  border-left: none; /* 左側の枠線を消す */
+  border-radius: 0 4px 4px 0; /* 右側の角を丸める */
+  background: #fff;
+  height: 100%; /* アイコンボタンの高さを入力フィールドと揃える */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 768px) {
+  .loginPage {
+    display: grid;
+  }
+  .formContainer {
+    flex-direction: column; /* Stack the sections vertically */
+    align-items: center;
+  }
+  .newCustomerTitle{
+    margin-top: 40px;
+  }
+
+  .loginSection, .newCustomerContainer {
+    width: 100%; /* Full width on mobile */
+    margin-top: 20px; /* Add space between sections */
+  }
+
+  .newCustomerContainer {
+    margin-top: 60px;
+    border-top: 1px solid #dcdcdc;
+  }
+}

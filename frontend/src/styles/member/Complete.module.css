@@ -1,0 +1,39 @@
+.pageContainer {
+  margin: 0 auto;
+  background-color: #f5f5f5;
+  padding: 50px;
+  border-radius: 8px;
+}
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+ 
+}
+.container {
+  margin: 0 auto;
+  background-color: #f5f5f5;
+  padding: 50px;
+  border-radius: 8px;
+  width: 800px;
+}
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+  }
+}

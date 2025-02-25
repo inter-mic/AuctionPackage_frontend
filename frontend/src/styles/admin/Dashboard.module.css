@@ -1,0 +1,51 @@
+.container {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, 1fr); 
+    padding: 16px;
+  }
+  
+  .section {
+    background-color: #FFF;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .sectionTitle {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .buttonContainer {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(2, 1fr); 
+  }
+  
+  .button {
+    background-color: rgba(107, 114, 128);	
+
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+  }
+  
+  .button:hover {
+    opacity: 0.5;
+  }
+  
+  /* スマホ向けのスタイル調整 */
+  @media (max-width: 768px) {
+    .buttonContainer {
+      grid-template-columns: 1fr;
+    }
+    .container {
+        grid-template-columns: 1fr;
+      }
+  }

@@ -1,0 +1,276 @@
+import { GetServerSideProps } from 'next';
+import { toast } from 'react-toastify';
+import { texts } from '@/config/texts';
+//ホック
+import { withAuth } from '@/hocs/withAdminAuth';
+import withAdminLayout from '@/hocs/withAdminLayout';
+//カスタムフック
+import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useSorting } from '@/hooks/useSorting';
+import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
+import { useKengenRedirect } from '@/hooks/useKengenRedirect';
+import { useExecutionPermission } from '@/hooks/useExecutionPermission';
+import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
+//API
+import { useBidSearchAPI } from '@/hooks/api/admin/bid/useBidSearchAPI';
+import { useBidCsvAPI } from '@/hooks/api/admin/bid/useBidCsvAPI';
+import { useBidSearchParams } from '@/hooks/api/admin/bid/useBidSearchParams';
+//型定義
+import { Result } from '@/types/admin/bid/search';
+import { PageProps } from '@/types/admin/adminPage';
+//コンポーネント
+import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
+import { RequiredMark } from '@/components/ui/marks/RequiredMark';
+//ボタン
+import { SearchButton } from '@/components/ui/buttons/admin/searchButton';
+import { ClearButton } from '@/components/ui/buttons/admin/clearButton';
+import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
+//スタイル
+import breadcrumbStyles from '@/styles/breadcrumb.module.css';
+import formSearchStyles from '@/styles/admin/FormSearch.module.css';
+
+
+export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+  return {
+    props: {
+      pageTitle: texts.menu.adminBidList
+    },
+  };
+});
+
+const Page: React.FC<PageProps> = ({ kengen }) => {
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+
+  useKengenRedirect(kengen, 204);
+  const { executionPermission } = useExecutionPermission(kengen);
+
+  const { bidParams, formChange, resetForm } = useBidSearchParams();
+
+  const [bidList, setBidList] = useState<Result[]>([]);
+  const [selectedKaisai, setSelectedKaisai] = useState<string>('');
+
+  const handleKaisaiChange = (name: string, value: string) => {
+    setSelectedKaisai(value);
+    formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
+    // エラーメッセージが存在する場合、対応するエラーメッセージをクリア
+    if (errors?.[name]) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    }
+  };
+
+  const { data, errors, bidSearch } = useBidSearchAPI();
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const formSearch = async () => {
+    setSelectAll(false);
+    setSelectedIds([]);
+    setBidList([]);
+    await bidSearch(bidParams);
+  };
+
+  useEffect(() => {
+    if (data) {
+      setBidList(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (errors) { setFormErrors(errors); }
+  }, [errors]);
+
+  //ソート設定
+  const { data: sortedData, handleSort } = useSorting(bidList, 'goodsId', 'asc');
+  //チェックボックス
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(bidList.map(bid => `${bid.goodsId}-${bid.userId}`));
+  //商品登録画面に遷移
+  const {toGoodsRegist } = useToGoodsRegist(kengen);
+  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
+    toGoodsRegist(e, goodsId);
+  };
+  const formClear = () => {
+    resetForm();
+    setSelectedKaisai("");
+    setSelectAll(false);
+    setSelectedIds([]);
+    setBidList([]);
+  };
+
+  //CSV出力
+  const { bidCsv } = useBidCsvAPI();
+  const handleCsvExport = () => {
+    if (selectedIds.length === 0) {
+      toast.error(texts.message.selectAtLeastOne);
+      return;
+    }
+    bidCsv(selectedIds);
+  };
+
+  return (
+    <div>
+      <div className={breadcrumbStyles.breadcrumb}>
+        <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminBidList}</span>
+      </div>
+      <div className={formSearchStyles.formContainer}>
+        <div className={formSearchStyles.formGrid}>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="auction" ><RequiredMark />{texts.goods.auctionName}</label>
+            <KaisaiListPullDown
+              onChange={(value) => handleKaisaiChange('auctionSeq', value)}
+              selectedId={selectedKaisai !== null ? String(selectedKaisai) : ''}
+              kaisaiStatus={0}
+              defaultSetOption={1}
+            />
+            {formErrors?.auctionSeq && <p className="error-message">{formErrors.auctionSeq}</p>}
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="goodsId" >{texts.goods.goodsId}</label>
+            <input
+              id="goodsId"
+              name="goodsId"
+              maxLength={9}
+              value={bidParams.goodsId}
+              onChange={formChange}
+            />
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="goodsName" >{texts.goods.goodsName}</label>
+            <input
+              id="goodsName"
+              name="goodsName"
+              value={bidParams.goodsName}
+              onChange={formChange}
+            />
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="goodsId" >{texts.goods.sku}</label>
+            <input
+              id="sku"
+              name="sku"
+              maxLength={9}
+              value={bidParams.sku}
+              onChange={formChange}
+            />
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="userId" >{texts.member.userId}</label>
+            <input
+              id="userId"
+              name="userId"
+              maxLength={9}
+              value={bidParams.userId}
+              onChange={formChange}
+            />
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="userName" >{texts.member.userName}</label>
+            <input
+              id="userName"
+              name="userName"
+              value={bidParams.userName}
+              onChange={formChange}
+            />
+          </div>
+          <div className={formSearchStyles.formRow}>
+            <div className={formSearchStyles.formItemHalfWidth}>
+              <label htmlFor="lotFrom">{texts.goods.lot}</label>
+              <input
+                id="lotFrom"
+                name="lotFrom"
+                maxLength={9}
+                value={bidParams.lotFrom}
+                onChange={formChange}
+              />
+            </div>
+            <div className={formSearchStyles.tilde}>
+              {texts.common.tilde}
+            </div>
+            <div className={formSearchStyles.formItemHalfWidth}>
+              <input
+                id="lotTo"
+                name="lotTo"
+                maxLength={9}
+                value={bidParams.lotTo}
+                onChange={formChange}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="text-right mt-2" >
+          <SearchButton onClick={formSearch} />
+          <ClearButton onClick={formClear} />
+        </div>
+      </div>
+      {bidList && bidList.length > 0 ? (
+        <div>
+          <div className="flex justify-between items-center p-4">
+            <div className="text-left">
+              {texts.label.resultKekka} {bidList.length} {texts.label.resultCount}
+            </div>
+            {executionPermission(204, 2) && (
+              <div className="text-right">
+                <OutPutButton onClick={handleCsvExport} />
+              </div>
+            )}
+          </div>
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b">
+                  <input
+                    type="checkbox"
+                    checked={selectAll}
+                    onChange={handleSelectAll}
+                  />
+                </th>
+                <th className="py-2 px-4 border-b w-52" onClick={() => handleSort('auctionName')}>{texts.goods.auctionName}</th>
+                <th className="py-2 px-4 border-b w-24" onClick={() => handleSort('goodsId')}>{texts.goods.goodsId}</th>
+                <th className="py-2 px-4 border-b w-52" onClick={() => handleSort('sku')}>{texts.goods.sku}</th>
+                <th className="py-2 px-4 border-b" onClick={() => handleSort('goodsName')}>{texts.goods.goodsName}</th>
+                <th className="py-2 px-4 border-b w-24" onClick={() => handleSort('lot')}>{texts.goods.lot}</th>
+                <th className="py-2 px-4 border-b w-44" onClick={() => handleSort('bidPrice')}>{texts.bid.bidPrice}</th>
+                <th className="py-2 px-4 border-b w-52" onClick={() => handleSort('bidTime')}>{texts.bid.bidTime}</th>
+                <th className="py-2 px-4 border-b" onClick={() => handleSort('userName')}>{texts.member.userName}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedData.length > 0 && sortedData.map((result) => (
+                <tr
+                  key={`${result.goodsId}-${result.userId}`}
+                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={(e) => handleRowClick(e, result.goodsId)}
+                >
+                  <td
+                    className="py-2 px-4 border-b text-center"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(`${result.goodsId}-${result.userId}`)}
+                      onChange={() => handleSelect(`${result.goodsId}-${result.userId}`)}
+                    />
+                  </td>
+                  <td className="py-2 px-4 border-b text-left w-52">{result.auctionName}</td>
+                  <td className="py-2 px-4 border-b text-left w-24">{result.goodsId}</td>
+                  <td className="py-2 px-4 border-b text-left w-52">{result.sku}</td>
+                  <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
+                  <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
+                  <td className="py-2 px-4 border-b text-right w-44">{result.bidPrice}</td>
+                  <td className="py-2 px-4 border-b text-right w-52">{result.bidTime}</td>
+                  <td className="py-2 px-4 border-b text-left">{result.userName}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p></p>
+      )}
+    </div>
+  );
+};
+
+export default withAdminLayout(Page);

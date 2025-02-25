@@ -1,0 +1,11 @@
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+    max-width: 1200px;
+    height: 100%;
+    margin: 20px auto;
+  }

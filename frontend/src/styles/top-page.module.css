@@ -1,0 +1,32 @@
+/* トップページ固有のスタイルをここに追加 */
+.top-page {
+    background-color: #f0f0f0; /* 例: 背景色 */
+    padding: 20px;
+  }
+/* page.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+  
+  .loginButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #0070f3;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  
+  .loginButton:hover {
+    background-color: #005bb5;
+  }
+  
