@@ -19,7 +19,7 @@ export const useGoodsSearchParams = () => {
     shuppinUserName: '',
     rakusatsuUserId: '',
     rakusatsuUserName: '',
-    freeWord: '',
+    freeWord: ''
   });
 
   const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -44,7 +44,7 @@ export const useGoodsSearchParams = () => {
       shuppinUserName: '',
       rakusatsuUserId: '',
       rakusatsuUserName: '',
-      freeWord: '',
+      freeWord: ''
     });
   };
 

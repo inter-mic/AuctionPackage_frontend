@@ -13,7 +13,7 @@ export const useGoodsSearchAPI = () => {
   const [errors, setErrors] = useState<Errors>();
   const [fetchGoodsData, setFetchGoodsData] = useState<GoodsData>(initialGoodsData);
   const [fetchGoodsKekkaData, setFetchGoodsKekkaData] = useState<GoodsKekkaData>(initialGoodsKekkaData);
-  const goodsSearch = async (searchParams: TAdminGoodsSearchRequest) => {
+  const goodsSearchAPI = async (searchParams: TAdminGoodsSearchRequest) => {
     const endPoint = 'goods/search';
     const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
     
@@ -26,5 +26,5 @@ export const useGoodsSearchAPI = () => {
     }
   };
 
-  return { data, fetchGoodsData, fetchGoodsKekkaData, errors, goodsSearch }
+  return { data, fetchGoodsData, fetchGoodsKekkaData, errors, goodsSearchAPI }
 };

@@ -27,7 +27,6 @@ import { PageProps } from '@/types/admin/adminPage';
 //コンポーネント
 import { CategoryListPullDown } from '@/components/ui/pulldowns/CategoryPullDown';
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
-import { KeisaiFlgPullDown } from '@/components/ui/pulldowns/KeisaiFlgPullDown';
 import { KekkaStatusPullDown } from '@/components/ui/pulldowns/KekkaStatusPullDown';
 import { RequiredMark } from '@/components/ui/marks/RequiredMark';
 //ボタン
@@ -81,13 +80,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
-  const { data, errors, goodsSearch } = useGoodsSearchAPI();
+  const { data, errors, goodsSearchAPI } = useGoodsSearchAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
     setSelectAll(false);
     setSelectedIds([]);
     setGoodsData([]);
-    await goodsSearch(goodsParams);
+    await goodsSearchAPI(goodsParams);
   };
 
   const formClear = () => {
@@ -112,7 +111,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   //ソート設定
   const { data: sortedData, handleSort } = useSorting(goodsData, 'goodsId', 'asc');
-  const { currentPage, paginatedData, totalPageCount, handlePageChange } = usePagination(sortedData);
+  const {  paginatedData, totalPageCount, handlePageChange } = usePagination(sortedData);
   //チェックボックス
   const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(goodsData.map(goods => goods.goodsId));
   //商品登録画面に遷移
@@ -171,6 +170,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const handleMouseLeaveRakusatsu = () => {
     setHoveredRakusatsu(null);
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
 
 
   return (
@@ -414,7 +416,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   onMouseLeave={handleMouseLeaveShuppin}
                   onClick={(e) => handleRowUserClick(e, result.shuppinUserId)}// 出品者名のクリックでイベントを止める
                 >
-                  {result.shuppinUserName}/{result.shuppinCompanyName}
+                  {result.shuppinUserName} {result.shuppinCompanyName}
                 </td>
                 </tr>
                 <tr
@@ -439,7 +441,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   onMouseLeave={handleMouseLeaveRakusatsu}
                   onClick={(e) => handleRowUserClick(e, result.rakusatsuUserId)} // 落札者名のクリックでイベントを止める
                 >
-                  {result.rakusatsuUserName}/{result.rakusatsuCompanyName}
+                  {result.rakusatsuUserName} {result.rakusatsuCompanyName}
                 </td>
                 </tr>
               </React.Fragment>
