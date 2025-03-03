@@ -2,14 +2,11 @@ import { GetServerSideProps } from 'next';
 import { texts } from '@/config/texts';
 import React from 'react';
 import Image from 'next/image';
-import Pagination from '@mui/material/Pagination';
 //ホック
 import { withAuth } from '@/hocs/withMemberAuth';
 import withMemberLayout from '@/hocs/withMemberLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSort';
-import { usePagination  } from '@/hooks/usePagination';
 //API
 import { useResultsSearchAPI } from '@/hooks/api/member/mypage/useResultsSearchAPI';
 import { useResultsSearchParams } from '@/hooks/searchParams/member/useResultsSearchParams';
@@ -69,10 +66,6 @@ const Page: React.FC<TPageProps> = (isLogin) => {
     }
   }, [resultsList]);
 
-  //ソート設定
-  const { data: sortedData, handleSort } = useSorting(fetchResultList, 'lot', 'asc');
-  const { currentPage, paginatedData, totalPageCount, handlePageChange } = usePagination(sortedData);
-
 
 
   return (
@@ -130,7 +123,7 @@ const Page: React.FC<TPageProps> = (isLogin) => {
             <div className="text-right">
                 <span className="font-bold">
                 {texts.mypageResult.rakusatsuTotalPrice} :
-            {paginatedData.reduce((acc, result) => {
+            {resultsList.reduce((acc, result) => {
                 const price = parseFloat(result.rakusatsuPrice.replace(/,/g, '')) || 0;
                 return acc + price;
               }, 0).toLocaleString()}
@@ -142,14 +135,14 @@ const Page: React.FC<TPageProps> = (isLogin) => {
         <table className="w-full bg-white">
         <thead>
           <tr>
-        <th className="py-2 px-4 border-b" onClick={() => handleSort('thumbnailImageUrl')}>{texts.goods.thumbnailImageUrl}</th>
-        <th className="py-2 px-4 border-b" onClick={() => handleSort('lot')}>{texts.goods.lot}</th>
-        <th className="py-2 px-4 border-b" onClick={() => handleSort('goodsName')}>{texts.goods.goodsName}</th>
-        <th className="py-2 px-4 border-b" onClick={() => handleSort('rakusatsuPrice')}>{texts.goods.rakusatsuPrice}</th>
+        <th className="py-2 px-4 border-b" >{texts.goods.thumbnailImageUrl}</th>
+        <th className="py-2 px-4 border-b" >{texts.goods.lot}</th>
+        <th className="py-2 px-4 border-b" >{texts.goods.goodsName}</th>
+        <th className="py-2 px-4 border-b" >{texts.goods.rakusatsuPrice}</th>
         </tr>
         </thead>
             <tbody>
-            {paginatedData.length > 0 && paginatedData.map((result) => (
+            {resultsList.length > 0 && resultsList.map((result) => (
               <React.Fragment key={result.goodsId}>
                 <tr>
                 <td className="py-2 px-4  border-b text-right">
@@ -172,11 +165,7 @@ const Page: React.FC<TPageProps> = (isLogin) => {
 
             </tbody>
           </table>
-          <Pagination className={memberStyles.paginationContainer}
-        count={totalPageCount}
-        page={currentPage}
-        onChange={handlePageChange}
-      />
+          
       </div>
 
       </>

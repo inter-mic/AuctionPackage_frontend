@@ -10,6 +10,7 @@ export function useCheckboxSelection<T>(initialItems: T[], allSelectData: T[],fe
     if (allGoodsData.length == 0 && allSelectData.length > 0) {
       setAllGoodsData(allSelectData);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSelectData]);
   useEffect(() => {
     if (selectAll && allGoodsData.length > 0) {
@@ -17,6 +18,7 @@ export function useCheckboxSelection<T>(initialItems: T[], allSelectData: T[],fe
     }else{
       setSelectedIds([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allGoodsData, selectAll]);
 
   const handleSelectAll = useCallback(

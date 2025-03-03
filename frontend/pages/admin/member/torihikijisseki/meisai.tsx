@@ -92,7 +92,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       if (allSelectData) {
         setAllData(allSelectData);
       }
-    }, [allData]);
+    }, [allSelectData]);
   
   //ソート設定
   const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({

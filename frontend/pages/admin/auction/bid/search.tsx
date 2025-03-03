@@ -97,7 +97,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     await allSelectSearchAPI(params);
   };
   useEffect(() => {
-    if (data) {
+    if (allSelectData) {
       setAllGoodsData(allSelectData);
     }
   }, [allSelectData]);
