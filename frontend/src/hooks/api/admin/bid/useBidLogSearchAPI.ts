@@ -1,16 +1,16 @@
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //型定義
-import { LogInternetBidAdminSearchRequest, Result } from '@/types/admin/bid/logSearch';
+import { LogInternetBidAdminSearchRequest, TAdminLogInternetBidSelect } from '@/types/admin/bid/logSearch';
 import { Errors } from '@/types/errors';
 
 
 
 export const useBidLogSearchAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [data, setData] = useState<Result[]>([]);
+  const [data, setData] = useState<TAdminLogInternetBidSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const bidLogSearch = async (searchParams: LogInternetBidAdminSearchRequest) => {
+  const bidLogSearchAPI = async (searchParams: LogInternetBidAdminSearchRequest) => {
     const endPoint = 'logInternetBid/search';
     const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
     
@@ -21,5 +21,5 @@ export const useBidLogSearchAPI = () => {
     }
   };
 
-  return { data, errors, bidLogSearch }
+  return { data, errors, bidLogSearchAPI }
 };

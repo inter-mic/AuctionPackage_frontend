@@ -14,6 +14,8 @@ export const useBidLogSearchParams = () => {
     lotTo: '',
     userId: '',
     userName: '',
+    pageNumber:1,
+    pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
   });
 
   const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -34,6 +36,8 @@ export const useBidLogSearchParams = () => {
       lotTo: '',
       userId: '',
       userName: '',
+      pageNumber:1,
+      pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
     });
   };
 

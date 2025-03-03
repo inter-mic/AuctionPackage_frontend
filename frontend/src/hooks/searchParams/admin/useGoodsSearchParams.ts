@@ -2,8 +2,6 @@ import { useState } from 'react';
 //型定義
 import { TAdminGoodsSearchRequest } from '@/types/admin/goods/search';
 
-
-
 export const useGoodsSearchParams = () => {
   const [goodsParams, setGoodsParams] = useState<TAdminGoodsSearchRequest>({
     goodsId: '',
@@ -19,7 +17,9 @@ export const useGoodsSearchParams = () => {
     shuppinUserName: '',
     rakusatsuUserId: '',
     rakusatsuUserName: '',
-    freeWord: ''
+    freeWord: '',
+    pageNumber:1,
+    pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
   });
 
   const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -44,7 +44,9 @@ export const useGoodsSearchParams = () => {
       shuppinUserName: '',
       rakusatsuUserId: '',
       rakusatsuUserName: '',
-      freeWord: ''
+      freeWord: '',
+      pageNumber:1,
+      pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
     });
   };
 

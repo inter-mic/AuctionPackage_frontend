@@ -1,16 +1,16 @@
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //型定義
-import { TGoodsAuctionBidAdminSearchRequest, Result } from '@/types/admin/bid/search';
+import { TGoodsAuctionBidAdminSearchRequest, TAdminGoodsAuctionBidSelect } from '@/types/admin/bid/search';
 import { Errors } from '@/types/errors';
 
 
 
 export const useBidSearchAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [data, setData] = useState<Result[]>([]);
+  const [data, setData] = useState<TAdminGoodsAuctionBidSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const bidSearch = async (searchParams: TGoodsAuctionBidAdminSearchRequest) => {
+  const bidSearchAPI = async (searchParams: TGoodsAuctionBidAdminSearchRequest) => {
     const endPoint = 'goodsAuctionBid/search';
     const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
     
@@ -21,5 +21,5 @@ export const useBidSearchAPI = () => {
     }
   };
 
-  return { data, errors, bidSearch }
+  return { data, errors, bidSearchAPI }
 };

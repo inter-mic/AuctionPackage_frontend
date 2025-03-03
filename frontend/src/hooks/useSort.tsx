@@ -11,7 +11,7 @@ type SearchAPI = (params: SearchParams) => void;
 
 export const useSort = ({
   searchAPI,
-  initialSortName = 'userId',
+  initialSortName = 'lot',
   initialSortFlg = 'asc',
   itemsPerPage,
   params,

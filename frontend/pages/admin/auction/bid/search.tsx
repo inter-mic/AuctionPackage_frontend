@@ -1,22 +1,25 @@
 import { GetServerSideProps } from 'next';
 import { toast } from 'react-toastify';
 import { texts } from '@/config/texts';
+import Pagination from '@mui/material/Pagination';
 //ホック
 import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminLayout from '@/hocs/withAdminLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSort';
+import { useSort } from '@/hooks/useSort';
+import { usePagination } from '@/hooks/usePagination';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
 //API
 import { useBidSearchAPI } from '@/hooks/api/admin/bid/useBidSearchAPI';
+import { useBidSearchCountAPI } from '@/hooks/api/admin/bid/useBidSearchCountAPI';
 import { useBidCsvAPI } from '@/hooks/api/admin/bid/useBidCsvAPI';
 import { useBidSearchParams } from '@/hooks/api/admin/bid/useBidSearchParams';
 //型定義
-import { Result } from '@/types/admin/bid/search';
+import { TAdminGoodsAuctionBidSelect } from '@/types/admin/bid/search';
 import { PageProps } from '@/types/admin/adminPage';
 //コンポーネント
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
@@ -28,7 +31,7 @@ import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
 //スタイル
 import breadcrumbStyles from '@/styles/breadcrumb.module.css';
 import formSearchStyles from '@/styles/admin/FormSearch.module.css';
-
+import adminStyles from '@/styles/admin/AdminCommon.module.css';
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
@@ -46,13 +49,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const { bidParams, formChange, resetForm } = useBidSearchParams();
 
-  const [bidList, setBidList] = useState<Result[]>([]);
+  const [bidList, setBidList] = useState<TAdminGoodsAuctionBidSelect[]>([]);
   const [selectedKaisai, setSelectedKaisai] = useState<string>('');
 
   const handleKaisaiChange = (name: string, value: string) => {
     setSelectedKaisai(value);
     formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
-    // エラーメッセージが存在する場合、対応するエラーメッセージをクリア
     if (errors?.[name]) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -61,13 +63,21 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
-  const { data, errors, bidSearch } = useBidSearchAPI();
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
+  const { data, errors, bidSearchAPI } = useBidSearchAPI();
+  const { count, bidSearchCountAPI } = useBidSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
     setSelectAll(false);
     setSelectedIds([]);
     setBidList([]);
-    await bidSearch(bidParams);
+    const params = {
+      ...bidParams,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+    };
+    await bidSearchAPI(params);
+    await bidSearchCountAPI(params);
   };
 
   useEffect(() => {
@@ -76,16 +86,44 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   }, [data]);
 
+  const { data: allSelectData, bidSearchAPI: allSelectSearchAPI } = useBidSearchAPI();
+  const [allGoodsData, setAllGoodsData] = useState<TAdminGoodsAuctionBidSelect[]>([]);
+  const fetchAllIds = async () => {
+    const params = {
+      ...bidParams,
+      pageNumber: 1,
+      pageSize: count,
+    };
+    await allSelectSearchAPI(params);
+  };
+  useEffect(() => {
+    if (data) {
+      setAllGoodsData(allSelectData);
+    }
+  }, [allSelectData]);
+
   useEffect(() => {
     if (errors) { setFormErrors(errors); }
   }, [errors]);
 
-  //ソート設定
-  const { data: sortedData, handleSort } = useSorting(bidList, 'goodsId', 'asc');
+  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+    searchAPI: bidSearchAPI,
+    itemsPerPage,
+    params: bidParams,
+  });
+  const { currentPage, handlePageChange } = usePagination({
+    itemsPerPage,
+    searchAPI: bidSearchAPI,
+    searchParams: bidParams,
+  });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(bidList.map(bid => `${bid.goodsId}-${bid.userId}`));
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
+    bidList.map(bid => `${bid.goodsId}-${bid.userId}`)
+    , allGoodsData.map(bid => `${bid.goodsId}-${bid.userId}`)
+    , fetchAllIds);
+
   //商品登録画面に遷移
-  const {toGoodsRegist } = useToGoodsRegist(kengen);
+  const { toGoodsRegist } = useToGoodsRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
     toGoodsRegist(e, goodsId);
   };
@@ -206,7 +244,25 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         <div>
           <div className="flex justify-between items-center p-4">
             <div className="text-left">
-              {texts.label.resultKekka} {bidList.length} {texts.label.resultCount}
+              <div className={adminStyles.resultContainer}>
+                <div className={adminStyles.resultRow}>
+                  <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
+                  <span>{count} {texts.label.resultCount}</span>
+                </div>
+                <div className={adminStyles.resultRow}>
+                  <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
+                  <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                    <option value="lot">{texts.goods.lot}</option>
+                    <option value="userId">{texts.member.userName}</option>
+                    <option value="bidPrice">{texts.bid.bidPrice}</option>
+                    <option value="bidTime">{texts.bid.bidTime}</option>
+                  </select>
+                  <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
+                    <option value="asc">{texts.label.asc}</option>
+                    <option value="desc">{texts.label.desc}</option>
+                  </select>
+                </div>
+              </div>
             </div>
             {executionPermission(204, 2) && (
               <div className="text-right">
@@ -224,18 +280,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     onChange={handleSelectAll}
                   />
                 </th>
-                <th className="py-2 px-4 border-b w-52" onClick={() => handleSort('auctionName')}>{texts.goods.auctionName}</th>
-                <th className="py-2 px-4 border-b w-24" onClick={() => handleSort('goodsId')}>{texts.goods.goodsId}</th>
-                <th className="py-2 px-4 border-b w-52" onClick={() => handleSort('sku')}>{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('goodsName')}>{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-24" onClick={() => handleSort('lot')}>{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b w-44" onClick={() => handleSort('bidPrice')}>{texts.bid.bidPrice}</th>
-                <th className="py-2 px-4 border-b w-52" onClick={() => handleSort('bidTime')}>{texts.bid.bidTime}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('userName')}>{texts.member.userName}</th>
+                <th className="py-2 px-4 border-b w-52" >{texts.goods.auctionName}</th>
+                <th className="py-2 px-4 border-b w-24" >{texts.goods.goodsId}</th>
+                <th className="py-2 px-4 border-b w-52">{texts.goods.sku}</th>
+                <th className="py-2 px-4 border-b" >{texts.goods.goodsName}</th>
+                <th className="py-2 px-4 border-b w-24" >{texts.goods.lot}</th>
+                <th className="py-2 px-4 border-b w-44">{texts.bid.bidPrice}</th>
+                <th className="py-2 px-4 border-b w-52" >{texts.bid.bidTime}</th>
+                <th className="py-2 px-4 border-b" >{texts.member.userName}</th>
               </tr>
             </thead>
             <tbody>
-              {sortedData.length > 0 && sortedData.map((result) => (
+              {bidList.length > 0 && bidList.map((result) => (
                 <tr
                   key={`${result.goodsId}-${result.userId}`}
                   className="cursor-pointer hover:bg-gray-100"
@@ -265,6 +321,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               ))}
             </tbody>
           </table>
+          <div >
+            <Pagination className={adminStyles.paginationContainer}
+              count={Math.max(1, Math.ceil(count / itemsPerPage))}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       ) : (
         <p></p>

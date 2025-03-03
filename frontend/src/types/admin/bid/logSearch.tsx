@@ -8,10 +8,14 @@ export interface LogInternetBidAdminSearchRequest {
     auctionSeq?: string;
     userId?:  string;
     userName?:  string;
+    pageNumber:number;
+    pageSize:number;
+    sortKey?: string;
+    sortFlg?:boolean;
 }
 
 
-export interface Result {
+export interface TAdminLogInternetBidSelect {
     seq: number;
     goodsId: number;
     sku: string;

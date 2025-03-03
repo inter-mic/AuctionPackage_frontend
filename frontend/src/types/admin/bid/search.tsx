@@ -8,10 +8,14 @@ export interface TGoodsAuctionBidAdminSearchRequest {
     auctionSeq?: string;
     userId?:  string;
     userName?:  string;
+    pageNumber:number;
+    pageSize:number;
+    sortKey?: string;
+    sortFlg?:boolean;
 }
 
 
-export interface Result {
+export interface TAdminGoodsAuctionBidSelect {
     goodsId: number;
     goodsName: string;
     sku: string;

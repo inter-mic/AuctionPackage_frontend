@@ -80,7 +80,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }));
     }
   };
-
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { data, errors, goodsSearchAPI } = useGoodsSearchAPI();
   const { count, goodsSearchCountAPI } = useGoodsSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
@@ -90,8 +90,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setGoodsData([]);
     const params = {
       ...goodsParams,
-      pageNumber: 1, // 必要なページ番号を指定
-      pageSize: 10,  // 1ページあたりの件数を指定
+      pageNumber: 1, 
+      pageSize: itemsPerPage, 
     };
     await goodsSearchAPI(params);
     await goodsSearchCountAPI(params);
@@ -134,7 +134,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [allSelectData]);
 
   //ソート設定
-  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: goodsSearchAPI,
     itemsPerPage,
@@ -502,7 +501,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </table>
           <div >
             <Pagination className={adminStyles.paginationContainer}
-              count={count / itemsPerPage}
+             count={Math.max(1, Math.ceil(count / itemsPerPage))} 
               page={currentPage}
               onChange={handlePageChange}
             />
