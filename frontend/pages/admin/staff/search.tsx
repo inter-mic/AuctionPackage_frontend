@@ -5,7 +5,6 @@ import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminLayout from '@/hocs/withAdminLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSort';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 //API
 import { useStaffSearchAPI }  from '@/hooks/api/admin/staff/useStaffSearchAPI';
@@ -37,8 +36,6 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //ソート設定
-  const { data: sortedData, handleSort } = useSorting(data, 'staffId', 'asc');
   //スタッフ登録画面に遷移
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, staffId: number) => {
     if (e.target instanceof HTMLInputElement) return;
@@ -61,15 +58,15 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('staffId')}>{ texts.staff.staffId }</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('loginId')}>{ texts.staff.loginId }</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('staffName')}>{ texts.staff.staffName }</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('mail')}>{ texts.common.mail }</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('kengenName')}>{ texts.staff.kengenName }</th>
+                  <th className="py-2 px-4 border-b" >{ texts.staff.staffId }</th>
+                  <th className="py-2 px-4 border-b" >{ texts.staff.loginId }</th>
+                  <th className="py-2 px-4 border-b" >{ texts.staff.staffName }</th>
+                  <th className="py-2 px-4 border-b" >{ texts.common.mail }</th>
+                  <th className="py-2 px-4 border-b" >{ texts.staff.kengenName }</th>
                 </tr>
               </thead>
               <tbody>
-                {sortedData.map((result) => (
+                {data.map((result) => (
                   <tr
                     key={result.staffId}
                     className="cursor-pointer hover:bg-gray-100"

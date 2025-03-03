@@ -11,6 +11,8 @@ export const useUserSearchParams = () => {
       companyName: '',
       shoninFlg: '',
       freeWord: '',
+      pageNumber:1,
+      pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
     });
 
   const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -28,6 +30,8 @@ export const useUserSearchParams = () => {
       companyName: '',
       shoninFlg: '',
       freeWord: '',
+      pageNumber:1,
+       pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
     });
   };
   

@@ -18,5 +18,5 @@ export const useTorihikiJissekiSearchAPI = () => {
     }
   };
 
-  return { torihikiList,  errors,torihikiJissekiSearchAPI }
+  return { torihikiList,  errors, torihikiJissekiSearchAPI }
 };

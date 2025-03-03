@@ -1,18 +1,21 @@
 import { GetServerSideProps } from 'next';
 import { toast } from 'react-toastify';
 import { texts } from '@/config/texts';
+import Pagination from '@mui/material/Pagination';
 //ホック
 import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminLayout from '@/hocs/withAdminLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSort';
+import { useSort } from '@/hooks/useSort';
+import { usePagination } from '@/hooks/usePagination';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 import { useToTorihikiMeisai } from '@/hooks/moveScreen/useToTorihikiMeisai';
 //API
 import { useTorihikiJissekiSearchAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiSearchAPI';
+import { useTorihikiJissekiSearchCountAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiSearchCountAPI';
 import { useTorihikiJissekiCsvAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiCsvAPI';
 import { useInvoicePdfAPI } from '@/hooks/api/admin/pdf/useInvoicePdfAPI';
 //型定義
@@ -28,7 +31,7 @@ import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
 //スタイル
 import breadcrumbStyles from '@/styles/breadcrumb.module.css';
 import formSearchStyles from '@/styles/admin/FormSearch.module.css';
-
+import adminStyles from '@/styles/admin/AdminCommon.module.css';
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
@@ -43,8 +46,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   useKengenRedirect(kengen, 104);
   const { executionPermission } = useExecutionPermission(kengen);
-
-  const [searchParams, setSearchParams] = useState<TAdminTorihikiJissekiRequest>({});
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
+  const [searchParams, setSearchParams] = useState<TAdminTorihikiJissekiRequest>({
+    auctionSeq: 0, 
+    pageNumber: 1,
+    pageSize: itemsPerPage, 
+  });
+  
   const handleInputChange = (name: string, value: string) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -66,18 +74,61 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
+  
   const { torihikiList, errors, torihikiJissekiSearchAPI } = useTorihikiJissekiSearchAPI();
+  const { count, torihikiJissekiSearchCountAPI } = useTorihikiJissekiSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
-    await torihikiJissekiSearchAPI(searchParams);
+    const params = {
+      ...searchParams,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+    };
+    await torihikiJissekiSearchAPI(params);
+    await torihikiJissekiSearchCountAPI(params);
   };
   useEffect(() => {
     if (errors) { setFormErrors(errors); }
   }, [errors]);
+
+  const { torihikiList: allSelectData, torihikiJissekiSearchAPI: allSelectSearchAPI } = useTorihikiJissekiSearchAPI();
+  const [allData, setAllData] = useState<TVTorihikiJisseki[]>([]);
+  const fetchAllIds = async () => {
+    const params = {
+      ...searchParams,
+      pageNumber: 1,
+      pageSize: count,
+    };
+    await allSelectSearchAPI(params);
+  };
+  useEffect(() => {
+    if (allSelectData) {
+      setAllData(allSelectData);
+    }
+  }, [allSelectData]);
+
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(torihikiList.map(torihiki => torihiki.userId));
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
+    torihikiList.map(torihiki => torihiki.userId)
+    , allData.map(torihiki => torihiki.userId)
+    , fetchAllIds);
+
   //ソート設定
-  const { data: sortedData, handleSort } = useSorting(torihikiList, 'goodsId', 'asc');
+  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+    searchAPI: torihikiJissekiSearchAPI,
+    initialSortName: "userId",
+    itemsPerPage,
+    params: {
+      ...searchParams,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+    },  
+  });
+  const { currentPage, handlePageChange } = usePagination({
+    itemsPerPage,
+    searchAPI: torihikiJissekiSearchAPI,
+    searchParams: searchParams,
+  });
 
 
   const { torihikiJissekiCsv } = useTorihikiJissekiCsvAPI();
@@ -138,7 +189,24 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         <div>
           <div className="flex justify-between items-center p-4">
             <div className="text-left">
-              {texts.label.resultKekka} {torihikiList.length} {texts.label.resultCount}
+            <div className={adminStyles.resultContainer}>
+                <div className={adminStyles.resultRow}>
+                  <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
+                  <span>{count} {texts.label.resultCount}</span>
+                </div>
+                <div className={adminStyles.resultRow}>
+                  <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
+                  <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                    <option value="userId">{texts.member.userId}</option>
+                    <option value="rakusatsusu">{texts.torihikiJisseki.rakusatsusu}</option>
+                    <option value="rakusatsuPrice">{texts.torihikiJisseki.rakusatsuPrice}</option>
+                  </select>
+                  <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
+                    <option value="asc">{texts.label.asc}</option>
+                    <option value="desc">{texts.label.desc}</option>
+                  </select>
+                </div>
+              </div>
             </div>
             {executionPermission(102, 2) && (
               <>
@@ -163,21 +231,21 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
 
                 </th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('userId')}>{texts.member.userId}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('userName')}>{texts.member.userName}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('companyName')}>{texts.member.companyName}</th>
-                {/* <th className="py-2 px-4 border-b" onClick={() => handleSort('shuppinsu')}>{texts.torihikiJisseki.shuppinsu}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('shuppinPrice')}>{texts.torihikiJisseki.shuppinPrice}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('shuppinTesuryoPrice')}>{texts.torihikiJisseki.shuppinTesuryoPrice}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('shuppinTotalPrice')}>{texts.torihikiJisseki.shuppinTotalPrice}</th> */}
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('rakusatsusu')}>{texts.torihikiJisseki.rakusatsusu}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('rakusatsuPrice')}>{texts.torihikiJisseki.rakusatsuPrice}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('rakusatsuTesuryoPrice')}>{texts.torihikiJisseki.rakusatsuTesuryoPrice}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSort('rakusatsuTotalPrice')}>{texts.torihikiJisseki.rakusatsuTotalPrice}</th>
+                <th className="py-2 px-4 border-b">{texts.member.userId}</th>
+                <th className="py-2 px-4 border-b" >{texts.member.userName}</th>
+                <th className="py-2 px-4 border-b" >{texts.member.companyName}</th>
+                {/* <th className="py-2 px-4 border-b">{texts.torihikiJisseki.shuppinsu}</th>
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.shuppinPrice}</th>
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.shuppinTesuryoPrice}</th>
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.shuppinTotalPrice}</th> */}
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.rakusatsusu}</th>
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.rakusatsuPrice}</th>
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.rakusatsuTesuryoPrice}</th>
+                <th className="py-2 px-4 border-b" >{texts.torihikiJisseki.rakusatsuTotalPrice}</th>
               </tr>
             </thead>
             <tbody>
-              {sortedData.length > 0 && sortedData.map((result) => (
+              {torihikiList.length > 0 && torihikiList.map((result) => (
                 <tr
                   key={result.userId}
                   className="cursor-pointer hover:bg-gray-100"
@@ -211,6 +279,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               ))}
             </tbody>
           </table>
+          <div >
+            <Pagination className={adminStyles.paginationContainer}
+              count={Math.max(1, Math.ceil(count / itemsPerPage))}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       ) : (
         <p></p>

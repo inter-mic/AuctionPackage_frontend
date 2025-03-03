@@ -8,7 +8,7 @@ import withAdminLayout from '@/hocs/withAdminLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 import { useSort } from '@/hooks/useSort';
-import { usePagination  } from '@/hooks/usePagination';
+import { usePagination } from '@/hooks/usePagination';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
@@ -99,52 +99,52 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (errors) { setFormErrors(errors); }
   }, [errors]);
 
-   const { data: allSelectData, bidLogSearchAPI: allSelectSearchAPI } = useBidLogSearchAPI();
-    const [allGoodsData, setAllGoodsData] = useState<TAdminLogInternetBidSelect[]>([]);
-    const fetchAllIds = async () => {
-      const params = {
-        ...bidLogParams,
-        pageNumber: 1,
-        pageSize: count,
-      };
-      await allSelectSearchAPI(params);
+  const { data: allSelectData, bidLogSearchAPI: allSelectSearchAPI } = useBidLogSearchAPI();
+  const [allGoodsData, setAllGoodsData] = useState<TAdminLogInternetBidSelect[]>([]);
+  const fetchAllIds = async () => {
+    const params = {
+      ...bidLogParams,
+      pageNumber: 1,
+      pageSize: count,
     };
-    useEffect(() => {
-      if (data) {
-        setAllGoodsData(allSelectData);
-      }
-    }, [allSelectData]);
+    await allSelectSearchAPI(params);
+  };
+  useEffect(() => {
+    if (data) {
+      setAllGoodsData(allSelectData);
+    }
+  }, [allSelectData]);
 
-    const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
-      searchAPI: bidLogSearchAPI,
-      itemsPerPage,
-      params: bidLogParams,
-    });
-    const { currentPage, handlePageChange } = usePagination({
-      itemsPerPage,
-      searchAPI: bidLogSearchAPI,
-      searchParams: bidLogParams,
-    });
-    //チェックボックス
-    const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
-      bidList.map(bid => bid.seq)
-      , allGoodsData.map(bid => bid.seq)
-      , fetchAllIds);
-  
+  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+    searchAPI: bidLogSearchAPI,
+    itemsPerPage,
+    params: bidLogParams,
+  });
+  const { currentPage, handlePageChange } = usePagination({
+    itemsPerPage,
+    searchAPI: bidLogSearchAPI,
+    searchParams: bidLogParams,
+  });
+  //チェックボックス
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
+    bidList.map(bid => bid.seq)
+    , allGoodsData.map(bid => bid.seq)
+    , fetchAllIds);
+
   //商品登録画面に遷移
-  const {toGoodsRegist } = useToGoodsRegist(kengen);
+  const { toGoodsRegist } = useToGoodsRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
     toGoodsRegist(e, goodsId);
   };
   //会員登録画面に遷移
-  const handleRowUserClick = ( e: React.MouseEvent<HTMLElement>, userId: string) => {
+  const handleRowUserClick = (e: React.MouseEvent<HTMLElement>, userId: string) => {
     if (e.target instanceof HTMLInputElement) return;
     const hasClickKengen = kengen.some(
       (k) => k.screenId === 101 && (k.kengenKbn === 1 || k.kengenKbn === 2)
     );
     if (hasClickKengen) {
       window.open(`/admin/member/register?userId=${userId}`, '_blank');
-    } 
+    }
   };
 
   //CSV出力
@@ -246,7 +246,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               onChange={formChange}
             />
           </div>
-          
+
         </div>
         <div className="text-right mt-2" >
           <SearchButton onClick={formSearch} />
@@ -257,7 +257,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         <div>
           <div className="flex justify-between items-center p-4">
             <div className="text-left">
-            <div className={adminStyles.resultContainer}>
+              <div className={adminStyles.resultContainer}>
                 <div className={adminStyles.resultRow}>
                   <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
                   <span>{count} {texts.label.resultCount}</span>
@@ -331,9 +331,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <td className="py-2 px-4 border-b text-right">{result.bidTime}</td>
                   <td className="py-2 px-4 border-b text-left hover:bg-blue-100 hover:cursor-pointer" // ホバー時に色とカーソル変更
                     onClick={(e) => handleRowUserClick(e, result.userId)} // 新しいクリックイベント
-                >
-                  {result.userName}
-                </td>
+                  >
+                    {result.userName}
+                  </td>
                 </tr>
               ))}
             </tbody>

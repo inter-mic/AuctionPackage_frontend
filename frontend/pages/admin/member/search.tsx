@@ -9,7 +9,7 @@ import withAdminLayout from '@/hocs/withAdminLayout';
 
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSort';
+import { useSort } from '@/hooks/useSort';
 import { usePagination } from '@/hooks/usePagination';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
@@ -17,10 +17,11 @@ import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 import { useToMemberRegist } from '@/hooks/moveScreen/useToMemberRegist';
 //API
 import { useUserSearchAPI } from '@/hooks/api/admin/user/useUserSearchAPI';
+import { useUserSearchCountAPI } from '@/hooks/api/admin/user/useUserSearchCountAPI';
 import { useUserCsvAPI } from '@/hooks/api/admin/user/useUserCsvAPI';
 import { useUserSearchParams } from '@/hooks/searchParams/admin/useUserSearchParams';
 //型定義
-import { Result } from '@/types/admin/member/search';
+import { TAdminUserSelect } from '@/types/admin/member/search';
 import { PageProps } from '@/types/admin/adminPage';
 //ボタン
 import { SearchButton } from '@/components/ui/buttons/admin/searchButton';
@@ -49,16 +50,23 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useKengenRedirect(kengen, 102);
   const { executionPermission } = useExecutionPermission(kengen);
 
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { memberParams, formChange, resetForm } = useUserSearchParams();
-  const { data, userSearch } = useUserSearchAPI();
-
-  const [memberData, setMemberData] = useState<Result[]>([]);
+  const { data, userSearchAPI } = useUserSearchAPI();
+  const { count, userSearchCountAPI } = useUserSearchCountAPI();
+  const [memberData, setMemberData] = useState<TAdminUserSelect[]>([]);
 
   const formSearch = async () => {
     setSelectAll(false);
     setSelectedIds([]);
     setMemberData([]);
-    await userSearch(memberParams);
+    const params = {
+      ...memberParams,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+    };
+    await userSearchAPI(params);
+    await userSearchCountAPI(params);
   };
   const formClear = () => {
     setSelectAll(false);
@@ -80,11 +88,39 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     );
   }, []);
 
-  //ソート設定
-  const { data: sortedData, handleSort } = useSorting(memberData, 'userId', 'asc');
-  const { currentPage, paginatedData, totalPageCount, handlePageChange } = usePagination(sortedData);
+  const { data: allSelectData, userSearchAPI: allSelectSearchAPI } = useUserSearchAPI();
+  const [allData, setAllData] = useState<TAdminUserSelect[]>([]);
+  const fetchAllIds = async () => {
+    const params = {
+      ...memberParams,
+      pageNumber: 1,
+      pageSize: count,
+    };
+    await allSelectSearchAPI(params);
+  };
+  useEffect(() => {
+    if (allSelectData) {
+      setAllData(allSelectData);
+    }
+  }, [allSelectData]);
+
+  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+    searchAPI: userSearchAPI,
+    initialSortName: "userId",
+    itemsPerPage,
+    params: memberParams,
+  });
+  const { currentPage, handlePageChange } = usePagination({
+    itemsPerPage,
+    searchAPI: userSearchAPI,
+    searchParams: memberParams,
+  });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(memberData.map(member => member.userId));
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
+    memberData.map(member => member.userId)
+    , allData.map(member => member.userId)
+    , fetchAllIds);
+
   //会員登録画面に遷移
   const { toMemberRegist } = useToMemberRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, userId: number) => {
@@ -107,7 +143,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       toast.error(texts.message.selectAtLeastOne);
       return;
     }
-    const selectedMails = sortedData
+    const selectedMails = memberData
       .filter((result) => selectedIds.includes(result.userId))
       .map((result) => result.mail)
       .filter((mail) => !!mail);
@@ -187,12 +223,28 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         </div>
       </div>
 
-      {paginatedData && paginatedData.length > 0 ? (
+      {memberData && memberData.length > 0 ? (
         <>
           <div>
             <div className="flex flex-col sm:flex-row justify-between items-center p-4">
               <div className="text-left">
-                {texts.label.resultKekka} {memberData.length} {texts.label.resultCount}
+                <div className={adminStyles.resultContainer}>
+                  <div className={adminStyles.resultRow}>
+                    <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
+                    <span>{count} {texts.label.resultCount}</span>
+                  </div>
+                  <div className={adminStyles.resultRow}>
+                    <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
+                    <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                      <option value="userId">{texts.member.userId}</option>
+                      <option value="shoninFlg">{texts.member.shonin}</option>
+                    </select>
+                    <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
+                      <option value="asc">{texts.label.asc}</option>
+                      <option value="desc">{texts.label.desc}</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               {executionPermission(102, 2) && (
                 <div className="lg:text-right">
@@ -216,17 +268,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       onChange={handleSelectAll}
                     />
                   </th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('userId')}>{texts.member.userId}</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('userName')}>{texts.member.userName} </th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('companyName')}>{texts.member.companyName}</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('fullAddress')}>{texts.member.address}</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('mail')}>{texts.common.mail}</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('adminBiko')}>{texts.member.adminBiko}</th>
-                  <th className="py-2 px-4 border-b" onClick={() => handleSort('shoninFlg')}>{texts.member.shonin}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.userId}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.userName} </th>
+                  <th className="py-2 px-4 border-b" >{texts.member.companyName}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.address}</th>
+                  <th className="py-2 px-4 border-b" >{texts.common.mail}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.adminBiko}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.shonin}</th>
                 </tr>
               </thead>
               <tbody>
-                {sortedData.map((result) => (
+                {memberData.map((result) => (
                   <tr
                     key={result.userId}
                     className="cursor-pointer hover:bg-gray-100"
@@ -275,7 +327,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
           <div >
             <Pagination className={adminStyles.paginationContainer}
-              count={totalPageCount}
+              count={Math.max(1, Math.ceil(count / itemsPerPage))}
               page={currentPage}
               onChange={handlePageChange}
             />

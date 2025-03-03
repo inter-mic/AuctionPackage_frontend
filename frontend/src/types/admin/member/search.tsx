@@ -4,9 +4,13 @@ export interface SearchParams {
     companyName?: string;
     shoninFlg?: string;
     freeWord?: string;
+    pageNumber:number;
+    pageSize:number;
+    sortKey?: string;
+    sortFlg?:boolean;
 }
 
-export interface Result {
+export interface TAdminUserSelect {
     userId: number;
     userName: string;
     companyName: string;    

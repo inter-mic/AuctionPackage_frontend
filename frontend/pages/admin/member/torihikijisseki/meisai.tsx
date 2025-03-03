@@ -3,14 +3,13 @@ import { texts } from '@/config/texts';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 import dayjs, { Dayjs } from 'dayjs';
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 //ホック
 import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminLayout from '@/hocs/withAdminLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSort';
+import { useSort } from '@/hooks/useSort';
+import { usePagination } from '@/hooks/usePagination';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
@@ -19,6 +18,7 @@ import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
 //API
 import { useTorihikiJissekiMeisaiShuppinSearchAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiShuppinSearchAPI';
 import { useTorihikiJissekiMeisaiRakusatsuSearchAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchAPI';
+import { useTorihikiJissekiMeisaiRakusatsuSearchCountAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchCountAPI';
 import { useTorihikiJissekiMeisaiDateUpdateAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiDateUpdateAPI';
 //型定義
 import { TAdminTorihikiJissekiRequest, TTorihikiJissekiMeisaiRakusatsuSelect, TTorihikiJissekiMeisaiShuppinSelect } from '@/types/admin/torihikiJisseki/search';
@@ -32,7 +32,7 @@ import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
 import breadcrumbStyles from '@/styles/breadcrumb.module.css';
 import formSearchStyles from '@/styles/admin/FormSearch.module.css';
 import styles from '@/styles/admin/TorihikiJissekiMeisai.module.css';
-
+import adminStyles from '@/styles/admin/AdminCommon.module.css';
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
@@ -47,8 +47,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   useKengenRedirect(kengen, 105);
   const { executionPermission } = useExecutionPermission(kengen);
-
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { rakusatsuList, torihikiJissekiMeisaiRakusatsuSearchAPI } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
+  const { count, torihikiJissekiMeisaiRakusatsuSearchCountAPI } = useTorihikiJissekiMeisaiRakusatsuSearchCountAPI();
   const { shuppinList, torihikiJissekiMeisaiShuppinSearchAPI } = useTorihikiJissekiMeisaiShuppinSearchAPI();
   const params = useSearchParams();
   const paramsAuctionSeq = params ? params.get('auctionSeq') : null;
@@ -57,9 +58,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (paramsAuctionSeq && paramsUserId) {
       const requestParams: TAdminTorihikiJissekiRequest = {
         auctionSeq: Number(paramsAuctionSeq),
-        userId: Number(paramsUserId),
+        userId: paramsUserId,
+        pageNumber: 1,
+        pageSize: itemsPerPage,
       };
       torihikiJissekiMeisaiRakusatsuSearchAPI(requestParams);
+      torihikiJissekiMeisaiRakusatsuSearchCountAPI(requestParams);
       ////torihikiJissekiMeisaiShuppinSearchAPI(requestParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,14 +76,51 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (shuppinList.length > 0) { setFetchShuppinList(shuppinList); }
   }, [shuppinList]);
+
+  const { rakusatsuList: allSelectData, torihikiJissekiMeisaiRakusatsuSearchAPI: allSelectSearchAPI } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
+    const [allData, setAllData] = useState<TTorihikiJissekiMeisaiRakusatsuSelect[]>([]);
+    const fetchAllIds = async () => {
+      const requestParams: TAdminTorihikiJissekiRequest = {
+        auctionSeq: Number(paramsAuctionSeq),
+        userId: paramsUserId ?? undefined,
+        pageNumber: 1,
+        pageSize: itemsPerPage,
+      };
+      await allSelectSearchAPI(requestParams);
+    };
+    useEffect(() => {
+      if (allSelectData) {
+        setAllData(allSelectData);
+      }
+    }, [allData]);
   
   //ソート設定
-  const { data: rakusatsuSortedData, handleSort: handleSortRakusatsu } = useSorting(fetchRakusatsuList, 'lot', 'asc');
-  const { data: shuppinSortedData, handleSort: handleSortShuppin } = useSorting(fetchShuppinList, 'lot', 'asc');
-  
+  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+    searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
+    itemsPerPage,
+    params: {
+      auctionSeq: Number(paramsAuctionSeq),
+        userId: paramsUserId,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+    },  
+  });
+  const { currentPage, handlePageChange } = usePagination({
+    itemsPerPage,
+    searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
+    searchParams: {
+      auctionSeq: Number(paramsAuctionSeq),
+        userId: paramsUserId,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+    },  
+  });
   //チェックボックス
-  const { selectAll: rakusatsuSelectAll, setSelectAll: rakusatsuSetSelectAll, selectedIds: rakusatsuSelectedIds, setSelectedIds: rakusatsuSetSelectedIds, handleSelectAll: rakusatsuHandleSelectAll, handleSelect: rakusatsuHandleSelect } = useCheckboxSelection(rakusatsuSortedData.map(goods => goods.goodsId));
-  const { selectAll: shuppinSelectAll, setSelectAll: shuppinSetSelectAll, selectedIds: shuppinSelectedIds, setSelectedIds: shuppinSetSelectedIds, handleSelectAll: shuppinHandleSelectAll, handleSelect: shuppinHandleSelect } = useCheckboxSelection(shuppinSortedData.map(goods => goods.goodsId));
+  const { selectAll: rakusatsuSelectAll, setSelectAll:rakusatsuSetSelectAll, selectedIds:rakusatsuSelectedIds, setSelectedIds:rakusatsuSetSelectedIds, handleSelectAll:rakusatsuHandleSelectAll, handleSelect:rakusatsuHandleSelect } = useCheckboxSelection(
+    rakusatsuList.map(goods => goods.goodsId)
+    , allData.map(goods => goods.goodsId)
+    , fetchAllIds);
+
   //商品登録画面に遷移
   const { toGoodsRegist } = useToGoodsRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
@@ -123,11 +164,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
       torihikiJissekiMeisaiDateUpdateAPI(rakusatsuSelectedIds, paramsRakusatsuDate, rakusatsuUpdateKbn, paramsAuctionSeq, paramsUserId);
     } else {
-      if (shuppinSelectedIds.length === 0) {
-        toast.error(texts.message.selectAtLeastOne);
-        return;
-      }
-      torihikiJissekiMeisaiDateUpdateAPI(shuppinSelectedIds, paramsShuppinDate, shuppinUpdateKbn, paramsAuctionSeq, paramsUserId);
+     
     }
 
   };
@@ -200,6 +237,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
             <div className="text-left">
               <label className={styles.title}>{texts.torihikiJisseki.rakusatsuMeisai}</label>
+              <div className={adminStyles.resultContainer}>
+                <div className={adminStyles.resultRow}>
+                  <span className={adminStyles.resultLabel}>{texts.torihikiJisseki.rakusatsuMeisai}</span>
+                  
+                </div>
+                <div className={adminStyles.resultRow}>
+                  <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
+                  <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                    <option value="lot">{texts.goods.lot}</option>
+                    <option value="sku">{texts.goods.sku}</option>
+                    <option value="rakusatsuPrice">{texts.torihikiJisseki.rakusatsuPrice}</option>
+                    <option value="rakusatsuKessaibi">{texts.torihikiJisseki.nyukinbi}</option>
+                    <option value="rakusatsuHassobi">{texts.torihikiJisseki.hassobi}</option>
+                  </select>
+                  <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
+                    <option value="asc">{texts.label.asc}</option>
+                    <option value="desc">{texts.label.desc}</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <div className="text-right flex flex-col sm:flex-row">
               <label className="sm:ml-4 flex items-center">
@@ -262,18 +319,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     onChange={rakusatsuHandleSelectAll}
                   />
                 </th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortRakusatsu('sku')}>{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b w-24" onClick={() => handleSortRakusatsu('lot')}>{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSortRakusatsu('goodsName')}>{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortRakusatsu('rakusatsuPrice')}>{texts.torihikiJisseki.rakusatsuPrice}</th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortRakusatsu('rakusatsuTesuryoPrice')}>{texts.torihikiJisseki.rakusatsuTesuryoPrice}</th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortRakusatsu('rakusatsuTotalPrice')}>{texts.torihikiJisseki.rakusatsuTotalPrice}</th>
-                <th className="py-2 px-4 border-b w-32" onClick={() => handleSortRakusatsu('rakusatsuKessaibi')}>{texts.torihikiJisseki.nyukinbi}</th>
-                <th className="py-2 px-4 border-b w-32" onClick={() => handleSortRakusatsu('rakusatsuHassobi')}>{texts.torihikiJisseki.hassobi}</th>
+                <th className="py-2 px-4 border-b w-48">{texts.goods.sku}</th>
+                <th className="py-2 px-4 border-b w-24" >{texts.goods.lot}</th>
+                <th className="py-2 px-4 border-b" >{texts.goods.goodsName}</th>
+                <th className="py-2 px-4 border-b w-48" >{texts.torihikiJisseki.rakusatsuPrice}</th>
+                <th className="py-2 px-4 border-b w-48" >{texts.torihikiJisseki.rakusatsuTesuryoPrice}</th>
+                <th className="py-2 px-4 border-b w-48" >{texts.torihikiJisseki.rakusatsuTotalPrice}</th>
+                <th className="py-2 px-4 border-b w-32" >{texts.torihikiJisseki.nyukinbi}</th>
+                <th className="py-2 px-4 border-b w-32" >{texts.torihikiJisseki.hassobi}</th>
               </tr>
             </thead>
             <tbody>
-              {rakusatsuSortedData.length > 0 && rakusatsuSortedData.map((result) => (
+              {rakusatsuList.length > 0 && rakusatsuList.map((result) => (
                 <tr
                   key={result.goodsId}
                   className="cursor-pointer hover:bg-gray-100"

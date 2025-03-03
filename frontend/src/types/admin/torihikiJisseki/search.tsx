@@ -1,6 +1,10 @@
 export type TAdminTorihikiJissekiRequest = {
     auctionSeq?: number;
-    userId?:  number;
+    userId?:  string;
+    pageNumber:number;
+    pageSize:number;
+    sortKey?: string;
+    sortFlg?:boolean;
 }
 
 
