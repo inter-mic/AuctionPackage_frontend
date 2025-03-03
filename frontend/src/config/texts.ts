@@ -467,7 +467,9 @@ export const texts = {
       select_note_1:"選択してください。",
       open_search_joken:"検索条件を開く",
       sort:"並び順",
-      download:"ダウンロード"
+      download:"ダウンロード",
+      asc:"降順",
+      desc:"昇順"
     },
     message:{
       redirect:"ログイン画面に遷移します。",

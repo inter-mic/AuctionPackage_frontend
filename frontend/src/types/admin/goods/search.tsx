@@ -13,6 +13,10 @@ export interface TAdminGoodsSearchRequest {
     rakusatsuUserId?:  string;
     rakusatsuUserName?:  string;
     freeWord?: string;
+    pageNumber:number;
+    pageSize:number;
+    sortKey?: string;
+    sortFlg?:boolean;
 }
 
 

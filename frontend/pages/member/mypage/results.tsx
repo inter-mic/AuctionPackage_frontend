@@ -8,7 +8,7 @@ import { withAuth } from '@/hocs/withMemberAuth';
 import withMemberLayout from '@/hocs/withMemberLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSorting';
+import { useSorting } from '@/hooks/useSort';
 import { usePagination  } from '@/hooks/usePagination';
 //API
 import { useResultsSearchAPI } from '@/hooks/api/member/mypage/useResultsSearchAPI';

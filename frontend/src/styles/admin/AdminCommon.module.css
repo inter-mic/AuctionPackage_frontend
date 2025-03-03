@@ -1,11 +1,34 @@
 .paginationContainer {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    gap: 16px;
-    flex-wrap: wrap;
-    position: relative;
-    max-width: 1200px;
-    height: 100%;
-    margin: 20px auto;
-  }
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  max-width: 1200px;
+  height: 100%;
+  margin: 20px auto;
+}
+
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resultRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resultLabel {
+  width: 120px;
+  /* 適宜調整 */
+  font-weight: bold;
+  text-align: left;
+}
+
+.sort {
+  padding: 4px;
+}

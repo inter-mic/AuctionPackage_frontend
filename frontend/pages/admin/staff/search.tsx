@@ -5,7 +5,7 @@ import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminLayout from '@/hocs/withAdminLayout';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSorting } from '@/hooks/useSorting';
+import { useSorting } from '@/hooks/useSort';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 //API
 import { useStaffSearchAPI }  from '@/hooks/api/admin/staff/useStaffSearchAPI';
