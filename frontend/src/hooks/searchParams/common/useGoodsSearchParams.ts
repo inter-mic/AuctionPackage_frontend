@@ -27,7 +27,7 @@ export const useGoodsSearchParams = () => {
   };
 
   const resetForm = () => {
-    setGoodsParams({
+    setGoodsParams(prevParams => ({
       goodsId: '',
       goodsName: '',
       categorySeq: '',
@@ -35,9 +35,10 @@ export const useGoodsSearchParams = () => {
       startCurrentPriceFrom: '',
       startCurrentPriceTo: '',
       freeWord: '',
+      auctionSeq: prevParams.auctionSeq,
       pageNumber:1,
       pageSize:50
-    });
+    }));
   };
 
   return { goodsParams, formChange,resetForm  };
