@@ -8,7 +8,7 @@ import { useAuctionWebSocket } from '@/hooks/useAuctionWebSocket';
 //ボタン
 import { PleaseLoginButton } from '@/components/ui/buttons/member/pleaseLoginButton';
 //コンポーネント
-import AuctionStatusComponent from '@/components/member/goods/AuctionStatusComponent';
+import AuctionStatusComponent from '@/components/member/auction/internetTender/AuctionStatusComponent';
 import BidModalComponent from '@/components/member/auction/internetTender/BidModalComponent';
 import RemainingTimeComponent from '@/components/member/auction/internetTender/RemainingTimeComponent';
 //アイコン

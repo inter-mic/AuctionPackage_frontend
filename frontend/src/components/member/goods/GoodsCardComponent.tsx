@@ -5,7 +5,7 @@ import CurrencyYenIcon from '@mui/icons-material/CurrencyYen';
 import GavelIcon from '@mui/icons-material/Gavel';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 //コンポーネント
-import AuctionStatusComponent from '@/components/member/goods/AuctionStatusComponent';
+import AuctionStatusComponent from '@/components/member/auction/internetTender/AuctionStatusComponent';
 import FavoriteToggleComponent from '@/components/member/goods/FavoriteToggleComponent';
 import BidModal from '@/components/member/auction/internetTender/BidModalComponent';
 import RemainingTime from '@/components/member/auction/internetTender/RemainingTimeComponent';
