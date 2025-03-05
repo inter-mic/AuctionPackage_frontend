@@ -149,14 +149,14 @@ const BidModalComponent: React.FC<Props> = ({
           <button
             onClick={handleDecrease}
             className="bg-gray-300 text-white 
-            hover:bg-opacity-50 py-2 px-4 ml-1 lg:w-44 w-32 rounded-full"
+            hover:bg-opacity-50 py-2  ml-1 lg:w-44 w-32 rounded-full"
           >
             <RemoveIcon className="lg:mr-4"/><CurrencyYenIcon/>{unitValue.toLocaleString()}
           </button>
           <button
             onClick={handleIncrease}
             className="bg-gray-300 text-white  
-            hover:bg-opacity-50 py-2 px-4 ml-1 lg:w-44 w-32 rounded-full"
+            hover:bg-opacity-50 py-2  ml-1 lg:w-44 w-32 rounded-full"
           >
             <AddIcon className="lg:mr-4"/><CurrencyYenIcon/>{unitValue.toLocaleString()}
           </button>
