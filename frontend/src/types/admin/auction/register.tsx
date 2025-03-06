@@ -21,6 +21,7 @@ import  dayjs,{ Dayjs } from 'dayjs';
     auctionListUrl:string | null;
     shimeTime: string | null;
     shimeFlg: boolean;
+    paymentDeadlineDate: Dayjs | null;
   }
 
   export const initialAuctionData: auctionData = {
@@ -45,6 +46,7 @@ import  dayjs,{ Dayjs } from 'dayjs';
     auctionListUrl: null,
     shimeTime: null,
     shimeFlg: false,
+    paymentDeadlineDate: null,
 };
 
 
@@ -71,5 +73,6 @@ export const formatAuctionData = (data: Partial<auctionData>): auctionData => {
     auctionListIsDelete: data.auctionListIsDelete ?? false,
     shimeTime: data.shimeTime ?? null,
     shimeFlg: data.shimeFlg ?? false,
+    paymentDeadlineDate: data.paymentDeadlineDate ? dayjs(data.paymentDeadlineDate) : null,
   };
 };

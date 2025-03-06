@@ -326,6 +326,90 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
               />
               {formErrors?.copyRight && <p className="error-message">{formErrors.copyRight}</p>}
             </div>
+            <div>
+              <label htmlFor="invoiceNo" className="block text-sm font-medium text-gray-700">
+                {texts.admin.invoiceNo}{texts.admin.admin_note_4}
+              </label>
+              <input
+                id="invoiceNo"
+                name="invoiceNo"
+                type="text"
+                value={admin.invoiceNo || ''}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.invoiceNo && <p className="error-message">{formErrors.invoiceNo}</p>}
+            </div>
+            <div>
+              <label htmlFor="furikomiKozaName" className="block text-sm font-medium text-gray-700">
+                {texts.admin.furikomiKozaName}{texts.admin.admin_note_4}
+              </label>
+              <input
+                id="furikomiKozaName"
+                name="furikomiKozaName"
+                type="text"
+                value={admin.furikomiKozaName || ''}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.furikomiKozaName && <p className="error-message">{formErrors.furikomiKozaName}</p>}
+            </div>
+            <div>
+              <label htmlFor="furikomiGinkoName" className="block text-sm font-medium text-gray-700">
+                {texts.admin.furikomiGinkoName}{texts.admin.admin_note_4}
+              </label>
+              <input
+                id="furikomiGinkoName"
+                name="furikomiGinkoName"
+                type="text"
+                value={admin.furikomiGinkoName || ''}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.furikomiGinkoName && <p className="error-message">{formErrors.furikomiGinkoName}</p>}
+            </div>
+            <div>
+              <label htmlFor="furikomiShitenName" className="block text-sm font-medium text-gray-700">
+                {texts.admin.furikomiShitenName}{texts.admin.admin_note_4}
+              </label>
+              <input
+                id="furikomiShitenName"
+                name="furikomiShitenName"
+                type="text"
+                value={admin.furikomiShitenName || ''}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.furikomiShitenName && <p className="error-message">{formErrors.furikomiShitenName}</p>}
+            </div>
+            <div>
+              <label htmlFor="furikomiKozaShurui" className="block text-sm font-medium text-gray-700">
+                {texts.admin.furikomiKozaShurui}{texts.admin.admin_note_4}
+              </label>
+              <input
+                id="furikomiKozaShurui"
+                name="furikomiKozaShurui"
+                type="text"
+                value={admin.furikomiKozaShurui || ''}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.furikomiKozaShurui && <p className="error-message">{formErrors.furikomiKozaShurui}</p>}
+            </div>
+            <div>
+              <label htmlFor="furikomiKozaNo" className="block text-sm font-medium text-gray-700">
+                {texts.admin.furikomiKozaNo}{texts.admin.admin_note_4}
+              </label>
+              <input
+                id="furikomiKozaNo"
+                name="furikomiKozaNo"
+                type="text"
+                value={admin.furikomiKozaNo || ''}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.furikomiKozaNo && <p className="error-message">{formErrors.furikomiKozaNo}</p>}
+            </div>
             {executionPermission(101, 2) && (
               <div className="text-right">
                 <RegistButton label={texts.button.regist} onClick={handleSubmit}/>

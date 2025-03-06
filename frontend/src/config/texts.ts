@@ -297,7 +297,8 @@ export const texts = {
       kaisaiStatus1:"開催予定",
       kaisaiStatus2:"開催中",
       kaisaiStatus3:"終了",
-      GoodsListLabel:"商品リストを確認する"
+      GoodsListLabel:"商品リストを確認する",
+      paymentDeadlineDate:"支払期限"
     },
     signup:{
       signup_note_1:"管理者側にて、承認後ログイン情報が登録されたメールに送信されます。",
@@ -322,9 +323,16 @@ export const texts = {
       companyUrl:"企業情報URL",
       kobutsuBango:"古物商番号",
       copyRight:"コピーライト",
+      invoiceNo:"インボイス登録番号",
+      furikomiKozaName:"振込先口座名",
+      furikomiGinkoName:"振込先銀行名",
+      furikomiShitenName:"振込先支店名",
+      furikomiKozaShurui:"振込先口座種類",
+      furikomiKozaNo:"振込先口座番号",
       admin_note_1:"※会員側のフッターに表示されます",
       admin_note_2:"※会員側のフッターの企業情報のリンク先になります",
-      admin_note_3:"※システムメールの管理者側の受信先になります"
+      admin_note_3:"※システムメールの管理者側の受信先になります",
+      admin_note_4:"※請求書に表示されます"
     },
     system:{
       memberRegistration:"会員登録設定",

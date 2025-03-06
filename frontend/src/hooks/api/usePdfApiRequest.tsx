@@ -61,7 +61,7 @@ export const usePdfApiRequest = () => {
         window.open(url, '_blank');
 
         // Content-Disposition からファイル名を取得
-        const contentDisposition = res.headers.get('content-disposition');
+        const contentDisposition = res.headers.get('Content-Disposition');
         const extractFileName = (contentDisposition: string | null) => {
           if (!contentDisposition) return 'download.pdf';
           const match = contentDisposition.match(/filename\*?=([^;]+)/);

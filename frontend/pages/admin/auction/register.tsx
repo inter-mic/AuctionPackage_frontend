@@ -333,6 +333,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </div>
             </div>
             <div>
+                <label htmlFor="paymentDeadlineDate" className="block text-sm font-medium text-gray-700">
+                  {texts.auction.paymentDeadlineDate}
+                </label>
+                <div className="xl:w-1/4 sm:w-full xl:flex items-center">
+                  <CustomDatePicker
+                    name="paymentDeadlineDate"
+                    selectedDate={fetchedData.paymentDeadlineDate}
+                    onDateChange={handleDateChange("paymentDeadlineDate")}
+                  />
+                </div>
+              </div>
+            <div>
               <label htmlFor="auctionGaiyo" className={styles.label}>
                 {texts.auction.auctionGaiyo}<br/>
                 {texts.label.text_note_1}
