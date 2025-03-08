@@ -153,6 +153,9 @@ export const texts = {
       shonin_note_2:"※未承認に戻す：ログイン不可になります。会員様がパスワードを紛失されたなど、再発行が必要時に使用してください。",
       mailcopy:"メールアドレスコピー",
       mailcopy_note:"※メールアドレスコピー：メールアドレスをコピーしてGmail等メーラーのBCCに貼り付ければ、一括送信が可能です",
+      auctionMailJushinFlg:"オークションメール受信",
+      auctionMailJushinFlg_note1:"※「受信しない」に設定すると、オークションにて、落札権利が外れたときに届くメールが送信されません。",
+
     },
     staff:{
       info:"スタッフ情報",
@@ -452,6 +455,8 @@ export const texts = {
       asterisk:"※",
       colon:"：",
       errorMsg:"エラーメッセージ",
+      mailJushinOn:"受信する",
+      mailJushinOff:"受信しない"
     },
     label:{
       require:"必須",

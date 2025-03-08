@@ -14,6 +14,7 @@
     mobile?: string;
     fax?: string;
     mail?: string;
+    auctionMailJushinFlg?: boolean;
     adminBiko?: string;
     shoninFlg?: boolean;
     teishiFlg?: boolean;

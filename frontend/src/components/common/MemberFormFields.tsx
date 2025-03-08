@@ -1,4 +1,8 @@
 import React from 'react';
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
+import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //型定義
@@ -42,19 +46,19 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     const zipCode1 = (document.getElementById('zipCode1') as HTMLInputElement).value;
     const zipCode2 = (document.getElementById('zipCode2') as HTMLInputElement).value;
     handleChange({ target: { name: 'zipCode', value: `${zipCode1}-${zipCode2}` } } as React.ChangeEvent<HTMLInputElement>);
-  
+
     if (zipCode1.length === 3 && zipCode2.length === 4) {
       const paramZipCode = zipCode1 + zipCode2;
       zipCodeSearch(paramZipCode);
     }
-    
+
   };
   useEffect(() => {
     if (address) {
       handleChange({ target: { name: 'todofukenName', value: address.todofukenName } } as React.ChangeEvent<HTMLInputElement>);
       handleChange({ target: { name: 'address1', value: address.address } } as React.ChangeEvent<HTMLInputElement>);
     }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   const handleTelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +85,33 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     const { name, value } = e.target;
     handleChange(e);
   };
-
+  const [auctionMailJushinFlg, setAuctionMailJushinFlg] = useState("1");
+  useEffect(() => {
+    if (member.userId === undefined) {
+      setAuctionMailJushinFlg("1"); // userId が undefined の場合は "1" に設定
+    } else if (typeof member.auctionMailJushinFlg === "boolean") {
+      setAuctionMailJushinFlg(member.auctionMailJushinFlg ? "1" : "0"); // auctionMailJushinFlg が boolean の場合
+    } else {
+      setAuctionMailJushinFlg("0"); // それ以外の場合は "0" を設定
+    }
+  }, [member]);
+  const handleAuctionMailJushinFlg = (_event: React.MouseEvent<HTMLElement>, newAlignment: string | null) => {
+    if (newAlignment !== null) {
+      setAuctionMailJushinFlg(newAlignment);
+      
+      const event = new Event("input", { bubbles: true }) as unknown as React.ChangeEvent<HTMLInputElement>;
+      Object.defineProperty(event, "target", {
+        value: {
+          name: "auctionMailJushinFlg",
+          value: newAlignment === "1", // boolean に変換
+        },
+        writable: false,
+      });
+  
+      handleChange(event);
+    }
+  };
+  
   return (
     <>
       <div>
@@ -120,10 +150,10 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
         {errors?.userName && <p className={`error-message ${styles.input50}`}>{errors.userName}</p>}
       </div>
       <div>
-      <div className="flex items-center">
-        <label htmlFor="userNameKana" className="formlabel">
-          {texts.member.userNameKana}
-        </label>
+        <div className="flex items-center">
+          <label htmlFor="userNameKana" className="formlabel">
+            {texts.member.userNameKana}
+          </label>
         </div>
         <input
           id="userNameKana"
@@ -136,10 +166,10 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
         {errors?.userNameKana && <p className={`error-message ${styles.input50}`}>{errors.userNameKana}</p>}
       </div>
       <div>
-      <div className="flex items-center">
-        <label htmlFor="companyName" className="formlabel">
-          {texts.member.companyName}
-        </label>
+        <div className="flex items-center">
+          <label htmlFor="companyName" className="formlabel">
+            {texts.member.companyName}
+          </label>
         </div>
         <input
           id="companyName"
@@ -152,10 +182,10 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
         {errors?.companyName && <p className={`error-message ${styles.input50}`}>{errors.companyName}</p>}
       </div>
       <div>
-      <div className="flex items-center">
-        <label htmlFor="companyNameKana" className="formlabel">
-          {texts.member.companyNameKana}
-        </label>
+        <div className="flex items-center">
+          <label htmlFor="companyNameKana" className="formlabel">
+            {texts.member.companyNameKana}
+          </label>
         </div>
         <input
           id="companyNameKana"
@@ -168,10 +198,10 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
         {errors?.companyNameKana && <p className={`error-message ${styles.input50}`}>{errors.companyNameKana}</p>}
       </div>
       <div>
-      <div className="flex items-center">
-        <label htmlFor="companyUrl" className="formlabel">
-          {texts.member.companyUrl}
-        </label>
+        <div className="flex items-center">
+          <label htmlFor="companyUrl" className="formlabel">
+            {texts.member.companyUrl}
+          </label>
         </div>
         <input
           id="companyUrl"
@@ -199,6 +229,22 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           className={`${styles.commonInput} ${styles.input50}`}
         />
         {errors?.mail && <p className={`error-message ${styles.input50}`}>{errors.mail}</p>}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="mail" className="formlabel">
+            {texts.member.auctionMailJushinFlg}<br/>{texts.member.auctionMailJushinFlg_note1}
+          </label>
+        </div>
+        <ToggleButtonGroup color="primary"  size="large" value={auctionMailJushinFlg} exclusive onChange={handleAuctionMailJushinFlg} >
+        <ToggleButton value="1">
+          {texts.common.mailJushinOn}
+        </ToggleButton>
+        <ToggleButton value="0" >
+          {texts.common.mailJushinOff}
+        </ToggleButton>
+      </ToggleButtonGroup>
+        
       </div>
       <div>
         <label className="formlabel">
@@ -369,7 +415,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           <>
             <div key={data.seq}>
               <label htmlFor="" className="formlabel">
-              {data.userAddinfo}
+                {data.userAddinfo}
               </label>
               <input
                 id={`addInfo${data.seq}`}

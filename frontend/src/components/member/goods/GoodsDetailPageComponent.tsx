@@ -38,7 +38,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
   const params = useSearchParams();
   const paramsGoodsId = params ? params.get('goodsId') : null;
   const { goodsAddInfo } = useGoodsAddinfoItemAPI();
-  const { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
+  const { fetchGoodsData,  goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
   const [ thumImages, setThumImages] = useState<GoodsImageData[]>([]);
   useEffect(() => {
@@ -58,6 +58,13 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchGoodsData]);
+  useEffect(() => {
+    if (fetchGoodsData) {
+      const { lot, goodsName } = fetchGoodsData;
+      document.title = `${texts.menu.memberGoodsDetail} | LOT: ${lot} - ${goodsName}`;
+    }
+  }, [fetchGoodsData]); 
+  
   useEffect(() => {
     if (fetchImages.length > 0) {
       setThumImages(fetchImages);

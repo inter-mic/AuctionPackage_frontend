@@ -57,6 +57,7 @@ const RemainingTimeComponent: React.FC<Props> = ({ initialTime, onEnd }) => {
             }, 1000);
           }else{
             setRemainingTime(initialTime);
+            setIsEndingSoon(false);
           }
     }
   

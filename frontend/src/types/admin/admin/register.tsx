@@ -8,6 +8,7 @@ export type TAdminRegistRequest = {
     tel?: string;
     fax?: string;
     mail?: string;
+    auctionMailJushinFlg?: boolean;
     companyUrl?: string;
     kobutsuBango?: string;
     copyRight?: string;

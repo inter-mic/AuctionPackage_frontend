@@ -10,6 +10,7 @@
     todofukenName?: string;
     address1?: string;
     address2?: string;
+    auctionMailJushinFlg?: boolean;
     tel?: string;
     mobile?: string;
     fax?: string;
@@ -29,6 +30,7 @@
     todofukenName?: string;
     address1?: string;
     address2?: string;
+    auctionMailJushinFlg?: boolean;
     tel?: string;
     mobile?: string;
     fax?: string;
