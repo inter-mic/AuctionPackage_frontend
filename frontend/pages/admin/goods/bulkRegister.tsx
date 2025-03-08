@@ -133,11 +133,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <div className="w-full space-y-20">
               <form onSubmit={goodsUpload} className="space-y-20">
                 <div className="content-area space-y-4">
-                  <div className="font-bold">{texts.goods.goodsInfo}</div>
-                  <div>{texts.goods.goodsUpload_note_1}</div>
-                  <div className='text-red-600'>{texts.goods.goodsUpload_note_5}</div>
-                  <div className='text-red-600'>{texts.goods.goodsUpload_note_6}</div>
-                  <div className='text-red-600'>{texts.goods.goodsUpload_note_7}</div>
+                  <div className="font-bold text-lg">{texts.goods.goodsInfo}</div>
+                  <div>
+                    {texts.goods.goodsUpload_note_1}<br/>
+                   
+                      {texts.goods.goodsUpload_note_6}<br/>
+                      {texts.goods.goodsUpload_note_7}
+             
+                  </div>
+
                   {executionPermission(203, 2) && (
                     <Box className="space-x-4" display="flex" alignItems="center">
                       <KaisaiDefaultListPullDown
@@ -178,9 +182,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </form>
               <form onSubmit={goodsImgUpload}  className="space-y-20">
                 <div className="content-area space-y-4">
-                  <div className="font-bold">{texts.goods.goodsImage}</div>
-                  <div>{texts.goods.goodsUpload_note_2}</div>
-                  <div className='text-red-600'>{texts.goods.goodsUpload_note_3}</div>
+                  <div className="font-bold text-lg">{texts.goods.goodsImage}</div>
+                  <div>
+                    {texts.goods.goodsUpload_note_2}<br/>
+                    {texts.goods.goodsUpload_note_3}
+                  </div>
                   <div>{texts.goods.info2}</div>
                   {executionPermission(203, 2) && (
                     <>
@@ -234,9 +240,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </form>
             </div>
             <div className="content-area space-y-4">
-              <div className="font-bold">{texts.goods.goodsRegistStatus}</div>
-              <div>{texts.goods.goodsUpload_note_4}</div>
-              <div>{texts.goods.goodsUpload_note_5}</div>
+              <div className="font-bold text-lg">{texts.goods.goodsRegistStatus}</div>
+              <div>{texts.goods.goodsUpload_note_4}<br/>
+              {texts.goods.goodsUpload_note_5}</div>
               <div>
                 <table className="w-3/4 table-auto">
                   <thead>

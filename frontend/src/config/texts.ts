@@ -213,7 +213,7 @@ export const texts = {
       goodsInfo:"商品情報",
       goodsImage:"商品画像",
       shiyosho:"仕様書",      
-      info2:"フォルダzip>商品番号フォルダ>画像",
+      info2:"フォルダzip>商品番号フォルダ/SKU>画像",
       info3:"ZIP形式画像フォルダ",
       uploading:"アップロード中...",
       image_torikomi_time:"取込日時",

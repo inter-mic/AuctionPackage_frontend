@@ -61,7 +61,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
   useEffect(() => {
     if (fetchGoodsData) {
       const { lot, goodsName } = fetchGoodsData;
-      document.title = `${texts.menu.memberGoodsDetail} | LOT: ${lot} - ${goodsName}`;
+      document.title = `${texts.menu.memberGoodsDetail} | LOT: ${lot}/${goodsName}`;
     }
   }, [fetchGoodsData]); 
   

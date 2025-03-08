@@ -42,7 +42,7 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
         prevGoods.map((goods) => {
           if (goods.goodsId === data.goodsId) {
             
-            if (data.auctionBidFlg && data.bidUserId === loginUserId) {
+            if (document.visibilityState === "visible" && data.auctionBidFlg && data.bidUserId === loginUserId) {
             
               if (data.currentKenriUserId == loginUserId) {
                 toast.success(texts.message.highestBid);

@@ -10,7 +10,7 @@ export const useCategoryDeleteAPI = () => {
   const [errors, setErrors] = useState<Errors>();
   const categoryDelete = async (categorySeq: any)=>{
     const endPoint = `category/delete/${categorySeq}`;
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', null, texts.message.regist, false);
+    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', null, texts.message.delete, false);
     if (status == 400) {
       setErrors(responseData);
     }else if (status == 500) {
