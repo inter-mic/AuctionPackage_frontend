@@ -203,6 +203,7 @@ export const texts = {
       goodsSetsumei:"商品説明",
       goodsSetsumei_note1:"※縦に４行まで表示されます",
       biko:"備考",
+      biko_note1:"※商品詳細画面に表示されます",
       adminBiko:"管理者用備考",
       chumokuFlg:"注目",
       hikeisaiFlg:"掲載",

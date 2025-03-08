@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRef } from 'react';
 import { GetServerSideProps } from 'next';
 import { useSearchParams } from 'next/navigation';
 import { texts } from '@/config/texts';
@@ -277,6 +278,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
 
 
+  const lotInputRef = useRef<HTMLInputElement>(null);
   //商品情報登録
   const {responseGoodsData, responseGoodsKekkaData,  goodsRegistErrors, goodsRegistAPI } = useGoodsRegistAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
@@ -286,12 +288,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (responseGoodsData) {
       setGoodsData(responseGoodsData);
+      setSearchSelectedKaisai(responseGoodsData.auctionSeq !== null ? String(responseGoodsData.auctionSeq) : "");
+      setSearchLot(responseGoodsData.lot !== null ? String(responseGoodsData.lot) : "");
       if (responseGoodsData.shimeTime != null) { setShimeFlg(true); }
       if (responseGoodsData.bidCount != "0" && responseGoodsData.bidCount != "") { setBitFlg(true); }
     }
     if (responseGoodsKekkaData) { setkekkaData(responseGoodsKekkaData); }
     if (responseGoodsData.auctionSeq) { setSelectedKaisai(responseGoodsData.auctionSeq.toString()); }
     if (responseGoodsData.categorySeq) { setSelectedCategory(responseGoodsData.categorySeq.toString()); }
+    if (lotInputRef.current) {
+      lotInputRef.current.focus();
+    }
   }, [responseGoodsData, responseGoodsKekkaData]);
   useEffect(() => {
     if (responseGoodsData.goodsId != null) {
@@ -361,6 +368,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     value={searchLot}
                     onChange={handleSearchLotChange}
                     className={`border p-2 rounded h-10 w-full sm:w-40`}
+                    ref={lotInputRef} 
                   />
                   {inputSeatchErrors?.lot && <p className="error-message">{inputSeatchErrors.lot}</p>}
                 </div>
@@ -461,7 +469,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   />
 
                   <label htmlFor="biko" className={styles.label}>
-                    {texts.goods.biko}
+                    {texts.goods.biko}<br/>
+                    <label className={styles.note}>
+                    {texts.goods.biko_note1}
+                  </label>
                   </label>
                   <textarea
                     id="biko"
