@@ -343,6 +343,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     onDateChange={handleDateChange("paymentDeadlineDate")}
                   />
                 </div>
+                {(formErrors?.paymentDeadlineDate) && (
+                  <p className="error-message">
+                    {formErrors?.paymentDeadlineDate}
+                  </p>
+                )}
               </div>
             <div>
               <label htmlFor="auctionGaiyo" className={styles.label}>
