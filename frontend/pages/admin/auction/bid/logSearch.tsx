@@ -255,7 +255,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       </div>
       {bidList && bidList.length > 0 ? (
         <div>
-          <div className="flex justify-between items-center p-4">
+          <div className="block sm:flex flex-col sm:flex-row justify-between items-center p-4 ">
             <div className="text-left">
               <div className={adminStyles.resultContainer}>
                 <div className={adminStyles.resultRow}>
@@ -279,7 +279,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
             {executionPermission(204, 2) && (
               <div className="text-right">
-                <OutPutButton onClick={handleCsvExport} />
+                 <div>
+                  <OutPutButton onClick={handleCsvExport} />
+                </div>
               </div>
             )}
           </div>

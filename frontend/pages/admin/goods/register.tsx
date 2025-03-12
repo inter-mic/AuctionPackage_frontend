@@ -92,6 +92,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setkekkaData(initialGoodsKekkaData); 
     setSelectedKaisai(''); 
     setSelectedCategory("");
+    setShimeFlg(false);
+    setBitFlg(false);
     goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
   };
   useEffect(() => {
@@ -125,7 +127,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [shimeFlg, setShimeFlg] = useState(false);
   const [bitFlg, setBitFlg] = useState(false);
   //データセット
-  useEffect(() => {
+  useEffect(() => {    
     if (fetchGoodsData) {
       setGoodsData(fetchGoodsData);
       setSearchSelectedKaisai(fetchGoodsData.auctionSeq !== null ? String(fetchGoodsData.auctionSeq) : "");
@@ -356,6 +358,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     onChange={(value) => handleSearchKaisaiChange('auctionSeq', value)}
                     selectedId={searchSelectedKaisai !== null ? String(searchSelectedKaisai) : ''}
                     kaisaiStatus={0}
+                    defaultSetOption={1}
                   />
                   {inputSeatchErrors?.auctionSeq && <p className="error-message">{inputSeatchErrors.auctionSeq}</p>}
                 </div>
@@ -405,6 +408,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   selectedId={selectedKaisai !== null ? String(selectedKaisai) : ''}
                   disabled={bitFlg}
                   kaisaiStatus={0}
+                  
                 />
                 {formErrors?.auctionSeq && <p className="error-message">{formErrors.auctionSeq}</p>}
                 <div className={styles.flexContainer}>
@@ -651,7 +655,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
           </div>
         </div>
-        {fetchGoodsData.goodsId !== null && (
+        {goodsData.goodsId !== null && (
           <div className="w-full space-y-6 bg-white shadow-md md:max-w-full md:rounded mt-1">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4">
@@ -875,7 +879,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
         )}
       </div>
-      {executionPermission(201, 2) && !shimeFlg && fetchGoodsData.goodsId !== null && (
+      {executionPermission(201, 2) && !shimeFlg && goodsData.goodsId !== null && (
         <div className="w-full space-y-3 bg-white shadow-md md:max-w-full md:rounded p-4 relative mt-5 ">
           <div className="sm:flex sm:justify-between sm:items-center">
             <label className="text-gray-500 text-sm">

@@ -352,7 +352,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       </div>
       {goodsData && goodsData.length > 0 ? (
         <div>
-          <div className="flex flex-col sm:flex-row justify-between items-center p-4">
+          <div className="block sm:flex flex-col sm:flex-row justify-between items-center p-4 ">
             <div className="text-left">
               <div className={adminStyles.resultContainer}>
                 <div className={adminStyles.resultRow}>
