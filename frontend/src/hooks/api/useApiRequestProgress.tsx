@@ -46,7 +46,6 @@ export const useApiRequest = () => {
         validateStatus: (status) => status < 500, 
         ...config, // `onUploadProgress` などを受け取る
       };
-      console.log("##" )
       const res = await axios(axiosConfig);
       
       if (res.status === 401) {
