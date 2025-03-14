@@ -37,14 +37,14 @@ export const KaisaiListPullDown = ({ className, onChange, selectedId, disabled, 
           .filter(data => data.displayEndtime && data.displayEndtime.isAfter(now))
           .sort((a, b) => (a.displayEndtime!.isAfter(b.displayEndtime!) ? 1 : -1))[0] 
           ?? auction
-          .filter(data => data.bidEndtime && data.bidEndtime.isBefore(now))
-          .sort((a, b) => (b.bidEndtime!.isAfter(a.bidEndtime!) ? 1 : -1))[0];
+          .filter(data => data.displayEndtime && data.displayEndtime.isBefore(now))
+          .sort((a, b) => (b.displayEndtime!.isAfter(a.displayEndtime!) ? 1 : -1))[0];
 
       } else if (defaultSetOption === 2) {
         //一番直近で入札期間が終了したオークション
         defaultAuction = auction
-          .filter(data => data.bidEndtime && data.bidEndtime.isBefore(now))
-          .sort((a, b) => (b.bidEndtime!.isAfter(a.bidEndtime!) ? 1 : -1))[0];
+          .filter(data => data.displayEndtime && data.displayEndtime.isBefore(now))
+          .sort((a, b) => (b.displayEndtime!.isAfter(a.displayEndtime!) ? 1 : -1))[0];
       }
       
       if (defaultAuction) {

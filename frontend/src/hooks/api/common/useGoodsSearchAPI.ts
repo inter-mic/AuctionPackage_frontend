@@ -13,7 +13,7 @@ export const useGoodsSearchAPI = () => {
   const [errors, setErrors] = useState<Errors>();
   const goodsSearchAPI = async (searchParams: TGoodsSearchRequest,isLogin: boolean) => {
     const endPointKbn = `${isLogin ? "member" : "public"}`;
-    const { status, data: responseData } = await apiRequest(endPointKbn, "goods/search", 'POST', searchParams, "", true, {}, false);
+    const { status, data: responseData } = await apiRequest(endPointKbn, "goods/search", 'POST', searchParams, "", true, {}, true);
     
     if (status == 400) {
       setErrors(responseData);
