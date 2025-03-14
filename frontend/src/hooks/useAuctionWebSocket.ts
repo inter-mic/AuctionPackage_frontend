@@ -8,11 +8,9 @@ export const useAuctionWebSocket = (
 ) => {
   const appSocketRef = useRef<WebSocket | null>(null);
   const batchSocketRef = useRef<WebSocket | null>(null);
-  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    if (!isLoaded || hasInitialized.current) return;
-    hasInitialized.current = true; 
+    if (!isLoaded ) return;
     const connectWebSocket = (url: string, onMessage: (event: MessageEvent) => void): WebSocket => {
       const socket = new WebSocket(url);
 

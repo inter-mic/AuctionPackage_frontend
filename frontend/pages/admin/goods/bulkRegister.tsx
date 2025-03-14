@@ -105,9 +105,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const goodsImgUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(selectedZipFile){
-      const MAX_ZIP_SIZE = 3 * 1024 * 1024 * 1024; // 3GB
+      const MAX_ZIP_SIZE = 2 * 1024 * 1024 * 1024; // 3GB
       if (selectedZipFile.size > MAX_ZIP_SIZE) {
-        toast.error("ファイルサイズが 3GB を超えています。");
+        toast.error("ファイルサイズが 2GB を超えています。");
         setSelectedZipFile(null);
         return;
       }
@@ -241,8 +241,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
             <div className="content-area space-y-4">
               <div className="font-bold text-lg">{texts.goods.goodsRegistStatus}</div>
-              <div>{texts.goods.goodsUpload_note_4}<br/>
-              {texts.goods.goodsUpload_note_5}</div>
+              <div>
+                {texts.goods.goodsUpload_note_4}<br/>
+                {texts.goods.goodsUpload_note_5}<br/>
+                {texts.goods.goodsUpload_note_9}<br/>
+                {texts.goods.goodsUpload_note_10}<br/>
+                {texts.goods.goodsUpload_note_11}
+              </div>
               <div>
                 <table className="w-3/4 table-auto">
                   <thead>

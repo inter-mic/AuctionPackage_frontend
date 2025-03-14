@@ -151,6 +151,7 @@
     width: 100%; /* スマホの場合、全幅に広げる */
     text-align: center; /* 左揃えにする */
     margin-left: 0px;
+    margin-top: 5px;
   }
 
   .toggleButton,
