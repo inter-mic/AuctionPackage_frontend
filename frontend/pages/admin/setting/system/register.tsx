@@ -239,7 +239,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className="content-area space-y-2">
                   <div>{texts.system.memberRegistration}</div>
                   <MemberRegistrationPullDown
-                    className={`w-80 px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                    className={`w-80 px-3 py-2 mt-1 border rounded-md `}
                     onChange={(value) => handleMemberRegistrationChange('memberRegistrationFlg', value)}
                     selectedId={selectedMemberRegistration !== null ? String(selectedMemberRegistration) : ''}
                   />
@@ -249,7 +249,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className="content-area space-y-2">
                   <div className="">{texts.system.memberApproval}</div>
                   <MemberApprovalPullDown
-                    className={`w-80 px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                    className={`w-80 px-3 py-2 mt-1 border rounded-md `}
                     onChange={(value) => handleMemberApprovalChange('memberApprovalFlg', value)}
                     selectedId={selectedMemberApproval !== null ? String(selectedMemberApproval) : ''}
                   />
@@ -260,7 +260,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className="content-area space-y-2">
                   <div>{texts.system.nologinView}</div>
                   <NologinViewPullDown
-                    className={`w-80 px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                    className={`w-80 px-3 py-2 mt-1 border rounded-md `}
                     onChange={(value) => handleNologinViewChange('nologinView', value)}
                     selectedId={selectedNologinView !== null ? String(selectedNologinView) : ''}
                   />

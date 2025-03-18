@@ -9,7 +9,6 @@ export const useContactSendAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [errors, setErrors] = useState<Errors>();
   const [status, setStatus] = useState<number | null>(null); 
-  const [responseData, setResponseData] = useState(null);
   const router = useRouter();
   const contactSendAPI = async (Contact: Contact, sendFlg: boolean, isLogin:boolean) => {
     const endPoint = `contact/${sendFlg ? "send" : "sendConfirm"}`;
@@ -20,7 +19,7 @@ export const useContactSendAPI = () => {
     } else if (status == 200) {
       if (sendFlg) {
         if(isLogin){
-          router.push('./member/contactCompletion'); 
+          router.push('/member/contactCompletion'); 
         }else{
           router.push('./contactCompletion'); 
         }
