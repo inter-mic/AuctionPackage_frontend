@@ -63,6 +63,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
       const { lot, goodsName } = fetchGoodsData;
       document.title = `${texts.menu.memberGoodsDetail} | LOT: ${lot} ${goodsName}`;
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchGoodsData]); 
   
   useEffect(() => {

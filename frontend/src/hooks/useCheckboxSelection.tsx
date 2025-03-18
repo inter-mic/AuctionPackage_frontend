@@ -32,6 +32,7 @@ export function useCheckboxSelection<T>(initialItems: T[], allSelectData: T[],fe
         setSelectedIds([]);
         setAllGoodsData([]);
       }
+       // eslint-disable-next-line react-hooks/exhaustive-deps
     },[initialItems]);
 
   const handleSelect = useCallback((id: T) => {

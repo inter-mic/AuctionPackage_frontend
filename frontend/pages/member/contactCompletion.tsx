@@ -1,15 +1,15 @@
 import { GetServerSideProps } from 'next';
 import { texts } from '@/config/texts';
-import { withSystemSetting } from '@/hocs/withSystemSetting';
+import { withAuth } from '@/hocs/withMemberAuth';
 import ContactPageCompletionComponent from '@/components/member/contact/ContactPageCompletionComponent';
 import withMemberisLoginLayout from '@/hocs/withMemberisLoginLayout';
 
-
-export const getServerSideProps: GetServerSideProps = withSystemSetting(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.memberContact
+      pageTitle: texts.menu.memberContactCompletion
     },
   };
-}, false,false);
-export default withMemberisLoginLayout(ContactPageCompletionComponent, false);
+});
+
+export default withMemberisLoginLayout(ContactPageCompletionComponent, true);

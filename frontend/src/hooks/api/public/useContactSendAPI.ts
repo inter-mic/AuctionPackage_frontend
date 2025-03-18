@@ -11,7 +11,7 @@ export const useContactSendAPI = () => {
   const [status, setStatus] = useState<number | null>(null); 
   const [responseData, setResponseData] = useState(null);
   const router = useRouter();
-  const contactSendAPI = async (Contact: Contact, sendFlg: boolean) => {
+  const contactSendAPI = async (Contact: Contact, sendFlg: boolean, isLogin:boolean) => {
     const endPoint = `contact/${sendFlg ? "send" : "sendConfirm"}`;
     const { status, data: responseData } = await apiRequest("public", endPoint, 'POST', Contact, "", true);
     setStatus(status);
@@ -19,7 +19,12 @@ export const useContactSendAPI = () => {
       setErrors(responseData);
     } else if (status == 200) {
       if (sendFlg) {
-        router.push('./contactCompletion'); 
+        if(isLogin){
+          router.push('./member/contactCompletion'); 
+        }else{
+          router.push('./contactCompletion'); 
+        }
+        
       }
       
     }

@@ -35,9 +35,9 @@ const Page = ({ memberApprovalFlg }: TPageProps) => {
             <label className="flex justify-center items-center text-gray-500 text-sm">
               <div >
                 {memberApprovalFlg && (
-                  <h1 className={styles.newCustomerTitle}>{texts.signup.signup_note_1}</h1>
-                )}{(
                   <h1 className={styles.newCustomerTitle}>{texts.signup.signup_note_2}</h1>
+                )}{(
+                  <h1 className={styles.newCustomerTitle}>{texts.signup.signup_note_1}</h1>
                 )}
               </div>
             </label>

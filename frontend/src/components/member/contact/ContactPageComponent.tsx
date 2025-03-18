@@ -56,7 +56,7 @@ const ContactPageComponent: React.FC<Props> = ({ isLogin }) => {
     const { errors, contactSendAPI } = useContactSendAPI();
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const handleSubmit = () => {
-        contactSendAPI(data, true);
+        contactSendAPI(data, true, isLogin);
 
     };
     useEffect(() => {
@@ -206,6 +206,7 @@ const ContactPageComponent: React.FC<Props> = ({ isLogin }) => {
                             onChange={handleChange}
                             className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none  h-80"
                         />
+                         {errors?.text && <p className="error-message">{errors.text}</p>}
                     </div>
 
 

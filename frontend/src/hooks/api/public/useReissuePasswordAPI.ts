@@ -23,7 +23,7 @@ export const useReissuePasswordAPI = (registToken: string | null) => {
     e.preventDefault();
     const endPoint = `reissuePassword/${AdminFlg ? "staff" : "user"}/registPassword`;
     const requestBody = { newPassword, newPasswordConfirm, registToken };
-    const { status, data: responseData } = await apiRequest("public", endPoint, 'POST', requestBody, texts.message.forgotPassword, true);
+    const { status, data: responseData } = await apiRequest("public", endPoint, 'POST', requestBody, texts.message.regist, true);
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200) {

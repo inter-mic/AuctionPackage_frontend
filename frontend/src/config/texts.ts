@@ -268,8 +268,8 @@ export const texts = {
       goodsUpload_note_7:"CSVファイルのアップロード後、ファイル内データのチェック処理を実行します。登録できないデータがある場合はエラーメッセージに表示されます。",
       goodsUpload_note_8:"すべてのデータについてチェックが通った場合のみ登録されます。",
       goodsUpload_note_9:"画像登録スケジュール",
-      goodsUpload_note_10:"毎時0分、30分：ZIPファイルの解凍",
-      goodsUpload_note_11:"毎時15分、45分：100商品ごとに画像と商品を紐づけて登録",
+      goodsUpload_note_10:"毎時10分、30分、50分：100商品ごとに画像と商品を紐づけて登録",
+      goodsUpload_note_11:"毎時15分、45分：ZIPファイルの解凍",
 
 
     },
