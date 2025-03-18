@@ -54,10 +54,20 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
             key={index}
             
           >
-            <a  target="_blank" rel="noopener noreferrer"
-             style={{
+            <a  
+              href={image.linkUrl || ''}
+              target="_blank" 
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!image.linkUrl) {
+                  // href が空文字または null の場合、クリック時の遷移をキャンセル
+                  e.preventDefault();
+                }
+              }}
+              style={{
               position: 'relative',
               width: '100%',
+              cursor: image.linkUrl ? 'pointer' : 'default',
               ...(isMobile
                 ? {} // スマホの場合
                 : { height: 'calc(100vh - 200px)', display: 'block', backgroundColor: '#000' }), // PCの場合
