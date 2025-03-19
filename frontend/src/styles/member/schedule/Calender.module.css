@@ -6,7 +6,7 @@
 .auctionContainer {
   display: flex;
   flex-direction: column; 
-  gap: 16px;
+  gap: 40px;
   margin: 20px 0px;
 }
 
