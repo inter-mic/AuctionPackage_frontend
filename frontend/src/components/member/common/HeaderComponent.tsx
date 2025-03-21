@@ -25,7 +25,7 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
   const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen)
 
   const [isMobileSubMenusOpen, setIsMobileSubMenusOpen] = useState<{ [key: string]: boolean }>({});
- 
+
 
   const toggleSubMenu = (menu: string) => {
     setIsMobileSubMenusOpen((prev) => ({
@@ -38,33 +38,33 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
     <>
       <header className={styles.header}>
         <div className={styles.logo}>
-        {userId ? (
-          <Link href="/member/top">
-             <Image
-          src={logoImagePath}
-          alt=""
-          className={styles.logo}
-          width={100}
-          height={100} 
-          style={{ width: 'auto', height: 'auto', objectFit: 'cover' }} 
-          priority
-        />
-        </Link>
-        ):(
-          <Link href="/top">
-             <Image
-          src={logoImagePath}
-          alt=""
-          className={styles.logo}
-          width={100}
-          height={100} 
-          style={{ width: 'auto', height: 'auto', objectFit: 'cover' }} 
-          priority
-        />
-        </Link>
-        )}
-        
-       
+          {userId ? (
+            <Link href="/member/top">
+              <Image
+                src={logoImagePath}
+                alt=""
+                className={styles.logo}
+                width={100}
+                height={100}
+                style={{ width: 'auto', height: 'auto', objectFit: 'cover' }}
+                priority
+              />
+            </Link>
+          ) : (
+            <Link href="/top">
+              <Image
+                src={logoImagePath}
+                alt=""
+                className={styles.logo}
+                width={100}
+                height={100}
+                style={{ width: 'auto', height: 'auto', objectFit: 'cover' }}
+                priority
+              />
+            </Link>
+          )}
+
+
         </div>
         {userId ? (
           //ログイン済み
@@ -76,9 +76,9 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
                 <li><Link href="/member/contact">{texts.menu.memberContact}</Link></li>
                 {pageSettingList.map((page) => (
                   <li key={page.pageSeq}><Link href={page.pageUrl}>{page.pageName}</Link></li>
-              ))}
+                ))}
               </ul>
-              
+
             </nav>
             <span className={styles.menu}>{userName || ''}様</span>
           </>
@@ -100,7 +100,7 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
                 <li><Link href="/contact">{texts.menu.memberContact}</Link></li>
                 {pageSettingList.map((page) => (
                   <li key={page.pageSeq}><Link href={page.pageUrl} target="_brank">{page.pageName}</Link></li>
-              ))}
+                ))}
               </ul>
             </nav>
 
@@ -130,13 +130,7 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
                     nologinView && <Link href="/calender">{texts.menu.memberAuction}</Link>
                   )}
                 </div>
-                <div className={styles.menuItem}>
-                  {userId ? (
-                    <Link href="/member/contact">{texts.menu.memberContact}</Link>
-                  ) : (
-                    <Link href="/contact">{texts.menu.memberContact}</Link>
-                  )}
-                </div>
+                
                 {userId && (
                   <>
                     <div className={styles.menuItem} onClick={() => toggleSubMenu('mypage')}>
@@ -152,27 +146,35 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
                     )}
                   </>
                 )}
-                {pageSettingList.map((page) => (
-                <div className={styles.menuItem} key={page.pageSeq}>
                 
-                  <li ><Link href={page.pageUrl}>{page.pageName}</Link></li>
-             
+                {pageSettingList.map((page) => (
+                  <div className={styles.menuItem} key={page.pageSeq}>
+
+                    <li ><Link href={page.pageUrl}>{page.pageName}</Link></li>
+
+                  </div>
+                ))}
+                <div className={styles.menuItem}>
+                  {userId ? (
+                    <Link href="/member/contact">{texts.menu.memberContact}</Link>
+                  ) : (
+                    <Link href="/contact">{texts.menu.memberContact}</Link>
+                  )}
                 </div>
-                 ))}
               </li>
             </ul>
             <div className={styles.buttonContainer}>
-            {userId ? (
-                  
-                    <SideMenuLogoutButton  isAdmin={false} />
-                    
-                  ) : (
-                    <>
-                    <SideMenuLoginButton/>
-                    <SideMenuSignUpButton/>
-                    </>
-                  )}
-              </div>
+              {userId ? (
+
+                <SideMenuLogoutButton isAdmin={false} />
+
+              ) : (
+                <>
+                  <SideMenuLoginButton />
+                  <SideMenuSignUpButton />
+                </>
+              )}
+            </div>
           </nav>
         )}
 

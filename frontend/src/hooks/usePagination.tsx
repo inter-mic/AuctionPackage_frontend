@@ -11,7 +11,9 @@ export const usePagination = ({ itemsPerPage, searchAPI, searchParams }: Paginat
 
   const handlePageChange = async (_: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 1000); 
 
     const params = {
       ...searchParams,

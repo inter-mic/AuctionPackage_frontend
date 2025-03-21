@@ -60,6 +60,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectAll(false);
     setSelectedIds([]);
     setMemberData([]);
+    setCurrentPage(1); 
     const params = {
       ...memberParams,
       pageNumber: 1,
@@ -110,7 +111,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     itemsPerPage,
     params: memberParams,
   });
-  const { currentPage, handlePageChange } = usePagination({
+  const { currentPage, setCurrentPage, handlePageChange } = usePagination({
     itemsPerPage,
     searchAPI: userSearchAPI,
     searchParams: memberParams,

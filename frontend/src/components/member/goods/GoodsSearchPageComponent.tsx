@@ -87,6 +87,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       prev.includes(id) ? prev.filter((categoryId) => categoryId !== id) : [...prev, id]
     );
   };
+  const [currentPage, setCurrentPage] = useState(1);
   const formSearch = async () => {
     const params = {
       ...goodsParams,
@@ -96,6 +97,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       chumokuCheck: checkboxStates.chumokuCheck,
       nofinishCheck: checkboxStates.nofinishCheck,
     };
+    setCurrentPage(1); 
     goodsSearchAPI(params, isLogin);
     goodsCountAPI(params, isLogin);
     setIsFilterOpen(false);
@@ -137,7 +139,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
     goodsSearchAPI(params, isLogin);
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
+  
   const itemsPerPage = 50;
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
@@ -147,6 +149,9 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       pageSize: itemsPerPage,
     };
     goodsSearchAPI(params, isLogin);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 2500); 
   };
 
 
@@ -157,7 +162,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       if (isLogin) {
         memberSessionAPI();
       }
-    }, 300000);
+    }, 100000);
     return () => clearInterval(intervalId);
   }, [isLogin, memberSessionAPI]);
 

@@ -54,8 +54,10 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
               toast.success(texts.message.registBid);
             }
 
-            const isPriceUpdated = data.startCurrentPrice !== goods.startCurrentPrice;
-  
+            const isPriceUpdated =
+            data.auctionBidFlg === false ? false : data.startCurrentPrice !== goods.startCurrentPrice;
+
+           
             return {
               ...goods,
               ...data,
