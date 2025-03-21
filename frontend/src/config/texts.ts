@@ -500,6 +500,7 @@ export const texts = {
       changePassword:"パスワード変更が完了しました。",
       noResult:"検索結果がありません。",
       error400:"入力内容に誤りがあります。",
+      registBid:"入札が完了しました。",
       highestBid:"落札権利を取得しました。",
       noHighestBid:"入札しましたが、落札権利を取得できませんでした。",
       

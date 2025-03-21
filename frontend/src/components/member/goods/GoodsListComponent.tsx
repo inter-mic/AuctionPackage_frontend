@@ -50,6 +50,9 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
                 toast.warning(texts.message.noHighestBid);
               }
             }
+            if (document.visibilityState === "visible" && !data.auctionBidFlg  && data.bidUserId === loginUserId) {
+              toast.success(texts.message.registBid);
+            }
 
             const isPriceUpdated = data.startCurrentPrice !== goods.startCurrentPrice;
   

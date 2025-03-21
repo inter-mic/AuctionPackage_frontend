@@ -112,10 +112,10 @@ const BidModalComponent: React.FC<Props> = ({
   }, [auctionBidResponseStatus]);
   
   useEffect(() => {
-    if (auctionBidResponseStatus) {
-      if(tenderBidResponseStatus == 200){handleToggleFilter();}}
+    if (auctionBidResponseStatus) {if(tenderBidResponseStatus == 200){handleToggleFilter();}}
+    if (tenderBidResponseStatus) {if(tenderBidResponseStatus == 200){handleToggleFilter();}}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auctionBidResponseStatus]);
+  }, [auctionBidResponseStatus, tenderBidResponseStatus]);
 
   return (
     <Modal open={isOpen} onClose={handleToggleFilter}>

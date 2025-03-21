@@ -80,7 +80,7 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
       if (!currentGoodsData) return;
       if (data.goodsId === currentGoodsData.goodsId) {
         setBidState((prev) => {
-          const currentPrice = Number(data.startCurrentPrice.replace(/,/g, ""));
+          const currentPrice = Number(data.startCurrentPrice ? data.startCurrentPrice.replace(/,/g, "") : 0);
           const bidPrice = Number(currentGoodsData?.bidPrice?.replace(/,/g, "") || 0);
           const bidUnit = Number(currentGoodsData?.bidUnit?.replace(/,/g, "") || 0);
 
@@ -113,6 +113,9 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
           } else {
             toast.warning(texts.message.noHighestBid);
           }
+        }
+        if(!data.auctionBidFlg && data.bidUserId == loginUserId){
+          toast.success(texts.message.registBid);
         }
       }
     },
