@@ -31,6 +31,7 @@
 .details {
   flex: 1;
   margin: 0px 5px;
+  min-width: 0; 
 }
 
 .lotContainer {
@@ -71,6 +72,9 @@
   padding: 5px 0;
   margin: 10px 0;
   color:#666;
+  overflow-wrap: break-word;
+  word-break: break-word; 
+  white-space: normal;
 }
 
 .detailTitle {
@@ -123,6 +127,9 @@
 .addInfoContainer {
   margin: 30px 0;
   color: #333;
+  overflow-wrap: break-word;
+  word-break: break-word; 
+  white-space: normal;
 }
 
 .addInfoLabel{
