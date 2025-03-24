@@ -233,10 +233,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
             {(selectedSpnKbn === "1" || selectedSpnKbn === "2") && (
               <div>
-                <label htmlFor="auctionDate" className="block text-sm font-medium text-gray-700">
-                  {texts.auction.auctionDate}
+                <label htmlFor="auctionDate" className={styles.label}>
+                <RequiredMark />{texts.auction.auctionDate}
                 </label>
-                <div className="xl:w-1/4 sm:w-full xl:flex items-center">
+                <div className="xl:w-1/4 sm:w-full xl:flex items-center mt-1">
                   <CustomDatePicker
                     name="auctionDate"
                     selectedDate={fetchedData.auctionDate}
@@ -248,6 +248,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     onTimeChange={handleTimeChange("auctionDatetime")}
                   />
                 </div>
+                {(formErrors?.auctionDate || formErrors?.auctionDate) && (
+                    <p className="error-message">
+                      {formErrors?.auctionDate || formErrors?.auctionDate}
+                    </p>
+                  )}
               </div>
             )}
             <div className="flex">
@@ -256,7 +261,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <RequiredMark />{texts.auction.displayKikan}<br />
                 <span >{texts.auction.displayKikan_note_1}</span><br />
                 </label>
-                <div className="w-full">
+                <div className="w-full mt-1">
                   <div className="lg:flex ">
                     <CustomDatePicker
                       name="displayStartDate"
@@ -295,7 +300,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <div className="flex">
               <div className="w-full xl:w-1/2">
                 <label className={styles.label}><RequiredMark />{texts.auction.bidKikan}</label>
-                <div className="w-full">
+                <div className="w-full mt-1">
                   <div className="lg:flex">
                     <CustomDatePicker
                       name="bidStarttime"
@@ -333,10 +338,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </div>
             </div>
             <div>
-                <label htmlFor="paymentDeadlineDate" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="paymentDeadlineDate" className={styles.label}>
                   {texts.auction.paymentDeadlineDate}
                 </label>
-                <div className="xl:w-1/4 sm:w-full xl:flex items-center">
+                <div className="xl:w-1/4 sm:w-full xl:flex items-center mt-1">
                   <CustomDatePicker
                     name="paymentDeadlineDate"
                     selectedDate={fetchedData.paymentDeadlineDate}

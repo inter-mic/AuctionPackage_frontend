@@ -22,6 +22,7 @@ export const texts = {
       adminGoodsBulkRegist:"商品一括登録",
       adminBidList:"入札一覧",
       adminBidLogList:"入札ログ",
+      adminAuctionner:"オークショニア",
       adminGoodsAddinfoItemRegist:"商品項目追加設定",
       adminCategoryRegist:"カテゴリー管理",
       adminAuctionTitle:"オークション管理",
@@ -98,10 +99,15 @@ export const texts = {
       affterLot:"次LOT",
       set:"セット",
       start:"スタート",
+      liveClear:"強制クリア",
       minusSerihaba:"-セリ幅",
       plusSerihaba:"+セリ幅",
       currentPrice:"現在価格を配信",
       onlinePrice:"オンライン入札価格を配信",
+      BidComingSoon:"もうすぐ落札",
+      BidFinush:"入札終了",
+      furakusatsu:"不落札",
+      rakusatsu:"落札",
       close:"閉じる"
     },
     fileName:{

@@ -34,7 +34,7 @@ interface SerihabaButtonProps {
   
     return (
       <button
-        className={`bg-yellow-500 hover:bg-yellow-700 py-2 px-4 rounded-full w-40 text-xl ${
+        className={`bg-yellow-500 hover:bg-yellow-700 py-2 px-4 rounded-full w-40 text-xl text-white ${
           disabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         onClick={handleClick}

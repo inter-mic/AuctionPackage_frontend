@@ -13,7 +13,7 @@ import { TMtAuction } from '@/types/admin/auction/search';
 4：締め済み開催回
 */
 
-export const useAuctionSearchAPI = (kaisaiStatus: number) => {
+export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbn: number) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [auction, setAuction] = useState<TMtAuction[]>([]);
   useEffect(() => {

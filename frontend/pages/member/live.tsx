@@ -47,12 +47,18 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       
       if (data.type === 'set' || data.type === 'start' || data.type === 'updatePrice') {
         setReceivedData(data);
-        setBidHistory((prevHistory) => [{ bidPrice: data.currentPrice, userId: data.kenriUserId, timestamp: data.timestamp }, ...prevHistory]);
-        setIsBidDisabled(loginUserId === data.kenriUserId);
         setBidStatus(loginUserId === data.kenriUserId ? 1 : 0);
       }
+      if (data.type === 'start') {
+        setIsBidDisabled(false);
+       
+      }   
+      if (data.type === 'updatePrice') {
+        setIsBidDisabled(loginUserId === data.kenriUserId);
+        setBidHistory((prevHistory) => [{ bidPrice: data.currentPrice, userId: data.kenriUserId, timestamp: data.timestamp }, ...prevHistory]);
+      }
+      
     };
-
 
     ws.current.onclose = () => {
       console.log('WebSocket closed');

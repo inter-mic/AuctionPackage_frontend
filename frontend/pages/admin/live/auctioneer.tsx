@@ -20,15 +20,18 @@ import { PageProps } from '@/types/admin/adminPage';
 import { Errors } from '@/types/errors';
 //コンポーネント
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
-import { formatPriceDivision,formatPriceMultiplication,formatPriceWithCommas } from '@/components/common/PriceUtils';
+import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas } from '@/components/common/PriceUtils';
 
 //ボタン
 import { CallButton } from '@/components/ui/buttons/admin/live/callButton';
 import { LotBeforeAffterButton } from '@/components/ui/buttons/admin/live/LotBeforeAffterButton';
 import { SetButton } from '@/components/ui/buttons/admin/live/setButton';
 import { StartButton } from '@/components/ui/buttons/admin/live/startButton';
+import { ClearButton } from '@/components/ui/buttons/admin/live/clearButton';
 import { SerihabaButton } from '@/components/ui/buttons/admin/live/serihabaButton';
 import { PriceButton } from '@/components/ui/buttons/admin/live/priceButton';
+import { StatusButton } from '@/components/ui/buttons/admin/live/statusButton';
+import { ResultsButton } from '@/components/ui/buttons/admin/live/resultsButton';
 
 
 
@@ -39,7 +42,7 @@ import styles from '@/styles/admin/Auctioneer.module.css';
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminGoodsRegist
+      pageTitle: texts.menu.adminAuctionner
     },
   };
 });
@@ -80,7 +83,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [fetchGoodsData]);
   useEffect(() => {
     if (fetchGoodsData.startPrice) {
-      const formattedPrice = formatPriceWithCommas(Number(fetchGoodsData.startPrice.replace(/,/g, '')) / 100);
+      const formattedPrice = formatPriceWithCommas(Number(fetchGoodsData.startPrice.replace(/,/g, '')) / 1000);
       setCurrentPrice(formattedPrice);
       setNextPrice(formattedPrice);
     } else {
@@ -109,7 +112,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     // WebSocketの初期化
     ws.current = new WebSocket('ws://localhost:3001/');
-    
+
     ws.current.onopen = () => {
       console.log('WebSocket connection established');
       ws.current?.send(JSON.stringify({ type: 'admin' }));
@@ -119,10 +122,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       var data = JSON.parse(event.data);
       if (data.type === 'set') {
         setIsSetButtonClicked(true);
-      }else if (data.type === 'start') {
+      } else if (data.type === 'start') {
         setIsStartButtonClicked(true);
         setIsSetButtonClicked(false);
-      }else if (data.type === 'onlineBid') {
+      } else if (data.type === 'onlineBid') {
         setOnlineBidHistory((prevHistory) => [
           { userId: data.userId, bidPrice: data.bidPrice },
           ...prevHistory, // 最新のデータを上部に追加
@@ -145,77 +148,77 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     };
   }, []);
 
-const getCommonData = () => ({
-  goodsId: fetchGoodsData.goodsId,
-  lot: fetchGoodsData.lot,
-  goodsName: fetchGoodsData.goodsName,
-  goodsImage: fetchGoodsData.thumbnailImageUrl,
-});
-const [currentPrice, setCurrentPrice] = useState<string>(''); 
-const [nextPrice, setNextPrice] = useState<string>(''); 
-const [kenriUserId, setKenriUserId] = useState<string>(''); 
-const [kenriPrice, setKenriPrice] = useState<string>(''); 
-
-const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
-  if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-    const message = {
-      type,
-      ...getCommonData(),
-      ...additionalData,
-    };
-    ws.current.send(JSON.stringify(message));
-  } else {
-    console.error(`[${type.toUpperCase()}] WebSocket is not open`);
-  }
-};
-
-// セットボタン用関数
-const set = async () => {
-  sendWebSocketMessage('set');
-};
-
-// スタートボタン用関数
-const start = async () => {
-  sendWebSocketMessage('start', {
-    nextPrice: formatPriceMultiplication(nextPrice),
-    currentPrice: formatPriceMultiplication(currentPrice),
+  const getCommonData = () => ({
+    goodsId: fetchGoodsData.goodsId,
+    lot: fetchGoodsData.lot,
+    goodsName: fetchGoodsData.goodsName,
+    goodsImage: fetchGoodsData.thumbnailImageUrl,
   });
-  setIsStartButtonClicked(true);
-  setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
-};
+  const [currentPrice, setCurrentPrice] = useState<string>('');
+  const [nextPrice, setNextPrice] = useState<string>('');
+  const [kenriUserId, setKenriUserId] = useState<string>('');
+  const [kenriPrice, setKenriPrice] = useState<string>('');
 
-//オンライン入札価格を配信用
-const onlinePriceHaishin = async () => {
-  if (onlineBidHistory.length === 0) {
-    console.error('オンライン入札履歴が空です');
-    return;
-  }
+  const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const message = {
+        type,
+        ...getCommonData(),
+        ...additionalData,
+      };
+      ws.current.send(JSON.stringify(message));
+    } else {
+      console.error(`[${type.toUpperCase()}] WebSocket is not open`);
+    }
+  };
 
-  const newOnlineBid = onlineBidHistory[0]; // 最新の入札履歴を取得
-  const onlineBidPrice = newOnlineBid.bidPrice; 
-  const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, '') || '0');
-  // 現在価格を最新の入札価格に更新
-  setCurrentPrice(formatPriceDivision(newOnlineBid.bidPrice));
+  // セットボタン用関数
+  const set = async () => {
+    sendWebSocketMessage('set');
+  };
 
-  // 次価格を計算してセット
-  const nextPriceCalculated = (Number(onlineBidPrice) + Number(bidUnit)).toString();
-  setNextPrice(formatPriceDivision(nextPriceCalculated));
-  sendWebSocketMessage('updatePrice', {
-    kenriUserId:newOnlineBid.userId,
-    nextPrice: nextPriceCalculated,
-    currentPrice: newOnlineBid.bidPrice,
-  });
+  // スタートボタン用関数
+  const start = async () => {
+    sendWebSocketMessage('start', {
+      nextPrice: formatPriceMultiplication(nextPrice),
+      currentPrice: formatPriceMultiplication(currentPrice),
+    });
+    setIsStartButtonClicked(true);
+    setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
+  };
 
-  setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
-};
+  //オンライン入札価格を配信用
+  const onlinePriceHaishin = async () => {
+    if (onlineBidHistory.length === 0) {
+      console.error('オンライン入札履歴が空です');
+      return;
+    }
 
-//現在価格を配信用関数
-const currentPriceHaishin = async () => {
-  sendWebSocketMessage('updatePrice', {
-    nextPrice: formatPriceMultiplication(nextPrice),
-    currentPrice: formatPriceMultiplication(currentPrice),
-  });
-};
+    const newOnlineBid = onlineBidHistory[0]; // 最新の入札履歴を取得
+    const onlineBidPrice = newOnlineBid.bidPrice;
+    const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, '') || '0');
+    // 現在価格を最新の入札価格に更新
+    setCurrentPrice(formatPriceDivision(newOnlineBid.bidPrice));
+
+    // 次価格を計算してセット
+    const nextPriceCalculated = (Number(onlineBidPrice) + Number(bidUnit)).toString();
+    setNextPrice(formatPriceDivision(nextPriceCalculated));
+    sendWebSocketMessage('updatePrice', {
+      kenriUserId: newOnlineBid.userId,
+      nextPrice: nextPriceCalculated,
+      currentPrice: newOnlineBid.bidPrice,
+    });
+
+    setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
+  };
+
+  //現在価格を配信用関数
+  const currentPriceHaishin = async () => {
+    sendWebSocketMessage('updatePrice', {
+      nextPrice: formatPriceMultiplication(nextPrice),
+      currentPrice: formatPriceMultiplication(currentPrice),
+    });
+  };
   useEffect(() => {
     if (goodsSearchErrors) { setInputSeatchErrors(goodsSearchErrors); }
   }, [goodsSearchErrors]);
@@ -265,51 +268,53 @@ const currentPriceHaishin = async () => {
 
         </div>
         <div className={styles.bottomLeft}>
-        <span  className={styles.sectionTitle}>次商品</span>
+          <span className={styles.sectionTitle}>次商品</span>
         </div>
       </div>
       <div className={styles.rightColumn}>
         <div className={styles.topRight}>
-        <div className={styles.gridContainer}>
-    <div>
-     
-      <div className={styles.labelRow}>
-        <label className={styles.auctionlabel}>{texts.goods.saiteiRakusatsuPrice}</label>
-        <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}>{goodsData.saiteiRakusatsuPrice || ''}</label>
-      </div>
-      <div className={styles.labelRow}>
-        <label className={styles.auctionlabel}>{texts.goods.estimate}</label>
-        <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
-      </div>
-      <div className={styles.labelRow}>
-        <label className={styles.auctionlabel}>{texts.goods.farst_jizen_nyusatsu}</label>
-        <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
-      </div>
-      <div className={styles.labelRow}>
-        <label className={styles.auctionlabel}>{texts.goods.second_jizen_nyusatsu}</label>
-        <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
-      </div>
-    </div>
-   
-    <div>
-      <span  className={styles.sectionTitle}>オンライン入札履歴</span>
-      <ul className={styles.bidList}>
+          <div className={styles.gridContainer}>
+            <div>
+
+              <div className={styles.labelRow}>
+                <label className={styles.auctionlabel}>{texts.goods.saiteiRakusatsuPrice}</label>
+                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}>{goodsData.saiteiRakusatsuPrice || ''}</label>
+              </div>
+              <div className={styles.labelRow}>
+                <label className={styles.auctionlabel}>{texts.goods.estimate}</label>
+                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
+              </div>
+              <div className={styles.labelRow}>
+                <label className={styles.auctionlabel}>{texts.goods.farst_jizen_nyusatsu}</label>
+                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
+              </div>
+              <div className={styles.labelRow}>
+                <label className={styles.auctionlabel}>{texts.goods.second_jizen_nyusatsu}</label>
+                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
+              </div>
+            </div>
+
+            <div>
+              <span className={styles.sectionTitle}>オンライン入札履歴</span>
+              <ul className={styles.bidList}>
                 {onlineBidHistory.map((bid, index) => (
-                 <li key={index} className={styles.bidItem}>
-                  <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
-                  <span className={styles.bidPrice}>入札価格: {bid.bidPrice}</span>
-                </li>
+                  <li key={index} className={styles.bidItem}>
+                    <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
+                    <span className={styles.bidPrice}>入札価格: {bid.bidPrice}</span>
+                  </li>
                 ))}
               </ul>
-      </div>
-      <div>
-      <span  className={styles.sectionTitle}>配信履歴</span>
-      </div>
-  </div>
+            </div>
+            <div>
+              <span className={styles.sectionTitle}>配信履歴</span>
+            </div>
+          </div>
         </div>
-       
+
         <div className={styles.centerRight}>
           現在価格：{kenriPrice}
+          現在権利者：
+          セリ幅：
         </div>
         <div className={styles.bottomRight}>
           <div className={styles.labelRow}>
@@ -326,81 +331,87 @@ const currentPriceHaishin = async () => {
               />
 
               <CallButton onClick={lotSearch} />
-              <LotBeforeAffterButton onClick={() => lotBeforeAffterSearch(true)} isBefore={true}  disabled={!isCallButtonClicked}/>
-              <LotBeforeAffterButton onClick={() => lotBeforeAffterSearch(false)} isBefore={false}  disabled={!isCallButtonClicked}/>
+              <LotBeforeAffterButton onClick={() => lotBeforeAffterSearch(true)} isBefore={true} disabled={!isCallButtonClicked} />
+              <LotBeforeAffterButton onClick={() => lotBeforeAffterSearch(false)} isBefore={false} disabled={!isCallButtonClicked} />
             </div>
             <div className={styles.rightButtons}>
-              <SetButton onClick={set} disabled={!isCallButtonClicked}/>
-              <StartButton onClick={start} disabled={!isSetButtonClicked}/>
+              <SetButton onClick={set} disabled={!isCallButtonClicked} />
+              <StartButton onClick={start} disabled={!isSetButtonClicked} />
+              <ClearButton onClick={start} disabled={!isSetButtonClicked} />
             </div>
           </div>
           <div className={styles.priceSection}>
-  <div className={styles.priceGroup}>
-    <span className={styles.priceLabel}>次価格</span>
-    <input
-      type="text"
-      className={styles.priceInput}
-      value={nextPrice}
-      onChange={(e) => setNextPrice(e.target.value)}  
-    />
-    <span>,000</span>
+            <div className={styles.priceGroup}>
+              <span className={styles.priceLabel}>次価格</span>
+              <input
+                type="text"
+                className={styles.priceInput}
+                value={nextPrice}
+                onChange={(e) => setNextPrice(e.target.value)}
+              />
+              <span>,000</span>
 
-    <span className={styles.priceLabel}>現在価格</span>
-    <input
-      type="text"
-      className={styles.priceInput}
-      value={currentPrice}
-      onChange={(e) => setCurrentPrice(e.target.value)}  
-    />
-    <span>,000</span>
-  </div>
-</div>
-
-
-
-  <div className={styles.adjustButtons}>
-    <SerihabaButton
-    isplus={false}
-    disabled={!isStartButtonClicked}
-    currentPrice={currentPrice}
-    nextPrice={nextPrice}
-    fetchGoodsData={fetchGoodsData}
-    onUpdatePrices={(newCurrentPrice, newNextPrice) => {
-      setCurrentPrice(newCurrentPrice);
-      setNextPrice(newNextPrice);
-    }}
-  />
-
-  <SerihabaButton
-    isplus={true}
-    disabled={!isStartButtonClicked}
-    currentPrice={currentPrice}
-    nextPrice={nextPrice}
-    fetchGoodsData={fetchGoodsData}
-    onUpdatePrices={(newCurrentPrice, newNextPrice) => {
-      setCurrentPrice(newCurrentPrice);
-      setNextPrice(newNextPrice);
-    }}
-  />
-  </div>
-
-  <div className={styles.bottomSection}>
-  <PriceButton onClick={() => onlinePriceHaishin()} isonline={true}  disabled={!isStartButtonClicked}/>
-  <PriceButton onClick={() => currentPriceHaishin()} isonline={false}  disabled={!isStartButtonClicked}/>
-  
-  
-  </div>
+              <span className={styles.priceLabel}>現在価格</span>
+              <input
+                type="text"
+                className={styles.priceInput}
+                value={currentPrice}
+                onChange={(e) => setCurrentPrice(e.target.value)}
+              />
+              <span>,000</span>
+            </div>
+          </div>
 
 
-      <div className={styles.statusButtons}>
-        <button className={styles.statusButton}>もうすぐ落札します</button>
-        <button className={styles.statusButton}>入札受付終了</button>
-        <button className={styles.statusButton}>落札</button>
-        <button className={styles.statusButton}>不落札</button>
-      </div>
 
-      
-         
+          <div className={styles.adjustButtons}>
+            <SerihabaButton
+              isplus={false}
+              disabled={!isStartButtonClicked}
+              currentPrice={currentPrice}
+              nextPrice={nextPrice}
+              fetchGoodsData={fetchGoodsData}
+              onUpdatePrices={(newCurrentPrice, newNextPrice) => {
+                setCurrentPrice(newCurrentPrice);
+                setNextPrice(newNextPrice);
+              }}
+            />
+
+            <SerihabaButton
+              isplus={true}
+              disabled={!isStartButtonClicked}
+              currentPrice={currentPrice}
+              nextPrice={nextPrice}
+              fetchGoodsData={fetchGoodsData}
+              onUpdatePrices={(newCurrentPrice, newNextPrice) => {
+                setCurrentPrice(newCurrentPrice);
+                setNextPrice(newNextPrice);
+              }}
+            />
+          </div>
+          <div className={styles.labelRow}>
+            <div className={styles.leftButtons}>
+            <StatusButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
+            <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            </div>
+            <div className={styles.rightButtons}>
+            <PriceButton onClick={() => onlinePriceHaishin()} isonline={true} disabled={!isStartButtonClicked} />
+            <PriceButton onClick={() => currentPriceHaishin()} isonline={false} disabled={!isStartButtonClicked} />
+            </div>
+          </div>
+          <div className={styles.labelRow}>
+            <div className={styles.leftButtons}>
+            <ResultsButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
+            <ResultsButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            </div>
+            <div className={styles.rightButtons}>
+
+            </div>
+          </div>
+
+
+
+
 
         </div>
       </div>

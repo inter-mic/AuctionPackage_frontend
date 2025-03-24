@@ -10,7 +10,7 @@ interface priceButtonProps {
   export function PriceButton({ onClick, isonline, disabled }: priceButtonProps) {
     return (
         <button
-        className={`bg-yellow-500 hover:bg-yellow-700 py-2 px-4 rounded-full w-80 h-20 text-2xl ${
+        className={`bg-yellow-500 hover:bg-yellow-700 py-2 px-4 rounded-full w-80 h-20 text-2xl text-white ${
           disabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         onClick={onClick}
