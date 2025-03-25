@@ -9,7 +9,9 @@ export const useUserSearchParams = () => {
       userId: '',
       userName: '',
       companyName: '',
+      address: '',
       shoninFlg: '',
+      auctionMailJushinFlg: '',
       freeWord: '',
       pageNumber:1,
       pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
@@ -28,7 +30,9 @@ export const useUserSearchParams = () => {
       userId: '',
       userName: '',
       companyName: '',
+      address: '',
       shoninFlg: '',
+      auctionMailJushinFlg: '',
       freeWord: '',
       pageNumber:1,
        pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)

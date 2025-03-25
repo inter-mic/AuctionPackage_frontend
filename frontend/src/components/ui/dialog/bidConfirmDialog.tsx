@@ -54,8 +54,7 @@ export default function ConfirmDialogProps({
         sx={{
           '& .MuiPaper-root': {
             width: '600px', // ダイアログの幅
-            maxWidth: '80%', // 最大幅を調整
-            height: '250px', // ダイアログの高さ
+            height: '280px', // ダイアログの高さ
           },
         }}
       >
@@ -64,8 +63,14 @@ export default function ConfirmDialogProps({
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description" className="text-red-600 text-xl h-20">
-          <span className="text-black">入札金額</span>：<span className="text-3xl">¥{description}</span><br/>
-            ※入札後は取消できません。
+          <div className={styles.bidModalConfirmLabel}>
+          <span className="text-black">{texts.goods.bidPrice}</span>
+          <span className="text-3xl">¥{description}</span>
+          </div>
+          <span className={styles.bidModalConfirmNote}>
+            入札後は取消できません。<br/>
+            この金額でよろしいでしょうか？
+            </span>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

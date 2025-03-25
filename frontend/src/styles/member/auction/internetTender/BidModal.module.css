@@ -139,6 +139,18 @@
   opacity: .65; 
 }
 
+.bidModalConfirmLabel{
+  background-color: #eaeaea;
+  padding: 10px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bidModalConfirmNote{
+  font-size: 18px;
+}
+
 @media (max-width: 768px) {
 
   .adjustButtonsContainer {
