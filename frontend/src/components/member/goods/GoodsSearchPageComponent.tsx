@@ -133,6 +133,11 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
 
     const params = {
       ...goodsParams,
+      categorySeq: selectedCategories.join(','),
+      myBidCheck: checkboxStates.myBidCheck,
+      myfavoriteCheck: checkboxStates.myfavoriteCheck,
+      chumokuCheck: checkboxStates.chumokuCheck,
+      nofinishCheck: checkboxStates.nofinishCheck,
       sortKey,
       sortFlg,
     };
@@ -145,13 +150,18 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
     setCurrentPage(page);
     const params = {
       ...goodsParams,
+      categorySeq: selectedCategories.join(','),
+      myBidCheck: checkboxStates.myBidCheck,
+      myfavoriteCheck: checkboxStates.myfavoriteCheck,
+      chumokuCheck: checkboxStates.chumokuCheck,
+      nofinishCheck: checkboxStates.nofinishCheck,
       pageNumber: page,
       pageSize: itemsPerPage,
     };
     goodsSearchAPI(params, isLogin);
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 2500); 
+    }, 1000); 
   };
 
 
