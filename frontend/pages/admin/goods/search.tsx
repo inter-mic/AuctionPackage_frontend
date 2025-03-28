@@ -21,6 +21,7 @@ import { useGoodsSearchAPI } from '@/hooks/api/admin/goods/useGoodsSearchAPI';
 import { useGoodsSearchCountAPI } from '@/hooks/api/admin/goods/useGoodsSearchCountAPI';
 import { useGoodsCsvAPI } from '@/hooks/api/admin/goods/useGoodsCsvAPI';
 import { useGoodsCsvForAdminGoodsRegistAPI } from '@/hooks/api/admin/goods/useGoodsCsvForAdminGoodsRegistAPI';
+import { useGoodsCsvForTesuryoAPI } from '@/hooks/api/admin/goods/useGoodsCsvForTesuryoAPI';
 import { useGoodsSearchParams } from '@/hooks/searchParams/admin/useGoodsSearchParams';
 //型定義
 import { TAdminGoodsSelect } from '@/types/admin/goods/search';
@@ -179,6 +180,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
     goodsCsvForAdminGoodsRegist(selectedIds);
   };
+    //落札手数料取込用CSV出力
+    const { goodsCsvForTesuryo } = useGoodsCsvForTesuryoAPI();
+    const handleCsvForTesuryoExport = () => {
+      if (selectedIds.length === 0) {
+        toast.error(texts.message.selectAtLeastOne);
+        return;
+      }
+      goodsCsvForTesuryo(selectedIds);
+    };
 
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [hoveredShuppin, setHoveredShuppin] = useState<number | null>(null); // 出品者ホバー状態
@@ -385,13 +395,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div>
                   <OutPutButton onClick={handleCsvExport} />
                   <OutPutButton onClick={handleCsvForAdminGoodsRegistExport} text={texts.button.csvForAdminGoodsRegist} />
+                  <OutPutButton onClick={handleCsvForTesuryoExport} text={texts.button.csvForTesuryo} />
                 </div>
                 <div className="text-right">
                   <div>
                     <span className="text-sm">{texts.common.asterisk}{texts.button.csv}{texts.common.colon}{texts.label.csvBtn_note_1}</span>
                   </div>
                   <div>
-                    <span className="text-sm">{texts.common.asterisk}{texts.button.csvForAdminGoodsRegist}{texts.common.colon}{texts.label.csvForAdminGoodsRegistBtn_note_1}</span>
+                    <span className="text-sm">{texts.common.asterisk}{texts.button.csvForAdminGoodsRegist},{texts.button.csvForTesuryo}{texts.common.colon}{texts.label.csvForAdminGoodsRegistBtn_note_1}</span>
                   </div>
                 </div>
               </div>
