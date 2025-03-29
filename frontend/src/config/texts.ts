@@ -26,6 +26,8 @@ export const texts = {
       adminCategoryRegist:"カテゴリー管理",
       adminAuctionTitle:"オークション管理",
       adminKaisaiRegist:"開催回管理",
+      adminLiveAuctioner:"オークショニア",
+      adminLiveBidUnitRegist:"ライブ入札単位管理",
       adminInfoRegist:"お知らせ管理",
       adminTopImageRegist:"TOP画像管理",
       adminSettingTitle:"設定管理",
@@ -390,7 +392,7 @@ export const texts = {
       body:"本文プレビュー"
     },
     category:{
-      newRegist:"新規登録",
+      
       categoryName:"カテゴリー名"
     },
     kengen:{
@@ -445,6 +447,10 @@ export const texts = {
       hassobi:"発送日",
       shiharaibi:"支払日",
     },
+    bidUnit:{
+      unitRange:"現在価格範囲",
+      bidUnit:"入札単位"
+    },
     mypageResult:{
       rakusatsuTotalPrice:"落札合計金額"
     },
@@ -467,7 +473,7 @@ export const texts = {
       goodsListMark:"商品一覧表示",
       resultKekka:"検索結果：",
       resultCount:"件",
-      
+      newRegist:"新規登録",
       teishi:"停止",
       teishi_note_1:"※停止：ログイン不可になります。",
       delete:"削除",
