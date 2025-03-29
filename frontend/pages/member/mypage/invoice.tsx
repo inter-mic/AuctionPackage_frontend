@@ -10,6 +10,7 @@ import { useCommonSetup } from '@/hooks/useCommonSetup';
 import { usePagination } from '@/hooks/usePagination';
 //API
 import { useTorihikiJissekiSearchAPI } from '@/hooks/api/member/mypage/useTorihikiJissekiSearchAPI';
+import { useTorihikiJissekiSearchCountAPI } from '@/hooks/api/member/mypage/useTorihikiJissekiSearchCountAPI';
 import { useInvoicePdfAPI } from '@/hooks/api/member/mypage/useInvoicePdfAPI';
 //型定義
 import { TAdminTorihikiJissekiRequest, TVTorihikiJisseki } from '@/types/admin/torihikiJisseki/search';
@@ -39,12 +40,14 @@ const Page: React.FC<TPageProps> = () => {
   });
 
   const { torihikiList,  torihikiJissekiSearchAPI } = useTorihikiJissekiSearchAPI();
+  const { count, torihikiJissekiSearchCountAPI } = useTorihikiJissekiSearchCountAPI();
   useEffect(() => {
     const params = {
       pageNumber: 1,
       pageSize: itemsPerPage,
     };
    torihikiJissekiSearchAPI(params);
+   torihikiJissekiSearchCountAPI(params);
   }, []);
 
 
@@ -94,6 +97,13 @@ const Page: React.FC<TPageProps> = () => {
                   ))}
                 </tbody>
               </table>
+               <div >
+                <Pagination className={memberStyles.paginationContainer}
+                  count={Math.max(1, Math.ceil(count / itemsPerPage))}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                />
+              </div>
             </div>
           </>
         ) : (
