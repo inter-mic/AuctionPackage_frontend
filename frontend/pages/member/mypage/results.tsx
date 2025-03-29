@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   };
 });
 
-const Page: React.FC<TPageProps> = (isLogin) => {
+const Page: React.FC<TPageProps> = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const { searchParams, formChange, resetForm } = useResultsSearchParams();
   const [selectedKaisai, setSelectedKaisai] = useState<string>('');

@@ -45,6 +45,7 @@ export const texts = {
       memberAuction:"スケジュール",
       memberMyPage:"マイページ",
       memberRakusatsu:"落札一覧",
+      memberInvoice:"請求一覧",
       memberAccount:"会員登録情報",
       memberLive:"ライブ入札",
       loginCertification:"本登録"
@@ -105,7 +106,8 @@ export const texts = {
       plusSerihaba:"+セリ幅",
       currentPrice:"現在価格を配信",
       onlinePrice:"オンライン入札価格を配信",
-      close:"閉じる"
+      close:"閉じる",
+      invoice:"請求書"
     },
     fileName:{
       memberCsv:"会員一覧",

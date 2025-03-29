@@ -20,6 +20,7 @@ import { useTorihikiJissekiMeisaiShuppinSearchAPI } from '@/hooks/api/admin/tori
 import { useTorihikiJissekiMeisaiRakusatsuSearchAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchAPI';
 import { useTorihikiJissekiMeisaiRakusatsuSearchCountAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchCountAPI';
 import { useTorihikiJissekiMeisaiDateUpdateAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiDateUpdateAPI';
+import { useInvoicePdfAPI } from '@/hooks/api/admin/pdf/useInvoicePdfAPI';
 //型定義
 import { TAdminTorihikiJissekiRequest, TTorihikiJissekiMeisaiRakusatsuSelect, TTorihikiJissekiMeisaiShuppinSelect } from '@/types/admin/torihikiJisseki/search';
 import { PageProps } from '@/types/admin/adminPage';
@@ -42,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   };
 });
 
-const Page: React.FC<PageProps> = ({ kengen }) => {
+const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
 
   useKengenRedirect(kengen, 105);
@@ -68,14 +69,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsAuctionSeq, paramsUserId]);
-  const [fetchRakusatsuList, setFetchRakusatsuList] = useState<TTorihikiJissekiMeisaiRakusatsuSelect[]>([]);
-  const [fetchShuppinList, setFetchShuppinList] = useState<TTorihikiJissekiMeisaiShuppinSelect[]>([]);
-  useEffect(() => {
-    if (rakusatsuList.length > 0) { setFetchRakusatsuList(rakusatsuList); }
-  }, [rakusatsuList]);
-  useEffect(() => {
-    if (shuppinList.length > 0) { setFetchShuppinList(shuppinList); }
-  }, [shuppinList]);
+
 
   const { rakusatsuList: allSelectData, torihikiJissekiMeisaiRakusatsuSearchAPI: allSelectSearchAPI } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
     const [allData, setAllData] = useState<TTorihikiJissekiMeisaiRakusatsuSelect[]>([]);
@@ -173,7 +167,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [errors]);
   useEffect(() => {
     if (rakusatsuResponseData) { 
-      setFetchRakusatsuList(rakusatsuResponseData); 
       rakusatsuSetSelectAll(false);
       rakusatsuSetSelectedIds([]);
     }
@@ -188,6 +181,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [shuppinResponseData]);
   
+  const { invoicePdfAPI } = useInvoicePdfAPI();
+   const handleInvoice = () => {
+    const userIds = paramsUserId ? [Number(paramsUserId)] : [];
+      invoicePdfAPI(Number(paramsAuctionSeq), userIds);
+    };
 
   return (
     <div>
@@ -230,7 +228,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
 
         </div>
+        <div className="text-right">
+          <OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />
+        </div>
       </div>
+
+      
 
       {rakusatsuList && rakusatsuList.length > 0 ? (
         <div className={styles.container}>
@@ -238,10 +241,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <div className="text-left">
               <label className={styles.title}>{texts.torihikiJisseki.rakusatsuMeisai}</label>
               <div className={adminStyles.resultContainer}>
-                <div className={adminStyles.resultRow}>
-                  <span className={adminStyles.resultLabel}>{texts.torihikiJisseki.rakusatsuMeisai}</span>
-                  
-                </div>
                 <div className={adminStyles.resultRow}>
                   <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
                   <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
