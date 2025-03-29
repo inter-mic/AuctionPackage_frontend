@@ -5,13 +5,13 @@ import { useCsvApiRequest } from '@/hooks/api/useCsvApiRequest';
 
 
 
-export const useGoodsCsvForAdminGoodsRegistAPI = () => {  
+export const useGoodsCsvForTesuryoAPI = () => {  
   const { csvApiRequest } = useCsvApiRequest();
-  const goodsCsvForAdminGoodsRegist  = async (selectedGoodsIds: number[])=>{
+  const goodsCsvForTesuryo  = async (selectedGoodsIds: number[])=>{
    
-    const endPoint = `goods/csvForAdminGoodsRegist`;
+    const endPoint = `goods/csvForTesuryo`;
     await csvApiRequest("admin", endPoint, 'POST', selectedGoodsIds);
   };
   
-  return { goodsCsvForAdminGoodsRegist };
+  return { goodsCsvForTesuryo };
 };

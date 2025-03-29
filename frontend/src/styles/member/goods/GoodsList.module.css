@@ -176,6 +176,7 @@
   .goodsCard {
     flex: 1 1 100%; 
     margin-top: 20px;
+    margin: 20px;
   }
 
   .goodsCard:hover {

@@ -88,7 +88,7 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
       <div className="flex flex-col items-center justify-center my-3 bg-gray-100">
         <div className="w-full space-y-3 bg-white shadow-md md:max-w-full md:rounded">
           <div className="p-4">
-            {texts.category.newRegist} 
+            {texts.label.newRegist} 
             <div className="flex flex-col md:flex-row items-end space-y-4">
               <div className="w-full sm:w-1/3">
                 <input

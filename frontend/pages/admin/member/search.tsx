@@ -195,6 +195,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
+            <label htmlFor="address" >{texts.member.address}</label>
+            <input
+              id="address"
+              type="text"
+              name="address"
+              value={memberParams.address}
+              onChange={formChange}
+            />
+          </div>
+          <div className={formSearchStyles.formItem}>
             <label htmlFor="freeWord" >{texts.common.freeWord}</label>
             <input
               id="freeWord"
@@ -215,6 +225,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               <option value="">---</option>
               <option value="0">{texts.member.shoninOff}</option>
               <option value="1">{texts.member.shoninOn}</option>
+            </select>
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="auctionMailJushinFlg" >{texts.member.auctionMailJushinFlg}</label>
+            <select
+              id="auctionMailJushinFlg"
+              name="auctionMailJushinFlg"
+              value={memberParams.auctionMailJushinFlg}
+              onChange={formChange}
+            >
+              <option value="">---</option>
+              <option value="1">{texts.common.mailJushinOn}</option>
+              <option value="0">{texts.common.mailJushinOff}</option>
             </select>
           </div>
         </div>
@@ -275,6 +298,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <th className="py-2 px-4 border-b" >{texts.member.address}</th>
                   <th className="py-2 px-4 border-b" >{texts.common.mail}</th>
                   <th className="py-2 px-4 border-b" >{texts.member.adminBiko}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.auctionMailJushinFlg}</th>
                   <th className="py-2 px-4 border-b" >{texts.member.shonin}</th>
                 </tr>
               </thead>
@@ -303,6 +327,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-1 px-4 border-b text-left">{result.fullAddress}</td>
                     <td className="py-1 px-4 border-b text-left">{result.mail}</td>
                     <td className="py-1 px-4 border-b text-left">{result.adminBiko}</td>
+                    <td className="py-1 px-4 border-b text-center">
+                      {result.auctionMailJushinFlg ? texts.common.mailJushinOn : texts.common.mailJushinOff}
+                    </td>
                     <td className="py-1 px-4 border-b text-center">
                       {executionPermission(102, 2) ? (
                         result.shoninFlg ? (
