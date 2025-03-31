@@ -29,6 +29,7 @@ export const useSystemSettingAPI = async (context: GetServerSidePropsContext,mem
       memberApprovalFlg: data.memberApprovalFlg ,
       memberRegistrationFlg: data.memberRegistrationFlg ,
       nologinView: data.nologinView ,
+      optionMemInvoice: data.optionMemInvoice ,
       kiyakuPath: data.kiyakuPath || '',
       privacyPolicyPath: data.privacyPolicyPath || '',
       companyName: data.companyName || '',

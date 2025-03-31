@@ -348,7 +348,7 @@ export const texts = {
     system:{
       memberRegistration:"会員登録設定",
       memberApproval:"会員承認設定",
-      nologinView:"商品ページ参照設定",
+      nologinView:"ログイン参照設定",
       ImageDownload:"画像ダウンロード",
       adminOnly:"管理者のみ",
       adminAndMember:"管理者・会員",
@@ -366,7 +366,7 @@ export const texts = {
       systemRegist_note_1:"※管理者のみ：会員側の画面で新規会員登録画面が非表示となります。",
       systemRegist_note_2:"※承認する：会員側で新規会員登録があった場合、管理者側で承認作業をしたのちにログイン情報がメール送信されます。",
       systemRegist_note_3:"※承認しない：会員側で新規会員登録があった場合、即時ログイン情報がメール送信されます。",
-      systemRegist_note_4:"※ログイン者のみ：ログインしていない場合、メニューに商品一覧が非表示となります。",
+      systemRegist_note_4:"※ログイン者のみ：ログインしていない場合、TOP・スケジュール・商品一覧・商品詳細画面が表示されません 。",
       systemRegist_note_5:"※許可する：会員側の商品詳細画面で画像ダウンロードが可能になります。",
       systemRegist_note_6:"※ファイル形式は.icoのみになります。",
       systemRegist_note_7:"※ファイル形式は.jpg、.pngのみになります。",

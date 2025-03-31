@@ -11,16 +11,37 @@ import toastStyles from '@/styles/toast.module.css';
 //型定義
 import { TPageProps } from '@/types/member/memberPage';
 
-export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId, userName, pageTitle, faviconImagePath, logoImagePath, memberRegistrationFlg,nologinView,  children,kiyakuPath,privacyPolicyPath,companyUrl,pageSettingList ,kobutsuBango,copyRight }) => {
+
+export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId
+  , userName
+  , pageTitle
+  , faviconImagePath
+  , logoImagePath
+  , memberRegistrationFlg
+  , nologinView
+  , children
+  , kiyakuPath
+  , privacyPolicyPath
+  , companyUrl
+  , pageSettingList
+  , kobutsuBango
+  , copyRight
+  , optionMemInvoice }) => {
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
         {faviconImagePath && <link rel="icon" href={faviconImagePath} />}
       </Head>
-     
-      <HeaderComponent userId={userId}userName={userName} logoImagePath={logoImagePath || ""} nologinView={nologinView} memberRegistrationFlg={memberRegistrationFlg} pageSettingList={pageSettingList} />
-      
+      <HeaderComponent
+        userId={userId}
+        userName={userName}
+        logoImagePath={logoImagePath || ""}
+        nologinView={nologinView} 
+        memberRegistrationFlg={memberRegistrationFlg}
+        pageSettingList={pageSettingList} 
+        optionMemInvoice={optionMemInvoice} />
+
       <div className={styles.container}>
         <div className={styles.mainContent}>
           <main className={styles.main}>
@@ -32,7 +53,7 @@ export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId, userName, 
           </main>
         </div>
       </div>
-      <FooterComponent  
+      <FooterComponent
         kiyakuPath={kiyakuPath || ""}
         privacyPolicyPath={privacyPolicyPath || ""}
         companyUrl={companyUrl || ""}

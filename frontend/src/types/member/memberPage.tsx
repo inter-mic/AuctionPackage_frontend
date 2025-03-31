@@ -14,6 +14,7 @@ export type TPageProps ={
     kobutsuBango: string| null;
     copyRight: string| null;
     pageSettingList: TtPageSetting[];
+    optionMemInvoice: boolean | false;
 }
 
 export interface TtPageSetting {

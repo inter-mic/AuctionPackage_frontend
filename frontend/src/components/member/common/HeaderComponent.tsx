@@ -18,7 +18,7 @@ import { texts } from '@/config/texts';
 //CSS
 import styles from '@/styles/Header.module.css';
 
-export function HeaderComponent({ userId, userName, logoImagePath, nologinView, memberRegistrationFlg, pageSettingList }: HeaderProps) {
+export function HeaderComponent({ userId, userName, logoImagePath, nologinView, memberRegistrationFlg, pageSettingList, optionMemInvoice }: HeaderProps) {
   const [isMemberMenuOpen, setMemberMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const toggleMemberMenu = () => setMemberMenuOpen(!isMemberMenuOpen);
@@ -114,6 +114,9 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
         {isMemberMenuOpen && (
           <ul className={styles.dropdown}>
             <li><Link href="/member/mypage/results">{texts.menu.memberRakusatsu}</Link></li>
+            {optionMemInvoice && (
+              <li><Link href="/member/mypage/invoice">{texts.menu.memberInvoice}</Link></li>
+            )}
             <li><Link href="/member/mypage/account">{texts.menu.memberAccount}</Link></li>
             <li><Link href="/member/mypage/changePassword">{texts.menu.changePassword}</Link></li>
             <li><Link href="/login">{texts.button.logout}</Link></li>
@@ -130,7 +133,7 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
                     nologinView && <Link href="/calender">{texts.menu.memberAuction}</Link>
                   )}
                 </div>
-                
+
                 {userId && (
                   <>
                     <div className={styles.menuItem} onClick={() => toggleSubMenu('mypage')}>
@@ -140,13 +143,17 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
                     {isMobileSubMenusOpen['mypage'] && (
                       <ul className={styles.subMenu}>
                         <li><Link href="/member/mypage/results">{texts.menu.memberRakusatsu}</Link></li>
+                        {optionMemInvoice && (
+                          <li><Link href="/member/mypage/invoice">{texts.menu.memberInvoice}</Link></li>
+                        )}
+
                         <li><Link href="/member/mypage/account">{texts.menu.memberAccount}</Link></li>
                         <li><Link href="/member/mypage/changePassword">{texts.menu.changePassword}</Link></li>
                       </ul>
                     )}
                   </>
                 )}
-                
+
                 {pageSettingList.map((page) => (
                   <div className={styles.menuItem} key={page.pageSeq}>
 

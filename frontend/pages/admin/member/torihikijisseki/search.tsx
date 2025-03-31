@@ -141,6 +141,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
     torihikiJissekiCsv(Number(selectedKaisai), selectedIds, csvKbn);
   };
   const { invoicePdfAPI } = useInvoicePdfAPI();
+
   const handleInvoice = () => {
     if (selectedIds.length === 0) {
       toast.error(texts.message.selectAtLeastOne);
