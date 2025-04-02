@@ -26,9 +26,17 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
     };
 });
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * [PAGE] Live BidUnit Regist
+ * 
+ * @param {PageProps} props
+ * @returns {JSX.Element}
+
+/******  143ef128-11da-4846-9f80-a8fec9fa85f2  *******/
 const Page: React.FC<PageProps> = ({ kengen }) => {
     const { useState, useEffect, useCallback, texts } = useCommonSetup();
-    useKengenRedirect(kengen, 207);
+    useKengenRedirect(kengen, 305);
     const { executionPermission } = useExecutionPermission(kengen);
     const { liveBidUnitList } = useLiveBidUnitSearchAPI();
     const [newLiveBidUnit, setNewLiveBidUnit] = useState<TMtLiveBidUnit>({
@@ -152,7 +160,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                             </table>
 
                         </div>
-                        {executionPermission(207, 2) ? (
+                        {executionPermission(305, 2) ? (
                             <RegistButton label={texts.button.regist} onClick={handleNewSubmit} />
                         ) : (
                             <></>
@@ -201,7 +209,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                                                 onClick={() => handleDelete(item.seq)}
                                                 className="lg:ml-2.5 mt-2 lg:mt-0 bg-white border border-solid border-red-500 text-red-500 font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
                                             >
-                                                削除
+                                                {texts.button.delete}
                                             </button>
                                         </td>
                                     </tr>
@@ -212,7 +220,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                             {formErrors?.unitRange && <p className="error-message">{formErrors.unitRange}</p>}
                         </div>
 
-                        {executionPermission(207, 2) ? (
+                        {executionPermission(305, 2) ? (
                             <RegistButton label={texts.button.regist} onClick={handleUpdateSubmit} />
                         ) : (
                             <></>

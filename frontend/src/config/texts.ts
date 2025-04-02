@@ -29,6 +29,7 @@ export const texts = {
       adminKaisaiRegist:"開催回管理",
       adminLiveAuctioner:"オークショニア",
       adminLiveBidUnitRegist:"ライブ入札単位管理",
+      adminLiveMessageRegist:"ライブメッセージ管理",
       adminInfoRegist:"お知らせ管理",
       adminTopImageRegist:"TOP画像管理",
       adminSettingTitle:"設定管理",
@@ -456,6 +457,9 @@ export const texts = {
     bidUnit:{
       unitRange:"現在価格範囲",
       bidUnit:"入札単位"
+    },
+    livemessage:{
+      message:"メッセージ"
     },
     mypageResult:{
       rakusatsuTotalPrice:"落札合計金額"

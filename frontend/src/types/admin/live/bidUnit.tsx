@@ -2,7 +2,7 @@ export type TMtLiveBidUnit = {
     seq: number;
     unitFrom: string;
     unitTo: string;
-    bitUnit: number;
+    bitUnit: string;
 }
 
 export type TLiveBidUnitRegistRequest = {
