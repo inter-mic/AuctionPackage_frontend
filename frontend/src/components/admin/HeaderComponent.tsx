@@ -102,8 +102,9 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
                 {hasPermission(kengen, 301) && <li><Link href="/admin/auction/register">{texts.menu.adminKaisaiRegist}</Link></li>}
                 {hasPermission(kengen, 302) && <li><Link href="/admin/auction/bid/search">{texts.menu.adminBidList}</Link></li>}
                 {hasPermission(kengen, 303) && <li><Link href="/admin/auction/bid/logSearch">{texts.menu.adminBidLogList}</Link></li>}
-                {hasPermission(kengen, 304) && <li><Link href="/admin/auction/live/auctioner">{texts.menu.adminLiveAuctioner}</Link></li>}
-                {hasPermission(kengen, 305) && <li><Link href="/admin/auction/live/bidunit">{texts.menu.adminLiveBidUnitRegist}</Link></li>}
+                {hasPermission(kengen, 304) && <li><Link href="/admin/live/auctioner">{texts.menu.adminLiveAuctioner}</Link></li>}
+                {hasPermission(kengen, 305) && <li><Link href="/admin/live/bidunit">{texts.menu.adminLiveBidUnitRegist}</Link></li>}
+                {hasPermission(kengen, 306) && <li><Link href="/admin/live/message">{texts.menu.adminLiveMessageRegist}</Link></li>}
               </ul>
             )}
             <li className={styles.toggleMenu} onClick={() => toggleSubMenu('staff')}>{texts.menu.adminStaffTitle}</li>

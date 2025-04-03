@@ -17,7 +17,7 @@ import { PageProps } from '@/types/admin/adminPage';
 import { RegistButton } from '@/components/ui/buttons/admin/registButton';
 import { MessageDeleteButton } from '@/components/ui/buttons/admin/MessageDeleteButton';
 
-export const getServerSideProps: GetServerSideProps = withAuth(async () => {
+export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
       pageTitle: texts.menu.adminLiveMessageRegist
@@ -45,7 +45,10 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
     messageRegistAPI(null, newmessage);
   };
   const handleUpdateSubmit = (messageSeq: string, message: string) => {
-    messageRegistAPI(messageSeq, message);
+    const requestData = {
+        message: message || ''
+      };
+    messageRegistAPI(messageSeq, requestData);
   };
 
 
@@ -95,9 +98,9 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
             <div className="flex flex-col md:flex-row items-end space-y-4">
               <div className="w-full sm:w-1/3">
                 <input
-                  id="messageName"
+                  id="message"
                   type='text'
-                  name="messageName"
+                  name="message"
                   onChange={handleNewmessageChange}
                   className="w-full border p-2 rounded h-10"
                 />
@@ -109,7 +112,7 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
               )}
             </div>
             <div className="w-full sm:w-1/3">
-              {formErrors?.messageName && <p className="error-message">{formErrors.messageName}</p>}
+              {formErrors?.message && <p className="error-message">{formErrors.message}</p>}
             </div>
           </div>
         </div>

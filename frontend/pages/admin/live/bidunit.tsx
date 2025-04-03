@@ -9,9 +9,9 @@ import { useCommonSetup } from '@/hooks/useCommonSetup';
 import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 //API
-import { useLiveBidUnitSearchAPI } from '@/hooks/api/admin/live/useLiveBidUnitSearchAPI';
-import { useLiveBidUnitInsertAPI } from '@/hooks/api/admin/live/useLiveBidUnitInsertAPI';
-import { useLiveBidUnitUpdateAPI } from '@/hooks/api/admin/live/useLiveBidUnitUpdateAPI';
+import { useLiveBidUnitSearchAPI } from '@/hooks/api/admin/live/bidunit/useLiveBidUnitSearchAPI';
+import { useLiveBidUnitInsertAPI } from '@/hooks/api/admin/live/bidunit/useLiveBidUnitInsertAPI';
+import { useLiveBidUnitUpdateAPI } from '@/hooks/api/admin/live/bidunit/useLiveBidUnitUpdateAPI';
 //型定義
 import { PageProps } from '@/types/admin/adminPage';
 import { TMtLiveBidUnit } from '@/types/admin/live/bidUnit';
@@ -26,14 +26,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
     };
 });
 
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * [PAGE] Live BidUnit Regist
- * 
- * @param {PageProps} props
- * @returns {JSX.Element}
 
-/******  143ef128-11da-4846-9f80-a8fec9fa85f2  *******/
 const Page: React.FC<PageProps> = ({ kengen }) => {
     const { useState, useEffect, useCallback, texts } = useCommonSetup();
     useKengenRedirect(kengen, 305);

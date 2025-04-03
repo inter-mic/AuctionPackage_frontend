@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect } = useCommonSetup();
-  useKengenRedirect(kengen, 201);
+  useKengenRedirect(kengen, 304);
   const { executionPermission } = useExecutionPermission(kengen);
   const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
 
