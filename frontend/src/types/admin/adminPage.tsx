@@ -5,6 +5,7 @@ export interface PageProps {
     faviconImagePath: string | null;
     logoImagePath: string | null;
     kengen: Kengen[];
+    optionInvoice: boolean | false;
 }
 
 export interface Kengen {

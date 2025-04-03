@@ -41,7 +41,8 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   };
 });
 
-const Page: React.FC<PageProps> = ({ kengen }) => {
+
+const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
 
   useKengenRedirect(kengen, 104);
@@ -140,6 +141,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     torihikiJissekiCsv(Number(selectedKaisai), selectedIds, csvKbn);
   };
   const { invoicePdfAPI } = useInvoicePdfAPI();
+
   const handleInvoice = () => {
     if (selectedIds.length === 0) {
       toast.error(texts.message.selectAtLeastOne);
@@ -211,7 +213,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             {executionPermission(102, 2) && (
               <>
                 <div className="text-right  mt-2">
-                  <OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />
+                  {optionInvoice && (<OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />)}
                   <OutPutButton onClick={() => handleTorihikiCsvExport(1)} text={texts.button.torihikiCsv} />
                 </div>
 

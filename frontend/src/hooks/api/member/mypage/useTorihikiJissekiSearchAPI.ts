@@ -1,0 +1,22 @@
+//カスタムフック
+import { useCommonSetup } from '@/hooks/useCommonSetup';
+//型定義
+import { TMemberTorihikiJissekiRequest, TVTorihikiJisseki } from '@/types/member/invoice';
+import { Errors } from '@/types/errors';
+
+
+export const useTorihikiJissekiSearchAPI = () => {
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const [torihikiList, setTorihikiList] = useState<TVTorihikiJisseki[]>([]);
+  const [errors, setErrors] = useState<Errors>();
+  const torihikiJissekiSearchAPI = async (searchParams: TMemberTorihikiJissekiRequest) => {
+    const { status, data: responseData } = await apiRequest("member", 'torihikiJisseki/search', 'POST', searchParams, "", true);
+    if (status == 400) {
+      setErrors(responseData);
+    } else if (status == 200 && responseData) {
+      setTorihikiList(responseData);    
+    }
+  };
+
+  return { torihikiList,  errors, torihikiJissekiSearchAPI }
+};

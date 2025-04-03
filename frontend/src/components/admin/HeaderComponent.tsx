@@ -64,15 +64,18 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
       <header className={styles.header}>
         <div className={styles.logo}>
         <Link href="/admin/dashboard">
-        <Image
-          src={logoImagePath}
-          alt=""
-          className={styles.logo}
-          width={100}
-          height={100} // 明示的に指定
-          style={{ width: '100px', height: '50px', objectFit: 'contain' }} 
-          priority
-        />
+        {logoImagePath && (
+  <Image
+    src={logoImagePath}
+    alt=""
+    className={styles.logo}
+    width={100}
+    height={100} // 明示的に指定
+    style={{ width: '100px', height: '50px', objectFit: 'contain' }}
+    priority
+  />
+)}
+
         </Link>
         </div>
         <nav className={styles.menu}>

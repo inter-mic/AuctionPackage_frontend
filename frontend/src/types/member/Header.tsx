@@ -4,6 +4,7 @@ export interface HeaderProps {
     logoImagePath: string;
     memberRegistrationFlg:boolean | false;
     nologinView:boolean | false;
+    optionMemInvoice:boolean | false;
     pageSettingList: TtPageSetting[];
 }
 export interface TtPageSetting {

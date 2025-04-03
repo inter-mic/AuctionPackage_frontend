@@ -30,6 +30,7 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
       nologinView: data.nologinView,
       kiyakuPath: data.kiyakuPath,
       privacyPolicyPath: data.privacyPolicyPath,
+      optionMemInvoice: data.optionMemInvoice,
       companyName: data.companyName,
       zipCode: data.zipCode,
       todofukenName: data.todofukenName,
