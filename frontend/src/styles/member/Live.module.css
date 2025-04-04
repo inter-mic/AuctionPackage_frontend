@@ -81,6 +81,20 @@
   flex: 1; /* 右側のスペースを確保 */
 }
 
+.msgDiv {
+  color:#cb5201;
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+  padding: 25px;
+  animation: blinking 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes blinking {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
 @media (max-width: 768px) {
   .leftSection,
   .rightSection {

@@ -34,6 +34,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [isBidDisabled, setIsBidDisabled] = useState(true); 
   const [bidStatus, setBidStatus] = useState(0); 
   const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
+  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false); 
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
@@ -45,7 +46,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       
-      if (data.type === 'set' || data.type === 'start' || data.type === 'updatePrice') {
+      if (data.type === 'set' || data.type === 'start' || data.type === 'updatePrice' || data.type === 'clear') {
         setReceivedData(data);
         setBidStatus(loginUserId === data.kenriUserId ? 1 : 0);
       }
@@ -57,6 +58,14 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         setIsBidDisabled(loginUserId === data.kenriUserId);
         setBidHistory((prevHistory) => [{ bidPrice: data.currentPrice, userId: data.kenriUserId, timestamp: data.timestamp }, ...prevHistory]);
       }
+      if (data.type === 'bidComingSoon') {
+        setBidComingSoonMsg(true);
+      } else {
+        setBidComingSoonMsg(false);
+      }
+      if (data.type === 'clear') {
+        setBidHistory([]);
+      }  
       
     };
 
@@ -161,6 +170,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
             </div>
           </div>
+          {isBidComingSoonMsgFlg && (
+            <div className={styles.msgDiv}>
+              <span>{texts.button.BidComingSoon}</span>
+            </div>
+          )}
 
         </div>
         <div className={styles.rightSection}>

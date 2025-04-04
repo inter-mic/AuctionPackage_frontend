@@ -460,7 +460,8 @@ export const texts = {
       bidUnit:"入札単位"
     },
     livemessage:{
-      message:"メッセージ"
+      message:"メッセージ",
+      confirmClear:"強制クリアします。よろしいですか？",
     },
     mypageResult:{
       rakusatsuTotalPrice:"落札合計金額"

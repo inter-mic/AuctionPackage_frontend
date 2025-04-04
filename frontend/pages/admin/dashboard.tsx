@@ -81,7 +81,7 @@ const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen }) => (
       {hasPermission(kengen, 301) && <Button label={texts.menu.adminKaisaiRegist} url="/admin/auction/register"/>}
       {hasPermission(kengen, 302) && <Button label={texts.menu.adminBidList} url="/admin/auction/bid/search"/>}
       {hasPermission(kengen, 303) && <Button label={texts.menu.adminBidLogList} url="/admin/auction/bid/logSearch"/>}
-      {hasPermission(kengen, 304) && <Button label={texts.menu.adminLiveAuctioner} url="/admin/auction/live/auctioner"/>}
+      {hasPermission(kengen, 304) && <Button label={texts.menu.adminLiveAuctioner} url="/admin/live/auctioneer"/>}
       {hasPermission(kengen, 305) && <Button label={texts.menu.adminLiveBidUnitRegist} url="/admin/live/bidunit"/>}
       {hasPermission(kengen, 306) && <Button label={texts.menu.adminLiveMessageRegist} url="/admin/live/message"/>}
     </Section>

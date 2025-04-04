@@ -21,7 +21,7 @@ import { Errors } from '@/types/errors';
 //コンポーネント
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
 import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas } from '@/components/common/PriceUtils';
-
+import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
 //ボタン
 import { CallButton } from '@/components/ui/buttons/admin/live/callButton';
 import { LotBeforeAffterButton } from '@/components/ui/buttons/admin/live/LotBeforeAffterButton';
@@ -154,6 +154,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     goodsName: fetchGoodsData.goodsName,
     goodsImage: fetchGoodsData.thumbnailImageUrl,
   });
+  const getClearCommonData = () => ({
+    goodsId: '',
+    lot: '',
+    goodsName: '',
+    goodsImage: '',
+  });
   const [currentPrice, setCurrentPrice] = useState<string>('');
   const [nextPrice, setNextPrice] = useState<string>('');
   const [kenriUserId, setKenriUserId] = useState<string>('');
@@ -161,11 +167,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const message = {
-        type,
-        ...getCommonData(),
-        ...additionalData,
-      };
+      let message;
+      if (type === 'clear') {
+        message = {
+          type,
+          ...getClearCommonData(),
+          ...additionalData,
+        };
+      } else {
+        message = {
+          type,
+          ...getCommonData(),
+          ...additionalData,
+        };
+      }
       ws.current.send(JSON.stringify(message));
     } else {
       console.error(`[${type.toUpperCase()}] WebSocket is not open`);
@@ -185,6 +200,36 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     });
     setIsStartButtonClicked(true);
     setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
+  };
+
+
+
+  // 強制クリア用関数
+  const lotInputRef = useRef<HTMLInputElement>(null);
+  const clear = async () => {
+    setCurrentPrice('');
+    setNextPrice('');
+    fetchGoodsData.startPrice = '';
+    setKenriPrice('');
+    setSearchLot('');
+    setIsCallButtonClicked(false);
+    setIsStartButtonClicked(false);
+    setIsSetButtonClicked(false);
+    
+    sendWebSocketMessage('clear', {
+      nextPrice: '',
+      currentPrice: '',
+    });
+
+    setBidComingSoonMsg(false);
+    lotInputRef.current?.focus();
+  };
+
+  //もうすぐ落札を配信用
+  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false); 
+  const bidComingSoonHaishin = async () => {
+    sendWebSocketMessage('bidComingSoon');
+    setBidComingSoonMsg(true);
   };
 
   //オンライン入札価格を配信用
@@ -210,6 +255,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     });
 
     setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
+    setBidComingSoonMsg(false);
   };
 
   //現在価格を配信用関数
@@ -218,6 +264,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       nextPrice: formatPriceMultiplication(nextPrice),
       currentPrice: formatPriceMultiplication(currentPrice),
     });
+    setBidComingSoonMsg(false);
   };
   useEffect(() => {
     if (goodsSearchErrors) { setInputSeatchErrors(goodsSearchErrors); }
@@ -281,10 +328,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}>{goodsData.saiteiRakusatsuPrice || ''}</label>
               </div>
               <div className={styles.labelRow}>
-                <label className={styles.auctionlabel}>{texts.goods.estimate}</label>
-                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
-              </div>
-              <div className={styles.labelRow}>
                 <label className={styles.auctionlabel}>{texts.goods.farst_jizen_nyusatsu}</label>
                 <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
               </div>
@@ -324,6 +367,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 id="lot"
                 type="text"
                 name="lot"
+                ref={lotInputRef}
                 value={searchLot}
                 onChange={handleSearchLotChange}
                 className={`border p-2 rounded h-10 w-40
@@ -337,7 +381,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <div className={styles.rightButtons}>
               <SetButton onClick={set} disabled={!isCallButtonClicked} />
               <StartButton onClick={start} disabled={!isSetButtonClicked} />
-              <ClearButton onClick={start} disabled={!isSetButtonClicked} />
+              <ConfirmDialog
+                title={texts.livemessage.confirmClear}
+                description=''
+                buttonTitle={texts.button.liveClear}
+                className={`bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-full w-40`}
+                dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
+                dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
+                onSubmit={clear}
+                buttonText={texts.button.liveClear}
+              />
             </div>
           </div>
           <div className={styles.priceSection}>
@@ -391,7 +444,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
-            <StatusButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
+            <StatusButton onClick={() => bidComingSoonHaishin()} status={1} disabled={!isStartButtonClicked} />
             <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
             </div>
             <div className={styles.rightButtons}>
@@ -408,11 +461,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
             </div>
           </div>
-
-
-
-
-
+          {isBidComingSoonMsgFlg && (
+            <div className={styles.msgDiv}>
+              <span>{texts.button.BidComingSoon}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

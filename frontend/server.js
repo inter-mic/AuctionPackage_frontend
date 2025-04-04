@@ -31,9 +31,9 @@ wss.on('connection', (ws) => {
       goodsName: data.goodsName,
       goodsImage: data.goodsImage,
     };
-    if (data.type === 'start' || data.type === 'updatePrice') {
-      latestData = { ...data };
-    }
+
+    latestData = { ...data };
+    
     // 接続しているすべてのクライアントにデータを送信
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
