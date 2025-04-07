@@ -250,6 +250,7 @@ export const texts = {
       goods_search_3:"注目商品",
       goods_search_4:"終了していない商品",
       bidPrice:"入札金額",
+      jizenBidPrice:"事前入札金額",
       RemainingTime:"残り時間",
       auctionStatus1:"落札",
       auctionStatus2:"終了",

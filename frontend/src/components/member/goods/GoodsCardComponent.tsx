@@ -73,7 +73,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
         <p className={styles.goodsSetsumei}>{goodsInfo.goodsSetsumei}</p>
 
         <p className={styles.goodsRowInfo}>
-          {goodsInfo.spnKbn == "4" ? (
+          {goodsInfo.spnKbn != "3" ? (
             <span>{texts.goods.startPrice}</span>
           ) : (
             <span>{texts.goods.currentPrice}</span>
@@ -81,36 +81,40 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
           <span className={`${styles.currentPrice} ${data.isPriceUpdated ? styles.priceUpdated : ""}`}><CurrencyYenIcon />{goodsInfo.startCurrentPrice}</span>
         </p>
         <p className={styles.goodsRowInfo}>
-          <span>{texts.goods.bidPrice}</span>
+          {goodsInfo.spnKbn == "1" || goodsInfo.spnKbn == "2" ? (
+            <span>{texts.goods.jizenBidPrice}</span>
+          ) : (
+            <span>{texts.goods.bidPrice}</span>
+          )}
+
           {goodsInfo.bidPrice != "" ? (
             <span className={styles.bidPrice}><CurrencyYenIcon />{goodsInfo.bidPrice}</span>
           ) : (
             <span></span>
           )}
         </p>
-
-        <div className={styles.goodsRowInfo}>
-          <div className="flex items-center gap-1">
-            {goodsInfo.spnKbn == "4" ? (
-              <div></div>
-            ) : (
-              goodsInfo.bidCount ? (
+        {(goodsInfo.spnKbn === "3" || goodsInfo.spnKbn === "4") && (
+          <div className={styles.goodsRowInfo}>
+            <div className="flex items-center gap-1">
+              {goodsInfo.spnKbn === "3" && goodsInfo.bidCount && (
                 <>
                   <GavelIcon className="text-gray-500" />
                   <span className={`${styles.bidCount} ${data.isPriceUpdated ? styles.priceUpdated : ""}`}>
                     {goodsInfo.bidCount} {texts.label.resultCount}
                   </span>
                 </>
-              ) : null
+              )}
+            </div>
+            {goodsInfo.remainingTime && (
+              <div className="flex items-center gap-1">
+                <AccessTimeIcon className="text-gray-500" />
+                <span className={styles.remainingTime}>
+                  <RemainingTime initialTime={goodsInfo.remainingTime} />
+                </span>
+              </div>
             )}
           </div>
-          {goodsInfo.remainingTime && (
-            <div className="flex items-center gap-1">
-              <AccessTimeIcon className="text-gray-500" />
-              <span className={styles.remainingTime}><RemainingTime initialTime={goodsInfo.remainingTime} /></span>
-            </div>
-          )}
-        </div>
+        )}
 
       </div>
 
