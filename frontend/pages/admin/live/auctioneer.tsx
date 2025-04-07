@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { texts } from '@/config/texts';
 import { useRef } from 'react';
+import { useRouter } from 'next/router';
 //ホック
 import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminNoHeaderLayout from '@/hocs/withAdminNoHeaderLayout';
@@ -48,6 +49,9 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
+  const router = useRouter();
+  const { spnKbn } = router.query;
+
   const { useState, useEffect } = useCommonSetup();
   useKengenRedirect(kengen, 304);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -445,17 +449,27 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
             <StatusButton onClick={() => bidComingSoonHaishin()} status={1} disabled={!isStartButtonClicked} />
-            <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            {spnKbn == "2" && (
+              <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            )}
             </div>
             <div className={styles.rightButtons}>
-            <PriceButton onClick={() => onlinePriceHaishin()} isonline={true} disabled={!isStartButtonClicked} />
-            <PriceButton onClick={() => currentPriceHaishin()} isonline={false} disabled={!isStartButtonClicked} />
+            {spnKbn == "2" && (
+              <PriceButton onClick={() => onlinePriceHaishin()} isonline={true} disabled={!isStartButtonClicked} />         
+            )}
+            {spnKbn == "2" && (
+              <PriceButton onClick={() => currentPriceHaishin()} isonline={false} disabled={!isStartButtonClicked} />   
+            )}
             </div>
           </div>
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
-            <ResultsButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
-            <ResultsButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            {spnKbn == "2" && (
+              <ResultsButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
+            )}
+            {spnKbn == "2" && (
+              <ResultsButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            )}
             </div>
             <div className={styles.rightButtons}>
 
