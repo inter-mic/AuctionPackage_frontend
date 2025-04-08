@@ -11,9 +11,10 @@ import { TMtAuction } from '@/types/admin/auction/search';
 2：掲載中開催回
 3：締め前開催回
 4：締め済み開催回
+5：出品区分指定
 */
 
-export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbn: number) => {
+export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbns: string[]) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [auction, setAuction] = useState<TMtAuction[]>([]);
   useEffect(() => {
@@ -28,10 +29,12 @@ export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbn: number) => {
         endPoint = `auction/searchShimemae`;
       } else if (kaisaiStatus == 4){
         endPoint = `auction/searchShimezumi`;
+      } else if (kaisaiStatus == 5){
+        endPoint = `auction/searchBySpnKbn`;
       } else{
         endPoint = `auction/search`;
       }
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', null, "", true);
+      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', spnKbns.length > 0 ? spnKbns : null, "", true);
       if (responseData) {
         const transformedData = responseData.map((data: any) => ({
           ...data,

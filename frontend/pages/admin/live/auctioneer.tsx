@@ -49,12 +49,11 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const router = useRouter();
-  const { spnKbn } = router.query;
-
   const { useState, useEffect } = useCommonSetup();
   useKengenRedirect(kengen, 304);
   const { executionPermission } = useExecutionPermission(kengen);
+  const { spnKbn } = useRouter().query;
+
   const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
 
   const [searchSelectedKaisai, setSearchSelectedKaisai] = useState<string>('');
@@ -285,7 +284,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               className={`${styles.select} ${inputSeatchErrors?.auctionSeq ? 'bg-red-300' : ''}`}
               onChange={(value) => handleSearchKaisaiChange('auctionSeq', value)}
               selectedId={searchSelectedKaisai !== null ? String(searchSelectedKaisai) : ''}
-              kaisaiStatus={0}
+              kaisaiStatus={5}
+              spnKbns={typeof spnKbn === 'string' ? [spnKbn] : spnKbn}
             />
 
           </div>
@@ -397,77 +397,79 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               />
             </div>
           </div>
-          <div className={styles.priceSection}>
-            <div className={styles.priceGroup}>
-              <span className={styles.priceLabel}>次価格</span>
-              <input
-                type="text"
-                className={styles.priceInput}
-                value={nextPrice}
-                onChange={(e) => setNextPrice(e.target.value)}
-              />
-              <span>,000</span>
+          {spnKbn == "1" && (
+            <div className={styles.priceSection}>
+              <div className={styles.priceGroup}>
+                <span className={styles.priceLabel}>次価格</span>
+                <input
+                  type="text"
+                  className={styles.priceInput}
+                  value={nextPrice}
+                  onChange={(e) => setNextPrice(e.target.value)}
+                />
+                <span>,000</span>
 
-              <span className={styles.priceLabel}>現在価格</span>
-              <input
-                type="text"
-                className={styles.priceInput}
-                value={currentPrice}
-                onChange={(e) => setCurrentPrice(e.target.value)}
-              />
-              <span>,000</span>
+                <span className={styles.priceLabel}>現在価格</span>
+                <input
+                  type="text"
+                  className={styles.priceInput}
+                  value={currentPrice}
+                  onChange={(e) => setCurrentPrice(e.target.value)}
+                />
+                <span>,000</span>
+              </div>
             </div>
-          </div>
+          )}
 
 
+          {spnKbn == "1" && (
+            <div className={styles.adjustButtons}>
+              <SerihabaButton
+                isplus={false}
+                disabled={!isStartButtonClicked}
+                currentPrice={currentPrice}
+                nextPrice={nextPrice}
+                fetchGoodsData={fetchGoodsData}
+                onUpdatePrices={(newCurrentPrice, newNextPrice) => {
+                  setCurrentPrice(newCurrentPrice);
+                  setNextPrice(newNextPrice);
+                }}
+              />
 
-          <div className={styles.adjustButtons}>
-            <SerihabaButton
-              isplus={false}
-              disabled={!isStartButtonClicked}
-              currentPrice={currentPrice}
-              nextPrice={nextPrice}
-              fetchGoodsData={fetchGoodsData}
-              onUpdatePrices={(newCurrentPrice, newNextPrice) => {
-                setCurrentPrice(newCurrentPrice);
-                setNextPrice(newNextPrice);
-              }}
-            />
-
-            <SerihabaButton
-              isplus={true}
-              disabled={!isStartButtonClicked}
-              currentPrice={currentPrice}
-              nextPrice={nextPrice}
-              fetchGoodsData={fetchGoodsData}
-              onUpdatePrices={(newCurrentPrice, newNextPrice) => {
-                setCurrentPrice(newCurrentPrice);
-                setNextPrice(newNextPrice);
-              }}
-            />
-          </div>
+              <SerihabaButton
+                isplus={true}
+                disabled={!isStartButtonClicked}
+                currentPrice={currentPrice}
+                nextPrice={nextPrice}
+                fetchGoodsData={fetchGoodsData}
+                onUpdatePrices={(newCurrentPrice, newNextPrice) => {
+                  setCurrentPrice(newCurrentPrice);
+                  setNextPrice(newNextPrice);
+                }}
+              />
+            </div>    
+          )}
+          
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
             <StatusButton onClick={() => bidComingSoonHaishin()} status={1} disabled={!isStartButtonClicked} />
-            {spnKbn == "2" && (
-              <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
-            )}
+            <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
             </div>
             <div className={styles.rightButtons}>
-            {spnKbn == "2" && (
+            {spnKbn == "1" && (
               <PriceButton onClick={() => onlinePriceHaishin()} isonline={true} disabled={!isStartButtonClicked} />         
             )}
-            {spnKbn == "2" && (
+            {spnKbn == "1" && (
               <PriceButton onClick={() => currentPriceHaishin()} isonline={false} disabled={!isStartButtonClicked} />   
             )}
             </div>
           </div>
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
-            {spnKbn == "2" && (
+            {spnKbn == "1" && (
               <ResultsButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
             )}
-            {spnKbn == "2" && (
+            {spnKbn == "1" && (
               <ResultsButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
             )}
             </div>

@@ -15,12 +15,12 @@ type Props = {
   disabled?: boolean;  
   kaisaiStatus: number;
   defaultSetOption?:number; 
-  spnKbn?: number;
+  spnKbns?: string[];
 };
 
-export const KaisaiListPullDown = ({ className, onChange, selectedId, disabled, kaisaiStatus, defaultSetOption, spnKbn }: Props) => {
+export const KaisaiListPullDown = ({ className, onChange, selectedId, disabled, kaisaiStatus, defaultSetOption, spnKbns }: Props) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const { auction } = useAuctionSearchAPI(kaisaiStatus,spnKbn ?? 0);
+  const { auction } = useAuctionSearchAPI(kaisaiStatus,spnKbns ?? []);
   const [selectedAuctionSeq, setSelectedAuctionSeq] = useState<string | null>(null);
   useEffect(() => {
     if (selectedId !== null && selectedId !== undefined) {      
