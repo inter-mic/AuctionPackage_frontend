@@ -104,25 +104,12 @@ export const useApiRequest = () => {
         return { status: res.status, data: responseData.data };
       } else {
         const errorMessage = await res.text();
-        if (showToast) {
-          toast.update(toastId!, { 
-            render: `エラーが発生しました: ${errorMessage}`, 
-            type: 'error', 
-            isLoading: false,
-            autoClose: 3000 
-          });
-        }
+        console.error(errorMessage);
         return { status: res.status, data: false };
       }
     } catch (error) {
-      if (showToast) {
-        toast.update(toastId!, { 
-          render: '通信エラーが発生しました', 
-          type: 'error', 
-          isLoading: false,
-          autoClose: 3000 
-        });
-      }
+      console.error('通信エラーが発生しました');
+     
       return { status: 500, data: false };
     }
   };
