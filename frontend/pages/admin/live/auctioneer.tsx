@@ -22,7 +22,7 @@ import { PageProps } from '@/types/admin/adminPage';
 import { Errors } from '@/types/errors';
 //コンポーネント
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
-import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas } from '@/components/common/PriceUtils';
+import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas, formatPriceNum } from '@/components/common/PriceUtils';
 import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
 //ボタン
 import { CallButton } from '@/components/ui/buttons/admin/live/callButton';
@@ -97,6 +97,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [startPrice, setStartPrice] = useState<string>('');
   const [currentPrice, setCurrentPrice] = useState<string>('');
   const [nextPrice, setNextPrice] = useState<string>('');
+  const [bidUnit, setBidUnit] = useState<string>('');
   const [kenriUserId, setKenriUserId] = useState<number | null>();
   const [kenriPrice, setKenriPrice] = useState<string>('');
   useEffect(() => {
@@ -134,8 +135,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       if (fetchLiveBidInfoData.startPrice) {
         const formattedStartPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.startPrice.replace(/,/g, '')));
         setStartPrice(formattedStartPrice);
-        
-        console.log("スタート価格："+formattedStartPrice);
       } else {
         setStartPrice('');
       }
@@ -154,8 +153,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       if (fetchLiveBidInfoData.nextPrice) {
         const formattedNextPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.nextPrice.replace(/,/g, '')));
         setNextPrice(formattedNextPrice);
-        
-        console.log("次価格："+formattedNextPrice);
       } else {
         setNextPrice('');
       }
@@ -165,6 +162,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setKenriUserId(fetchLiveBidInfoData.kenriUserId);
       } else {
         setKenriUserId(null);
+      }
+
+      //セリ幅セット
+      if (fetchLiveBidInfoData.bidUnit) {
+        const formattedBidUnit = formatPriceWithCommas(Number(fetchLiveBidInfoData.bidUnit.replace(/,/g, '')));
+        setBidUnit(formattedBidUnit);
+      } else {
+        setBidUnit('');
       }
     }
   }, [fetchLiveBidInfoData]);
@@ -268,11 +273,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   // スタートボタン用関数
   const start = async () => {
     sendWebSocketMessage('start', {
-      nextPrice: formatPriceMultiplication(nextPrice),
-      currentPrice: formatPriceMultiplication(currentPrice),
+      // nextPrice: formatPriceMultiplication(nextPrice),
+      // currentPrice: formatPriceMultiplication(currentPrice),
+      nextPrice: formatPriceNum(nextPrice),
+      currentPrice: formatPriceNum(currentPrice),
     });
     setIsStartButtonClicked(true);
-    setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
+    // setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
+    setKenriPrice(currentPrice.toLocaleString());
   };
 
 
@@ -280,10 +288,21 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   // 強制クリア用関数
   const lotInputRef = useRef<HTMLInputElement>(null);
   const clear = async () => {
+    setSaiteiRakusatsuPricePrice('');
+    setFirstPreBidUserId(null);
+    setFirstPreBidPrice('');
+    setSecondPreBidUserId(null);
+    setSecondPreBidPrice('');
+    setStartPrice('');
     setCurrentPrice('');
     setNextPrice('');
-    fetchGoodsData.startPrice = '';
+    setBidUnit('');
+    setKenriUserId(null);
     setKenriPrice('');
+
+    setOnlineBidHistory([]);
+    
+    fetchGoodsData.startPrice = '';
     setSearchLot('');
     setIsCallButtonClicked(false);
     setIsStartButtonClicked(false);
@@ -433,7 +452,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         <div className={styles.centerRight}>
           <div className={styles.currentInfoDiv}>現在価格：{kenriPrice}</div>
           <div className={styles.currentInfoDiv}>現在権利者：{kenriUserId}</div>
-          <div className={styles.currentInfoDiv}>セリ幅：</div>
+          <div className={styles.currentInfoDiv}>セリ幅：{bidUnit}</div>
         </div>
         <div className={styles.bottomRight}>
           <div className={styles.labelRow}>

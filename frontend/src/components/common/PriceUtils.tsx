@@ -24,4 +24,13 @@ export const formatPriceDivision = (price: string): string => {
   export const formatPriceWithCommas = (price: number): string => {
     return price.toLocaleString();
   };
+
+  /**
+   * カンマ区切りの文字列を数値に変換し、1000を掛けた結果を返します
+   * @param price - カンマ区切りの文字列
+   * @returns 数値
+   */
+  export const formatPriceNum = (price: string): number => {
+    return Number(price.replace(/,/g, ''));
+  };
   
