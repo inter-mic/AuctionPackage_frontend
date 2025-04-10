@@ -13,6 +13,7 @@ import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 //API
 import { useGoodsSearchByGoodsIdAPI } from '@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI';
+import { useLiveBidInfoSearchAPI } from '@/hooks/api/admin/live/bidInfo/useLiveBidInfoSearchAPI';
 import { useGoodsSearchBeforeAfterLotAPI } from '@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI';
 //型定義
 import { GoodsData, initialGoodsData } from '@/types/admin/goods/register';
@@ -71,9 +72,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
   //検索
   const { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
+  const { fetchLiveBidInfoData, liveBidInfoSearchErrors, liveBidInfoSearchAPI } = useLiveBidInfoSearchAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
   const lotSearch = async () => {
     goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
+    liveBidInfoSearchAPI(searchSelectedKaisai, searchLot);
   };
 
   //商品データセット
@@ -84,16 +87,87 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setIsCallButtonClicked(true);
     }
   }, [fetchGoodsData]);
+
+  //呼び出しから各価格セット
+  const [saiteiRakusatsuPrice, setSaiteiRakusatsuPricePrice] = useState<string>('');
+  const [firstPreBidUserId, setFirstPreBidUserId] = useState<number | null>();
+  const [firstPreBidPrice, setFirstPreBidPrice] = useState<string>('');
+  const [secondPreBidUserId, setSecondPreBidUserId] = useState<number | null>();
+  const [secondPreBidPrice, setSecondPreBidPrice] = useState<string>('');
+  const [startPrice, setStartPrice] = useState<string>('');
+  const [currentPrice, setCurrentPrice] = useState<string>('');
+  const [nextPrice, setNextPrice] = useState<string>('');
+  const [kenriUserId, setKenriUserId] = useState<number | null>();
+  const [kenriPrice, setKenriPrice] = useState<string>('');
   useEffect(() => {
-    if (fetchGoodsData.startPrice) {
-      const formattedPrice = formatPriceWithCommas(Number(fetchGoodsData.startPrice.replace(/,/g, '')) / 1000);
-      setCurrentPrice(formattedPrice);
-      setNextPrice(formattedPrice);
-    } else {
-      setCurrentPrice('');
-      setNextPrice('');
+    if (fetchLiveBidInfoData) {
+      console.log(fetchLiveBidInfoData);
+      //最低落札価格セット
+      if (fetchLiveBidInfoData.saiteiRakusatsuPrice) {
+        const formattedSaiteiRakusatsuPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, '')));
+        setSaiteiRakusatsuPricePrice(formattedSaiteiRakusatsuPrice);
+      } else {
+        setSaiteiRakusatsuPricePrice('');
+      }
+
+      //最高事前入札者・価格セット
+      if (fetchLiveBidInfoData.firstPreBidPrice) {
+        const formattedFirstPreBidPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.firstPreBidPrice.replace(/,/g, '')));
+        setFirstPreBidPrice(formattedFirstPreBidPrice);
+        setFirstPreBidUserId(fetchLiveBidInfoData.firstPreBidUserId);
+      } else {
+        setFirstPreBidPrice('');
+        setFirstPreBidUserId(null);
+      }
+
+      //2番目事前入札者・価格セット
+      if (fetchLiveBidInfoData.secondPreBidPrice) {
+        const formattedSecondPreBidPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.secondPreBidPrice.replace(/,/g, '')));
+        setSecondPreBidPrice(formattedSecondPreBidPrice);
+        setSecondPreBidUserId(fetchLiveBidInfoData.secondPreBidUserId);
+      } else {
+        setSecondPreBidPrice('');
+        setSecondPreBidUserId(null);
+      }
+
+      //スタート価格セット
+      if (fetchLiveBidInfoData.startPrice) {
+        const formattedStartPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.startPrice.replace(/,/g, '')));
+        setStartPrice(formattedStartPrice);
+        
+        console.log("スタート価格："+formattedStartPrice);
+      } else {
+        setStartPrice('');
+      }
+
+      //現在価格セット
+      if (fetchLiveBidInfoData.currentPrice) {
+        const formattedCurrentPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.currentPrice.replace(/,/g, '')));
+        setCurrentPrice(formattedCurrentPrice);
+        setKenriPrice(formattedCurrentPrice);
+      } else {
+        setCurrentPrice('');
+        setKenriPrice('');
+      }
+
+      //次価格セット
+      if (fetchLiveBidInfoData.nextPrice) {
+        const formattedNextPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.nextPrice.replace(/,/g, '')));
+        setNextPrice(formattedNextPrice);
+        
+        console.log("次価格："+formattedNextPrice);
+      } else {
+        setNextPrice('');
+      }
+
+      //権利者セット
+      if (fetchLiveBidInfoData.kenriUserId) {
+        setKenriUserId(fetchLiveBidInfoData.kenriUserId);
+      } else {
+        setKenriUserId(null);
+      }
     }
-  }, [fetchGoodsData.startPrice]);
+  }, [fetchLiveBidInfoData]);
 
   //LOT前後
   const { beforeAfterGoodsId, goodsSearchBeforeAfterLotAPI } = useGoodsSearchBeforeAfterLotAPI();
@@ -163,10 +237,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     goodsName: '',
     goodsImage: '',
   });
-  const [currentPrice, setCurrentPrice] = useState<string>('');
-  const [nextPrice, setNextPrice] = useState<string>('');
-  const [kenriUserId, setKenriUserId] = useState<string>('');
-  const [kenriPrice, setKenriPrice] = useState<string>('');
 
   const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
@@ -329,15 +399,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
               <div className={styles.labelRow}>
                 <label className={styles.auctionlabel}>{texts.goods.saiteiRakusatsuPrice}</label>
-                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}>{goodsData.saiteiRakusatsuPrice || ''}</label>
+                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}>{saiteiRakusatsuPrice}</label>
               </div>
               <div className={styles.labelRow}>
                 <label className={styles.auctionlabel}>{texts.goods.farst_jizen_nyusatsu}</label>
-                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
+                <label id="firstPreBidUserId" className={styles.auctionuserid}>{firstPreBidUserId}</label>
+                <label id="firstPreBidPrice" className={styles.auctionvalue}>{firstPreBidPrice}</label>
               </div>
               <div className={styles.labelRow}>
                 <label className={styles.auctionlabel}>{texts.goods.second_jizen_nyusatsu}</label>
-                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}></label>
+                <label id="secondPreBidUserId" className={styles.auctionuserid}>{secondPreBidUserId}</label>
+                <label id="secondPreBidPrice" className={styles.auctionvalue}>{secondPreBidPrice}</label>
               </div>
             </div>
 
@@ -359,9 +431,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         </div>
 
         <div className={styles.centerRight}>
-          現在価格：{kenriPrice}
-          現在権利者：
-          セリ幅：
+          <div className={styles.currentInfoDiv}>現在価格：{kenriPrice}</div>
+          <div className={styles.currentInfoDiv}>現在権利者：{kenriUserId}</div>
+          <div className={styles.currentInfoDiv}>セリ幅：</div>
         </div>
         <div className={styles.bottomRight}>
           <div className={styles.labelRow}>
