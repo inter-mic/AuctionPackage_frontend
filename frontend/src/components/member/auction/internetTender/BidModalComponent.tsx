@@ -88,9 +88,9 @@ const BidModalComponent: React.FC<Props> = ({
   const {  auctionBidResponseStatus, auctionBidErrors, auctionBidAPI } = useAuctionBidAPI();
   const {  tenderBidResponseStatus, tenderBidErrors, tenderBidAPI } = useTenderBidAPI();  
   const handleSubmit = () => {
-    if(bidSpnkbn == "3"){
+   if(bidSpnkbn == "3"){
       auctionBidAPI(bidGoodsId, currentBid);
-    }else{
+    }else  if(bidSpnkbn == "4"){
       tenderBidAPI(bidGoodsId, currentBid);
     }
     
@@ -102,10 +102,8 @@ const BidModalComponent: React.FC<Props> = ({
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   useEffect(() => {
     if (auctionBidErrors) { setFormErrors(auctionBidErrors); }
-  }, [auctionBidErrors]);
-  useEffect(() => {
     if (tenderBidErrors) { setFormErrors(tenderBidErrors); }
-  }, [tenderBidErrors]);
+  }, [ auctionBidErrors, tenderBidErrors]);
   useEffect(() => {
       if (auctionBidResponseStatus === 200) {handleToggleFilter();}
       // eslint-disable-next-line react-hooks/exhaustive-deps

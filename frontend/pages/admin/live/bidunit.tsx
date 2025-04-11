@@ -14,7 +14,7 @@ import { useLiveBidUnitInsertAPI } from '@/hooks/api/admin/live/bidunit/useLiveB
 import { useLiveBidUnitUpdateAPI } from '@/hooks/api/admin/live/bidunit/useLiveBidUnitUpdateAPI';
 //型定義
 import { PageProps } from '@/types/admin/adminPage';
-import { TMtLiveBidUnit } from '@/types/admin/live/bidUnit';
+import { TMtLiveBidUnit } from '@/types/common/live/bidUnit';
 //ボタン
 import { RegistButton } from '@/components/ui/buttons/admin/registButton';
 

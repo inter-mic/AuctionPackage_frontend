@@ -174,7 +174,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       }
     }, 100000);
     return () => clearInterval(intervalId);
-  }, [isLogin, memberSessionAPI]);
+  }, [isLogin, memberSessionAPI]);  
 
   return (
     <>

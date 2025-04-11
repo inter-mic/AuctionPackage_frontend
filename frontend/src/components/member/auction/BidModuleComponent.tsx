@@ -10,6 +10,7 @@ import { PleaseLoginButton } from '@/components/ui/buttons/member/pleaseLoginBut
 //コンポーネント
 import AuctionStatusComponent from '@/components/member/auction/internetTender/AuctionStatusComponent';
 import BidModalComponent from '@/components/member/auction/internetTender/BidModalComponent';
+import LiveJizenBidModalComponent from '@/components/member/auction/live/LiveJizenBidModalComponent';
 import RemainingTimeComponent from '@/components/member/auction/internetTender/RemainingTimeComponent';
 //アイコン
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -146,7 +147,7 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
     <div>
        <div className={styles.priceContainer}>
             <div className={`${styles.goodsPrice} ${bidState.bidPrice !== "" ? styles.bidPrice : ""}`}>
-              {fetchGoodsData?.spnKbn == "4" ? (
+              {fetchGoodsData?.spnKbn != "3" ? (
                 <p className={styles.priceRow}>
 
                   <span className={styles.priceLabel}>{texts.goods.startPrice}</span>
@@ -203,7 +204,7 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
                     className={`${ButtonStyles.bidButton} ${ButtonStyles.bidDetailButton}`}
                   >
                     <GavelIcon className="text-white" />
-                    {texts.button.bitToggle}
+                    {texts.button.bidToggle}
                   </button>
 
 
@@ -220,6 +221,17 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
               bidSpnkbn={fetchGoodsData?.spnKbn || ''}
               bidGoodsId={fetchGoodsData?.goodsId || 0}
               bidPrice={bidState.nextBidPrice || fetchGoodsData?.startCurrentPrice || ''}
+              bidUnit={fetchGoodsData?.bidUnit || ''}
+            />
+
+            <LiveJizenBidModalComponent
+              isOpen={isModalOpen}
+              toggleFilter={toggleModal}
+              lot={fetchGoodsData?.lot || ''}
+              goodsName={fetchGoodsData?.goodsName || ''}
+              bidGoodsId={fetchGoodsData?.goodsId || 0}
+              bidPrice={bidState.nextBidPrice}
+              startPrice={fetchGoodsData?.startPrice || ''}
               bidUnit={fetchGoodsData?.bidUnit || ''}
             />
 

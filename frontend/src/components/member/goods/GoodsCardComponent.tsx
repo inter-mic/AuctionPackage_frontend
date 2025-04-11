@@ -8,7 +8,11 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AuctionStatusComponent from '@/components/member/auction/internetTender/AuctionStatusComponent';
 import FavoriteToggleComponent from '@/components/member/goods/FavoriteToggleComponent';
 import BidModal from '@/components/member/auction/internetTender/BidModalComponent';
+import LiveJizenBidModal from '@/components/member/auction/live/LiveJizenBidModalComponent';
 import RemainingTime from '@/components/member/auction/internetTender/RemainingTimeComponent';
+import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
+//API
+import { useLiveJizenBidDeleteAPI } from '@/hooks/api/member/goods/useLiveJizenBidDeleteAPI';
 //型定義
 import { TGoodsSelect } from '@/types/common/goods';
 //スタイル
@@ -37,9 +41,18 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
     window.open(goodsUrl, "_blank");
   };
 
-  const [isModalOpen, setModalOpen] = useState(false);
-  const toggleModal = () => {
-    setModalOpen(!isModalOpen);
+  const [isBidModalOpen, setBidModalOpen] = useState(false);
+  const handleBidToggleModal = () => {
+    setBidModalOpen(!isBidModalOpen);
+  };
+  const [isJizenBidModalOpen, setJizenBidModalOpen] = useState(false);
+  const handleJizenToggleModal = () => {
+    setJizenBidModalOpen(!isJizenBidModalOpen);
+  };
+
+  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidDeleteAPI } = useLiveJizenBidDeleteAPI();
+  const handleJizenBidDelete = (goodsId: number) => {
+    liveJizenBidDeleteAPI(goodsId);
   };
   return (
     <div className={styles.goodsCard} >
@@ -118,25 +131,55 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
 
       </div>
 
-
       {isLogin && goodsInfo.auctionTimeStatus === 2 && (
-        <button
-          onClick={toggleModal}
-          className={ButtonStyles.bidButton}
-        >
-          <GavelIcon className="text-white" />
-          {texts.button.bitToggle}
-        </button>
+        <>
+          <button
+            onClick={
+              goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2"
+                ? handleJizenToggleModal
+                : handleBidToggleModal
+            }
+            className={ButtonStyles.bidButton}
+          >
+            <GavelIcon className="text-white" />
+            {texts.button[goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2" ? "jizenBidToggle" : "bidToggle"]}
+          </button>
+
+          {goodsInfo.bidPrice != "" && (goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2") && (
+            <ConfirmDialog
+              title={texts.message.confirmDelete}
+              description=''
+              buttonTitle={texts.button.delete}
+              className={ButtonStyles.jizenBidDeleteButton}
+              dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
+              dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
+              onSubmit={() => handleJizenBidDelete(goodsInfo.goodsId)}
+              buttonText={texts.button.delete}
+            />
+          )}
+
+        </>
       )}
 
       <BidModal
-        isOpen={isModalOpen}
-        toggleFilter={toggleModal}
+        isOpen={isBidModalOpen}
+        toggleFilter={handleBidToggleModal}
         lot={goodsInfo.lot}
         goodsName={goodsInfo.goodsName}
         bidSpnkbn={goodsInfo.spnKbn}
         bidGoodsId={goodsInfo.goodsId}
         bidPrice={goodsInfo.nextBidPrice || goodsInfo.startCurrentPrice.toString()}
+        bidUnit={goodsInfo.bidUnit.toString()}
+      />
+
+      <LiveJizenBidModal
+        isOpen={isJizenBidModalOpen}
+        toggleFilter={handleJizenToggleModal}
+        lot={goodsInfo.lot}
+        goodsName={goodsInfo.goodsName}
+        bidGoodsId={goodsInfo.goodsId}
+        bidPrice={goodsInfo.bidPrice !== "" ? goodsInfo.bidPrice : goodsInfo.startPrice.toString()}
+        startPrice={goodsInfo.startPrice.toString()}
         bidUnit={goodsInfo.bidUnit.toString()}
       />
     </div>

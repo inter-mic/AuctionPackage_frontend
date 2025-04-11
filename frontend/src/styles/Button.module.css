@@ -133,7 +133,17 @@
   padding-right: 1rem;
   width: 100%; 
   transition: background-color 0.3s ease, color 0.3s ease; 
-  margin: 5px 0;
+  margin: 2px 0;
+}
+.jizenBidDeleteButton{
+  height: 2.5rem;
+  background-color: #dc382f;
+  color: #fff; 
+  padding-left: 1rem; 
+  padding-right: 1rem;
+  width: 100%; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+  margin: 2px 0;
 }
 .bidDetailButton{
   height: 3.5rem;
