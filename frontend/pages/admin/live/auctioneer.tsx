@@ -76,7 +76,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
   const lotSearch = async () => {
     goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
-    liveBidInfoSearchAPI(searchSelectedKaisai, searchLot);
+    liveBidInfoSearchAPI(searchSelectedKaisai, searchLot, searchLot);
   };
 
   //商品データセット
@@ -303,6 +303,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setOnlineBidHistory([]);
     
     fetchGoodsData.startPrice = '';
+    goodsData.goodsName = '';
+    goodsData.goodsSetsumei = '';
+    goodsData.thumbnailImageUrl = "/no_image.png";
     setSearchLot('');
     setIsCallButtonClicked(false);
     setIsStartButtonClicked(false);

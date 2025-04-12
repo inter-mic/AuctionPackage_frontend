@@ -65,6 +65,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === 'clear') {
         setBidHistory([]);
+        setIsBidDisabled(true);
       }  
       
     };
@@ -116,7 +117,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         <div className={styles.leftSection}>
           <div >
             <Image
-              src={receivedData?.goodsImage ?? "/no_image.png"}
+              src={receivedData?.goodsImage != '' ? receivedData?.goodsImage : "/no_image.png"}
               alt=""
               width={300}
               height={300}

@@ -10,10 +10,10 @@ export const useLiveBidInfoSearchAPI = () => {
   const [liveBidInfoSearchErrors, setLiveBidInfoSearchErrors] = useState<Errors>();
   const [fetchLiveBidInfoData, setFetchliveBidInfoData] = useState<LiveBidInfoData>(initialLiveBidInfoData);
 
-  const liveBidInfoSearchAPI = async (auctionSeq: string , lot:string) => {
+  const liveBidInfoSearchAPI = async (auctionSeq: string , lotFrom:string, lotTo:string) => {
 
     const endPoint = `liveBidInfo/search`;
-    const requestBody = { auctionSeq, lot };
+    const requestBody = { auctionSeq, lotFrom, lotTo };
     const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', requestBody, "", true);
     if (status == 400) {
       setLiveBidInfoSearchErrors(responseData);
