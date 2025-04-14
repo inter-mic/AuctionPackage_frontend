@@ -154,7 +154,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
               dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
               dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
               onSubmit={() => handleJizenBidDelete(goodsInfo.goodsId)}
-              buttonText={texts.button.delete}
+              buttonText={texts.button.deleteJizenBidToggle}
             />
           )}
 

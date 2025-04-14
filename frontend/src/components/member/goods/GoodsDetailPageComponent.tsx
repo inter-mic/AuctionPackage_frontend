@@ -8,7 +8,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //コンポーネント
 import FavoriteToggle from '@/components/member/goods/FavoriteToggleComponent';
-import BidModuleComponent from '@/components/member/auction/internetTender/BidModuleComponent';
+import BidModuleComponent from '@/components/member/auction/BidModuleComponent';
 //API
 import { useGoodsSearchByGoodsIdAPI } from '@/hooks/api/common/useGoodsSearchByGoodsIdAPI';
 import { useGoodsSearchImageAPI } from '@/hooks/api/common/useGoodsSearchImageAPI';

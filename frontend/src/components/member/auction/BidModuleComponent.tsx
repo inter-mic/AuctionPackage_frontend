@@ -1,4 +1,4 @@
-import React　from 'react';
+import React from 'react';
 import { useRef } from 'react';
 import 'react-medium-image-zoom/dist/styles.css'
 import { toast } from 'react-toastify';
@@ -12,29 +12,37 @@ import AuctionStatusComponent from '@/components/member/auction/internetTender/A
 import BidModalComponent from '@/components/member/auction/internetTender/BidModalComponent';
 import LiveJizenBidModalComponent from '@/components/member/auction/live/LiveJizenBidModalComponent';
 import RemainingTimeComponent from '@/components/member/auction/internetTender/RemainingTimeComponent';
+import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
+//API
+import { useLiveJizenBidDeleteAPI } from '@/hooks/api/member/goods/useLiveJizenBidDeleteAPI';
 //アイコン
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GavelIcon from '@mui/icons-material/Gavel';
 import CurrencyYenIcon from '@mui/icons-material/CurrencyYen';
 //型定義
-import {  TGoodsSelect } from '@/types/common/goods';
+import { TGoodsSelect } from '@/types/common/goods';
 import { TAuctionWebSocketData } from '@/types/member/AuctionWebSocket';
 //スタイル
 import ButtonStyles from '@/styles/Button.module.css';
 import styles from '@/styles/member/auction/internetTender/Bid.module.css';
 
-interface Props  {
+interface Props {
   isLogin: boolean;
   loginUserId: number;
   fetchGoodsData: TGoodsSelect | undefined;
 }
-const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginUserId }) => {
+const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUserId }) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
- 
-  const [isModalOpen, setModalOpen] = useState(false);
-  const toggleModal = () => {
-    setModalOpen(!isModalOpen);
+
+  const [isBidModalOpen, setBidModalOpen] = useState(false);
+  const handleBidToggleModal = () => {
+    setBidModalOpen(!isBidModalOpen);
   };
+  const [isJizenBidModalOpen, setJizenBidModalOpen] = useState(false);
+  const handleJizenToggleModal = () => {
+    setJizenBidModalOpen(!isJizenBidModalOpen);
+  };
+
 
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
@@ -43,12 +51,12 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const fetchGoodsDataRef = useRef(fetchGoodsData);
   useEffect(() => {
     fetchGoodsDataRef.current = fetchGoodsData;
   }, [fetchGoodsData]);
-  
+
   const [bidState, setBidState] = useState({
     remainingTime: fetchGoodsData?.remainingTime ?? "",
     startCurrentPrice: fetchGoodsData?.startCurrentPrice ?? "",
@@ -115,7 +123,7 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
             toast.warning(texts.message.noHighestBid);
           }
         }
-        if(!data.auctionBidFlg && data.bidUserId == loginUserId){
+        if (!data.auctionBidFlg && data.bidUserId == loginUserId) {
           toast.success(texts.message.registBid);
         }
       }
@@ -141,81 +149,117 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
   );
 
   useAuctionWebSocket(updateGoodsDataApp, updateGoodsDataBatch, isLoaded);
-  
+
+  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidDeleteAPI } = useLiveJizenBidDeleteAPI();
+  const handleJizenBidDelete = (goodsId: number) => {
+    liveJizenBidDeleteAPI(goodsId);
+  };
 
   return (
     <div>
-       <div className={styles.priceContainer}>
-            <div className={`${styles.goodsPrice} ${bidState.bidPrice !== "" ? styles.bidPrice : ""}`}>
-              {fetchGoodsData?.spnKbn != "3" ? (
-                <p className={styles.priceRow}>
+      <div className={styles.priceContainer}>
+        <div className={`${styles.goodsPrice} ${bidState.bidPrice !== "" ? styles.bidPrice : ""}`}>
+          {fetchGoodsData?.spnKbn != "3" ? (
+            <p className={styles.priceRow}>
 
-                  <span className={styles.priceLabel}>{texts.goods.startPrice}</span>
-                  <span className={styles.currentPrice}>¥{fetchGoodsData?.startPrice}</span>
-                </p>
-              ) : (
-                <p className={styles.priceRow}>
-                  <span className={styles.priceLabel}>{texts.goods.currentPrice}</span>
-                  <span className={`${styles.currentPrice} ${isPriceUpdated ? styles.priceUpdated : ""}`}><CurrencyYenIcon />{bidState.startCurrentPrice}</span>
-                </p>
-              )}
+              <span className={styles.priceLabel}>{texts.goods.startPrice}</span>
+              <span className={styles.currentPrice}>¥{fetchGoodsData?.startPrice}</span>
+            </p>
+          ) : (
+            <p className={styles.priceRow}>
+              <span className={styles.priceLabel}>{texts.goods.currentPrice}</span>
+              <span className={`${styles.currentPrice} ${isPriceUpdated ? styles.priceUpdated : ""}`}><CurrencyYenIcon />{bidState.startCurrentPrice}</span>
+            </p>
+          )}
 
-              <div className={styles.priceRow}>
-                {bidState.bidPrice != null && bidState.bidPrice !== "" ? (
-                  <>
-                    <span className={styles.priceLabel}>{texts.goods.bidPrice}</span>
-                    <span className={styles.bidPrice}><CurrencyYenIcon />{bidState.bidPrice}</span>
-                  </>
-                ) : (
-                  <span></span>
-                )}
-              </div>
-            </div>
-
-
-
-            {!isLogin ? (
+          <div className={styles.priceRow}>
+            {bidState.bidPrice != null && bidState.bidPrice !== "" ? (
               <>
-                <div className={styles.loginContainer}>
-                  <PleaseLoginButton />
-                </div>
-              </>
-
-            ) : (
-              <>
-                <span className="md:h-14">
-                  <AuctionStatusComponent
-                    auctionTimeStatus={bidState.auctionTimeStatus ?? ""}
-                    currentKenriUserId={
-                      bidState.currentKenriUserId !== undefined
-                        ? bidState.currentKenriUserId
-                        : 0
-                    }
-                    loginUserId={loginUserId}
-                    texts={texts.goods}
-                    bidPrice={bidState.bidPrice ?? ""}
-                    saiteiRakusatsuPriceOverFlg={bidState.saiteiRakusatsuPriceOverFlg ?? false}
-                    isDetail={true}
-                  />
+                <span className={styles.priceLabel}>
+                  {fetchGoodsData?.spnKbn == "1" || fetchGoodsData?.spnKbn == "2" ? (
+                    <span>{texts.goods.jizenBidPrice}</span>
+                  ) : (
+                    <span>{texts.goods.bidPrice}</span>
+                  )}
                 </span>
-                {bidState.auctionTimeStatus === 2 && (
-                  <button
-                    onClick={toggleModal}
-                    className={`${ButtonStyles.bidButton} ${ButtonStyles.bidDetailButton}`}
-                  >
-                    <GavelIcon className="text-white" />
-                    {texts.button.bidToggle}
-                  </button>
-
-
-                )}
+                <span className={styles.bidPrice}><CurrencyYenIcon />{bidState.bidPrice}</span>
               </>
+            ) : (
+              <span></span>
+            )}
+          </div>
+        </div>
 
+
+
+        {!isLogin ? (
+          <>
+            <div className={styles.loginContainer}>
+              <PleaseLoginButton />
+            </div>
+          </>
+
+        ) : (
+          <>
+            {fetchGoodsData?.spnKbn == "1" || fetchGoodsData?.spnKbn == "2" ? (
+              <span></span>
+            ) : (
+              <span className="md:h-14">
+                <AuctionStatusComponent
+                  auctionTimeStatus={bidState.auctionTimeStatus ?? ""}
+                  currentKenriUserId={
+                    bidState.currentKenriUserId !== undefined
+                      ? bidState.currentKenriUserId
+                      : 0
+                  }
+                  loginUserId={loginUserId}
+                  texts={texts.goods}
+                  bidPrice={bidState.bidPrice ?? ""}
+                  saiteiRakusatsuPriceOverFlg={bidState.saiteiRakusatsuPriceOverFlg ?? false}
+                  isDetail={true}
+                />
+              </span>
+            )}
+
+            {bidState.auctionTimeStatus === 2 && (
+              <div>
+              <button
+                onClick={
+                  fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2"
+                    ? handleJizenToggleModal
+                    : handleBidToggleModal
+                }
+                className={`${ButtonStyles.bidButton} ${ButtonStyles.bidDetailButton}`}
+              >
+                <GavelIcon className="text-white" />
+                {texts.button[fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2" ? "jizenBidToggle" : "bidToggle"]}
+              </button>
+                </div>
 
             )}
+
+            {(fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2") ? (
+              bidState.bidPrice !== "" && (
+                <div>
+                <ConfirmDialog
+                  title={texts.message.confirmDelete}
+                  description=""
+                  buttonTitle={texts.button.delete}
+                  className={`${ButtonStyles.jizenBidDeleteButton} ${ButtonStyles.jizenBidDeleteDetailButton}`}
+                  dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
+                  dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
+                  onSubmit={() => handleJizenBidDelete(fetchGoodsData?.goodsId)}
+                  buttonText={texts.button.deleteJizenBidToggle}
+                />
+                </div>
+              )
+            ) : (
+              <span></span>
+            )}
+
             <BidModalComponent
-              isOpen={isModalOpen}
-              toggleFilter={toggleModal}
+              isOpen={isBidModalOpen}
+              toggleFilter={handleBidToggleModal}
               lot={fetchGoodsData?.lot || ''}
               goodsName={fetchGoodsData?.goodsName || ''}
               bidSpnkbn={fetchGoodsData?.spnKbn || ''}
@@ -225,18 +269,22 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
             />
 
             <LiveJizenBidModalComponent
-              isOpen={isModalOpen}
-              toggleFilter={toggleModal}
+              isOpen={isJizenBidModalOpen}
+              toggleFilter={handleJizenToggleModal}
               lot={fetchGoodsData?.lot || ''}
               goodsName={fetchGoodsData?.goodsName || ''}
               bidGoodsId={fetchGoodsData?.goodsId || 0}
-              bidPrice={bidState.nextBidPrice}
+              bidPrice={bidState.bidPrice || fetchGoodsData?.startCurrentPrice || ''}
               startPrice={fetchGoodsData?.startPrice || ''}
               bidUnit={fetchGoodsData?.bidUnit || ''}
             />
 
+          </>
 
-          </div>
+        )}
+
+
+        {(fetchGoodsData?.spnKbn === "3" || fetchGoodsData?.spnKbn === "4") && (
           <div className={styles.goodsRowInfo}>
             <div className="flex items-center gap-1">
 
@@ -259,8 +307,10 @@ const BidModuleComponent: React.FC<Props> =  ({ fetchGoodsData,  isLogin, loginU
             </div>
           </div>
 
+        )}
+      </div>
     </div>
-  );
-};
+  )
+}
 
 export default BidModuleComponent;
