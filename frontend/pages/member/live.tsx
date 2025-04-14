@@ -56,7 +56,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }   
       if (data.type === 'updatePrice') {
         setIsBidDisabled(loginUserId === data.kenriUserId);
-        setBidHistory((prevHistory) => [{ bidPrice: data.currentPrice, userId: data.kenriUserId, timestamp: data.timestamp }, ...prevHistory]);
+        setBidHistory((prevHistory) => [{ bidPrice: data.currentPrice, userId: data.bidUserId, timestamp: data.timestamp }, ...prevHistory]);
       }
       if (data.type === 'bidComingSoon') {
         setBidComingSoonMsg(true);

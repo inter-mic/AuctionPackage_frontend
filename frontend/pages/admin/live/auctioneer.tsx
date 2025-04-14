@@ -99,10 +99,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [nextPrice, setNextPrice] = useState<string>('');
   const [bidUnit, setBidUnit] = useState<string>('');
   const [kenriUserId, setKenriUserId] = useState<number | null>();
-  const [kenriPrice, setKenriPrice] = useState<string>('');
+  const [kenriUpdatePrice, setKenriUpdatePrice] = useState<string>('');
   useEffect(() => {
     if (fetchLiveBidInfoData) {
-      console.log(fetchLiveBidInfoData);
       //最低落札価格セット
       if (fetchLiveBidInfoData.saiteiRakusatsuPrice) {
         const formattedSaiteiRakusatsuPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, '')));
@@ -143,10 +142,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       if (fetchLiveBidInfoData.currentPrice) {
         const formattedCurrentPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.currentPrice.replace(/,/g, '')));
         setCurrentPrice(formattedCurrentPrice);
-        setKenriPrice(formattedCurrentPrice);
       } else {
         setCurrentPrice('');
-        setKenriPrice('');
       }
 
       //次価格セット
@@ -171,7 +168,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       } else {
         setBidUnit('');
       }
+
+      //権利者更新処理用
+      const saiteiPriceNumber = fetchLiveBidInfoData.saiteiRakusatsuPrice ? Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, '')) : 0;
+      const firstPreBidPriceNumber = fetchLiveBidInfoData.firstPreBidPrice ? Number(fetchLiveBidInfoData.firstPreBidPrice.replace(/,/g, '')) : 0;
+      setKenriUpdatePrice((saiteiPriceNumber > firstPreBidPriceNumber ? saiteiPriceNumber : firstPreBidPriceNumber).toString());
     }
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchLiveBidInfoData]);
 
   //LOT前後
@@ -273,17 +277,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   // スタートボタン用関数
   const start = async () => {
     sendWebSocketMessage('start', {
-      // nextPrice: formatPriceMultiplication(nextPrice),
-      // currentPrice: formatPriceMultiplication(currentPrice),
       nextPrice: formatPriceNum(nextPrice),
       currentPrice: formatPriceNum(currentPrice),
     });
     setIsStartButtonClicked(true);
-    // setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
-    setKenriPrice(currentPrice.toLocaleString());
   };
-
-
 
   // 強制クリア用関数
   const lotInputRef = useRef<HTMLInputElement>(null);
@@ -298,10 +296,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setNextPrice('');
     setBidUnit('');
     setKenriUserId(null);
-    setKenriPrice('');
-
     setOnlineBidHistory([]);
-    
     fetchGoodsData.startPrice = '';
     goodsData.goodsName = '';
     goodsData.goodsSetsumei = '';
@@ -338,20 +333,40 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     const onlineBidPrice = newOnlineBid.bidPrice;
     const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, '') || '0');
     // 現在価格を最新の入札価格に更新
-    setCurrentPrice(formatPriceDivision(newOnlineBid.bidPrice));
+    setCurrentPrice(formatPriceWithCommas(newOnlineBid.bidPrice));
+
+    // 最高入札者情報をセット
+    const newBidPriceNumber = Number(newOnlineBid.bidPrice);
+    const newHighestUserId = 
+      newBidPriceNumber > Number(kenriUpdatePrice) 
+        ? Number(newOnlineBid.userId) 
+        : (newBidPriceNumber == Number(kenriUpdatePrice) && !kenriUserId ? Number(newOnlineBid.userId) : kenriUserId);
+    setKenriUserId(newHighestUserId);
 
     // 次価格を計算してセット
     const nextPriceCalculated = (Number(onlineBidPrice) + Number(bidUnit)).toString();
     setNextPrice(formatPriceDivision(nextPriceCalculated));
+
     sendWebSocketMessage('updatePrice', {
-      kenriUserId: newOnlineBid.userId,
+      bidUserId: newOnlineBid.userId,
+      kenriUserId: newHighestUserId,
       nextPrice: nextPriceCalculated,
       currentPrice: newOnlineBid.bidPrice,
     });
 
-    setKenriPrice(formatPriceMultiplication(currentPrice).toLocaleString());
     setBidComingSoonMsg(false);
   };
+
+  //オンライン入札価格（ライブオークションは入札後自動で配信）
+  useEffect(() => {
+    if (onlineBidHistory.length > 0) {
+      {spnKbn == "2" && (
+
+        onlinePriceHaishin()
+      )} 
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onlineBidHistory]);
 
   //現在価格を配信用関数
   const currentPriceHaishin = async () => {
@@ -441,7 +456,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 {onlineBidHistory.map((bid, index) => (
                   <li key={index} className={styles.bidItem}>
                     <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
-                    <span className={styles.bidPrice}>入札価格: {bid.bidPrice}</span>
+                    <span className={styles.bidPrice}>入札価格: {formatPriceWithCommas(bid.bidPrice)}</span>
                   </li>
                 ))}
               </ul>
@@ -453,7 +468,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         </div>
 
         <div className={styles.centerRight}>
-          <div className={styles.currentInfoDiv}>現在価格：{kenriPrice}</div>
+          <div className={styles.currentInfoDiv}>現在価格：{currentPrice}</div>
           <div className={styles.currentInfoDiv}>現在権利者：{kenriUserId}</div>
           <div className={styles.currentInfoDiv}>セリ幅：{bidUnit}</div>
         </div>

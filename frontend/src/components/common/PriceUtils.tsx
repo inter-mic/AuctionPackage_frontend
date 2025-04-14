@@ -21,8 +21,8 @@ export const formatPriceDivision = (price: string): string => {
    * @param price - 元の数値
    * @returns カンマ区切りの文字列
    */
-  export const formatPriceWithCommas = (price: number): string => {
-    return price.toLocaleString();
+  export const formatPriceWithCommas = (price: number|string): string => {
+    return Number(price).toLocaleString();
   };
 
   /**
