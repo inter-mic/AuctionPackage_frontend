@@ -57,6 +57,13 @@ wss.on('connection', (ws) => {
               kenriUserId: data.kenriUserId,
               currentPrice: data.currentPrice,
               nextPrice: data.nextPrice,
+              belowSaiteiPriceUserIdList: data.belowSaiteiPriceUserIdList,
+            };
+          }
+          if (data.type === 'bidEnd') {
+            payload = {
+              ...payload,
+              kenriUserId: data.kenriUserId,
             };
           }
           client.send(JSON.stringify(payload));

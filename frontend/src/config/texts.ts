@@ -423,6 +423,7 @@ export const texts = {
       bidStatus2:"落札しました",
       bidStatus3:"他のユーザーが落札しました",
       bidStatus4:"不落札",
+      bidStatus5:"最低落札価格に達していません",
     },
     info:{
       naiyo:"お知らせ内容",

@@ -214,6 +214,11 @@
     flex: 1; /* 右側のスペースを確保 */
   }
 
+  .bidTime {
+    text-align: right; /* 右寄せ */
+    flex: 1; /* 右側のスペースを確保 */
+  }
+
   .msgDiv {
     color:#cb5201;
     font-weight: bold;
@@ -230,4 +235,8 @@
 
   .currentInfoDiv {
     padding-right: 1rem;
+  }
+
+  .latestBid {
+    background-color: rgba(212, 16, 16, 0.6);
   }

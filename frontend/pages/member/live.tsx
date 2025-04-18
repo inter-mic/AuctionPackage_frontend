@@ -34,7 +34,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [isBidDisabled, setIsBidDisabled] = useState(true); 
   const [bidStatus, setBidStatus] = useState(0); 
   const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
-  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false); 
+  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
+  const [isBelowSaiteiPriceMsgFlg, setBelowSaiteiPriceMsg] = useState(false); 
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
@@ -48,11 +49,16 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       
       if (data.type === 'set' || data.type === 'start' || data.type === 'updatePrice' || data.type === 'clear') {
         setReceivedData(data);
-        setBidStatus(loginUserId === data.kenriUserId ? 1 : 0);
+        setBidStatus(loginUserId === data.kenriUserId 
+          ? 1 
+          : (data.belowSaiteiPriceUserIdList?.includes(loginUserId) ? 5 : 0)
+        );
       }
+      if (data.type === 'set') {
+        setBidHistory([]);
+      }   
       if (data.type === 'start') {
         setIsBidDisabled(false);
-       
       }   
       if (data.type === 'updatePrice') {
         setIsBidDisabled(loginUserId === data.kenriUserId);
@@ -63,10 +69,15 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       } else {
         setBidComingSoonMsg(false);
       }
+      if (data.type === 'bidEnd') {
+        setIsBidDisabled(true);
+        setReceivedData(data);
+        setBidStatus(!data.kenriUserId ? 4 : (loginUserId === data.kenriUserId ? 2 : 3));
+      }
       if (data.type === 'clear') {
         setBidHistory([]);
         setIsBidDisabled(true);
-      }  
+      }
       
     };
 

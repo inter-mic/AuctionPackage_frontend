@@ -15,9 +15,11 @@ import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 import { useGoodsSearchByGoodsIdAPI } from '@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI';
 import { useLiveBidInfoSearchAPI } from '@/hooks/api/admin/live/bidInfo/useLiveBidInfoSearchAPI';
 import { useGoodsSearchBeforeAfterLotAPI } from '@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI';
+import { useLiveBidKekkaUpdateAPI } from '@/hooks/api/admin/live/useLiveBidKekkaUpdateAPI';
 //型定義
 import { GoodsData, initialGoodsData } from '@/types/admin/goods/register';
-import { TBidHisotry } from '@/types/admin/live/auctioneer';
+import { LiveBidKekkaData, initialLiveBidKekkaData } from '@/types/admin/live/register';
+import { TBidHisotry, TLiveBidLog } from '@/types/admin/live/auctioneer';
 import { PageProps } from '@/types/admin/adminPage';
 import { Errors } from '@/types/errors';
 //コンポーネント
@@ -39,6 +41,7 @@ import { ResultsButton } from '@/components/ui/buttons/admin/live/resultsButton'
 
 //スタイル
 import styles from '@/styles/admin/Auctioneer.module.css';
+import { Noto_Sans_Kawi } from 'next/font/google';
 
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
@@ -70,6 +73,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [isCallButtonClicked, setIsCallButtonClicked] = useState(false);
   const [isSetButtonClicked, setIsSetButtonClicked] = useState(false);
   const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
+
+  const now: Date = new Date();
+
   //検索
   const { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchLiveBidInfoData, liveBidInfoSearchErrors, liveBidInfoSearchAPI } = useLiveBidInfoSearchAPI();
@@ -85,6 +91,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setGoodsData(fetchGoodsData);
       setSearchLot(fetchGoodsData.lot || '');
       setIsCallButtonClicked(true);
+      setLiveBidkekkaData((prevLiveBidkekkaData) => ({ ...prevLiveBidkekkaData, goodsId: fetchGoodsData.goodsId }));
     }
   }, [fetchGoodsData]);
 
@@ -157,6 +164,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       //権利者セット
       if (fetchLiveBidInfoData.kenriUserId) {
         setKenriUserId(fetchLiveBidInfoData.kenriUserId);
+        setLiveBidkekkaData((prevLiveBidkekkaData) => ({ 
+          ...prevLiveBidkekkaData, 
+          rakusatsuUserId: fetchLiveBidInfoData.kenriUserId, 
+          rakusatsuPrice: fetchLiveBidInfoData.firstPreBidPrice?.replace(/,/g, ''),
+          auctionKekkaStatus: 2
+        }))
       } else {
         setKenriUserId(null);
       }
@@ -194,6 +207,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const [onlineBidHistory, setOnlineBidHistory] = useState<TBidHisotry[]>([]);
+  const [liveBidLog, setLiveBidLog] = useState<TLiveBidLog[]>([]);
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     // WebSocketの初期化
@@ -216,6 +230,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           { userId: data.userId, bidPrice: data.bidPrice },
           ...prevHistory, // 最新のデータを上部に追加
         ]);
+        setBidComingSoonMsg(false);
       }
 
       if (data.type === 'connectionCount') {
@@ -272,6 +287,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   // セットボタン用関数
   const set = async () => {
     sendWebSocketMessage('set');
+    setOnlineBidHistory([]);
+    setLiveBidLog([]);
+    setBelowSaiteiPriceUserIdList([]);
   };
 
   // スタートボタン用関数
@@ -281,6 +299,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       currentPrice: formatPriceNum(currentPrice),
     });
     setIsStartButtonClicked(true);
+    setIsCallButtonClicked(false);
+
+    if (kenriUserId) {
+      setLiveBidLog((prevLog) => [
+        { userId: kenriUserId ? kenriUserId.toString() : '',
+          bidPrice: currentPrice,
+          bidTime: now.toLocaleString(),
+          bidKbn: '1'
+        },
+        ...prevLog, // 最新のデータを上部に追加
+      ]);
+    }
+    
   };
 
   // 強制クリア用関数
@@ -297,6 +328,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setBidUnit('');
     setKenriUserId(null);
     setOnlineBidHistory([]);
+    setLiveBidLog([]);
+    setBelowSaiteiPriceUserIdList([]);
     fetchGoodsData.startPrice = '';
     goodsData.goodsName = '';
     goodsData.goodsSetsumei = '';
@@ -322,7 +355,28 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setBidComingSoonMsg(true);
   };
 
+  // 入札終了を配信用の処理
+  const { liveBidKekkaRegistErrors, liveBidKekkaUpdateAPI } = useLiveBidKekkaUpdateAPI();
+  const [liveBidkekkaData, setLiveBidkekkaData] = useState<LiveBidKekkaData>(initialLiveBidKekkaData);
+  const bidEnd = async () => {
+    sendWebSocketMessage('bidEnd', {
+      kenriUserId: kenriUserId
+    });
+
+    const isSuccess = await liveBidKekkaUpdateAPI(liveBidkekkaData, liveBidLog);
+    if (isSuccess) {
+      const nextLot = (Number(searchLot)+1).toString()
+      goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
+      liveBidInfoSearchAPI(searchSelectedKaisai, nextLot, nextLot);
+    }
+
+    setBidComingSoonMsg(false);
+    setIsStartButtonClicked(false);
+  };
+
+
   //オンライン入札価格を配信用
+  const [belowSaiteiPriceUserIdList, setBelowSaiteiPriceUserIdList] = useState<string[]>([]);
   const onlinePriceHaishin = async () => {
     if (onlineBidHistory.length === 0) {
       console.error('オンライン入札履歴が空です');
@@ -342,28 +396,50 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         ? Number(newOnlineBid.userId) 
         : (newBidPriceNumber == Number(kenriUpdatePrice) && !kenriUserId ? Number(newOnlineBid.userId) : kenriUserId);
     setKenriUserId(newHighestUserId);
+    setLiveBidkekkaData((prevLiveBidkekkaData) => ({ 
+      ...prevLiveBidkekkaData, 
+      rakusatsuUserId: newHighestUserId, 
+      rakusatsuPrice: newHighestUserId ? newBidPriceNumber.toString() : null,
+      auctionKekkaStatus: isBelowSaiteiPrice ? 1 : 2
+    }))
 
     // 次価格を計算してセット
     const nextPriceCalculated = (Number(onlineBidPrice) + Number(bidUnit)).toString();
     setNextPrice(formatPriceDivision(nextPriceCalculated));
+
+    // 最低落札価格に達していないユーザIDリストの更新
+    const isBelowSaiteiPrice = Number(saiteiRakusatsuPrice.replace(/,/g, '')) > Number(onlineBidPrice);
+    const updatedBelowSaiteiPriceUserIdList = isBelowSaiteiPrice
+      ? (belowSaiteiPriceUserIdList.includes(newOnlineBid.userId)
+          ? belowSaiteiPriceUserIdList
+          : [...belowSaiteiPriceUserIdList, newOnlineBid.userId])
+      : belowSaiteiPriceUserIdList.filter((id) => id !== newOnlineBid.userId);
+    setBelowSaiteiPriceUserIdList(updatedBelowSaiteiPriceUserIdList);
 
     sendWebSocketMessage('updatePrice', {
       bidUserId: newOnlineBid.userId,
       kenriUserId: newHighestUserId,
       nextPrice: nextPriceCalculated,
       currentPrice: newOnlineBid.bidPrice,
+      belowSaiteiPriceUserIdList: updatedBelowSaiteiPriceUserIdList,
     });
 
     setBidComingSoonMsg(false);
+    
+    setLiveBidLog((prevLog) => [
+      { userId: newOnlineBid.userId ? newOnlineBid.userId.toString() : '',
+        bidPrice: newOnlineBid.bidPrice,
+        bidTime: now.toLocaleString(),
+        bidKbn: '2'
+      },
+      ...prevLog, // 最新のデータを上部に追加
+    ]);
   };
 
   //オンライン入札価格（ライブオークションは入札後自動で配信）
   useEffect(() => {
     if (onlineBidHistory.length > 0) {
-      {spnKbn == "2" && (
-
-        onlinePriceHaishin()
-      )} 
+      {spnKbn == "2" && ( onlinePriceHaishin() )} 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineBidHistory]);
@@ -454,7 +530,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               <span className={styles.sectionTitle}>オンライン入札履歴</span>
               <ul className={styles.bidList}>
                 {onlineBidHistory.map((bid, index) => (
-                  <li key={index} className={styles.bidItem}>
+                  <li key={index} className={[styles.bidItem, index === 0 ? styles.latestBid : ''].join(' ')}>
                     <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
                     <span className={styles.bidPrice}>入札価格: {formatPriceWithCommas(bid.bidPrice)}</span>
                   </li>
@@ -463,6 +539,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
             <div>
               <span className={styles.sectionTitle}>配信履歴</span>
+              <ul className={styles.bidList}>
+                {liveBidLog.map((bid, index) => (
+                  <li key={index} className={[styles.bidItem, index === 0 ? styles.latestBid : ''].join(' ')}>
+                    <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
+                    <span className={styles.bidPrice}>入札価格: {formatPriceWithCommas(bid.bidPrice)}</span>
+                    <span className={styles.bidTime}>入札時間: {bid.bidKbn == '1' ? '事前 ' : ''}{bid.bidTime}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
@@ -562,7 +647,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
             <StatusButton onClick={() => bidComingSoonHaishin()} status={1} disabled={!isStartButtonClicked} />
-            <StatusButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+            <StatusButton onClick={() => bidEnd()} status={2} disabled={!isStartButtonClicked} />
             </div>
             <div className={styles.rightButtons}>
             {spnKbn == "1" && (

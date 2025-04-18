@@ -7,6 +7,7 @@ interface Props {
     bidStatus2: string;
     bidStatus3: string;
     bidStatus4: string;
+    bidStatus5: string;
   };
 
 }
@@ -22,6 +23,7 @@ const LiveBidStatusComponent: React.FC<Props> = ({
   bidStatus === 2 ? texts.bidStatus2 :
   bidStatus === 3 ? texts.bidStatus3 :
   bidStatus === 4 ? texts.bidStatus4 :
+  bidStatus === 5 ? texts.bidStatus5 :
     '';
 
     let statusClass =  `${statusStyles.bidStatusContainer} ${statusStyles[`bidStatus${bidStatus}`]}`;
