@@ -9,9 +9,9 @@ import { getFormattedDate } from '@/components/ui/format/FormatDatetime';
 
 export const useBidLogCsvAPI = () => {  
   const { csvApiRequest } = useCsvApiRequest();
-  const bidLogCsv  = async (selectedGoodsIds: number[])=>{
+  const bidLogCsv  = async (auctionSeq: string, selectedGoodsIds: number[])=>{
    
-    const endPoint = `logInternetBid/csv`;
+    const endPoint = `logInternetBid/csv/${auctionSeq}`;
     await csvApiRequest("admin", endPoint, 'POST', selectedGoodsIds);
   };
   

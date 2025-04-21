@@ -155,7 +155,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       toast.error(texts.message.selectAtLeastOne);
       return;
     }
-    bidLogCsv(selectedIds);
+    bidLogCsv(selectedKaisai, selectedIds);
   };
 
   return (
