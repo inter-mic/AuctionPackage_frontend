@@ -12,6 +12,7 @@ import { TBidHisotry } from '@/types/member/live';
 import { TPageProps } from '@/types/member/memberPage';
 //コンポーネント
 import LiveBidStatusComponent  from '@/components/member/auction/live/LiveBidStatusComponent';
+import { formatPriceWithCommas } from '@/components/common/PriceUtils';
 //ボタン
 import { LiveBidButton } from '@/components/ui/buttons/member/liveBidButton';
 //スタイル
@@ -35,7 +36,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [bidStatus, setBidStatus] = useState(0); 
   const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
-  const [isBelowSaiteiPriceMsgFlg, setBelowSaiteiPriceMsg] = useState(false); 
+  const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
+  const [isPriceUpdated, setIsPriceUpdated] = useState(false);
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
@@ -45,13 +47,12 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     };
     const loginUserId = PageProps.userId;
     ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
+      const data = JSON.parse(event.data);      
       if (data.type === 'set' || data.type === 'start' || data.type === 'updatePrice' || data.type === 'clear') {
         setReceivedData(data);
         setBidStatus(loginUserId === data.kenriUserId 
           ? 1 
-          : (data.belowSaiteiPriceUserIdList?.includes(loginUserId) ? 5 : 0)
+          : (data.isBelowSaiteiPriceFlg ? 5 : 0)
         );
       }
       if (data.type === 'set') {
@@ -63,11 +64,20 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       if (data.type === 'updatePrice') {
         setIsBidDisabled(loginUserId === data.kenriUserId);
         setBidHistory((prevHistory) => [{ bidPrice: data.currentPrice, userId: data.bidUserId, timestamp: data.timestamp }, ...prevHistory]);
+        setIsPriceUpdated(true);
+        setTimeout(() => setIsPriceUpdated(false), 1000);
       }
       if (data.type === 'bidComingSoon') {
         setBidComingSoonMsg(true);
       } else {
         setBidComingSoonMsg(false);
+      }
+      if (data.type === 'rakusatsuProcessing') {
+        setRakusatsuProcessingMsgFlg(true);
+        setIsBidDisabled(true);
+      } else {
+        setRakusatsuProcessingMsgFlg(false);
+        setIsBidDisabled(false);
       }
       if (data.type === 'bidEnd') {
         setIsBidDisabled(true);
@@ -147,7 +157,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
             <div className={styles.priceContainer}>
               <div className={styles.priceInfo}>
                 <span className={styles.currentPriceLabel}>{texts.goods.currentPrice}</span>
-                <label className={styles.currentPrice}>
+                <label className={`${styles.currentPrice} ${isPriceUpdated ? styles.priceUpdated : ""}`}>
                   \{receivedData?.currentPrice && new Intl.NumberFormat('ja-JP').format(receivedData.currentPrice)}
                   </label>
               </div>
@@ -187,6 +197,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
               <span>{texts.button.BidComingSoon}</span>
             </div>
           )}
+          {isRakusatsuProcessingMsgFlg && (
+            <div className={styles.msgDiv}>
+              <span>{texts.livemessage.rakusatsuProcessMsg}</span>
+            </div>
+          )}
 
         </div>
         <div className={styles.rightSection}>
@@ -196,7 +211,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                    {bid.userId === PageProps.userId && (
                       <span className={styles.bidUserId}>your bid</span>
                     )}
-                  <span className={styles.bidPrice}>{bid.bidPrice}</span>
+                  <span className={bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice}>{formatPriceWithCommas(bid.bidPrice)}</span>
                 </li>
                 ))}
               </ul>

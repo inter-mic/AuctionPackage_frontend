@@ -116,7 +116,10 @@ export const texts = {
       BidFinush:"入札終了",
       furakusatsu:"不落札",
       rakusatsu:"落札",
-      close:"閉じる"
+      close:"閉じる",
+      updateSerikekka:"セリ結果登録",
+      rakusatsuProcess:"落札処理",
+      bidRestart:"入札再開",
     },
     fileName:{
       memberCsv:"会員一覧",
@@ -467,6 +470,13 @@ export const texts = {
     livemessage:{
       message:"メッセージ",
       confirmClear:"強制クリアします。よろしいですか？",
+      updateSerikekka:"次のせり結果を登録します。よろしいですか？",
+      updateSerikekkaData_1:"セリ結果：",
+      updateSerikekkaData_2:"権利者：",
+      updateSerikekkaData_3:"落札価格：",
+      furakusatsu:"不落札",
+      rakusatsu:"落札",
+      rakusatsuProcessMsg:"落札処理中",
     },
     mypageResult:{
       rakusatsuTotalPrice:"落札合計金額"

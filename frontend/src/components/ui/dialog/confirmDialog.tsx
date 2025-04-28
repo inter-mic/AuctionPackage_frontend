@@ -58,7 +58,7 @@ export default function ConfirmDialogProps({
           {title}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description" style={{ whiteSpace: 'pre-line' }}>
             {description}
           </DialogContentText>
         </DialogContent>

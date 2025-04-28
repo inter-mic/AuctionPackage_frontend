@@ -12,10 +12,11 @@ export const useLiveBidKekkaUpdateAPI = () => {
   const [liveBidKekkaRegistErrors, setLiveBidKekkaRegistErrors] = useState<Errors>();
   const [responseData, setResponseData] = useState<LiveBidKekkaData>();
   const router = useRouter();
-  const liveBidKekkaUpdateAPI = async (liveBidKekka: LiveBidKekkaData, liveBidLog: TLiveBidLog[]) => {
+  const liveBidKekkaUpdateAPI = async (liveBidKekka: LiveBidKekkaData, liveBidLog: TLiveBidLog[], connectionCount: number | null | undefined) => {
     const sanitizedKekkaData = {
       ...liveBidKekka,
       rakusatsuPrice: liveBidKekka.rakusatsuPrice ? liveBidKekka.rakusatsuPrice.replace(/,/g, '') : null,
+      connectionCount: connectionCount == null ? '0' : connectionCount.toString(),
     };
 
     const formData = new FormData();

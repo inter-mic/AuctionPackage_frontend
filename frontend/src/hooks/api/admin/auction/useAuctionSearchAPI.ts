@@ -34,7 +34,7 @@ export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbns: string[]) => 
       } else{
         endPoint = `auction/search`;
       }
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', spnKbns.length > 0 ? spnKbns : null, "", true);
+      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', spnKbns?.length > 0 ? spnKbns : null, "", true);
       if (responseData) {
         const transformedData = responseData.map((data: any) => ({
           ...data,

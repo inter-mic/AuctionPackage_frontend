@@ -4,16 +4,17 @@
   flex-wrap: wrap; /* 縦方向の折り返しを有効にする */
   width: 100%;
   margin-top:20px;
+  justify-content: space-between;
 }
 
 /* 左側のセクション */
 .leftSection {
-  flex: 0 0 70%; 
+  flex: 0 0 68%; 
 }
 
 /* 右側のセクション */
 .rightSection {
-  flex: 0 0 30%; 
+  flex: 0 0 28%; 
 }
 
 .lot{
@@ -74,11 +75,21 @@
 .bidUserId {
   text-align: left; /* 左寄せ */
   flex: 1; /* 左側のスペースを確保 */
+  color:#cb5201;
+  font-size: 20px;
 }
 
 .bidPrice {
   text-align: right; /* 右寄せ */
   flex: 1; /* 右側のスペースを確保 */
+  font-size: 20px;
+}
+
+.bidPriceYourBid {
+  text-align: right; /* 右寄せ */
+  flex: 1; /* 右側のスペースを確保 */
+  color:#cb5201;
+  font-size: 20px;
 }
 
 .msgDiv {
@@ -88,6 +99,16 @@
   text-align: center;
   padding: 25px;
   animation: blinking 0.5s ease-in-out infinite alternate;
+}
+
+.priceUpdated {
+  animation: priceChange 1.5s ease-in-out;
+}
+
+@keyframes priceChange {
+  0% { color: red; transform: scale(1.1); }
+  50% { color: orange; transform: scale(1.5); }
+  100% { color: #cb5201; transform: scale(1); }
 }
 
 @keyframes blinking {

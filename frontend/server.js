@@ -8,7 +8,7 @@ let connectionCount = 0; // 接続数をトラッキング
 wss.on('connection', (ws) => {
   
   connectionCount++;
-  updateAdminConnectionCount(); 
+  updateMemberConnectionCount(); 
   if (latestData.type) {
     ws.send(JSON.stringify(latestData));
   }
@@ -21,7 +21,7 @@ wss.on('connection', (ws) => {
     if (data.type === 'admin') {
       ws.isAdmin = true;
       connectionCount--; // 管理者になったので非管理者から除外
-      updateAdminConnectionCount();
+      updateMemberConnectionCount();
     }
 
     // 共通データを作成
@@ -43,7 +43,12 @@ wss.on('connection', (ws) => {
           }
         } else {
           let payload = { type: data.type, ...commonData, ...latestData };
-
+          // if (data.type === 'set') {
+          //   payload = {
+          //     ...payload,
+          //     bidUnit: data.bidUnit,
+          //   };
+          // }
           if (data.type === 'start') {
             payload = {
               ...payload,
@@ -57,7 +62,7 @@ wss.on('connection', (ws) => {
               kenriUserId: data.kenriUserId,
               currentPrice: data.currentPrice,
               nextPrice: data.nextPrice,
-              belowSaiteiPriceUserIdList: data.belowSaiteiPriceUserIdList,
+              isBelowSaiteiPriceFlg: data.isBelowSaiteiPriceFlg,
             };
           }
           if (data.type === 'bidEnd') {
@@ -83,13 +88,13 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     if (!ws.isAdmin) {
       connectionCount--; // 非管理者の切断を反映
-      updateAdminConnectionCount();
+      updateMemberConnectionCount();
     }
-    updateAdminConnectionCount(); 
+    updateMemberConnectionCount(); 
   });
 });
 
-function updateAdminConnectionCount() {
+function updateMemberConnectionCount() {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN && client.isAdmin) {
       client.send(JSON.stringify({ type: 'connectionCount', count: connectionCount }));
