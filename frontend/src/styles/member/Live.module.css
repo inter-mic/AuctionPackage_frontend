@@ -97,7 +97,8 @@
   font-weight: bold;
   font-size: 2rem;
   text-align: center;
-  padding: 25px;
+  height: 4rem;
+  margin-top: 1rem;
   animation: blinking 0.5s ease-in-out infinite alternate;
 }
 
@@ -114,6 +115,69 @@
 @keyframes blinking {
   0% {opacity: 0;}
   100% {opacity: 1;}
+}
+
+.nextLotListContainer {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 16px;
+}
+
+.nextLotItem {
+  flex: 0 0 calc((100% - 32px) / 3);
+  max-width: calc((100% - 32px) / 3);
+  scroll-snap-align: start;
+  text-align: center;
+}
+
+.nextLotCard {
+  flex: 0 0 auto;
+  width: 180px;
+  background: #1f1f1f;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  overflow: hidden;
+  color: #fff;
+  transition: transform .2s;
+}
+
+.nextLotImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  background: #333;
+}
+
+.nextLotCaption {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nextLotName {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.nextLotLot {
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+.nextLotPrice {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fa8c16;
+}
+
+.nextLotEmpty {
+  color: #999;
+  padding: 0 16px;
 }
 
 @media (max-width: 768px) {

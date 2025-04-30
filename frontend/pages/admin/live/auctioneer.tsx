@@ -13,6 +13,7 @@ import { useKengenRedirect } from '@/hooks/useKengenRedirect';
 import { useExecutionPermission } from '@/hooks/useExecutionPermission';
 //API
 import { useGoodsSearchByGoodsIdAPI } from '@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI';
+import { useLiveBidInfoGetNextLotListAPI } from '@/hooks/api/admin/live/bidInfo/useLiveBidInfoGetNextLotListAPI';
 import { useLiveBidInfoSearchAPI } from '@/hooks/api/admin/live/bidInfo/useLiveBidInfoSearchAPI';
 import { useGoodsSearchBeforeAfterLotAPI } from '@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI';
 import { useLiveBidKekkaUpdateAPI } from '@/hooks/api/admin/live/useLiveBidKekkaUpdateAPI';
@@ -20,6 +21,7 @@ import { useLiveBidKekkaUpdateAPI } from '@/hooks/api/admin/live/useLiveBidKekka
 import { GoodsData, initialGoodsData } from '@/types/admin/goods/register';
 import { LiveBidKekkaData, initialLiveBidKekkaData } from '@/types/admin/live/register';
 import { TBidHisotry, TLiveBidLog } from '@/types/admin/live/auctioneer';
+import { NextLotList } from '@/types/admin/live/nextLotList';
 import { PageProps } from '@/types/admin/adminPage';
 import { Errors } from '@/types/errors';
 //コンポーネント
@@ -78,6 +80,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   //検索(呼び出し)
   const { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
+  const { fetchLiveBidNextLotListData, liveBidInfoGetNextLotListErrors, liveBidInfoGetNextLotListAPI } = useLiveBidInfoGetNextLotListAPI();
   const { fetchLiveBidInfoData, liveBidInfoSearchErrors, liveBidInfoSearchAPI } = useLiveBidInfoSearchAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
 
@@ -87,7 +90,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setBelowSaiteiPriceUserIdList([]);
     setAuctioneerFlg(false);
     goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
-    liveBidInfoSearchAPI(searchSelectedKaisai, searchLot, searchLot);
+    liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai, searchLot);
+    liveBidInfoSearchAPI(false, 0, searchSelectedKaisai, searchLot, searchLot);
   };
 
   //商品データセット
@@ -103,6 +107,23 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (goodsSearchErrors) { setInputSeatchErrors(goodsSearchErrors); }
   }, [goodsSearchErrors]);
 
+
+  // 次商品リストセット
+const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
+const [nextLotListRow, setNextLotListRow] = useState<number>(1);
+useEffect(() => {
+  if (fetchLiveBidNextLotListData.length > 0) {
+    const nextLots: NextLotList[] = fetchLiveBidNextLotListData
+      .map(({ goodsName, lot, startPrice, thumbnailImageUrl }) => ({
+        goodsName,
+        lot,
+        startPrice,
+        thumbnailImageUrl,
+      }));
+    setNextLotList(nextLots);
+    setNextLotListRow(1);
+  }
+}, [fetchLiveBidNextLotListData]);
 
 
   //呼び出しから各価格セット
@@ -214,6 +235,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const lotBeforeAffterSearch = async (isBefore: boolean) => {
     const goodsId = isBefore ? beforeAfterGoodsId?.beforeGoodsId : beforeAfterGoodsId?.afterGoodsId;
     await goodsSearchByGoodsIdAPI(true, Number(goodsId), "", "");
+    await liveBidInfoSearchAPI(true, Number(goodsId), searchSelectedKaisai, "", "");
+    await liveBidInfoGetNextLotListAPI(true, Number(goodsId), searchSelectedKaisai, searchLot);
+    setNextLotListRow(isBefore ? nextLotListRow - 1 : nextLotListRow + 1);
   };
 
   const [onlineBidHistory, setOnlineBidHistory] = useState<TBidHisotry[]>([]);
@@ -337,6 +361,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       sendWebSocketMessage('set', {
         currentPrice: formatPriceNum(currentPrice),
         bidUnit: formatPriceNum(bidUnit),
+        nextLotList: nextLotList,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -386,7 +411,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (isSuccess) {
       const nextLot = (Number(searchLot)+1).toString()
       goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
-      liveBidInfoSearchAPI(searchSelectedKaisai, nextLot, nextLot);
+      liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai, nextLot);
+      liveBidInfoSearchAPI(false, 0, searchSelectedKaisai, nextLot, nextLot);
       setLiveBidkekkaData(initialLiveBidKekkaData);
     }
   };
@@ -492,6 +518,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setLiveBidLog([]);
     setBelowSaiteiPriceUserIdList([]);
     setLiveBidkekkaData(initialLiveBidKekkaData);
+    setNextLotList([]);
+    setNextLotListRow(1);
     fetchGoodsData.startPrice = '';
     goodsData.goodsName = '';
     goodsData.goodsSetsumei = '';
@@ -535,7 +563,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             marginBottom: '20px'
           }}>
             <Image
-              src={goodsData.thumbnailImageUrl ?? "/no_image.png"}
+              src={goodsData.thumbnailImageUrl || "/no_image.png"}
               alt=""
               fill
               quality={100}
@@ -549,6 +577,36 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         </div>
         <div className={styles.bottomLeft}>
           <span className={styles.sectionTitle}>次商品</span>
+          <div className={styles.nextGoodsLabelRow}>
+            <label className={styles.goodslabel}>{texts.goods.goodsName}</label>
+            <label id="nextGoodsName" className={styles.goodsvalue}>{nextLotList[nextLotListRow]?.goodsName || ''}</label>
+          </div>
+
+          <div className={styles.nextGoodsLabelRow}>
+            <label className={styles.goodslabel}>{texts.goods.lot}</label>
+            <label id="nextGoodsLot" className={styles.goodsvalue}>{nextLotList[nextLotListRow]?.lot || ''}</label>
+          </div>
+
+          <div className={styles.nextGoodsLabelRow}>
+            <label className={styles.goodslabel}>{texts.goods.startPrice}</label>
+            <label id="nextGoodsStartPrice" className={styles.goodsvalue}>{nextLotList[nextLotListRow]?.startPrice || ''}</label>
+          </div>
+
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            height: '150px',
+            marginBottom: '20px'
+          }}>
+            <Image
+              src={nextLotList[nextLotListRow]?.thumbnailImageUrl || "/no_image.png"}
+              alt=""
+              fill
+              quality={100}
+              loading="lazy"
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         </div>
       </div>
       <div className={styles.rightColumn}>

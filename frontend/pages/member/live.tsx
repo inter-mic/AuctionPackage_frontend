@@ -10,6 +10,7 @@ import withMemberLayout from '@/hocs/withMemberLayout';
 //型定義
 import { TBidHisotry } from '@/types/member/live';
 import { TPageProps } from '@/types/member/memberPage';
+import { NextLotList } from '@/types/admin/live/nextLotList';
 //コンポーネント
 import LiveBidStatusComponent  from '@/components/member/auction/live/LiveBidStatusComponent';
 import { formatPriceWithCommas } from '@/components/common/PriceUtils';
@@ -38,6 +39,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
   const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
   const [isPriceUpdated, setIsPriceUpdated] = useState(false);
+  const [nextLotList, setNextLotList] = useState<NextLotList[]>([])
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
@@ -57,6 +59,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === 'set') {
         setBidHistory([]);
+        setNextLotList(data.nextLotList);
       }   
       if (data.type === 'start') {
         setIsBidDisabled(false);
@@ -87,6 +90,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       if (data.type === 'clear') {
         setBidHistory([]);
         setIsBidDisabled(true);
+        setNextLotList([]);
       }
       
     };
@@ -138,7 +142,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         <div className={styles.leftSection}>
           <div >
             <Image
-              src={receivedData?.goodsImage != '' ? receivedData?.goodsImage : "/no_image.png"}
+              src={receivedData?.goodsImage || "/no_image.png"}
               alt=""
               width={300}
               height={300}
@@ -192,30 +196,50 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
             </div>
           </div>
-          {isBidComingSoonMsgFlg && (
-            <div className={styles.msgDiv}>
-              <span>{texts.button.BidComingSoon}</span>
-            </div>
-          )}
-          {isRakusatsuProcessingMsgFlg && (
-            <div className={styles.msgDiv}>
-              <span>{texts.livemessage.rakusatsuProcessMsg}</span>
-            </div>
-          )}
+          <div className={styles.msgDiv}>
+            {isBidComingSoonMsgFlg && (<span>{texts.button.BidComingSoon}</span>)}
+            {isRakusatsuProcessingMsgFlg && (<span>{texts.livemessage.rakusatsuProcessMsg}</span>          )}
+          </div>
 
         </div>
         <div className={styles.rightSection}>
-        <ul className={styles.bidList}>
-                {bidHistory.map((bid, index) => (
-                 <li key={index} className={styles.bidItem}>
-                   {bid.userId === PageProps.userId && (
-                      <span className={styles.bidUserId}>your bid</span>
-                    )}
-                  <span className={bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice}>{formatPriceWithCommas(bid.bidPrice)}</span>
-                </li>
-                ))}
-              </ul>
+          <ul className={styles.bidList}>
+            {bidHistory.map((bid, index) => (
+              <li key={index} className={styles.bidItem}>
+                {bid.userId === PageProps.userId && (
+                  <span className={styles.bidUserId}>your bid</span>
+                )}
+              <span className={bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice}>{formatPriceWithCommas(bid.bidPrice)}</span>
+            </li>
+            ))}
+          </ul>
         </div>
+      </div>
+      <div className={styles.nextLotListContainer}>
+        {nextLotList.length > 1 ? (
+          nextLotList.slice(1).map((item: NextLotList, idx: number) => (
+            <div key={idx} className={styles.nextLotCard}>
+              <div className={styles.nextLotImageWrapper}>
+                <Image
+                  src={item.thumbnailImageUrl || "/no_image.png"}
+                  alt={item.goodsName || ""}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  loading="lazy"
+                />
+              </div>
+              <div className={styles.nextLotCaption}>
+                <div className={styles.nextLotName}>{item.goodsName}</div>
+                <div className={styles.nextLotLot}>LOT {item.lot}</div>
+                <div className={styles.nextLotPrice}>
+                \{item.startPrice || new Intl.NumberFormat('ja-JP').format(Number(item.startPrice))}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className={styles.nextLotEmpty}>次の商品はありません</div>
+        )}
       </div>
     </div>
   );
