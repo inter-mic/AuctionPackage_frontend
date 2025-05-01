@@ -180,6 +180,31 @@
   padding: 0 16px;
 }
 
+.flowingMsgDiv {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scroll-left 20s linear infinite;
+  color:#cb5201;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 @media (max-width: 768px) {
   .leftSection,
   .rightSection {

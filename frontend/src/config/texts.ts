@@ -120,6 +120,7 @@ export const texts = {
       updateSerikekka:"セリ結果登録",
       rakusatsuProcess:"落札処理",
       bidRestart:"入札再開",
+      haishin:"配信",
     },
     fileName:{
       memberCsv:"会員一覧",

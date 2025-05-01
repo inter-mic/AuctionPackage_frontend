@@ -39,7 +39,10 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
   const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
   const [isPriceUpdated, setIsPriceUpdated] = useState(false);
-  const [nextLotList, setNextLotList] = useState<NextLotList[]>([])
+  const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
+  const [msg, setMsg] = useState<string | null>();
+  const [marqueeKey, setMarqueeKey] = useState(0);
+
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
@@ -91,6 +94,10 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         setBidHistory([]);
         setIsBidDisabled(true);
         setNextLotList([]);
+      }
+      if (data.type === 'sendMessage') {
+        setMsg(data.message);
+        setMarqueeKey(k=>k+1);
       }
       
     };
@@ -196,11 +203,13 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
             </div>
           </div>
-          <div className={styles.msgDiv}>
-            {isBidComingSoonMsgFlg && (<span>{texts.button.BidComingSoon}</span>)}
-            {isRakusatsuProcessingMsgFlg && (<span>{texts.livemessage.rakusatsuProcessMsg}</span>          )}
-          </div>
-
+        </div>
+        <div className={styles.flowingMsgDiv}>
+          <span key={marqueeKey} className={styles.marquee}>{msg}</span>
+        </div>
+        <div className={styles.msgDiv}>
+          {isBidComingSoonMsgFlg && (<span>{texts.button.BidComingSoon}</span>)}
+          {isRakusatsuProcessingMsgFlg && (<span>{texts.livemessage.rakusatsuProcessMsg}</span>          )}
         </div>
         <div className={styles.rightSection}>
           <ul className={styles.bidList}>

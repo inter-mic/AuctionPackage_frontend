@@ -26,6 +26,7 @@ import { PageProps } from '@/types/admin/adminPage';
 import { Errors } from '@/types/errors';
 //コンポーネント
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
+import { LiveMessageListPullDown } from '@/components/ui/pulldowns/LiveMessageListPullDown';
 import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas, formatPriceNum } from '@/components/common/PriceUtils';
 import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
 //ボタン
@@ -38,7 +39,7 @@ import { SerihabaButton } from '@/components/ui/buttons/admin/live/serihabaButto
 import { PriceButton } from '@/components/ui/buttons/admin/live/priceButton';
 import { StatusButton } from '@/components/ui/buttons/admin/live/statusButton';
 import { ResultsButton } from '@/components/ui/buttons/admin/live/resultsButton';
-
+import { MessageButton } from '@/components/ui/buttons/admin/live/messageButton';
 
 
 //スタイル
@@ -245,6 +246,8 @@ useEffect(() => {
   const [connectionCount, setConnectionCount] = useState<number | null>();
   const [isAuctioneerFlg, setAuctioneerFlg] = useState(false);
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false); 
+  const [msg, setMsg] = useState<string | null>();
+  const [marqueeKey, setMarqueeKey] = useState(0);
   const lotInputRef = useRef<HTMLInputElement>(null);
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
@@ -294,10 +297,12 @@ useEffect(() => {
         auctioneerClear();
         lotInputRef.current?.focus();
       }
-
       if (data.type === 'connectionCount') {
-        console.log(`Current connections: ${data.count}`);
         setConnectionCount(data.count);
+      }
+      if (data.type === 'sendMessage') {
+        setMsg(data.message);
+        setMarqueeKey(k=>k+1);
       }
     };
 
@@ -328,8 +333,12 @@ useEffect(() => {
   });
 
   const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
-    if (!isAuctioneerFlg) { 
-      return; //「セット」を押した者以外配信不可
+    if (!isAuctioneerFlg) {
+      if(type === 'sendMessage'){
+        // メッセージ配信は可能
+      }else{
+        return; //「セット」を押した者以外配信不可
+      }
     }
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       let message;
@@ -502,6 +511,18 @@ useEffect(() => {
     });
   };
 
+  // メッセージを配信用関数
+  const [message, setMessage] = useState<string>();
+  const handleSetMessageChange = (value: string) => {
+    setMessage(value);
+
+  };
+  const sendMessage = async () => {
+    sendWebSocketMessage('sendMessage', {
+      message: message,
+    });
+  };
+
   // クリア処理
   const auctioneerClear = async () => {
     setSaiteiRakusatsuPricePrice('');
@@ -525,6 +546,7 @@ useEffect(() => {
     goodsData.goodsSetsumei = '';
     goodsData.thumbnailImageUrl = "/no_image.png";
     setSearchLot('');
+    setMsg('');
     setIsCallButtonClicked(false);
     setIsStartButtonClicked(false);
     setIsSetButtonClicked(false);
@@ -813,16 +835,21 @@ useEffect(() => {
 
             </div>
           </div>
-          {isBidComingSoonMsgFlg && (
-            <div className={styles.msgDiv}>
-              <span>{texts.button.BidComingSoon}</span>
-            </div>
-          )}
-          {isRakusatsuProcessFlg && (
-            <div className={styles.msgDiv}>
-              <span>{texts.livemessage.rakusatsuProcessMsg}</span>
-            </div>
-          )}
+          <div className={styles.liveMessageDiv}>
+            <label className={styles.goodslabel}>{texts.livemessage.message}</label>
+            <LiveMessageListPullDown
+              className={styles.selectLiveMessage}
+              onChange={(value) => handleSetMessageChange(value)}
+            />
+            <MessageButton onClick={sendMessage} disabled={false} />
+          </div>
+          <div className={styles.flowingMsgDiv}>
+            <span key={marqueeKey} className={styles.marquee}>{msg}</span>
+          </div>
+          <div className={styles.msgDiv}>
+            {isBidComingSoonMsgFlg && (<span>{texts.button.BidComingSoon}</span>)}
+            {isRakusatsuProcessFlg && (<span>{texts.livemessage.rakusatsuProcessMsg}</span>          )}
+          </div>
         </div>
       </div>
     </div>

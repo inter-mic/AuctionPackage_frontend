@@ -43,12 +43,6 @@ wss.on('connection', (ws) => {
           }
         } else {
           let payload = { type: data.type, ...commonData, ...latestData };
-          // if (data.type === 'set') {
-          //   payload = {
-          //     ...payload,
-          //     bidUnit: data.bidUnit,
-          //   };
-          // }
           if (data.type === 'start') {
             payload = {
               ...payload,
