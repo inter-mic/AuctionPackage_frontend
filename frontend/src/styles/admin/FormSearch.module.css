@@ -12,6 +12,11 @@
   gap: 1rem;
 }
 
+.formRow{
+  display: flex;
+  flex-direction: row;
+}
+
 /* Grid settings for different screen sizes */
 @media (min-width: 1024px) {
   .formGrid {

@@ -17,7 +17,7 @@ import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
 import { useBidLogSearchAPI } from '@/hooks/api/admin/bid/useBidLogSearchAPI';
 import { useBidLogSearchCountAPI } from '@/hooks/api/admin/bid/useBidLogSearchCountAPI';
 import { useBidLogCsvAPI } from '@/hooks/api/admin/bid/useBidLogCsvAPI';
-import { useBidLogSearchParams } from '@/hooks/api/admin/bid/useBidLogSearchParams';
+import { useBidLogSearchParams } from '@/hooks/searchParams/admin/useBidLogSearchParams';
 //型定義
 import { TAdminLogInternetBidSelect } from '@/types/admin/bid/logSearch';
 import { PageProps } from '@/types/admin/adminPage';

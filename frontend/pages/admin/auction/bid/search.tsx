@@ -17,7 +17,7 @@ import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
 import { useBidSearchAPI } from '@/hooks/api/admin/bid/useBidSearchAPI';
 import { useBidSearchCountAPI } from '@/hooks/api/admin/bid/useBidSearchCountAPI';
 import { useBidCsvAPI } from '@/hooks/api/admin/bid/useBidCsvAPI';
-import { useBidSearchParams } from '@/hooks/api/admin/bid/useBidSearchParams';
+import { useBidSearchParams } from '@/hooks/searchParams/admin/useBidSearchParams';
 //型定義
 import { TAdminGoodsAuctionBidSelect } from '@/types/admin/bid/search';
 import { PageProps } from '@/types/admin/adminPage';

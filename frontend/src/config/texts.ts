@@ -31,6 +31,7 @@ export const texts = {
       adminLiveBidAuctioner:"ライブビットオークショニア",
       adminLiveBidUnitRegist:"ライブ入札単位管理",
       adminLiveMessageRegist:"ライブメッセージ管理",
+      adminPaddleManagement:"パドル管理",
       adminInfoRegist:"お知らせ管理",
       adminTopImageRegist:"TOP画像管理",
       adminSettingTitle:"設定管理",
@@ -102,6 +103,7 @@ export const texts = {
       bidConfirmed:"入札確定",
       jizenBidToggle:"事前入札する",
       deleteJizenBidToggle:"事前入札を削除する",
+      
       call:"呼び出し",
       beforeLot:"前LOT",
       affterLot:"次LOT",
@@ -116,10 +118,7 @@ export const texts = {
       BidFinush:"入札終了",
       furakusatsu:"不落札",
       rakusatsu:"落札",
-      close:"閉じる",
-      updateSerikekka:"セリ結果登録",
-      rakusatsuProcess:"落札処理",
-      bidRestart:"入札再開",
+      close:"閉じる"
     },
     fileName:{
       memberCsv:"会員一覧",
@@ -343,6 +342,10 @@ export const texts = {
       bidPrice:"入札額",
       bidTime:"入札日時"
     },
+    paddle:{
+      paddleKbn:"パドル区分",
+      paddleNo:"パドル番号"
+    },
     admin:{
       companyUrl:"企業情報URL",
       kobutsuBango:"古物商番号",
@@ -426,7 +429,6 @@ export const texts = {
       bidStatus2:"落札しました",
       bidStatus3:"他のユーザーが落札しました",
       bidStatus4:"不落札",
-      bidStatus5:"最低落札価格に達していません",
     },
     info:{
       naiyo:"お知らせ内容",
@@ -470,13 +472,6 @@ export const texts = {
     livemessage:{
       message:"メッセージ",
       confirmClear:"強制クリアします。よろしいですか？",
-      updateSerikekka:"次のせり結果を登録します。よろしいですか？",
-      updateSerikekkaData_1:"セリ結果：",
-      updateSerikekkaData_2:"権利者：",
-      updateSerikekkaData_3:"落札価格：",
-      furakusatsu:"不落札",
-      rakusatsu:"落札",
-      rakusatsuProcessMsg:"落札処理中",
     },
     mypageResult:{
       rakusatsuTotalPrice:"落札合計金額"
