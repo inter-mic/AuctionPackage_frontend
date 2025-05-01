@@ -67,7 +67,7 @@ export const MemberSearchModal: React.FC<Props> = ({ isOpen, onClose, onSelect }
     return (
         <Modal isOpen={isOpen} onRequestClose={onClose}>
             <h2>会員検索</h2>
-            <div className={formSearchStyles.formContainer}>
+            <div className={`${formSearchStyles.formContainer} !bg-gray-200`}>
                 <div className={formSearchStyles.formGrid}>
                     <div className={formSearchStyles.formItem}>
                         <label htmlFor="userName" >{texts.member.userName}</label>
@@ -160,6 +160,7 @@ export const MemberSearchModal: React.FC<Props> = ({ isOpen, onClose, onSelect }
                                 }}
                               >
                                 <button
+                                className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-full"
                                 onClick={() => {
                                     onSelect(result);
                                     onClose();

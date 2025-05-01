@@ -16,6 +16,9 @@ import { usePaddleSearchAPI } from '@/hooks/api/admin/paddle/usePaddleSearchAPI'
 import { usePaddleSearchCountAPI } from '@/hooks/api/admin/paddle/usePaddleSearchCountAPI';
 import { usePaddleSearchParams } from '@/hooks/searchParams/admin/usePaddleSearchParams';
 import { useUserGetInfoAPI } from '@/hooks/api/admin/user/useUserGetInfoAPI';
+import { usePaddleRegistAPI } from '@/hooks/api/admin/paddle/usePaddleRegistAPI';
+import { usePaddleDeleteAPI } from '@/hooks/api/admin/paddle/usePaddleDeleteAPI';
+
 //型定義
 import { TAdminPaddleSelect, TAdminPaddleRegistRequest } from '@/types/admin/paddle/management';
 import { TAdminUserSelect } from '@/types/admin/member/search';
@@ -23,6 +26,7 @@ import { PageProps } from '@/types/admin/adminPage';
 //ボタン
 import { SearchButton } from '@/components/ui/buttons/admin/searchButton';
 import { ClearButton } from '@/components/ui/buttons/admin/clearButton';
+import { RegistButton } from '@/components/ui/buttons/admin/registButton';
 //コンポーネント
 import { RequiredMark } from '@/components/ui/marks/RequiredMark';
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
@@ -103,6 +107,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }));
   };
   const [isModalOpen, setModalOpen] = useState(false);
+
+  const { responseStatus, errors: registResponseErrors, paddleRegistAPI } = usePaddleRegistAPI();
+  const paddleDataRegist = () => {
+    if(registPaddleData){
+      paddleRegistAPI(registPaddleData, false);
+    }
+  };
 
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const [selectedKaisai, setSelectedKaisai] = useState<string>('');
@@ -258,6 +269,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               disabled
             />
           </div>
+        </div>
+        <div className={formSearchStyles.formGrid}>
+
           <div className={formSearchStyles.formItem}>
             <label htmlFor="auction" >{texts.paddle.paddleKbn}</label>
             <PaddleKbnPullDown
@@ -268,14 +282,24 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="searchPaddleNo" >{texts.paddle.paddleNo}</label>
-            <input
-              id="registPaddleNo"
-              type="text"
-              name="registPaddleNo"
-              value={registPaddleData?.paddleNo}
-              onChange={handleRegistDataChange}
-            />
+            <div className={formSearchStyles.formRow}>
+
+              <input
+                id="registPaddleNo"
+                type="text"
+                name="registPaddleNo"
+                value={registPaddleData?.paddleNo}
+                onChange={handleRegistDataChange}
+              />
+              <button type="button" className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={() => setModalOpen(true)}>
+                自動採番
+              </button>
+            </div>
+
           </div>
+          <div className="text-right mt-2" >
+           <RegistButton label={texts.button.goodsInfoRegist} onClick={paddleDataRegist} />
+        </div>
 
         </div>
       </div>
