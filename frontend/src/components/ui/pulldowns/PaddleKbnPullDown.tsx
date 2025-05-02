@@ -27,7 +27,7 @@ export const PaddleKbnPullDown = ({ className, onChange, selectedId }: Props) =>
          <option value="">---</option>
       {paddleKbnList.map(data => (
         <option key={data.paddleKbn} value={data.paddleKbn}>
-          {data.paddleKbnName}
+          {data.paddleKbnName} ( {data.paddleNoFrom} ~ {data.paddleNoTo} )  
         </option>
       ))}
     </select>

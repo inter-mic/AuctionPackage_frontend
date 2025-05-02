@@ -17,10 +17,11 @@ import { usePaddleSearchCountAPI } from '@/hooks/api/admin/paddle/usePaddleSearc
 import { usePaddleSearchParams } from '@/hooks/searchParams/admin/usePaddleSearchParams';
 import { useUserGetInfoAPI } from '@/hooks/api/admin/user/useUserGetInfoAPI';
 import { usePaddleRegistAPI } from '@/hooks/api/admin/paddle/usePaddleRegistAPI';
+import { useNextPaddleNoSearchAPI } from '@/hooks/api/admin/paddle/useNextPaddleNoSearchAPI';
 import { usePaddleDeleteAPI } from '@/hooks/api/admin/paddle/usePaddleDeleteAPI';
 
 //型定義
-import { TAdminPaddleSelect, TAdminPaddleRegistRequest } from '@/types/admin/paddle/management';
+import { TAdminPaddleSelect, TAdminPaddleRegistRequest, TAdminNextPaddleSearchRequest } from '@/types/admin/paddle/management';
 import { TAdminUserSelect } from '@/types/admin/member/search';
 import { PageProps } from '@/types/admin/adminPage';
 //ボタン
@@ -56,14 +57,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   //登録
   const [selectedRegistKaisai, setSelectedRegistKaisai] = useState<string>('');
   const [registErrors, setRegistErrors] = useState<{ [key: string]: string }>({});
-  const [registPaddleData, setRegistPaddleData] = useState<TAdminPaddleRegistRequest>();
+  const [paddleRegistRequest, setPaddleRegistRequest] = useState<TAdminPaddleRegistRequest>();
+  const [nextPaddleSearchRequest, setNextPaddleSearchRequest] = useState<TAdminNextPaddleSearchRequest>();
   const { userName: registUserName, companyName: registCompanyName, userGetInfo } = useUserGetInfoAPI();
   const handleRegistDataChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, checked?: boolean) => {
 
     const { name, value, type } = e.target;
-    setRegistPaddleData((prevGoodsData) => ({ ...prevGoodsData, [name]: value }));
+    setPaddleRegistRequest((prevGoodsData) => ({ ...prevGoodsData, [name]: value }));
     if (name === 'registUserId') {
-      setRegistPaddleData(prevData => ({
+      setPaddleRegistRequest(prevData => ({
         ...prevData,
         userName: "",
         companyName: "",
@@ -71,7 +73,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       if (value) {
         userGetInfo(value);
       }
-
     }
     if (registErrors?.[name]) {
       setRegistErrors((prevErrors) => ({
@@ -79,17 +80,33 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         [name]: '',
       }));
     }
+  };
+  const { responseStatus, errors: registResponseErrors, paddleRegistAPI } = usePaddleRegistAPI();
+  const paddleDataRegist = () => {
+    if(paddleRegistRequest){
+      paddleRegistAPI(paddleRegistRequest, false);
+    }
+  };
 
+  //会員検索
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleSelectMember = (member: TAdminUserSelect) => {
+    setPaddleRegistRequest(prevData => ({
+      ...prevData,
+      userId: member.userId,
+      userName: member.userName,
+      companyName: member.companyName
+    }));
   };
   useEffect(() => {
     if (registUserName) {
-      setRegistPaddleData(prevData => ({
+      setPaddleRegistRequest(prevData => ({
         ...prevData,
         userName: registUserName,
       }));
     }
     if (registCompanyName) {
-      setRegistPaddleData(prevData => ({
+      setPaddleRegistRequest(prevData => ({
         ...prevData,
         companyName: registCompanyName,
       }));
@@ -98,29 +115,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [registUserName, registCompanyName]);
 
 
-  const handleSelectMember = (member: TAdminUserSelect) => {
-    setRegistPaddleData(prevData => ({
-      ...prevData,
-      userId: member.userId,
-      userName: member.userName,
-      companyName: member.companyName
-    }));
-  };
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const { responseStatus, errors: registResponseErrors, paddleRegistAPI } = usePaddleRegistAPI();
-  const paddleDataRegist = () => {
-    if(registPaddleData){
-      paddleRegistAPI(registPaddleData, false);
-    }
-  };
 
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  //開催回プルダウン
   const [selectedKaisai, setSelectedKaisai] = useState<string>('');
   const handleKaisaiChange = (name: string, value: string, isRegist: boolean) => {
     if (isRegist) {
       setSelectedRegistKaisai(value);
       handleRegistDataChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
+      setNextPaddleSearchRequest(prevData => ({
+        ...prevData,
+        auctionSeq: value
+      }));
       if (errors?.[name]) {
         setRegistErrors((prevErrors) => ({
           ...prevErrors,
@@ -140,12 +146,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   };
 
+  //パドル区分プルダウン
   const [selectedRegistPaddleKbn, setSelectedRegistPaddleKbn] = useState<string | null>(null);
   const [selectedSearchPaddleKbn, setSelectedSearchPaddleKbn] = useState<string | null>(null);
   const handlePaddleKbnChange = (name: string, value: string, isRegist: boolean) => {
     if (isRegist) {
       setSelectedRegistPaddleKbn(value);
       handleRegistDataChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
+      setNextPaddleSearchRequest(prevData => ({
+        ...prevData,
+        paddleKbn: value
+      }));
       if (errors?.[name]) {
         setRegistErrors((prevErrors) => ({
           ...prevErrors,
@@ -162,8 +173,27 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         }));
       }
     }
-
   };
+
+  //自動採番
+  const { nextPaddleNo, errors: nextPaddleResponseErrors, nextPaddleNoSearchAPI } = useNextPaddleNoSearchAPI();
+  const getNextPaddleNo = () => {
+    if(nextPaddleSearchRequest){
+      nextPaddleNoSearchAPI(nextPaddleSearchRequest);
+    }
+  }
+  useEffect(() => {
+    if (nextPaddleNo) {
+      setPaddleRegistRequest(prevData => ({
+        ...prevData,
+        paddleNo : nextPaddleNo,
+      }));
+    }
+  }, [nextPaddleNo]);
+  const [nextPaddleErrors, setNextPaddleErrors] = useState<{ [key: string]: string }>({});
+  useEffect(() => {
+    if (nextPaddleResponseErrors) { setNextPaddleErrors(nextPaddleResponseErrors); }
+  }, [nextPaddleResponseErrors]);
 
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { paddleParams, formChange, resetForm } = usePaddleSearchParams();
@@ -230,6 +260,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               spnKbns={["1"]}
             />
             {registErrors?.auctionSeq && <p className="error-message">{registErrors.auctionSeq}</p>}
+            {nextPaddleErrors?.auctionSeq && <p className="error-message">{nextPaddleErrors.auctionSeq}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="registUserId" >{texts.member.userId}</label>
@@ -239,10 +270,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 type="text"
                 name="registUserId"
                 maxLength={9}
-                value={registPaddleData?.userId}
+                value={paddleRegistRequest?.userId}
                 onChange={handleRegistDataChange}
               />
-              <button type="button" className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={() => setModalOpen(true)}>
+              <button type="button" className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={() => setModalOpen(true)}>
                 会員検索
               </button>
 
@@ -255,7 +286,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               id="registUserName"
               type="text"
               name="registUserName"
-              value={registPaddleData?.userName}
+              value={paddleRegistRequest?.userName}
               disabled
             />
           </div>
@@ -265,66 +296,44 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               id="registCompanyName"
               type="text"
               name="registCompanyName"
-              value={registPaddleData?.companyName}
+              value={paddleRegistRequest?.companyName}
               disabled
             />
           </div>
         </div>
-        <div className={formSearchStyles.formGrid}>
-
+        <div className={`${formSearchStyles.formGrid} !mt-2`}>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="auction" >{texts.paddle.paddleKbn}</label>
             <PaddleKbnPullDown
               onChange={(value) => handlePaddleKbnChange('paddleKbn', value, true)}
               selectedId={selectedRegistPaddleKbn !== null ? String(selectedRegistPaddleKbn) : ''}
             />
-
+            {nextPaddleErrors?.paddleKbn && <p className="error-message">{nextPaddleErrors.paddleKbn}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="searchPaddleNo" >{texts.paddle.paddleNo}</label>
+            <label htmlFor="registPaddleNo" >{texts.paddle.paddleNo}</label>
             <div className={formSearchStyles.formRow}>
-
               <input
                 id="registPaddleNo"
                 type="text"
                 name="registPaddleNo"
-                value={registPaddleData?.paddleNo}
+                value={paddleRegistRequest?.paddleNo}
                 onChange={handleRegistDataChange}
               />
-              <button type="button" className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={() => setModalOpen(true)}>
+              <button type="button" className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={getNextPaddleNo}>
                 自動採番
               </button>
             </div>
-
+            
           </div>
-          <div className="text-right mt-2" >
-           <RegistButton label={texts.button.goodsInfoRegist} onClick={paddleDataRegist} />
-        </div>
+          
 
+        </div>
+        <div className="text-right mt-2" >
+           <RegistButton label={texts.button.regist} onClick={paddleDataRegist} />
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center my-3 bg-gray-100">
-        <div className="w-full space-y-3 bg-white shadow-md md:max-w-full md:rounded">
-          <div className="p-4">
-
-            <div className="flex flex-col md:flex-row items-end space-y-4">
-              <div className="w-full sm:w-1/3">
-                <input
-                  id="message"
-                  type='text'
-                  name="message"
-
-                  className="w-full border p-2 rounded h-10"
-                />
-              </div>
-
-            </div>
-            <div className="w-full sm:w-1/3">
-              {formErrors?.message && <p className="error-message">{formErrors.message}</p>}
-            </div>
-          </div>
-        </div>
-      </div>
+     
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>

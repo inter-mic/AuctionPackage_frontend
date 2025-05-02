@@ -4,30 +4,36 @@ export interface TAdminPaddleSearchRequest {
     userName?: string;
     paddleKbn?: string;
     paddleNo?: string;
-    pageNumber:number;
-    pageSize:number;
+    pageNumber: number;
+    pageSize: number;
     sortKey?: string;
-    sortFlg?:boolean;
+    sortFlg?: boolean;
 }
 
 export interface TAdminPaddleSelect {
     auctionSeq: number;
     userId: number;
     userName: string;
-    companyName: string;  
-    auctionName: string;    
+    companyName: string;
+    auctionName: string;
     fullAddress: string;
     paddleKbn: number;
     paddleKbnName: string;
     paddleNo: number;
-    [key: string]: any; 
+    [key: string]: any;
 }
 
-export interface TAdminPaddleRegistRequest{
+export interface TAdminNextPaddleSearchRequest {
+    auctionSeq?: string;
+    paddleKbn?: string;
+}
+
+
+export interface TAdminPaddleRegistRequest {
     userId?: number;
     userName?: string;
     companyName?: string;
     auctionSeq?: string | undefined;
-  paddleKbn?: string | undefined;
-  paddleNo?: string | undefined;
+    paddleKbn?: string | undefined;
+    paddleNo?: string | undefined;
 }
