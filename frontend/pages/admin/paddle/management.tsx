@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { texts } from '@/config/texts';
 import Pagination from '@mui/material/Pagination';
+import { useRef } from "react";
 //ホック
 import { withAuth } from '@/hocs/withAdminAuth';
 import withAdminLayout from '@/hocs/withAdminLayout';
@@ -21,7 +22,7 @@ import { useNextPaddleNoSearchAPI } from '@/hooks/api/admin/paddle/useNextPaddle
 import { usePaddleDeleteAPI } from '@/hooks/api/admin/paddle/usePaddleDeleteAPI';
 
 //型定義
-import { TAdminPaddleSelect, TAdminPaddleRegistRequest, TAdminNextPaddleSearchRequest } from '@/types/admin/paddle/management';
+import { TAdminPaddleSelect, TAdminPaddleRegistRequest, TAdminNextPaddleSearchRequest, initialTAdminPaddleRegistRequest } from '@/types/admin/paddle/management';
 import { TAdminUserSelect } from '@/types/admin/member/search';
 import { PageProps } from '@/types/admin/adminPage';
 //ボタン
@@ -33,6 +34,7 @@ import { RequiredMark } from '@/components/ui/marks/RequiredMark';
 import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
 import { PaddleKbnPullDown } from '@/components/ui/pulldowns/PaddleKbnPullDown';
 import { MemberSearchModal } from '@/components/admin/MemberSearchModalComponent';
+import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
 //スタイル
 import breadcrumbStyles from '@/styles/breadcrumb.module.css';
 import formSearchStyles from '@/styles/admin/FormSearch.module.css';
@@ -54,18 +56,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useKengenRedirect(kengen, 102);
   const { executionPermission } = useExecutionPermission(kengen);
 
+  const inputRef = useRef<HTMLInputElement>(null);
   //登録
   const [selectedRegistKaisai, setSelectedRegistKaisai] = useState<string>('');
   const [registErrors, setRegistErrors] = useState<{ [key: string]: string }>({});
-  const [paddleRegistRequest, setPaddleRegistRequest] = useState<TAdminPaddleRegistRequest>();
+  const [paddleInsertRequest, setPaddleInsertRequest] = useState<TAdminPaddleRegistRequest>();
   const [nextPaddleSearchRequest, setNextPaddleSearchRequest] = useState<TAdminNextPaddleSearchRequest>();
   const { userName: registUserName, companyName: registCompanyName, userGetInfo } = useUserGetInfoAPI();
   const handleRegistDataChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, checked?: boolean) => {
 
     const { name, value, type } = e.target;
-    setPaddleRegistRequest((prevGoodsData) => ({ ...prevGoodsData, [name]: value }));
-    if (name === 'registUserId') {
-      setPaddleRegistRequest(prevData => ({
+    setPaddleInsertRequest((prevGoodsData) => ({ ...prevGoodsData, [name]: value }));
+    if (name === 'userId') {
+      setPaddleInsertRequest(prevData => ({
         ...prevData,
         userName: "",
         companyName: "",
@@ -81,32 +84,41 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }));
     }
   };
-  const { responseStatus, errors: registResponseErrors, paddleRegistAPI } = usePaddleRegistAPI();
-  const paddleDataRegist = () => {
-    if(paddleRegistRequest){
-      paddleRegistAPI(paddleRegistRequest, false);
+  const { responseStatus, errors: insertResponseErrors, paddleRegistAPI: insertPaddleRegistAPI } = usePaddleRegistAPI();
+  const paddleDataInsert = () => {
+    if (paddleInsertRequest) {
+      insertPaddleRegistAPI(paddleInsertRequest, false);
     }
   };
+  useEffect(() => {
+    if (responseStatus == 200) {
+      setPaddleInsertRequest(initialTAdminPaddleRegistRequest);
+      inputRef.current?.focus();
+    }
+  }, [responseStatus]);
+  useEffect(() => {
+    if (insertResponseErrors) { setRegistErrors(insertResponseErrors); }
+  }, [insertResponseErrors]);
 
   //会員検索
   const [isModalOpen, setModalOpen] = useState(false);
   const handleSelectMember = (member: TAdminUserSelect) => {
-    setPaddleRegistRequest(prevData => ({
+    setPaddleInsertRequest(prevData => ({
       ...prevData,
-      userId: member.userId,
+      userId: member.userId.toString(),
       userName: member.userName,
       companyName: member.companyName
     }));
   };
   useEffect(() => {
     if (registUserName) {
-      setPaddleRegistRequest(prevData => ({
+      setPaddleInsertRequest(prevData => ({
         ...prevData,
         userName: registUserName,
       }));
     }
     if (registCompanyName) {
-      setPaddleRegistRequest(prevData => ({
+      setPaddleInsertRequest(prevData => ({
         ...prevData,
         companyName: registCompanyName,
       }));
@@ -178,15 +190,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   //自動採番
   const { nextPaddleNo, errors: nextPaddleResponseErrors, nextPaddleNoSearchAPI } = useNextPaddleNoSearchAPI();
   const getNextPaddleNo = () => {
-    if(nextPaddleSearchRequest){
+    if (nextPaddleSearchRequest) {
       nextPaddleNoSearchAPI(nextPaddleSearchRequest);
     }
   }
   useEffect(() => {
     if (nextPaddleNo) {
-      setPaddleRegistRequest(prevData => ({
+      setPaddleInsertRequest(prevData => ({
         ...prevData,
-        paddleNo : nextPaddleNo,
+        paddleNo: nextPaddleNo,
       }));
     }
   }, [nextPaddleNo]);
@@ -213,10 +225,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     await paddleSearchCountAPI(params);
   };
   const formClear = () => {
-
     setfetchedData([]);
     resetForm();
   };
+  const registClear = () => {
+    setSelectedRegistKaisai("");
+    setSelectedRegistPaddleKbn("");
+    setPaddleInsertRequest(initialTAdminPaddleRegistRequest);
+  }
   useEffect(() => {
     if (data) {
       setfetchedData(data);
@@ -225,7 +241,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (errors) { setFormErrors(errors); }
   }, [errors]);
-
+  useEffect(() => {
+    if (fetchedData.length > 0) {
+      const initialEditableRows = fetchedData.reduce((acc, row) => {
+        acc[row.userId] = {
+          paddleKbn: row.paddleKbn,
+          paddleNo: row.paddleNo,
+        };
+        return acc;
+      }, {} as Record<string, { paddleKbn: string; paddleNo: string }>);
+      
+      setEditableRows(initialEditableRows);
+    }
+  }, [fetchedData]);
 
   const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: paddleSearchAPI,
@@ -238,8 +266,48 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchAPI: paddleSearchAPI,
     searchParams: paddleParams,
   });
+  const [editableRows, setEditableRows] = useState<Record<string, { paddleKbn: string; paddleNo: string }>>({});
+  const handleUpdateChange = (userId: string, field: keyof TAdminPaddleRegistRequest, value: string) => {
+    setEditableRows(prev => ({
+      ...prev,
+      [userId]: {
+        ...prev[userId],
+        [field]: value,
+      },
+    }));
+  };
 
+  //更新
+  const { responseStatus: updateResponseStatus, errors: updateResponseErrors, paddleRegistAPI: updatePaddleRegistAPI } = usePaddleRegistAPI();
+  const [updateErrors, setUpdateErrors] = useState<{ [key: string]: string }>({});
+  const [paddleUpdateRequest, setPaddleUpdateRequest] = useState<TAdminPaddleRegistRequest>();
+  const paddleDataUpdate = (row: TAdminPaddleRegistRequest) => {
+    
+    if (!row.userId) { return; }
+    const updated = editableRows[row.userId];
+   
+    if (!updated) return;
+    setPaddleUpdateRequest(prevData => ({
+      ...prevData,
+      userId: row.userId,
+      auctionSeq: row.auctionSeq,
+      paddleKbn: updated.paddleKbn,
+      paddleNo: updated.paddleNo
+    }));
+   
+    if (paddleUpdateRequest) {
+      updatePaddleRegistAPI(paddleUpdateRequest, true);
+    }
+  };
+  useEffect(() => {
+    if (updateResponseErrors) { setUpdateErrors(updateResponseErrors); }
+  }, [updateResponseErrors]);
 
+  //削除処理
+  const { paddleDeleteAPI } = usePaddleDeleteAPI();
+  const handleDeleteSubmit = (auctionSeq: string, userId: string) => {
+    paddleDeleteAPI(auctionSeq, userId);
+  };
 
   return (
 
@@ -263,14 +331,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             {nextPaddleErrors?.auctionSeq && <p className="error-message">{nextPaddleErrors.auctionSeq}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="registUserId" >{texts.member.userId}</label>
+            <label htmlFor="userId" ><RequiredMark />{texts.member.userId}</label>
             <div className={formSearchStyles.formRow}>
               <input
-                id="registUserId"
-                type="text"
-                name="registUserId"
+                ref={inputRef}
+                id="userId"
+                type="number"
+                name="userId"
                 maxLength={9}
-                value={paddleRegistRequest?.userId}
+                value={paddleUpdateRequest?.userId}
                 onChange={handleRegistDataChange}
               />
               <button type="button" className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={() => setModalOpen(true)}>
@@ -278,6 +347,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </button>
 
             </div>
+            {registErrors?.userId && <p className="error-message">{registErrors.userId}</p>}
 
           </div>
           <div className={formSearchStyles.formItem}>
@@ -286,7 +356,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               id="registUserName"
               type="text"
               name="registUserName"
-              value={paddleRegistRequest?.userName}
+              value={paddleUpdateRequest?.userName}
               disabled
             />
           </div>
@@ -296,44 +366,46 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               id="registCompanyName"
               type="text"
               name="registCompanyName"
-              value={paddleRegistRequest?.companyName}
+              value={paddleUpdateRequest?.companyName}
               disabled
             />
           </div>
         </div>
         <div className={`${formSearchStyles.formGrid} !mt-2`}>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="auction" >{texts.paddle.paddleKbn}</label>
+            <label htmlFor="auction" ><RequiredMark />{texts.paddle.paddleKbn}</label>
             <PaddleKbnPullDown
               onChange={(value) => handlePaddleKbnChange('paddleKbn', value, true)}
               selectedId={selectedRegistPaddleKbn !== null ? String(selectedRegistPaddleKbn) : ''}
             />
             {nextPaddleErrors?.paddleKbn && <p className="error-message">{nextPaddleErrors.paddleKbn}</p>}
+            {registErrors?.paddleKbn && <p className="error-message">{registErrors.paddleKbn}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="registPaddleNo" >{texts.paddle.paddleNo}</label>
+            <label htmlFor="paddleNo" ><RequiredMark />{texts.paddle.paddleNo}</label>
             <div className={formSearchStyles.formRow}>
               <input
-                id="registPaddleNo"
+                id="paddleNo"
                 type="text"
-                name="registPaddleNo"
-                value={paddleRegistRequest?.paddleNo}
+                name="paddleNo"
+                value={paddleUpdateRequest?.paddleNo}
                 onChange={handleRegistDataChange}
               />
               <button type="button" className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40" onClick={getNextPaddleNo}>
                 自動採番
               </button>
             </div>
-            
+            {registErrors?.paddleNo && <p className="error-message">{registErrors.paddleNo}</p>}
           </div>
-          
+
 
         </div>
         <div className="text-right mt-2" >
-           <RegistButton label={texts.button.regist} onClick={paddleDataRegist} />
+          <RegistButton label={texts.button.regist} onClick={paddleDataInsert} />
+          <ClearButton onClick={registClear} />
         </div>
       </div>
-     
+
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
@@ -351,7 +423,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <label htmlFor="searchUserId" >{texts.member.userId}</label>
             <input
               id="searchUserId"
-              type="text"
+              type="number"
               name="searchUserId"
               maxLength={9}
               value={paddleParams.userId}
@@ -359,7 +431,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="searchUserName" >{texts.member.userName}</label>
+            <label htmlFor="searchUserName" >{texts.member.userName}/{texts.member.companyName}</label>
             <input
               id="searchUserName"
               type="text"
@@ -422,9 +494,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
+                  <th className="py-2 px-4 border-b" >{texts.member.userId} </th>
                   <th className="py-2 px-4 border-b" >{texts.member.userName}/{texts.member.companyName} </th>
                   <th className="py-2 px-4 border-b" >{texts.paddle.paddleKbn}</th>
                   <th className="py-2 px-4 border-b" >{texts.paddle.paddleNo}</th>
+                  <th className="py-2 px-4 border-b" ></th>
+                  <th className="py-2 px-4 border-b" ></th>
+                  <th className="py-2 px-4 border-b" ></th>
                 </tr>
               </thead>
               <tbody>
@@ -433,9 +509,47 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     key={result.userId}
                     className="cursor-pointer hover:bg-gray-100"
                   >
+                    <td className="py-1 px-4 border-b text-left">{result.userId}</td>
                     <td className="py-1 px-4 border-b text-left">{result.userName}/{result.companyName}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.paddleKbnName}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.paddleNo}</td>
+                    <td className="py-1 px-4 border-b text-left">
+                      <PaddleKbnPullDown
+                        onChange={(value) => handleUpdateChange(result.userId, 'paddleKbn', value)}
+                        selectedId={editableRows[result.userId]?.paddleKbn ?? result.paddleKbn}
+                        className={adminStyles.tabelCellInput}
+                      />
+
+                    </td>
+                    <td className="py-1 px-4 border-b">
+                      <input
+                        type="text"
+                        value={editableRows[result.userId]?.paddleNo ?? result.paddleNo}
+                        onChange={(e) => handleUpdateChange(result.userId, "paddleNo", e.target.value)}
+                        className={adminStyles.tabelCellInput}
+                      />
+                      {result.userId == paddleUpdateRequest?.userId && updateErrors?.paddleNo && <p className="error-message">{updateErrors.paddleNo}</p>}
+                    </td>
+                    <td className="py-1 px-4 border-b text-center">
+
+                    </td>
+                    <td className="py-1 px-4 border-b text-center">
+                      <RegistButton
+                        label={texts.button.update} onClick={() => paddleDataUpdate(result)}
+                      />
+                    </td>
+                    <td className="py-1 px-4 border-b text-center">
+                      <ConfirmDialog
+                        title={texts.message.confirmDelete}
+                        description={texts.label.delete_note_1}
+                        buttonTitle={texts.button.delete}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-40"
+                        dialogCancelClassName="lg:ml-2.5 mt-2 lg:mt-0 bg-white border border-solid border-red-500 text-red-500 font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
+                        dialogClassName="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg w-40"
+                        onSubmit={() => handleDeleteSubmit(result.auctionSeq, result.userId)}
+                        buttonText={texts.button.delete}
+                      />
+
+
+                    </td>
                   </tr>
                 ))}
               </tbody>

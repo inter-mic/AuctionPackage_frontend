@@ -11,7 +11,6 @@ type Props = {
 };
 
 export const PaddleKbnPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const { paddleKbnList } = usePaddleNumberSearchAPI();
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       onChange(event.target.value);
@@ -19,10 +18,11 @@ export const PaddleKbnPullDown = ({ className, onChange, selectedId }: Props) =>
 
   return (
     <select 
-      id="searchPaddleKbn"
-      name="searchPaddleKbn"
+      id="paddleKbn"
+      name="paddleKbn"
       className={className ?? ''}
       onChange={handleChange}
+      value={selectedId ?? ''}
       >
          <option value="">---</option>
       {paddleKbnList.map(data => (

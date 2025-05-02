@@ -11,15 +11,15 @@ export interface TAdminPaddleSearchRequest {
 }
 
 export interface TAdminPaddleSelect {
-    auctionSeq: number;
-    userId: number;
+    auctionSeq: string;
+    userId: string;
     userName: string;
     companyName: string;
     auctionName: string;
     fullAddress: string;
-    paddleKbn: number;
+    paddleKbn: string;
     paddleKbnName: string;
-    paddleNo: number;
+    paddleNo: string;
     [key: string]: any;
 }
 
@@ -30,10 +30,20 @@ export interface TAdminNextPaddleSearchRequest {
 
 
 export interface TAdminPaddleRegistRequest {
-    userId?: number;
+    userId?: string;
     userName?: string;
     companyName?: string;
-    auctionSeq?: string | undefined;
-    paddleKbn?: string | undefined;
-    paddleNo?: string | undefined;
+    auctionSeq?: string;
+    paddleKbn?: string;
+    paddleNo?: string;
 }
+
+export const initialTAdminPaddleRegistRequest: TAdminPaddleRegistRequest = {
+    userId: "",
+    userName: "",
+    companyName: "",
+    auctionSeq: "",
+    paddleKbn: "",
+    paddleNo: ""
+};
+

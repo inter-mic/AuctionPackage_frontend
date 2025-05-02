@@ -7,7 +7,7 @@ export const usePaddleSearchCountAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [count, setCount] = useState<number | 0>(0);
   const paddleSearchCountAPI = async (searchParams: TAdminPaddleSearchRequest) => {
-    const endPoint = `user/count`;
+    const endPoint = `paddle/count`;
     const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
     if (responseData) {
       setCount(responseData);
