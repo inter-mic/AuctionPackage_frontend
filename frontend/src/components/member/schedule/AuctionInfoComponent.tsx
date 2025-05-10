@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //ボタン
 import { ToGoodsListButton } from '@/components/ui/buttons/member/toGoodsListButton';
+import { ToLiveApplicationButton } from '@/components/ui/buttons/member/toLiveApplicationButton';
 //型定義
 import { TAuction } from '@/types/common/MtAuction';
 //スタイル
@@ -16,10 +17,10 @@ import auctionStyles from '@/styles/member/schedule/Calender.module.css';
 interface Props {
   auctionData: TAuction;
   isToGoodsList: boolean;
-  isLogin:boolean;
+  isLogin: boolean;
 }
 
-const AuctionInfoComponent: React.FC<Props> = ({ auctionData,isToGoodsList,isLogin }) => {
+const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isLogin }) => {
   const { useState, texts } = useCommonSetup();
   const displayStarttimeFormatted = dayjs(auctionData.displayStarttime).format('YYYY年MM月DD日 H:mm');
   const displayEndtimeFormatted = dayjs(auctionData.displayEndtime).format('YYYY年MM月DD日 H:mm');
@@ -28,37 +29,46 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData,isToGoodsList,isLog
   const now = dayjs(); // 現在時刻
   const bidStart = auctionData.bidStarttime ? dayjs(auctionData.bidStarttime, "YYYY/MM/DD HH:mm:ss") : null;
   const bidEnd = auctionData.bidEndtime ? dayjs(auctionData.bidEndtime, "YYYY/MM/DD HH:mm:ss") : null;
-  
+
 
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
   return (
     <div className={auctionStyles.auctionContainer}>
-     <div className={`${memberStyles.memberContainer} ${auctionStyles.auctionBlock}`}>
-    
+      <div className={`${memberStyles.memberContainer} ${auctionStyles.auctionBlock}`}>
+
         {auctionData.auctionImageUrl ? (
-           <div className={auctionStyles.imageContainer}>
+          <div className={auctionStyles.imageContainer}>
             <Image
               src={auctionData.auctionImageUrl}
               alt=""
-                sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 768px) 100vw, 50vw"
               fill
             />
-             </div>
-          ) : (
-            <span></span>
-          )}
-        
+          </div>
+        ) : (
+          <span></span>
+        )}
+
         <div className={auctionStyles.textContainer}>
-        <div className={auctionStyles.statusContainer}>
-         {bidStart && now.isBefore(bidStart) ? (
-            <div className={`${auctionStyles.status} ${auctionStyles.statusBefore}`}>{texts.auction.kaisaiStatus1}</div>
-          ) : bidEnd && now.isAfter(bidEnd) ? (
-            <div className={`${auctionStyles.status} ${auctionStyles.statusAfter}`}>{texts.auction.kaisaiStatus3}</div>
-          ) : (
-            <div className={`${auctionStyles.status} ${auctionStyles.statusDuring}`}>{texts.auction.kaisaiStatus2}</div>
-          )}
+          <div className={auctionStyles.statusContainer}>
+            {(auctionData.spnKbn === "3" || auctionData.spnKbn === "4") && (
+              bidStart && now.isBefore(bidStart) ? (
+                <div className={`${auctionStyles.status} ${auctionStyles.statusBefore}`}>
+                  {texts.auction.kaisaiStatus1}
+                </div>
+              ) : bidEnd && now.isAfter(bidEnd) ? (
+                <div className={`${auctionStyles.status} ${auctionStyles.statusAfter}`}>
+                  {texts.auction.kaisaiStatus3}
+                </div>
+              ) : (
+                <div className={`${auctionStyles.status} ${auctionStyles.statusDuring}`}>
+                  {texts.auction.kaisaiStatus2}
+                </div>
+              )
+            )}
+
             {auctionData.spnKbn == '1' ? (
               <div className={auctionStyles.spnKbn}>{texts.auction.spnKbn1}</div>
             ) : auctionData.spnKbn == '2' ? (
@@ -85,15 +95,20 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData,isToGoodsList,isLog
             <div className={auctionStyles.goodsList}>
               {texts.auction.GoodsListLabel}:
               <Link className="text-blue-600 underline" href={auctionData.auctionListUrl} target="_blank">
-                  {texts.label.download}
-                </Link>
+                {texts.label.download}
+              </Link>
             </div>
           )}
 
           {isToGoodsList && (
-             <ToGoodsListButton auctionSeq={auctionData.auctionSeq} isLogin={isLogin}/>
+            <ToGoodsListButton auctionSeq={auctionData.auctionSeq} isLogin={isLogin} />
           )}
-         
+          {auctionData.spnKbn == '1' ? (
+          <ToLiveApplicationButton auctionSeq={auctionData.auctionSeq} />  
+          ) : (
+              <div></div>
+            )}
+            
 
           {auctionData.auctionGaiyo && (
             <>
@@ -111,7 +126,7 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData,isToGoodsList,isLog
                   className={`${auctionStyles.auctionGaiyo} ${isExpanded ? auctionStyles.auctionGaiyoExpanded : ''}`}
                   dangerouslySetInnerHTML={{ __html: auctionData.auctionGaiyo.replace(/(\r\n|\n|\r)/g, '<br>') }}
                 />
-             </div>
+              </div>
             </>
           )}
         </div>

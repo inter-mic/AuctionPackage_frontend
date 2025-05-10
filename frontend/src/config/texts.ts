@@ -99,6 +99,7 @@ export const texts = {
       privacyPolicyDelete:"プライバシーポリシー削除",
       detail:"詳しく見る",
       toGoodsList:"出品一覧を確認する",
+      toLiveApplication :"ライブ参加申込",
       bidToggle:"入札する",
       bidConfirm:"入札確認",
       bidConfirmed:"入札確定",
@@ -481,6 +482,13 @@ export const texts = {
     livemessage:{
       message:"メッセージ",
       confirmClear:"強制クリアします。よろしいですか？",
+      updateSerikekka:"次のせり結果を登録します。よろしいですか？",
+      updateSerikekkaData_1:"セリ結果：",
+      updateSerikekkaData_2:"権利者：",
+      updateSerikekkaData_3:"落札価格：",
+      furakusatsu:"不落札",
+      rakusatsu:"落札",
+      rakusatsuProcessMsg:"落札処理中",
     },
     mypageResult:{
       rakusatsuTotalPrice:"落札合計金額"
