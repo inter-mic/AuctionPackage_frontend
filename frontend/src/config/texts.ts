@@ -118,7 +118,8 @@ export const texts = {
       BidFinush:"入札終了",
       furakusatsu:"不落札",
       rakusatsu:"落札",
-      close:"閉じる"
+      close:"閉じる",
+      onlineBidshoninOn:"オンラインビット承認",
     },
     fileName:{
       memberCsv:"会員一覧",

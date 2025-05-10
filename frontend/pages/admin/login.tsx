@@ -9,7 +9,7 @@ import { withSystemSetting } from '@/hocs/withSystemSetting';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //コンポーネント
-import { AdminNoLoginLayoutComponent } from '@/components/admin/AdminNoLoginLayoutComponent';
+import { AdminNoLoginLayoutComponent } from '@/components/admin/layout/AdminNoLoginLayoutComponent';
 //API
 import { useAdminLogoutAPI } from '@/hooks/api/admin/useAdminLogoutAPI';
 //ボタン

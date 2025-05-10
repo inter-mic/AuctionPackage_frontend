@@ -1,17 +1,17 @@
 import React from 'react';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
-//API
-import { usePaddleNumberSearchAPI } from '@/hooks/api/public/usePaddleNumberSearchAPI';
 
+//型定義
+import { TMtPaddleNumber } from '@/types/public/paddleNumber';
 type Props = {
   className?: string | null;
   onChange: (selectedId: string) => void;
   selectedId?: string | null;
+  paddleKbnList: TMtPaddleNumber[]  
 };
 
-export const PaddleKbnPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { paddleKbnList } = usePaddleNumberSearchAPI();
+export const PaddleKbnPullDown = ({ className, onChange, selectedId, paddleKbnList }: Props) => {
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       onChange(event.target.value);
     };

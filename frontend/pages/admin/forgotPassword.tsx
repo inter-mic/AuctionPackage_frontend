@@ -9,7 +9,7 @@ import { useFormErrors } from '@/hooks/useFormErrors';
 import { useForgotPasswordAPI } from '@/hooks/api/public/useForgotPasswordAPI';
 import { useAdminLogoutAPI } from '@/hooks/api/admin/useAdminLogoutAPI';
 //コンポーネント
-import { AdminNoLoginLayoutComponent } from '@/components/admin/AdminNoLoginLayoutComponent';
+import { AdminNoLoginLayoutComponent } from '@/components/admin/layout/AdminNoLoginLayoutComponent';
 //ボタン
 import { SendButton } from '@/components/ui/buttons/sendButton';
 //スタイル

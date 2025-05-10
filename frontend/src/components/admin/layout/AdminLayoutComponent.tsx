@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 //コンポーネント
-import { HeaderComponent } from '@/components/admin/HeaderComponent';
+import { HeaderComponent } from '@/components/admin/layout/HeaderComponent';
 import styles from '@/styles/admin/Layout.module.css';
 //スタイル
 import toastStyles from '@/styles/toast.module.css';

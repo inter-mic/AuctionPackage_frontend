@@ -12,7 +12,7 @@ import { useFormErrors } from '@/hooks/useFormErrors';
 //API
 import { useReissuePasswordAPI } from '@/hooks/api/public/useReissuePasswordAPI';
 //コンポーネント
-import { AdminNoLoginLayoutComponent } from '@/components/admin/AdminNoLoginLayoutComponent';
+import { AdminNoLoginLayoutComponent } from '@/components/admin/layout/AdminNoLoginLayoutComponent';
 //ボタン
 import { PasswordChangeButton } from '@/components/ui/buttons/passwordChangeButton';
 //スタイル

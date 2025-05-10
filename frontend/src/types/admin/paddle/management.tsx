@@ -20,6 +20,7 @@ export interface TAdminPaddleSelect {
     paddleKbn: string;
     paddleKbnName: string;
     paddleNo: string;
+    onlinebidShohinFlg: boolean;
     [key: string]: any;
 }
 
@@ -47,3 +48,15 @@ export const initialTAdminPaddleRegistRequest: TAdminPaddleRegistRequest = {
     paddleNo: ""
 };
 
+export interface TAdminPaddleShoninRequest {
+    userId?: string;
+    auctionSeq?: string;
+    paddleNo?: string;
+    paddleKbn?: string;
+}
+
+export const initialTAdminPaddleShoninRequest: TAdminPaddleShoninRequest = {
+    userId: "",
+    auctionSeq: "",
+    paddleNo: ""
+};
