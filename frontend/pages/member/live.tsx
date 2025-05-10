@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { GetServerSideProps } from 'next';
 import { useEffect, useState, useRef } from 'react';
 import { texts } from '@/config/texts';
@@ -5,12 +6,14 @@ import Image from 'next/image';
 //ホック
 import { withAuth } from '@/hocs/withMemberAuth';
 import withMemberLayout from '@/hocs/withMemberLayout';
-//カスタムフック
-
+//API
+import { useCheckLiveAuctionAPI } from '@/hooks/api/member/live/useCheckLiveAuctionAPI';
+import { useSearchNextLiveAuctionAPI } from '@/hooks/api/member/live/useSearchNextLiveAuctionAPI';
 //型定義
 import { TBidHisotry } from '@/types/member/live';
 import { TPageProps } from '@/types/member/memberPage';
 import { NextLotList } from '@/types/admin/live/nextLotList';
+import {  TAuction } from '@/types/common/MtAuction';
 //コンポーネント
 import LiveBidStatusComponent  from '@/components/member/auction/live/LiveBidStatusComponent';
 import { formatPriceWithCommas } from '@/components/common/PriceUtils';
@@ -44,6 +47,27 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [marqueeKey, setMarqueeKey] = useState(0);
 
   const ws = useRef<WebSocket | null>(null);
+
+  const { isLiveAuction } = useCheckLiveAuctionAPI();
+  const [ isFetchLiveAuction, setIsFetchLiveAuction] = useState<boolean>(false);
+  useEffect(() => {
+    setIsFetchLiveAuction(isLiveAuction);
+  }, [isLiveAuction]); 
+  const { nextAuction } = useSearchNextLiveAuctionAPI();
+  const [ fetchNextAuction, setFetchNextAuction] = useState<TAuction>();
+  useEffect(() => {
+    setFetchNextAuction(nextAuction);
+  }, [nextAuction]); 
+  const [ fetchAuctionDate, setFetcheAuctionDate] = useState<string>("");
+useEffect(() => {
+   if (fetchNextAuction && fetchNextAuction.auctionDatetime) {
+     const formattedDate = dayjs(fetchNextAuction.auctionDatetime).format('YYYY/MM/DD HH:mm');
+  setFetcheAuctionDate(formattedDate);
+  } else {
+    setFetcheAuctionDate("未定");
+  }
+}, [fetchNextAuction]);
+
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
 
@@ -144,7 +168,20 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   };
 
   return (
-    <div className={memberStyles.memberContainer}>
+    !isFetchLiveAuction ? (
+      <div className={styles.noLiveContainer}>
+        <div>
+          <p>{texts.live.noLiveAuction1}<span style={{color: 'red'}}> {fetchAuctionDate}  </span>{texts.live.noLiveAuction2}</p>
+        </div>
+        <div>
+          <p>{texts.live.noLiveAuction3}</p>
+        </div>
+        
+        
+      </div>
+      
+    ) : (
+      <div className={memberStyles.memberContainer}>
       <div className={styles.liveContainer}>
         <div className={styles.leftSection}>
           <div >
@@ -251,7 +288,9 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         )}
       </div>
     </div>
+    )
   );
+
 };
 
 export default withMemberLayout(Page);

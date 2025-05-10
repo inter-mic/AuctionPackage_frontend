@@ -3,8 +3,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Head from 'next/head';
 
 //コンポーネント
-import { HeaderComponent } from '@/components/member/common/HeaderComponent';
-import { FooterComponent } from '@/components/member/common/FooterComponent';
+import { HeaderComponent } from '@/components/member/layout/HeaderComponent';
+import { FooterComponent } from '@/components/member/layout/FooterComponent';
 import styles from '@/styles/member/Layout.module.css';
 //スタイル
 import toastStyles from '@/styles/toast.module.css';
@@ -26,7 +26,10 @@ export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId
   , pageSettingList
   , kobutsuBango
   , copyRight
-  , optionMemInvoice }) => {
+  , optionMemInvoice
+  , liveauction
+  , livebit
+ }) => {
   return (
     <>
       <Head>
@@ -40,7 +43,10 @@ export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId
         nologinView={nologinView} 
         memberRegistrationFlg={memberRegistrationFlg}
         pageSettingList={pageSettingList} 
-        optionMemInvoice={optionMemInvoice} />
+        optionMemInvoice={optionMemInvoice}
+        liveauction={liveauction}
+        livebit={livebit}
+       />
 
       <div className={styles.container}>
         <div className={styles.mainContent}>

@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { texts } from '@/config/texts';
 import { withSystemSetting } from '@/hocs/withSystemSetting';
-import MemberTopPage from '@/components/member/common/MemberTopPageComponent';
+import MemberTopPage from '@/components/member/layout/MemberTopPageComponent';
 import withMemberisLoginLayout from '@/hocs/withMemberisLoginLayout';
 
 export const getServerSideProps: GetServerSideProps = withSystemSetting(async (context) => {

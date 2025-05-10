@@ -46,6 +46,7 @@ export const texts = {
       memberGoodsDetail:"商品詳細",
       memberTop:"TOP",
       memberAuction:"スケジュール",
+      memberJoinLive:"ライブに参加する",
       memberMyPage:"マイページ",
       memberRakusatsu:"落札一覧",
       memberInvoice:"請求一覧",
@@ -428,6 +429,9 @@ export const texts = {
       bidStatus3:"他のユーザーが落札しました",
       bidStatus4:"不落札",
       bidStatus5:"最低落札価格に達していません",
+      noLiveAuction1:"次回の開催予定は",
+      noLiveAuction2:"です。",
+      noLiveAuction3:"開催日当日になると、入札画面が開きます。",
     },
     info:{
       naiyo:"お知らせ内容",

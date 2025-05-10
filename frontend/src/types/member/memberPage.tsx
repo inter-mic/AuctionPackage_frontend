@@ -15,6 +15,8 @@ export type TPageProps ={
     copyRight: string| null;
     pageSettingList: TtPageSetting[];
     optionMemInvoice: boolean | false;
+    liveauction: boolean | false;
+    livebit: boolean | false;
 }
 
 export interface TtPageSetting {
