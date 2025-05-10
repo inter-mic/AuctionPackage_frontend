@@ -73,7 +73,7 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
               <ul>
                 <li><Link href="/member/calender">{texts.menu.memberAuction}</Link></li>
                 {(liveauction || livebit) && (
-                  <li><Link href="/member/live">{texts.menu.memberJoinLive}</Link></li>
+                  <li><Link href="/member/live/bid">{texts.menu.memberJoinLive}</Link></li>
                 )}
                 <li className={styles.toggleMenu} onClick={toggleMemberMenu}>{texts.menu.memberMyPage}</li>
                 <li><Link href="/member/contact">{texts.menu.memberContact}</Link></li>
