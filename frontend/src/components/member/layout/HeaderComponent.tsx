@@ -18,7 +18,7 @@ import { texts } from '@/config/texts';
 //CSS
 import styles from '@/styles/Header.module.css';
 
-export function HeaderComponent({ userId, userName, logoImagePath, nologinView, memberRegistrationFlg, pageSettingList, optionMemInvoice }: HeaderProps) {
+export function HeaderComponent({ userId, userName, logoImagePath, nologinView, memberRegistrationFlg, pageSettingList, optionMemInvoice, liveauction, livebit }: HeaderProps) {
   const [isMemberMenuOpen, setMemberMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const toggleMemberMenu = () => setMemberMenuOpen(!isMemberMenuOpen);
@@ -72,6 +72,9 @@ export function HeaderComponent({ userId, userName, logoImagePath, nologinView, 
             <nav className={styles.menu}>
               <ul>
                 <li><Link href="/member/calender">{texts.menu.memberAuction}</Link></li>
+                {(liveauction || livebit) && (
+                  <li><Link href="/member/live">{texts.menu.memberJoinLive}</Link></li>
+                )}
                 <li className={styles.toggleMenu} onClick={toggleMemberMenu}>{texts.menu.memberMyPage}</li>
                 <li><Link href="/member/contact">{texts.menu.memberContact}</Link></li>
                 {pageSettingList.map((page) => (

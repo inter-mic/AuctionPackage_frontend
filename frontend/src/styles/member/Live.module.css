@@ -1,61 +1,68 @@
 /* コンテナのスタイル */
 .liveContainer {
   display: flex;
-  flex-wrap: wrap; /* 縦方向の折り返しを有効にする */
+  flex-wrap: wrap;
+  /* 縦方向の折り返しを有効にする */
   width: 100%;
-  margin-top:20px;
+  margin-top: 20px;
   justify-content: space-between;
 }
 
 /* 左側のセクション */
 .leftSection {
-  flex: 0 0 68%; 
+  flex: 0 0 68%;
 }
 
 /* 右側のセクション */
 .rightSection {
-  flex: 0 0 28%; 
+  flex: 0 0 28%;
 }
 
-.lot{
-  margin-top:20px;
+.lot {
+  margin-top: 20px;
 }
-.lot, .goodsName{
+
+.lot,
+.goodsName {
   font-size: 20px;
   height: 40px;
 }
-.bidSection{
+
+.bidSection {
   display: flex;
   background-color: #f5f5f5;
-  height: 150px;  
-  justify-content: flex-end; 
-  flex-direction: column; 
+  height: 150px;
+  justify-content: flex-end;
+  flex-direction: column;
   padding: 5px 20px;
   font-size: 20px;
 }
+
 .priceContainer {
   display: flex;
   justify-content: space-between;
-  align-items: center; 
-  width: 100%; 
+  align-items: center;
+  width: 100%;
 }
+
 .priceInfo {
   display: flex;
   align-items: flex-end;
-  gap: 8px; 
+  gap: 8px;
   height: 80px;
 }
 
-.currentPrice{
+.currentPrice {
   font-size: 3rem;
   margin-left: 10px;
-    color: #cb5201;
+  color: #cb5201;
 }
+
 .checkboxContainer {
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-end;
   align-items: center;
-  margin-top: 8px; 
+  margin-top: 8px;
 }
 
 
@@ -67,37 +74,47 @@
 
 .bidItem {
   display: flex;
-  justify-content: space-between; /* 左右に要素を配置 */
-  padding: 8px 0; /* 適宜調整 */
-  border-bottom: 1px solid #ddd; /* 適宜調整 */
+  justify-content: space-between;
+  /* 左右に要素を配置 */
+  padding: 8px 0;
+  /* 適宜調整 */
+  border-bottom: 1px solid #ddd;
+  /* 適宜調整 */
 }
 
 .bidUserId {
-  text-align: left; /* 左寄せ */
-  flex: 1; /* 左側のスペースを確保 */
-  color:#cb5201;
+  text-align: left;
+  /* 左寄せ */
+  flex: 1;
+  /* 左側のスペースを確保 */
+  color: #cb5201;
   font-size: 20px;
 }
 
 .bidPrice {
-  text-align: right; /* 右寄せ */
-  flex: 1; /* 右側のスペースを確保 */
+  text-align: right;
+  /* 右寄せ */
+  flex: 1;
+  /* 右側のスペースを確保 */
   font-size: 20px;
 }
 
 .bidPriceYourBid {
-  text-align: right; /* 右寄せ */
-  flex: 1; /* 右側のスペースを確保 */
-  color:#cb5201;
+  text-align: right;
+  /* 右寄せ */
+  flex: 1;
+  /* 右側のスペースを確保 */
+  color: #cb5201;
   font-size: 20px;
 }
 
 .msgDiv {
-  color:#cb5201;
+  color: #cb5201;
   font-weight: bold;
   font-size: 2rem;
   text-align: center;
-  padding: 25px;
+  height: 4rem;
+  margin-top: 1rem;
   animation: blinking 0.5s ease-in-out infinite alternate;
 }
 
@@ -106,19 +123,147 @@
 }
 
 @keyframes priceChange {
-  0% { color: red; transform: scale(1.1); }
-  50% { color: orange; transform: scale(1.5); }
-  100% { color: #cb5201; transform: scale(1); }
+  0% {
+    color: red;
+    transform: scale(1.1);
+  }
+
+  50% {
+    color: orange;
+    transform: scale(1.5);
+  }
+
+  100% {
+    color: #cb5201;
+    transform: scale(1);
+  }
 }
 
 @keyframes blinking {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.nextLotListContainer {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 16px;
+}
+
+.nextLotItem {
+  flex: 0 0 calc((100% - 32px) / 3);
+  max-width: calc((100% - 32px) / 3);
+  scroll-snap-align: start;
+  text-align: center;
+}
+
+.nextLotCard {
+  flex: 0 0 auto;
+  width: 180px;
+  background: #1f1f1f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  color: #fff;
+  transition: transform .2s;
+}
+
+.nextLotImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  background: #333;
+}
+
+.nextLotCaption {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nextLotName {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.nextLotLot {
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+.nextLotPrice {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fa8c16;
+}
+
+.nextLotEmpty {
+  color: #999;
+  padding: 0 16px;
+}
+
+.flowingMsgDiv {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scroll-left 20s linear infinite;
+  color: #cb5201;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 @media (max-width: 768px) {
+
   .leftSection,
   .rightSection {
-    flex: 0 0 100%; 
+    flex: 0 0 100%;
   }
+}
+
+
+.noLiveContainer {
+  padding: 50px;
+  background-color: #EAEAEA;
+  
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  max-width: 1350px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+.noLiveContainer > div {
+  display: flex;
+}
+.noLiveContainer > div > p {
+  font-size: 1.5rem;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 //コンポーネント
-import { MemberLayoutComponent } from '@/components/member/common/MemberLayoutComponent';
+import { MemberLayoutComponent } from '@/components/member/layout/MemberLayoutComponent';
 //型定義
 import { TPageProps } from '@/types/member/memberPage';
 

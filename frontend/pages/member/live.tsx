@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { GetServerSideProps } from 'next';
 import { useEffect, useState, useRef } from 'react';
 import { texts } from '@/config/texts';
@@ -5,11 +6,14 @@ import Image from 'next/image';
 //ホック
 import { withAuth } from '@/hocs/withMemberAuth';
 import withMemberLayout from '@/hocs/withMemberLayout';
-//カスタムフック
-
+//API
+import { useCheckLiveAuctionAPI } from '@/hooks/api/member/live/useCheckLiveAuctionAPI';
+import { useSearchNextLiveAuctionAPI } from '@/hooks/api/member/live/useSearchNextLiveAuctionAPI';
 //型定義
 import { TBidHisotry } from '@/types/member/live';
 import { TPageProps } from '@/types/member/memberPage';
+import { NextLotList } from '@/types/admin/live/nextLotList';
+import {  TAuction } from '@/types/common/MtAuction';
 //コンポーネント
 import LiveBidStatusComponent  from '@/components/member/auction/live/LiveBidStatusComponent';
 import { formatPriceWithCommas } from '@/components/common/PriceUtils';
@@ -38,7 +42,32 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
   const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
   const [isPriceUpdated, setIsPriceUpdated] = useState(false);
+  const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
+  const [msg, setMsg] = useState<string | null>();
+  const [marqueeKey, setMarqueeKey] = useState(0);
+
   const ws = useRef<WebSocket | null>(null);
+
+  const { isLiveAuction } = useCheckLiveAuctionAPI();
+  const [ isFetchLiveAuction, setIsFetchLiveAuction] = useState<boolean>(false);
+  useEffect(() => {
+    setIsFetchLiveAuction(isLiveAuction);
+  }, [isLiveAuction]); 
+  const { nextAuction } = useSearchNextLiveAuctionAPI();
+  const [ fetchNextAuction, setFetchNextAuction] = useState<TAuction>();
+  useEffect(() => {
+    setFetchNextAuction(nextAuction);
+  }, [nextAuction]); 
+  const [ fetchAuctionDate, setFetcheAuctionDate] = useState<string>("");
+useEffect(() => {
+   if (fetchNextAuction && fetchNextAuction.auctionDatetime) {
+     const formattedDate = dayjs(fetchNextAuction.auctionDatetime).format('YYYY/MM/DD HH:mm');
+  setFetcheAuctionDate(formattedDate);
+  } else {
+    setFetcheAuctionDate("未定");
+  }
+}, [fetchNextAuction]);
+
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3001/');
 
@@ -57,6 +86,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === 'set') {
         setBidHistory([]);
+        setNextLotList(data.nextLotList);
       }   
       if (data.type === 'start') {
         setIsBidDisabled(false);
@@ -87,6 +117,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       if (data.type === 'clear') {
         setBidHistory([]);
         setIsBidDisabled(true);
+        setNextLotList([]);
+      }
+      if (data.type === 'sendMessage') {
+        setMsg(data.message);
+        setMarqueeKey(k=>k+1);
       }
       
     };
@@ -133,12 +168,25 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   };
 
   return (
-    <div className={memberStyles.memberContainer}>
+    !isFetchLiveAuction ? (
+      <div className={styles.noLiveContainer}>
+        <div>
+          <p>{texts.live.noLiveAuction1}<span style={{color: 'red'}}> {fetchAuctionDate}  </span>{texts.live.noLiveAuction2}</p>
+        </div>
+        <div>
+          <p>{texts.live.noLiveAuction3}</p>
+        </div>
+        
+        
+      </div>
+      
+    ) : (
+      <div className={memberStyles.memberContainer}>
       <div className={styles.liveContainer}>
         <div className={styles.leftSection}>
           <div >
             <Image
-              src={receivedData?.goodsImage != '' ? receivedData?.goodsImage : "/no_image.png"}
+              src={receivedData?.goodsImage || "/no_image.png"}
               alt=""
               width={300}
               height={300}
@@ -192,33 +240,57 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
             </div>
           </div>
-          {isBidComingSoonMsgFlg && (
-            <div className={styles.msgDiv}>
-              <span>{texts.button.BidComingSoon}</span>
-            </div>
-          )}
-          {isRakusatsuProcessingMsgFlg && (
-            <div className={styles.msgDiv}>
-              <span>{texts.livemessage.rakusatsuProcessMsg}</span>
-            </div>
-          )}
-
+        </div>
+        <div className={styles.flowingMsgDiv}>
+          <span key={marqueeKey} className={styles.marquee}>{msg}</span>
+        </div>
+        <div className={styles.msgDiv}>
+          {isBidComingSoonMsgFlg && (<span>{texts.button.BidComingSoon}</span>)}
+          {isRakusatsuProcessingMsgFlg && (<span>{texts.livemessage.rakusatsuProcessMsg}</span>          )}
         </div>
         <div className={styles.rightSection}>
-        <ul className={styles.bidList}>
-                {bidHistory.map((bid, index) => (
-                 <li key={index} className={styles.bidItem}>
-                   {bid.userId === PageProps.userId && (
-                      <span className={styles.bidUserId}>your bid</span>
-                    )}
-                  <span className={bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice}>{formatPriceWithCommas(bid.bidPrice)}</span>
-                </li>
-                ))}
-              </ul>
+          <ul className={styles.bidList}>
+            {bidHistory.map((bid, index) => (
+              <li key={index} className={styles.bidItem}>
+                {bid.userId === PageProps.userId && (
+                  <span className={styles.bidUserId}>your bid</span>
+                )}
+              <span className={bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice}>{formatPriceWithCommas(bid.bidPrice)}</span>
+            </li>
+            ))}
+          </ul>
         </div>
       </div>
+      <div className={styles.nextLotListContainer}>
+        {nextLotList.length > 1 ? (
+          nextLotList.slice(1).map((item: NextLotList, idx: number) => (
+            <div key={idx} className={styles.nextLotCard}>
+              <div className={styles.nextLotImageWrapper}>
+                <Image
+                  src={item.thumbnailImageUrl || "/no_image.png"}
+                  alt={item.goodsName || ""}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  loading="lazy"
+                />
+              </div>
+              <div className={styles.nextLotCaption}>
+                <div className={styles.nextLotName}>{item.goodsName}</div>
+                <div className={styles.nextLotLot}>LOT {item.lot}</div>
+                <div className={styles.nextLotPrice}>
+                \{item.startPrice || new Intl.NumberFormat('ja-JP').format(Number(item.startPrice))}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className={styles.nextLotEmpty}>次の商品はありません</div>
+        )}
+      </div>
     </div>
+    )
   );
+
 };
 
 export default withMemberLayout(Page);
