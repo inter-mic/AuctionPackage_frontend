@@ -14,7 +14,7 @@ import { TMtAuction } from '@/types/admin/auction/search';
 5：出品区分指定
 */
 
-export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbns: string[]) => {
+export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbns?: string[]) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [auction, setAuction] = useState<TMtAuction[]>([]);
   useEffect(() => {
@@ -34,7 +34,7 @@ export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbns: string[]) => 
       } else{
         endPoint = `auction/search`;
       }
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', spnKbns?.length > 0 ? spnKbns : null, "", true);
+      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', spnKbns || null, "", true);
       if (responseData) {
         const transformedData = responseData.map((data: any) => ({
           ...data,

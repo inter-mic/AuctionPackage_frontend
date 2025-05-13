@@ -122,6 +122,7 @@ export const texts = {
       rakusatsuProcess:"落札処理",
       bidRestart:"入札再開",
       haishin:"配信",
+      invoice:"請求書出力",
     },
     fileName:{
       memberCsv:"会員一覧",
