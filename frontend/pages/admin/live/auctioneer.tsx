@@ -252,7 +252,7 @@ useEffect(() => {
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     // WebSocketの初期化
-    ws.current = new WebSocket('ws://localhost:3001/');
+    ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onopen = () => {
       console.log('WebSocket connection established');

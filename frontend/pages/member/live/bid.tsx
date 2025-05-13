@@ -69,7 +69,7 @@ useEffect(() => {
 }, [fetchNextAuction]);
 
   useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:3001/');
+    ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onopen = () => {
       console.log('WebSocket connection established');
