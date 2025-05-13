@@ -48,6 +48,7 @@ export const texts = {
       memberTop:"TOP",
       memberAuction:"スケジュール",
       memberJoinLive:"ライブに参加する",
+      memberLiveApplication:"ライブ参加申込",
       memberMyPage:"マイページ",
       memberRakusatsu:"落札一覧",
       memberInvoice:"請求一覧",

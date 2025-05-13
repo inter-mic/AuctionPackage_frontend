@@ -26,6 +26,7 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isL
   const displayEndtimeFormatted = dayjs(auctionData.displayEndtime).format('YYYY年MM月DD日 H:mm');
   const bidStarttimeFormatted = dayjs(auctionData.bidStarttime).format('YYYY年MM月DD日 H:mm');
   const bidEndtimeFormatted = dayjs(auctionData.bidEndtime).format('YYYY年MM月DD日 H:mm');
+  const auctionDatetimeFormatted = dayjs(auctionData.auctionDatetime).format('YYYY年MM月DD日 H:mm');
   const now = dayjs(); // 現在時刻
   const bidStart = auctionData.bidStarttime ? dayjs(auctionData.bidStarttime, "YYYY/MM/DD HH:mm:ss") : null;
   const bidEnd = auctionData.bidEndtime ? dayjs(auctionData.bidEndtime, "YYYY/MM/DD HH:mm:ss") : null;
@@ -84,12 +85,26 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isL
           <h2 className={auctionStyles.auctionName}>
             {auctionData.auctionName}
           </h2>
-          <p className={auctionStyles.kikan}>
-            {texts.auction.displayKikan}: {displayStarttimeFormatted}～{displayEndtimeFormatted}
-          </p>
-          <p className={auctionStyles.kikan}>
-            {texts.auction.bidKikan}: {bidStarttimeFormatted}～{bidEndtimeFormatted}
-          </p>
+          {auctionData.spnKbn == '1' || auctionData.spnKbn == '2'  ? (
+              <>
+               <p className={auctionStyles.kikan}>
+                  {texts.auction.auctionDate}: {auctionDatetimeFormatted}
+                </p>
+            
+              </>
+            ) : auctionData.spnKbn == '3' || auctionData.spnKbn == '4' ? (
+              <>
+               <p className={auctionStyles.kikan}>
+                  {texts.auction.displayKikan}: {displayStarttimeFormatted}～{displayEndtimeFormatted}
+                </p>
+                <p className={auctionStyles.kikan}>
+                  {texts.auction.bidKikan}: {bidStarttimeFormatted}～{bidEndtimeFormatted}
+                </p>
+              </>
+            ) : (
+              <div></div>
+            )}
+         
 
           {auctionData.auctionListUrl != null && (
             <div className={auctionStyles.goodsList}>
