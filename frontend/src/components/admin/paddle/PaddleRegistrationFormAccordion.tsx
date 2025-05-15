@@ -216,7 +216,7 @@ const PaddleRegistrationFormAccordion: React.FC<Props> =({paddleKbnList }) => {
                                         className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40"
                                         onClick={() => setModalOpen(true)}
                                     >
-                                        会員検索
+                                        {texts.button.memberSearchModal}
                                     </button>
                                 </div>
                                 {registErrors?.userId && <p className="error-message">{registErrors.userId}</p>}
@@ -256,8 +256,10 @@ const PaddleRegistrationFormAccordion: React.FC<Props> =({paddleKbnList }) => {
                                     selectedId={selectedRegistPaddleKbn !== null ? String(selectedRegistPaddleKbn) : ''}
                                     paddleKbnList={paddleKbnList}
                                 />
+                                {texts.paddle.paddleKbn_note_1}
                                 {nextPaddleErrors?.paddleKbn && <p className="error-message">{nextPaddleErrors.paddleKbn}</p>}
                                 {registErrors?.paddleKbn && <p className="error-message">{registErrors.paddleKbn}</p>}
+
                             </div>
                             <div className={formSearchStyles.formItem}>
                                 <label htmlFor="paddleNo"><RequiredMark />{texts.paddle.paddleNo}</label>

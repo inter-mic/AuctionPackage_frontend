@@ -13,6 +13,10 @@ import  dayjs,{ Dayjs } from 'dayjs';
     bidStarttime:string | null;
     bidEndDate:Dayjs | null;
     bidEndtime:string | null;
+    onlinebidApplicationStartDate:Dayjs | null;
+    onlinebidApplicationStartTime:string | null;
+    onlinebidApplicationEndDate:Dayjs | null;
+    onlinebidApplicationEndTime:string | null;
     auctionGaiyo:string | null;
     updateTime:string | null;
     auctionImageIsDelete:boolean | false;
@@ -38,6 +42,10 @@ import  dayjs,{ Dayjs } from 'dayjs';
     bidStarttime: null,
     bidEndDate: null,
     bidEndtime: null,
+    onlinebidApplicationStartDate: null,
+    onlinebidApplicationStartTime: null,
+    onlinebidApplicationEndDate: null,
+    onlinebidApplicationEndTime: null,
     auctionGaiyo: null,
     updateTime: null,
     auctionImageIsDelete: false,
@@ -65,6 +73,10 @@ export const formatAuctionData = (data: Partial<auctionData>): auctionData => {
     bidStarttime: data.bidStarttime ?? null,
     bidEndDate: data.bidEndtime ? dayjs(data.bidEndtime) : null,
     bidEndtime: data.bidEndtime ?? null,
+    onlinebidApplicationStartDate: data.onlinebidApplicationStartDate ?? null,
+    onlinebidApplicationStartTime: data.onlinebidApplicationStartTime ?? null,
+    onlinebidApplicationEndDate: data.onlinebidApplicationEndDate ?? null,
+    onlinebidApplicationEndTime: data.onlinebidApplicationEndTime ?? null,
     auctionGaiyo: data.auctionGaiyo ?? null,
     updateTime: data.updateTime ?? null,
     auctionImageIsDelete: data.auctionImageIsDelete ?? false,

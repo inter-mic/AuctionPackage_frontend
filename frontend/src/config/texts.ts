@@ -106,7 +106,7 @@ export const texts = {
       bidConfirmed:"入札確定",
       jizenBidToggle:"事前入札する",
       deleteJizenBidToggle:"事前入札を削除する",
-      
+      onlineBidshoninOn:"オンライン入札承認",
       call:"呼び出し",
       beforeLot:"前LOT",
       affterLot:"次LOT",
@@ -126,6 +126,7 @@ export const texts = {
       rakusatsuProcess:"落札処理",
       bidRestart:"入札再開",
       haishin:"配信",
+      memberSearchModal:"会員検索"
     },
     fileName:{
       memberCsv:"会員一覧",
@@ -351,7 +352,11 @@ export const texts = {
     },
     paddle:{
       paddleKbn:"パドル区分",
-      paddleNo:"パドル番号"
+      paddleNo:"パドル番号",
+      paddleKbn_note_1:"※オンラインで登録すると、会員にメール送信されます。",
+      onlineBidshonin:"オンライン入札承認",
+      onlineBidshonin_note_1:"※承認すると、会員にメール送信されます。",
+      shoninzumi:"承認済み"
     },
     admin:{
       companyUrl:"企業情報URL",

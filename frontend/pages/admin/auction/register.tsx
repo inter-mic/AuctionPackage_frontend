@@ -135,6 +135,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     const displayEndtime = CombineDateTime(fetchedData.displayEndDate, fetchedData.displayEndtime);
     const bidStarttime = CombineDateTime(fetchedData.bidStartDate, fetchedData.bidStarttime);
     const bidEndtime = CombineDateTime(fetchedData.bidEndDate, fetchedData.bidEndtime);
+    const onlinebidApplicationStarttime = CombineDateTime(fetchedData.onlinebidApplicationStartDate, fetchedData.onlinebidApplicationStartTime);
+    const onlinebidApplicationEndTime = CombineDateTime(fetchedData.onlinebidApplicationEndDate, fetchedData.onlinebidApplicationEndTime);
     const dataToSubmit = {
       ...fetchedData,
       auctionDatetime,
@@ -337,6 +339,48 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   )}
               </div>
             </div>
+             {(selectedSpnKbn === "1") && (
+               <div className="flex">
+              <div className="w-full xl:w-1/2">
+                <label className={styles.label}><RequiredMark />{texts.auction.onlinebidApplicationKikan}</label>
+                <div className="w-full mt-1">
+                  <div className="lg:flex">
+                    <CustomDatePicker
+                      name="onlinebidApplicationStartDate"
+                      selectedDate={fetchedData.onlinebidApplicationStartDate}
+                      onDateChange={handleDateChange("onlinebidApplicationStartDate")}
+                      error={!!formErrors?.onlinebidApplicationStarttime}
+                    />
+                    <CustomTimePicker
+                      name="onlinebidApplicationStartTime"
+                      selectedTime={fetchedData.onlinebidApplicationStartTime}
+                      onTimeChange={handleTimeChange("onlinebidApplicationStartTime")}
+                      error={!!formErrors?.onlinebidApplicationStarttime}
+                    />
+                    <div className="lg:ml-3 lg:mt-3  text-center" >～</div>
+                    <CustomDatePicker
+                      name="onlinebidApplicationEndDate"
+                      selectedDate={fetchedData.onlinebidApplicationEndDate}
+                      onDateChange={handleDateChange("onlinebidApplicationEndDate")}
+                      error={!!formErrors?.onlinebidApplicationEndtime}
+                    />
+                    <CustomTimePicker
+                      name="onlinebidApplicationEndTime"
+                      selectedTime={fetchedData.onlinebidApplicationEndTime}
+                      onTimeChange={handleTimeChange("onlinebidApplicationEndTime")}
+                      error={!!formErrors?.onlinebidApplicationEndtime}
+                    />
+                  </div>
+
+                </div>
+                {(formErrors?.onlinebidApplicationStarttime || formErrors?.onlinebidApplicationEndtime) && (
+                    <p className="error-message">
+                      {formErrors?.onlinebidApplicationStarttime || formErrors?.onlinebidApplicationEndtime}
+                    </p>
+                  )}
+              </div>
+            </div>
+            )}
             <div>
                 <label htmlFor="paymentDeadlineDate" className={styles.label}>
                   {texts.auction.paymentDeadlineDate}

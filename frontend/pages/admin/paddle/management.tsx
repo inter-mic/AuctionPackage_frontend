@@ -224,22 +224,22 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             {formErrors?.auctionSeq && <p className="error-message">{formErrors.auctionSeq}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="searchUserId" >{texts.member.userId}</label>
+            <label htmlFor="userId" >{texts.member.userId}</label>
             <input
-              id="searchUserId"
+              id="userId"
               type="number"
-              name="searchUserId"
+              name="userId"
               maxLength={9}
               value={paddleParams.userId}
               onChange={formChange}
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="searchUserName" >{texts.member.userName}/{texts.member.companyName}</label>
+            <label htmlFor="userName" >{texts.member.userName}/{texts.member.companyName}</label>
             <input
-              id="searchUserName"
+              id="userName"
               type="text"
-              name="searchUserName"
+              name="userName"
               value={paddleParams.userName}
               onChange={formChange}
             />
@@ -254,11 +254,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="searchPaddleNo" >{texts.paddle.paddleNo}</label>
+            <label htmlFor="paddleNo" >{texts.paddle.paddleNo}</label>
             <input
-              id="searchPaddleNo"
+              id="paddleNo"
               type="text"
-              name="searchPaddleNo"
+              name="paddleNo"
               value={paddleParams.paddleNo}
               onChange={formChange}
             />
@@ -295,18 +295,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   </div>
                 </div>
               </div>
+               <div className="text-right">
+                  <div>
+                    <span className="text-sm">{texts.paddle.onlineBidshonin}:{texts.paddle.onlineBidshonin_note_1}</span>
+                  </div>
+                  
+                </div>
+
 
             </div>
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
                   <th className="py-2 px-4 border-b" >{texts.member.userId} </th>
-                  <th className="py-2 px-4 border-b" >{texts.member.userName}/{texts.member.companyName} </th>
-                  <th className="py-2 px-4 border-b" >{texts.paddle.paddleKbn}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.userName}</th>
+                  <th className="py-2 px-4 border-b" >{texts.member.companyName} </th>
+                  <th className="py-2 px-4 border-b w-72" >{texts.paddle.paddleKbn}</th>
                   <th className="py-2 px-4 border-b w-40" >{texts.paddle.paddleNo}</th>
-                  <th className="py-2 px-4 border-b" >{texts.button.onlineBidshoninOn}</th>
-                  <th className="py-2 px-4 border-b" ></th>
-                  <th className="py-2 px-4 border-b" ></th>
+                  <th className="py-2 px-4 border-b w-48" >{texts.paddle.onlineBidshonin}</th>
+                  <th className="py-2 px-4 border-b w-40" ></th>
+                  <th className="py-2 px-4 border-b w-40" ></th>
                 </tr>
               </thead>
               <tbody>
@@ -316,7 +324,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     className="cursor-pointer hover:bg-gray-100"
                   >
                     <td className="py-1 px-4 border-b text-left">{result.userId}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.userName}/{result.companyName}</td>
+                    <td className="py-1 px-4 border-b text-left">{result.userName}</td>
+                    <td className="py-1 px-4 border-b text-left">{result.companyName}</td>
                     <td className="py-1 px-4 border-b text-left">
                       <PaddleKbnPullDown
                         onChange={(value) => handleUpdateChange(result.userId, 'paddleKbn', value)}
@@ -340,7 +349,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-1 px-4 border-b text-center">
                       {result.paddleKbn == '3' ? (
                         result.onlinebidShohinFlg ? (
-                          <span>承認済み</span>
+                          <span>{texts.paddle.shoninzumi}</span>
                         ) : (
                           <RegistButton
                             label={texts.button.onlineBidshoninOn}
