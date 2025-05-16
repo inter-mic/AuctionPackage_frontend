@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //ボタン
 import { ToGoodsListButton } from '@/components/ui/buttons/member/toGoodsListButton';
-import { ToLiveApplicationButton } from '@/components/ui/buttons/member/toLiveApplicationButton';
 //型定義
 import { TAuction } from '@/types/common/MtAuction';
 //スタイル
@@ -85,26 +84,26 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isL
           <h2 className={auctionStyles.auctionName}>
             {auctionData.auctionName}
           </h2>
-          {auctionData.spnKbn == '1' || auctionData.spnKbn == '2'  ? (
-              <>
-               <p className={auctionStyles.kikan}>
-                  {texts.auction.auctionDate}: {auctionDatetimeFormatted}
-                </p>
-            
-              </>
-            ) : auctionData.spnKbn == '3' || auctionData.spnKbn == '4' ? (
-              <>
-               <p className={auctionStyles.kikan}>
-                  {texts.auction.displayKikan}: {displayStarttimeFormatted}～{displayEndtimeFormatted}
-                </p>
-                <p className={auctionStyles.kikan}>
-                  {texts.auction.bidKikan}: {bidStarttimeFormatted}～{bidEndtimeFormatted}
-                </p>
-              </>
-            ) : (
-              <div></div>
-            )}
-         
+          {auctionData.spnKbn == '1' || auctionData.spnKbn == '2' ? (
+            <>
+              <p className={auctionStyles.kikan}>
+                {texts.auction.auctionDate}: {auctionDatetimeFormatted}
+              </p>
+
+            </>
+          ) : auctionData.spnKbn == '3' || auctionData.spnKbn == '4' ? (
+            <>
+              <p className={auctionStyles.kikan}>
+                {texts.auction.displayKikan}: {displayStarttimeFormatted}～{displayEndtimeFormatted}
+              </p>
+              <p className={auctionStyles.kikan}>
+                {texts.auction.bidKikan}: {bidStarttimeFormatted}～{bidEndtimeFormatted}
+              </p>
+            </>
+          ) : (
+            <div></div>
+          )}
+
 
           {auctionData.auctionListUrl != null && (
             <div className={auctionStyles.goodsList}>
@@ -118,12 +117,7 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isL
           {isToGoodsList && (
             <ToGoodsListButton auctionSeq={auctionData.auctionSeq} isLogin={isLogin} />
           )}
-          {auctionData.spnKbn == '1' ? (
-          <ToLiveApplicationButton auctionSeq={auctionData.auctionSeq} />  
-          ) : (
-              <div></div>
-            )}
-            
+
 
           {auctionData.auctionGaiyo && (
             <>

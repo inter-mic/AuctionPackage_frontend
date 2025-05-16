@@ -307,6 +307,8 @@ export const texts = {
       displayKikan:"掲載期間",
       displayKikan_note_1:"※終了５分前の入札から入札期間が自動延長しますが、掲載期間を過ぎると非表示となります。掲載期間は余裕をもって登録してください。",
       bidKikan:"入札期間",
+      shomenbidKikan:"書面入札期間",
+      onlinebidApplicationKikan:"オンライン入札申請期間",
       auctionGaiyo:"概要",
       auctionGaiyoPreview:"概要プレビュー",
       auctionImage:"オークションメイン画像",

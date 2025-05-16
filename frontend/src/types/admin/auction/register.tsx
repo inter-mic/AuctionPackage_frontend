@@ -14,9 +14,9 @@ import  dayjs,{ Dayjs } from 'dayjs';
     bidEndDate:Dayjs | null;
     bidEndtime:string | null;
     onlinebidApplicationStartDate:Dayjs | null;
-    onlinebidApplicationStartTime:string | null;
+    onlinebidApplicationStarttime:string | null;
     onlinebidApplicationEndDate:Dayjs | null;
-    onlinebidApplicationEndTime:string | null;
+    onlinebidApplicationEndtime:string | null;
     auctionGaiyo:string | null;
     updateTime:string | null;
     auctionImageIsDelete:boolean | false;
@@ -43,9 +43,9 @@ import  dayjs,{ Dayjs } from 'dayjs';
     bidEndDate: null,
     bidEndtime: null,
     onlinebidApplicationStartDate: null,
-    onlinebidApplicationStartTime: null,
+    onlinebidApplicationStarttime: null,
     onlinebidApplicationEndDate: null,
-    onlinebidApplicationEndTime: null,
+    onlinebidApplicationEndtime: null,
     auctionGaiyo: null,
     updateTime: null,
     auctionImageIsDelete: false,
@@ -73,10 +73,10 @@ export const formatAuctionData = (data: Partial<auctionData>): auctionData => {
     bidStarttime: data.bidStarttime ?? null,
     bidEndDate: data.bidEndtime ? dayjs(data.bidEndtime) : null,
     bidEndtime: data.bidEndtime ?? null,
-    onlinebidApplicationStartDate: data.onlinebidApplicationStartDate ?? null,
-    onlinebidApplicationStartTime: data.onlinebidApplicationStartTime ?? null,
-    onlinebidApplicationEndDate: data.onlinebidApplicationEndDate ?? null,
-    onlinebidApplicationEndTime: data.onlinebidApplicationEndTime ?? null,
+    onlinebidApplicationStartDate: data.onlinebidApplicationStarttime ? dayjs(data.onlinebidApplicationStarttime) : null,
+    onlinebidApplicationStarttime: data.onlinebidApplicationStarttime ?? null,
+    onlinebidApplicationEndDate: data.onlinebidApplicationEndtime ? dayjs(data.onlinebidApplicationEndtime) : null,
+    onlinebidApplicationEndtime: data.onlinebidApplicationEndtime ?? null,
     auctionGaiyo: data.auctionGaiyo ?? null,
     updateTime: data.updateTime ?? null,
     auctionImageIsDelete: data.auctionImageIsDelete ?? false,

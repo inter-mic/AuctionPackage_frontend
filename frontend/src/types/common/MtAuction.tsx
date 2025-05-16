@@ -14,6 +14,8 @@ export type TAuction = {
   bidStarttime?:string;
   bidEndDate?:Dayjs;
   bidEndtime?:string;
+  onlinebidApplicationStarttime?:string;
+  onlinebidApplicationEndtime?:string;
   auctionGaiyo?:string;
   auctionImageUrl?:string;
   auctionListUrl?:string;

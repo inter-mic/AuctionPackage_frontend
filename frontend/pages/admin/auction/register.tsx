@@ -129,14 +129,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   //開催情報登録
   const { responseData, errors, auctionRegist } = useAuctionRegistAPI();
-  const handleSubmit =  () => {
+  const handleSubmit = () => {
     const auctionDatetime = CombineDateTime(fetchedData.auctionDate, fetchedData.auctionDatetime);
     const displayStarttime = CombineDateTime(fetchedData.displayStartDate, fetchedData.displayStarttime);
     const displayEndtime = CombineDateTime(fetchedData.displayEndDate, fetchedData.displayEndtime);
     const bidStarttime = CombineDateTime(fetchedData.bidStartDate, fetchedData.bidStarttime);
     const bidEndtime = CombineDateTime(fetchedData.bidEndDate, fetchedData.bidEndtime);
-    const onlinebidApplicationStarttime = CombineDateTime(fetchedData.onlinebidApplicationStartDate, fetchedData.onlinebidApplicationStartTime);
-    const onlinebidApplicationEndTime = CombineDateTime(fetchedData.onlinebidApplicationEndDate, fetchedData.onlinebidApplicationEndTime);
+    const onlinebidApplicationStarttime = CombineDateTime(fetchedData.onlinebidApplicationStartDate, fetchedData.onlinebidApplicationStarttime);
+    const onlinebidApplicationEndtime = CombineDateTime(fetchedData.onlinebidApplicationEndDate, fetchedData.onlinebidApplicationEndtime);
     const dataToSubmit = {
       ...fetchedData,
       auctionDatetime,
@@ -144,6 +144,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       displayEndtime,
       bidStarttime,
       bidEndtime,
+      onlinebidApplicationStarttime,
+      onlinebidApplicationEndtime,
       auctionDate: null,
       displayStartDate: null,
       displayEndDate: null,
@@ -173,7 +175,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     });
   }, []);
 
-  const handleGoodsList  = () => {
+  const handleGoodsList = () => {
     if (fetchedData.auctionListUrl) {
       location.href = fetchedData.auctionListUrl;
     }
@@ -207,140 +209,147 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
       <div className="flex flex-col items-center justify-center my-10 bg-gray-100">
         <div className="w-full p-8 space-y-6 bg-white shadow-md md:max-w-full md:rounded">
-          
-            <div className="flex">
-              <div className="xl:w-1/5 sm:w-full">
-                <label htmlFor="spnKbn" className={styles.label}><RequiredMark />{texts.auction.spnKbn}</label>
-                <SpnKbnPullDown
-                  className={`${styles.input}`}
-                  onChange={(value) => handleSpnKbnChange('spnKbn', value)}
-                  selectedId={selectedSpnKbn !== null ? String(selectedSpnKbn) : null}
-                />
-                {formErrors?.spnKbn && <p className="error-message">{formErrors.spnKbn}</p>}
-              </div>
+
+          <div className="flex">
+            <div className="xl:w-1/5 sm:w-full">
+              <label htmlFor="spnKbn" className={styles.label}><RequiredMark />{texts.auction.spnKbn}</label>
+              <SpnKbnPullDown
+                className={`${styles.input}`}
+                onChange={(value) => handleSpnKbnChange('spnKbn', value)}
+                selectedId={selectedSpnKbn !== null ? String(selectedSpnKbn) : null}
+              />
+              {formErrors?.spnKbn && <p className="error-message">{formErrors.spnKbn}</p>}
             </div>
-            <div className="xl:flex">
-             
-              <div className="xl:w-1/3 sm:w-full">
-                <label htmlFor="auctionName" className={styles.label}><RequiredMark />{texts.auction.auctionName}</label>
-                <input
-                  id="auctionName"
-                  name="auctionName"
-                  value={fetchedData.auctionName || ''}
-                  onChange={handleChange}
-                  className={`${styles.input} `}
-                />
-                {formErrors?.auctionName && <p className="error-message">{formErrors.auctionName}</p>}
-              </div>
+          </div>
+          <div className="xl:flex">
+
+            <div className="xl:w-1/3 sm:w-full">
+              <label htmlFor="auctionName" className={styles.label}><RequiredMark />{texts.auction.auctionName}</label>
+              <input
+                id="auctionName"
+                name="auctionName"
+                value={fetchedData.auctionName || ''}
+                onChange={handleChange}
+                className={`${styles.input} `}
+              />
+              {formErrors?.auctionName && <p className="error-message">{formErrors.auctionName}</p>}
             </div>
-            {(selectedSpnKbn === "1" || selectedSpnKbn === "2") && (
-              <div>
-                <label htmlFor="auctionDate" className={styles.label}>
+          </div>
+          {(selectedSpnKbn === "1" || selectedSpnKbn === "2") && (
+            <div>
+              <label htmlFor="auctionDate" className={styles.label}>
                 <RequiredMark />{texts.auction.auctionDate}
-                </label>
-                <div className="xl:w-1/4 sm:w-full xl:flex items-center mt-1">
+              </label>
+              <div className="xl:w-1/4 sm:w-full xl:flex items-center mt-1">
+                <CustomDatePicker
+                  name="auctionDate"
+                  selectedDate={fetchedData.auctionDate}
+                  onDateChange={handleDateChange("auctionDate")}
+                />
+                <CustomTimePicker
+                  name="auctionDate"
+                  selectedTime={fetchedData.auctionDatetime}
+                  onTimeChange={handleTimeChange("auctionDatetime")}
+                />
+
+                 {(formErrors?.auctionDate || formErrors?.auctionDate) && (
+                <p className="error-message">
+                  {formErrors?.auctionDate || formErrors?.auctionDate}
+                </p>
+              )}
+              </div>
+             
+            </div>
+          )}
+          <div className="flex">
+            <div className="w-full xl:w-1/2">
+              <label className={styles.label}>
+                <RequiredMark />{texts.auction.displayKikan}<br />
+                <span >{texts.auction.displayKikan_note_1}</span><br />
+              </label>
+              <div className="w-full mt-1">
+                <div className="lg:flex ">
                   <CustomDatePicker
-                    name="auctionDate"
-                    selectedDate={fetchedData.auctionDate}
-                    onDateChange={handleDateChange("auctionDate")}
+                    name="displayStartDate"
+                    selectedDate={fetchedData.displayStartDate}
+                    onDateChange={handleDateChange("displayStartDate")}
+                    error={!!formErrors?.displayStarttime}
                   />
                   <CustomTimePicker
-                    name="auctionDate"
-                    selectedTime={fetchedData.auctionDatetime}
-                    onTimeChange={handleTimeChange("auctionDatetime")}
+                    name="displayStarttime"
+                    selectedTime={fetchedData.displayStarttime}
+                    onTimeChange={handleTimeChange("displayStarttime")}
+                    error={!!formErrors?.displayStarttime}
+                  />
+                  <div className="lg:ml-3 lg:mt-3  text-center" >～</div>
+                  <CustomDatePicker
+                    name="displayEndtime"
+                    selectedDate={fetchedData.displayEndDate}
+                    onDateChange={handleDateChange("displayEndDate")}
+                    error={!!formErrors?.displayEndtime}
+                  />
+                  <CustomTimePicker
+                    name="displayEndtime"
+                    selectedTime={fetchedData.displayEndtime}
+                    onTimeChange={handleTimeChange("displayEndtime")}
+                    error={!!formErrors?.displayEndtime}
                   />
                 </div>
-                {(formErrors?.auctionDate || formErrors?.auctionDate) && (
-                    <p className="error-message">
-                      {formErrors?.auctionDate || formErrors?.auctionDate}
-                    </p>
-                  )}
-              </div>
-            )}
-            <div className="flex">
-              <div className="w-full xl:w-1/2">
-                <label className={styles.label}>
-                  <RequiredMark />{texts.auction.displayKikan}<br />
-                <span >{texts.auction.displayKikan_note_1}</span><br />
-                </label>
-                <div className="w-full mt-1">
-                  <div className="lg:flex ">
-                    <CustomDatePicker
-                      name="displayStartDate"
-                      selectedDate={fetchedData.displayStartDate}
-                      onDateChange={handleDateChange("displayStartDate")}
-                      error={!!formErrors?.displayStarttime}
-                    />
-                    <CustomTimePicker
-                      name="displayStarttime"
-                      selectedTime={fetchedData.displayStarttime}
-                      onTimeChange={handleTimeChange("displayStarttime")}
-                      error={!!formErrors?.displayStarttime}
-                    />
-                    <div className="lg:ml-3 lg:mt-3  text-center" >～</div>
-                    <CustomDatePicker
-                      name="displayEndtime"
-                      selectedDate={fetchedData.displayEndDate}
-                      onDateChange={handleDateChange("displayEndDate")}
-                      error={!!formErrors?.displayEndtime}
-                    />
-                    <CustomTimePicker
-                      name="displayEndtime"
-                      selectedTime={fetchedData.displayEndtime}
-                      onTimeChange={handleTimeChange("displayEndtime")}
-                      error={!!formErrors?.displayEndtime}
-                    />
-                  </div>
-                  {(formErrors?.displayStarttime || formErrors?.displayEndtime) && (
-                    <p className="error-message">
-                      {formErrors?.displayStarttime || formErrors?.displayEndtime}
-                    </p>
-                  )}
-                </div>
+                {(formErrors?.displayStarttime || formErrors?.displayEndtime) && (
+                  <p className="error-message">
+                    {formErrors?.displayStarttime || formErrors?.displayEndtime}
+                  </p>
+                )}
               </div>
             </div>
-            <div className="flex">
-              <div className="w-full xl:w-1/2">
-                <label className={styles.label}><RequiredMark />{texts.auction.bidKikan}</label>
-                <div className="w-full mt-1">
-                  <div className="lg:flex">
-                    <CustomDatePicker
-                      name="bidStarttime"
-                      selectedDate={fetchedData.bidStartDate}
-                      onDateChange={handleDateChange("bidStartDate")}
-                      error={!!formErrors?.bidStarttime}
-                    />
-                    <CustomTimePicker
-                      name="bidStarttime"
-                      selectedTime={fetchedData.bidStarttime}
-                      onTimeChange={handleTimeChange("bidStarttime")}
-                      error={!!formErrors?.bidStarttime}
-                    />
-                    <div className="lg:ml-3 lg:mt-3  text-center" >～</div>
-                    <CustomDatePicker
-                      name="bidEndtime"
-                      selectedDate={fetchedData.bidEndDate}
-                      onDateChange={handleDateChange("bidEndDate")}
-                      error={!!formErrors?.bidEndtime}
-                    />
-                    <CustomTimePicker
-                      name="bidEndtime"
-                      selectedTime={fetchedData.bidEndtime}
-                      onTimeChange={handleTimeChange("bidEndtime")}
-                      error={!!formErrors?.bidEndtime}
-                    />
-                  </div>
+          </div>
+          <div className="flex">
+            <div className="w-full xl:w-1/2">
+              <label className={styles.label}><RequiredMark />
+                {selectedSpnKbn === "1"
+                  ? texts.auction.shomenbidKikan
+                  : texts.auction.bidKikan}
 
+              </label>
+              <div className="w-full mt-1">
+                <div className="lg:flex">
+                  <CustomDatePicker
+                    name="bidStarttime"
+                    selectedDate={fetchedData.bidStartDate}
+                    onDateChange={handleDateChange("bidStartDate")}
+                    error={!!formErrors?.bidStarttime}
+                  />
+                  <CustomTimePicker
+                    name="bidStarttime"
+                    selectedTime={fetchedData.bidStarttime}
+                    onTimeChange={handleTimeChange("bidStarttime")}
+                    error={!!formErrors?.bidStarttime}
+                  />
+                  <div className="lg:ml-3 lg:mt-3  text-center" >～</div>
+                  <CustomDatePicker
+                    name="bidEndtime"
+                    selectedDate={fetchedData.bidEndDate}
+                    onDateChange={handleDateChange("bidEndDate")}
+                    error={!!formErrors?.bidEndtime}
+                  />
+                  <CustomTimePicker
+                    name="bidEndtime"
+                    selectedTime={fetchedData.bidEndtime}
+                    onTimeChange={handleTimeChange("bidEndtime")}
+                    error={!!formErrors?.bidEndtime}
+                  />
                 </div>
-                {(formErrors?.bidStarttime || formErrors?.bidEndtime) && (
-                    <p className="error-message">
-                      {formErrors?.bidStarttime || formErrors?.bidEndtime}
-                    </p>
-                  )}
+
               </div>
+              {(formErrors?.bidStarttime || formErrors?.bidEndtime) && (
+                <p className="error-message">
+                  {formErrors?.bidStarttime || formErrors?.bidEndtime}
+                </p>
+              )}
             </div>
-             {(selectedSpnKbn === "1") && (
-               <div className="flex">
+          </div>
+          {(selectedSpnKbn === "1") && (
+            <div className="flex">
               <div className="w-full xl:w-1/2">
                 <label className={styles.label}><RequiredMark />{texts.auction.onlinebidApplicationKikan}</label>
                 <div className="w-full mt-1">
@@ -353,8 +362,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     />
                     <CustomTimePicker
                       name="onlinebidApplicationStartTime"
-                      selectedTime={fetchedData.onlinebidApplicationStartTime}
-                      onTimeChange={handleTimeChange("onlinebidApplicationStartTime")}
+                      selectedTime={fetchedData.onlinebidApplicationStarttime}
+                      onTimeChange={handleTimeChange("onlinebidApplicationStarttime")}
                       error={!!formErrors?.onlinebidApplicationStarttime}
                     />
                     <div className="lg:ml-3 lg:mt-3  text-center" >～</div>
@@ -366,73 +375,73 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     />
                     <CustomTimePicker
                       name="onlinebidApplicationEndTime"
-                      selectedTime={fetchedData.onlinebidApplicationEndTime}
-                      onTimeChange={handleTimeChange("onlinebidApplicationEndTime")}
+                      selectedTime={fetchedData.onlinebidApplicationEndtime}
+                      onTimeChange={handleTimeChange("onlinebidApplicationEndtime")}
                       error={!!formErrors?.onlinebidApplicationEndtime}
                     />
                   </div>
 
                 </div>
                 {(formErrors?.onlinebidApplicationStarttime || formErrors?.onlinebidApplicationEndtime) && (
-                    <p className="error-message">
-                      {formErrors?.onlinebidApplicationStarttime || formErrors?.onlinebidApplicationEndtime}
-                    </p>
-                  )}
-              </div>
-            </div>
-            )}
-            <div>
-                <label htmlFor="paymentDeadlineDate" className={styles.label}>
-                  {texts.auction.paymentDeadlineDate}
-                </label>
-                <div className="xl:w-1/4 sm:w-full xl:flex items-center mt-1">
-                  <CustomDatePicker
-                    name="paymentDeadlineDate"
-                    selectedDate={fetchedData.paymentDeadlineDate}
-                    onDateChange={handleDateChange("paymentDeadlineDate")}
-                  />
-                </div>
-                {(formErrors?.paymentDeadlineDate) && (
                   <p className="error-message">
-                    {formErrors?.paymentDeadlineDate}
+                    {formErrors?.onlinebidApplicationStarttime || formErrors?.onlinebidApplicationEndtime}
                   </p>
                 )}
               </div>
-            <div>
-              <label htmlFor="auctionGaiyo" className={styles.label}>
-                {texts.auction.auctionGaiyo}<br/>
-                {texts.label.text_note_1}
-              </label>
-              <textarea
-                id="auctionGaiyo"
-                name="auctionGaiyo"
-                value={fetchedData.auctionGaiyo || ''}
-                onChange={handleChange}
-                rows={10}
-                className="w-full px-3 py-2 mt-1 border rounded-md "
-              />
-                 <label htmlFor="auctionGaiyo" className={styles.label}>
-                {texts.auction.auctionGaiyoPreview}
-              </label>
-               <div
-                className="w-full px-3 py-2 mt-1 border rounded-md bg-gray-100"
-                style={{ whiteSpace: 'pre-wrap', overflowY: 'auto', height: '200px' }}
-                dangerouslySetInnerHTML={{ __html: fetchedData.auctionGaiyo || '' }}
-              />
-           
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {texts.auction.auctionImage}
-              </label>
-              <FileUpload
-                onFileChange={handleImageFileChange}
-                allowedExtensions={['jpg', 'jpeg', 'png']}
+          )}
+          <div>
+            <label htmlFor="paymentDeadlineDate" className={styles.label}>
+              {texts.auction.paymentDeadlineDate}
+            </label>
+            <div className="xl:w-1/4 sm:w-full xl:flex items-center mt-1">
+              <CustomDatePicker
+                name="paymentDeadlineDate"
+                selectedDate={fetchedData.paymentDeadlineDate}
+                onDateChange={handleDateChange("paymentDeadlineDate")}
               />
-              <span >{texts.auction.auctionImage_note_1}</span><br />
-              <span >{texts.auction.auctionImage_note_2}</span>
-              {fetchedData.auctionImageUrl && (
-                <>
+            </div>
+            {(formErrors?.paymentDeadlineDate) && (
+              <p className="error-message">
+                {formErrors?.paymentDeadlineDate}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="auctionGaiyo" className={styles.label}>
+              {texts.auction.auctionGaiyo}<br />
+              {texts.label.text_note_1}
+            </label>
+            <textarea
+              id="auctionGaiyo"
+              name="auctionGaiyo"
+              value={fetchedData.auctionGaiyo || ''}
+              onChange={handleChange}
+              rows={10}
+              className="w-full px-3 py-2 mt-1 border rounded-md "
+            />
+            <label htmlFor="auctionGaiyo" className={styles.label}>
+              {texts.auction.auctionGaiyoPreview}
+            </label>
+            <div
+              className="w-full px-3 py-2 mt-1 border rounded-md bg-gray-100"
+              style={{ whiteSpace: 'pre-wrap', overflowY: 'auto', height: '200px' }}
+              dangerouslySetInnerHTML={{ __html: fetchedData.auctionGaiyo || '' }}
+            />
+
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              {texts.auction.auctionImage}
+            </label>
+            <FileUpload
+              onFileChange={handleImageFileChange}
+              allowedExtensions={['jpg', 'jpeg', 'png']}
+            />
+            <span >{texts.auction.auctionImage_note_1}</span><br />
+            <span >{texts.auction.auctionImage_note_2}</span>
+            {fetchedData.auctionImageUrl && (
+              <>
                 <Image
                   src={fetchedData.auctionImageUrl}
                   alt=""
@@ -451,26 +460,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   className={styles.label}
                   label={<span>{texts.button.delete}</span>}
                 />
-                  </>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {texts.auction.goodsListUrl}
-              </label>
-              <FileUpload
-                onFileChange={handleListFileChange}
-                allowedExtensions={['pdf', 'xlsx']}
-              />
-              <span >{texts.auction.goodsListUrl_note_1}</span><br />
-              <span >{texts.auction.goodsListUrl_note_2}</span>
-              {fetchedData.auctionListUrl && (
-                <>
+              </>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              {texts.auction.goodsListUrl}
+            </label>
+            <FileUpload
+              onFileChange={handleListFileChange}
+              allowedExtensions={['pdf', 'xlsx']}
+            />
+            <span >{texts.auction.goodsListUrl_note_1}</span><br />
+            <span >{texts.auction.goodsListUrl_note_2}</span>
+            {fetchedData.auctionListUrl && (
+              <>
                 <div>
                   <Link className="text-blue-600 underline" href={fetchedData.auctionListUrl} target="_blank">
-                  {texts.auction.goodsListUrl}
+                    {texts.auction.goodsListUrl}
                   </Link>
-                  
+
                 </div>
                 <div>
                   <FormControlLabel
@@ -483,18 +492,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     className={styles.label}
                     label={<span>{texts.button.delete}</span>}
                   />
-                  </div>
-                  </>
-              )}
-            </div>
-            {executionPermission(301, 2) && fetchedData.shimeTime == null ? (
-              <div className="text-right">
-                <RegistButton onClick={handleSubmit} label={texts.button.regist} />
-              </div>
-            ) : (
-              <></>
+                </div>
+              </>
             )}
-        
+          </div>
+          {executionPermission(301, 2) && fetchedData.shimeTime == null ? (
+            <div className="text-right">
+              <RegistButton onClick={handleSubmit} label={texts.button.regist} />
+            </div>
+          ) : (
+            <></>
+          )}
+
           {executionPermission(301, 2) && fetchedData.auctionSeq != null && (
             <>
               <div className="divide-y border-gray-500"></div>

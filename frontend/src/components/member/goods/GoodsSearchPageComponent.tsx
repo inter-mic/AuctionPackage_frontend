@@ -1,4 +1,5 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import { useSearchParams } from 'next/navigation';
 import Pagination from '@mui/material/Pagination';
 //カスタムフック
@@ -22,6 +23,7 @@ import { TAuction } from '@/types/common/MtAuction';
 //ボタン
 import { SearchButton } from '@/components/ui/buttons/member/searchButton';
 import { ClearButton } from '@/components/ui/buttons/member/clearButton';
+import { ToLiveApplicationButton } from '@/components/ui/buttons/member/toLiveApplicationButton';
 //スタイル
 import formSearchStyles from '@/styles/member/FormSearch.module.css';
 import Checkbox from '@mui/material/Checkbox';
@@ -97,7 +99,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       chumokuCheck: checkboxStates.chumokuCheck,
       nofinishCheck: checkboxStates.nofinishCheck,
     };
-    setCurrentPage(1); 
+    setCurrentPage(1);
     goodsSearchAPI(params, isLogin);
     goodsCountAPI(params, isLogin);
     setIsFilterOpen(false);
@@ -128,7 +130,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
         sortKey = 'price';
         sortFlg = false;
         break;
-     
+
     }
 
     const params = {
@@ -144,7 +146,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
     goodsSearchAPI(params, isLogin);
   };
 
-  
+
   const itemsPerPage = 50;
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
@@ -161,7 +163,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
     goodsSearchAPI(params, isLogin);
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 1000); 
+    }, 1000);
   };
 
 
@@ -174,15 +176,26 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       }
     }, 100000);
     return () => clearInterval(intervalId);
-  }, [isLogin, memberSessionAPI]);  
+  }, [isLogin, memberSessionAPI]);
 
   return (
     <>
       {fetchAuctionData != null ? (
-        <AuctionInfo auctionData={fetchAuctionData} isToGoodsList={false} isLogin={isLogin} />
+        <>
+          <AuctionInfo auctionData={fetchAuctionData} isToGoodsList={false} isLogin={isLogin} />
+
+          {fetchAuctionData?.spnKbn === '1' &&
+            isLogin &&
+            dayjs().isAfter(dayjs(fetchAuctionData.onlinebidApplicationStarttime)) &&
+            dayjs().isBefore(dayjs(fetchAuctionData.onlinebidApplicationEndtime)) && (
+              <ToLiveApplicationButton auctionSeq={fetchAuctionData.auctionSeq} />
+            )}
+        </>
       ) : (
         <div></div>
       )}
+
+
       <SearchFilter isOpen={isFilterOpen} toggleFilter={toggleFilter}>
         <div className={formSearchStyles.formContainer}>
           <div className={formSearchStyles.formGrid}>
