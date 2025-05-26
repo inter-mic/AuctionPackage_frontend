@@ -533,7 +533,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     {formErrors?.startPrice && <p className="error-message">{formErrors.startPrice}</p>}
                   </div>
                   <div className={styles.flexItem}>
-
+                      {goodsData.spnKbn !== "1"  && (
+<>
                     <label htmlFor="bidUnit" className={styles.label}>
                       <RequiredMark />
                       {texts.goods.bidUnit}
@@ -547,6 +548,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       disabled={bitFlg}
                     />
                     {formErrors?.bidUnit && <p className="error-message">{formErrors.bidUnit}</p>}
+                    </>
+                      )}
                   </div>
                 </div>
                 <div className={styles.flexContainer}>
@@ -695,7 +698,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       disabled
                     />
                   </div>
+                 
                   <div className={styles.flexItem}>
+                  
+                     {goodsData.spnKbn === "3" || goodsData.spnKbn === "4" && (
+                        <>
                     <label className={styles.label}>
                       {texts.goods.bidCount}
                     </label>
@@ -704,10 +711,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       className={`${styles.input} text-right`}
                       disabled
                     />
+                    </>
+                     )}
                   </div>
+                   
                 </div>
               </div>
-              <div className="p-4">
+              {goodsData.spnKbn === "3" || goodsData.spnKbn === "4" && (
+                <div className="p-4">
                 <div className={styles.flexContainer}>
                   <div className={styles.flexItem}>
                     <label className={styles.label}>
@@ -762,6 +773,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   </div>
                 </div>
               </div>
+                   )}
+              
               {kekkaData.kekkaRegisttime != "" && (
                 <div className="p-4 border-l border-gray-400">
                 <div className={styles.flexContainer}>

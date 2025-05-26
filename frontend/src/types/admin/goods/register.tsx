@@ -9,6 +9,7 @@ export type GoodsData ={
     chumokuFlg: boolean | null;
     keisaiFlg: boolean | null;
     auctionSeq: number | null;
+    spnKbn: string | null;
     shimeTime: string | null;
     lot: string | null;
     shuppinUserId: number | null;
@@ -55,6 +56,7 @@ export const initialGoodsData: GoodsData = {
     chumokuFlg:false,
     keisaiFlg:true,
     auctionSeq:null,
+    spnKbn:null,
     shimeTime:null,
     lot:null,
     shuppinUserId:null,
