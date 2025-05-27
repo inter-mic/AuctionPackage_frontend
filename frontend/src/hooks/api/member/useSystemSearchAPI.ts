@@ -7,14 +7,14 @@ import { Result } from '@/types/common/systemsetting/search';
 
 export const useSystemSearchAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [data, setData] = useState<Result>();
-  const systemSearch = async () => {
+  const [fetchSystemSettingData, setFetchSystemSettingData] = useState<Result>();
+  const systemSearchAPI = async () => {
     const endPoint = 'system/search';
-    const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', null, "", true);
+    const { status, data: responseData } = await apiRequest( "member", endPoint, 'POST', null, "", true);
     if (status == 200 && responseData) {
-      setData(responseData[0]);
+      setFetchSystemSettingData(responseData[0]);
     }
   };
 
-  return { data, systemSearch }
+  return { fetchSystemSettingData, systemSearchAPI }
 };

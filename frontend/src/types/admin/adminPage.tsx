@@ -6,6 +6,8 @@ export interface PageProps {
     logoImagePath: string | null;
     kengen: Kengen[];
     optionInvoice: boolean | false;
+    optionLiveMessage: boolean | false;
+    optionLiveYoutube: boolean | false;
 }
 
 export interface Kengen {

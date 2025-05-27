@@ -4,11 +4,13 @@ export type SystemData = {
     memberApprovalFlg: number | null;
     nologinView: number | null;
     imageDownloadFlg: number | null;
+    youtubeIframe: string | null
 }
 export const initialSystemData: SystemData = {
     systemSeq:null,
     memberRegistrationFlg:null,
     memberApprovalFlg:null,
     nologinView:null,
-    imageDownloadFlg:null
+    imageDownloadFlg:null,
+    youtubeIframe:null
 }

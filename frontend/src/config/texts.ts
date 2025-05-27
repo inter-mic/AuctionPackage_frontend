@@ -365,7 +365,7 @@ export const texts = {
       memberRegistration:"会員登録設定",
       memberApproval:"会員承認設定",
       nologinView:"ログイン参照設定",
-      ImageDownload:"画像ダウンロード",
+      youtubeLink:"Youtubeリンク",
       adminOnly:"管理者のみ",
       adminAndMember:"管理者・会員",
       approve:"承認する",

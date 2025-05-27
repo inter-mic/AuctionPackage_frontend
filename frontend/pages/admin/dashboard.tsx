@@ -60,7 +60,7 @@ const Button: React.FC<ButtonProps> = ({ label, url }) => {
 };
 
 
-const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen }) => (
+const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen, optionLiveMessage }) => (
 
     <div className={styles.container}>
     <Section title={texts.menu.adminMemberTitle}>

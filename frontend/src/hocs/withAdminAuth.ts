@@ -21,6 +21,8 @@ export const withAuth = (gssp: GetServerSideProps): GetServerSideProps => {
           logoImagePath: authResult.props.logoImagePath,
           kengen: authResult.props.kengen,
           optionInvoice: authResult.props.optionInvoice,
+          optionLiveMessage: authResult.props.optionLiveMessage,
+          optionLiveYoutube: authResult.props.optionLiveYoutube,
         },
       };
     }

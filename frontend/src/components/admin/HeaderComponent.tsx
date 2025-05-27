@@ -25,7 +25,7 @@ interface HeaderProps {
 }
 
 
-export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps) {
+export function HeaderComponent({ userName, logoImagePath, kengen}: HeaderProps) {
 
   const [isMemberMenuOpen, setMemberMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
