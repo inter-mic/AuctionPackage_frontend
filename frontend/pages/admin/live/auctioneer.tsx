@@ -1,59 +1,67 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
-import Image from 'next/image';
-import { texts } from '@/config/texts';
-import { useRef } from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
+import { GetServerSideProps } from "next";
+import Image from "next/image";
+import { texts } from "@/config/texts";
+import { useRef } from "react";
+import { useRouter } from "next/router";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminNoHeaderLayout from '@/hocs/withAdminNoHeaderLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminNoHeaderLayout from "@/hocs/withAdminNoHeaderLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 //API
-import { useGoodsSearchByGoodsIdAPI } from '@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI';
-import { useLiveBidInfoGetNextLotListAPI } from '@/hooks/api/admin/live/bidInfo/useLiveBidInfoGetNextLotListAPI';
-import { useLiveBidInfoSearchAPI } from '@/hooks/api/admin/live/bidInfo/useLiveBidInfoSearchAPI';
-import { useGoodsSearchBeforeAfterLotAPI } from '@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI';
-import { useLiveBidKekkaUpdateAPI } from '@/hooks/api/admin/live/useLiveBidKekkaUpdateAPI';
+import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI";
+import { useLiveBidInfoGetNextLotListAPI } from "@/hooks/api/admin/live/bidInfo/useLiveBidInfoGetNextLotListAPI";
+import { useLiveBidInfoSearchAPI } from "@/hooks/api/admin/live/bidInfo/useLiveBidInfoSearchAPI";
+import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
+import { useLiveBidKekkaUpdateAPI } from "@/hooks/api/admin/live/useLiveBidKekkaUpdateAPI";
 //型定義
-import { GoodsData, initialGoodsData } from '@/types/admin/goods/register';
-import { LiveBidKekkaData, initialLiveBidKekkaData } from '@/types/admin/live/register';
-import { TBidHisotry, TLiveBidLog } from '@/types/admin/live/auctioneer';
-import { NextLotList } from '@/types/admin/live/nextLotList';
-import { PageProps } from '@/types/admin/adminPage';
-import { Errors } from '@/types/errors';
+import { GoodsData, initialGoodsData } from "@/types/admin/goods/register";
+import {
+  LiveBidKekkaData,
+  initialLiveBidKekkaData,
+} from "@/types/admin/live/register";
+import { TBidHisotry, TLiveBidLog } from "@/types/admin/live/auctioneer";
+import { NextLotList } from "@/types/admin/live/nextLotList";
+import { PageProps } from "@/types/admin/adminPage";
+import { Errors } from "@/types/errors";
 //コンポーネント
-import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
-import { LiveMessageListPullDown } from '@/components/ui/pulldowns/LiveMessageListPullDown';
-import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas, formatPriceNum } from '@/components/common/PriceUtils';
-import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
+import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown";
+import { LiveMessageListPullDown } from "@/components/ui/pulldowns/LiveMessageListPullDown";
+import {
+  formatPriceDivision,
+  formatPriceMultiplication,
+  formatPriceWithCommas,
+  formatPriceNum,
+} from "@/components/common/PriceUtils";
+import ConfirmDialog from "@/components/ui/dialog/confirmDialog";
 //ボタン
-import { CallButton } from '@/components/ui/buttons/admin/live/callButton';
-import { LotBeforeAffterButton } from '@/components/ui/buttons/admin/live/LotBeforeAffterButton';
-import { SetButton } from '@/components/ui/buttons/admin/live/setButton';
-import { StartButton } from '@/components/ui/buttons/admin/live/startButton';
-import { ClearButton } from '@/components/ui/buttons/admin/live/clearButton';
-import { SerihabaButton } from '@/components/ui/buttons/admin/live/serihabaButton';
-import { PriceButton } from '@/components/ui/buttons/admin/live/priceButton';
-import { StatusButton } from '@/components/ui/buttons/admin/live/statusButton';
-import { ResultsButton } from '@/components/ui/buttons/admin/live/resultsButton';
-import { MessageButton } from '@/components/ui/buttons/admin/live/messageButton';
-
+import { CallButton } from "@/components/ui/buttons/admin/live/callButton";
+import { LotBeforeAffterButton } from "@/components/ui/buttons/admin/live/LotBeforeAffterButton";
+import { SetButton } from "@/components/ui/buttons/admin/live/setButton";
+import { StartButton } from "@/components/ui/buttons/admin/live/startButton";
+import { ClearButton } from "@/components/ui/buttons/admin/live/clearButton";
+import { SerihabaButton } from "@/components/ui/buttons/admin/live/serihabaButton";
+import { PriceButton } from "@/components/ui/buttons/admin/live/priceButton";
+import { StatusButton } from "@/components/ui/buttons/admin/live/statusButton";
+import { ResultsButton } from "@/components/ui/buttons/admin/live/resultsButton";
+import { MessageButton } from "@/components/ui/buttons/admin/live/messageButton";
 
 //スタイル
-import styles from '@/styles/admin/Auctioneer.module.css';
-import { Noto_Sans_Kawi } from 'next/font/google';
+import styles from "@/styles/admin/Auctioneer.module.css";
+import { Noto_Sans_Kawi } from "next/font/google";
 
-
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  return {
-    props: {
-      pageTitle: texts.menu.adminAuctionner
-    },
-  };
-});
+export const getServerSideProps: GetServerSideProps = withAuth(
+  async (context) => {
+    return {
+      props: {
+        pageTitle: texts.menu.adminAuctionner,
+      },
+    };
+  }
+);
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect } = useCommonSetup();
@@ -63,11 +71,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
 
-  const [searchSelectedKaisai, setSearchSelectedKaisai] = useState<string>('');
-  const [searchLot, setSearchLot] = useState<string>('');
+  const [searchSelectedKaisai, setSearchSelectedKaisai] = useState<string>("");
+  const [searchLot, setSearchLot] = useState<string>("");
   const handleSearchKaisaiChange = (name: string, value: string) => {
     setSearchSelectedKaisai(value);
-
   };
   const handleSearchLotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchLot(e.target.value);
@@ -80,9 +87,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const now: Date = new Date();
 
   //検索(呼び出し)
-  const { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
-  const { fetchLiveBidNextLotListData, liveBidInfoGetNextLotListErrors, liveBidInfoGetNextLotListAPI } = useLiveBidInfoGetNextLotListAPI();
-  const { fetchLiveBidInfoData, liveBidInfoSearchErrors, liveBidInfoSearchAPI } = useLiveBidInfoSearchAPI();
+  const { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI } =
+    useGoodsSearchByGoodsIdAPI();
+  const {
+    fetchLiveBidNextLotListData,
+    liveBidInfoGetNextLotListErrors,
+    liveBidInfoGetNextLotListAPI,
+  } = useLiveBidInfoGetNextLotListAPI();
+  const {
+    fetchLiveBidInfoData,
+    liveBidInfoSearchErrors,
+    liveBidInfoSearchAPI,
+  } = useLiveBidInfoSearchAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
 
   const lotSearch = async () => {
@@ -99,145 +115,190 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (fetchGoodsData.goodsId != null) {
       setGoodsData(fetchGoodsData);
-      setSearchLot(fetchGoodsData.lot || '');
+      setSearchLot(fetchGoodsData.lot || "");
       setIsCallButtonClicked(true);
-      setLiveBidkekkaData((prevLiveBidkekkaData) => ({ ...prevLiveBidkekkaData, goodsId: fetchGoodsData.goodsId }));
+      setLiveBidkekkaData((prevLiveBidkekkaData) => ({
+        ...prevLiveBidkekkaData,
+        goodsId: fetchGoodsData.goodsId,
+      }));
     }
   }, [fetchGoodsData]);
   useEffect(() => {
-    if (goodsSearchErrors) { setInputSeatchErrors(goodsSearchErrors); }
+    if (goodsSearchErrors) {
+      setInputSeatchErrors(goodsSearchErrors);
+    }
   }, [goodsSearchErrors]);
 
-
   // 次商品リストセット
-const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
-const [nextLotListRow, setNextLotListRow] = useState<number>(1);
-useEffect(() => {
-  if (fetchLiveBidNextLotListData.length > 0) {
-    const nextLots: NextLotList[] = fetchLiveBidNextLotListData
-      .map(({ goodsName, lot, startPrice, thumbnailImageUrl }) => ({
-        goodsName,
-        lot,
-        startPrice,
-        thumbnailImageUrl,
-      }));
-    setNextLotList(nextLots);
-    setNextLotListRow(1);
-  }
-}, [fetchLiveBidNextLotListData]);
-
+  const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
+  const [nextLotListRow, setNextLotListRow] = useState<number>(1);
+  useEffect(() => {
+    if (fetchLiveBidNextLotListData.length > 0) {
+      const nextLots: NextLotList[] = fetchLiveBidNextLotListData.map(
+        ({ goodsName, lot, startPrice, thumbnailImageUrl }) => ({
+          goodsName,
+          lot,
+          startPrice,
+          thumbnailImageUrl,
+        })
+      );
+      setNextLotList(nextLots);
+      setNextLotListRow(1);
+    }
+  }, [fetchLiveBidNextLotListData]);
 
   //呼び出しから各価格セット
-  const [saiteiRakusatsuPrice, setSaiteiRakusatsuPricePrice] = useState<string>('');
+  const [saiteiRakusatsuPrice, setSaiteiRakusatsuPricePrice] =
+    useState<string>("");
   const [firstPreBidUserId, setFirstPreBidUserId] = useState<number | null>();
-  const [firstPreBidPrice, setFirstPreBidPrice] = useState<string>('');
+  const [firstPreBidPrice, setFirstPreBidPrice] = useState<string>("");
   const [secondPreBidUserId, setSecondPreBidUserId] = useState<number | null>();
-  const [secondPreBidPrice, setSecondPreBidPrice] = useState<string>('');
-  const [startPrice, setStartPrice] = useState<string>('');
-  const [currentPrice, setCurrentPrice] = useState<string>('');
-  const [nextPrice, setNextPrice] = useState<string>('');
-  const [bidUnit, setBidUnit] = useState<string>('');
+  const [secondPreBidPrice, setSecondPreBidPrice] = useState<string>("");
+  const [startPrice, setStartPrice] = useState<string>("");
+  const [currentPrice, setCurrentPrice] = useState<string>("");
+  const [nextPrice, setNextPrice] = useState<string>("");
+  const [bidUnit, setBidUnit] = useState<string>("");
   const [kenriUserId, setKenriUserId] = useState<number | null>();
-  const [kenriUpdatePrice, setKenriUpdatePrice] = useState<string>('');
+  const [kenriUpdatePrice, setKenriUpdatePrice] = useState<string>("");
   useEffect(() => {
     if (fetchLiveBidInfoData) {
       //最低落札価格セット
       if (fetchLiveBidInfoData.saiteiRakusatsuPrice) {
-        const formattedSaiteiRakusatsuPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, '')));
+        const formattedSaiteiRakusatsuPrice = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, ""))
+        );
         setSaiteiRakusatsuPricePrice(formattedSaiteiRakusatsuPrice);
       } else {
-        setSaiteiRakusatsuPricePrice('');
+        setSaiteiRakusatsuPricePrice("");
       }
 
       //最高事前入札者・価格セット
       if (fetchLiveBidInfoData.firstPreBidPrice) {
-        const formattedFirstPreBidPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.firstPreBidPrice.replace(/,/g, '')));
+        const formattedFirstPreBidPrice = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.firstPreBidPrice.replace(/,/g, ""))
+        );
         setFirstPreBidPrice(formattedFirstPreBidPrice);
         setFirstPreBidUserId(fetchLiveBidInfoData.firstPreBidUserId);
       } else {
-        setFirstPreBidPrice('');
+        setFirstPreBidPrice("");
         setFirstPreBidUserId(null);
       }
 
       //2番目事前入札者・価格セット
       if (fetchLiveBidInfoData.secondPreBidPrice) {
-        const formattedSecondPreBidPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.secondPreBidPrice.replace(/,/g, '')));
+        const formattedSecondPreBidPrice = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.secondPreBidPrice.replace(/,/g, ""))
+        );
         setSecondPreBidPrice(formattedSecondPreBidPrice);
         setSecondPreBidUserId(fetchLiveBidInfoData.secondPreBidUserId);
       } else {
-        setSecondPreBidPrice('');
+        setSecondPreBidPrice("");
         setSecondPreBidUserId(null);
       }
 
       //スタート価格セット
       if (fetchLiveBidInfoData.startPrice) {
-        const formattedStartPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.startPrice.replace(/,/g, '')));
+        const formattedStartPrice = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.startPrice.replace(/,/g, ""))
+        );
         setStartPrice(formattedStartPrice);
       } else {
-        setStartPrice('');
+        setStartPrice("");
       }
 
       //現在価格セット
       if (fetchLiveBidInfoData.currentPrice) {
-        const formattedCurrentPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.currentPrice.replace(/,/g, '')));
+        const formattedCurrentPrice = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.currentPrice.replace(/,/g, ""))
+        );
         setCurrentPrice(formattedCurrentPrice);
       } else {
-        setCurrentPrice('');
+        setCurrentPrice("");
       }
 
       //次価格セット
       if (fetchLiveBidInfoData.nextPrice) {
-        const formattedNextPrice = formatPriceWithCommas(Number(fetchLiveBidInfoData.nextPrice.replace(/,/g, '')));
+        const formattedNextPrice = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.nextPrice.replace(/,/g, ""))
+        );
         setNextPrice(formattedNextPrice);
       } else {
-        setNextPrice('');
+        setNextPrice("");
       }
 
       //権利者セット
       if (fetchLiveBidInfoData.kenriUserId) {
         setKenriUserId(fetchLiveBidInfoData.kenriUserId);
-        setLiveBidkekkaData((prevLiveBidkekkaData) => ({ 
-          ...prevLiveBidkekkaData, 
-          rakusatsuUserId: fetchLiveBidInfoData.kenriUserId, 
-          rakusatsuPrice: fetchLiveBidInfoData.firstPreBidPrice?.replace(/,/g, ''),
-          auctionKekkaStatus: 2
-        }))
+        setLiveBidkekkaData((prevLiveBidkekkaData) => ({
+          ...prevLiveBidkekkaData,
+          rakusatsuUserId: fetchLiveBidInfoData.kenriUserId,
+          rakusatsuPrice: fetchLiveBidInfoData.firstPreBidPrice?.replace(
+            /,/g,
+            ""
+          ),
+          auctionKekkaStatus: 2,
+        }));
       } else {
         setKenriUserId(null);
       }
 
       //セリ幅セット
       if (fetchLiveBidInfoData.bidUnit) {
-        const formattedBidUnit = formatPriceWithCommas(Number(fetchLiveBidInfoData.bidUnit.replace(/,/g, '')));
+        const formattedBidUnit = formatPriceWithCommas(
+          Number(fetchLiveBidInfoData.bidUnit.replace(/,/g, ""))
+        );
         setBidUnit(formattedBidUnit);
       } else {
-        setBidUnit('');
+        setBidUnit("");
       }
 
       //権利者更新処理用
-      const saiteiPriceNumber = fetchLiveBidInfoData.saiteiRakusatsuPrice ? Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, '')) : 0;
-      const firstPreBidPriceNumber = fetchLiveBidInfoData.firstPreBidPrice ? Number(fetchLiveBidInfoData.firstPreBidPrice.replace(/,/g, '')) : 0;
-      setKenriUpdatePrice((saiteiPriceNumber > firstPreBidPriceNumber ? saiteiPriceNumber : firstPreBidPriceNumber).toString());
+      const saiteiPriceNumber = fetchLiveBidInfoData.saiteiRakusatsuPrice
+        ? Number(fetchLiveBidInfoData.saiteiRakusatsuPrice.replace(/,/g, ""))
+        : 0;
+      const firstPreBidPriceNumber = fetchLiveBidInfoData.firstPreBidPrice
+        ? Number(fetchLiveBidInfoData.firstPreBidPrice.replace(/,/g, ""))
+        : 0;
+      setKenriUpdatePrice(
+        (saiteiPriceNumber > firstPreBidPriceNumber
+          ? saiteiPriceNumber
+          : firstPreBidPriceNumber
+        ).toString()
+      );
     }
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchLiveBidInfoData]);
 
   //LOT前後
-  const { beforeAfterGoodsId, goodsSearchBeforeAfterLotAPI } = useGoodsSearchBeforeAfterLotAPI();
+  const { beforeAfterGoodsId, goodsSearchBeforeAfterLotAPI } =
+    useGoodsSearchBeforeAfterLotAPI();
   useEffect(() => {
     const auctionSeq = fetchGoodsData?.auctionSeq ?? 0;
-    const lot = fetchGoodsData?.lot ?? '';
+    const lot = fetchGoodsData?.lot ?? "";
     if (auctionSeq != 0 && lot != "") {
       goodsSearchBeforeAfterLotAPI(auctionSeq, lot, false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchGoodsData?.auctionSeq, fetchGoodsData?.lot]);
   const lotBeforeAffterSearch = async (isBefore: boolean) => {
-    const goodsId = isBefore ? beforeAfterGoodsId?.beforeGoodsId : beforeAfterGoodsId?.afterGoodsId;
+    const goodsId = isBefore
+      ? beforeAfterGoodsId?.beforeGoodsId
+      : beforeAfterGoodsId?.afterGoodsId;
     await goodsSearchByGoodsIdAPI(true, Number(goodsId), "", "");
-    await liveBidInfoSearchAPI(true, Number(goodsId), searchSelectedKaisai, "", "");
-    await liveBidInfoGetNextLotListAPI(true, Number(goodsId), searchSelectedKaisai, searchLot);
+    await liveBidInfoSearchAPI(
+      true,
+      Number(goodsId),
+      searchSelectedKaisai,
+      "",
+      ""
+    );
+    await liveBidInfoGetNextLotListAPI(
+      true,
+      Number(goodsId),
+      searchSelectedKaisai,
+      searchLot
+    );
     setNextLotListRow(isBefore ? nextLotListRow - 1 : nextLotListRow + 1);
   };
 
@@ -245,7 +306,7 @@ useEffect(() => {
   const [liveBidLog, setLiveBidLog] = useState<TLiveBidLog[]>([]);
   const [connectionCount, setConnectionCount] = useState<number | null>();
   const [isAuctioneerFlg, setAuctioneerFlg] = useState(false);
-  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false); 
+  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
   const [msg, setMsg] = useState<string | null>();
   const [marqueeKey, setMarqueeKey] = useState(0);
   const lotInputRef = useRef<HTMLInputElement>(null);
@@ -255,67 +316,73 @@ useEffect(() => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onopen = () => {
-      console.log('WebSocket connection established');
-      ws.current?.send(JSON.stringify({ type: 'admin' }));
+      console.log("WebSocket connection established");
+      ws.current?.send(JSON.stringify({ type: "admin" }));
     };
 
     ws.current.onmessage = (event) => {
       var data = JSON.parse(event.data);
-      if (data.type === 'set') {
+      if (data.type === "set") {
         setIsSetButtonClicked(true);
-        setBidUnit(data.bidUnit ? formatPriceWithCommas(Number(data.bidUnit)) : '');
-        setCurrentPrice(data.currentPrice ? formatPriceWithCommas(Number(data.currentPrice)) : '');
-      } 
-      if (data.type === 'start') {
+        setBidUnit(
+          data.bidUnit ? formatPriceWithCommas(Number(data.bidUnit)) : ""
+        );
+        setCurrentPrice(
+          data.currentPrice
+            ? formatPriceWithCommas(Number(data.currentPrice))
+            : ""
+        );
+      }
+      if (data.type === "start") {
         setIsStartButtonClicked(true);
         setIsSetButtonClicked(false);
-      } 
-      if (data.type === 'onlineBid') {
+      }
+      if (data.type === "onlineBid") {
         setOnlineBidHistory((prevHistory) => [
           { userId: data.userId, bidPrice: data.bidPrice },
           ...prevHistory, // 最新のデータを上部に追加
         ]);
         setBidComingSoonMsg(false);
-      } 
-      if (data.type === 'bidComingSoon') {
+      }
+      if (data.type === "bidComingSoon") {
         setBidComingSoonMsg(true);
       } else {
         setBidComingSoonMsg(false);
       }
-      if (data.type === 'rakusatsuProcessing') {
+      if (data.type === "rakusatsuProcessing") {
         setRakusatsuProcessFlg(true);
       } else {
         setRakusatsuProcessFlg(false);
       }
-      if (data.type === 'bidEnd') {
+      if (data.type === "bidEnd") {
         setOnlineBidHistory([]);
         setLiveBidLog([]);
         setIsStartButtonClicked(false);
         setAuctioneerFlg(false);
-      } 
-      if (data.type === 'clear') {
+      }
+      if (data.type === "clear") {
         auctioneerClear();
         lotInputRef.current?.focus();
       }
-      if (data.type === 'connectionCount') {
+      if (data.type === "connectionCount") {
         setConnectionCount(data.count);
       }
-      if (data.type === 'sendMessage') {
+      if (data.type === "sendMessage") {
         setMsg(data.message);
-        setMarqueeKey(k=>k+1);
+        setMarqueeKey((k) => k + 1);
       }
     };
 
     ws.current.onclose = () => {
-      console.log('WebSocket connection closed');
+      console.log("WebSocket connection closed");
     };
 
     return () => {
       if (ws.current) {
         ws.current.close();
       }
-    };    
-    
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -326,23 +393,26 @@ useEffect(() => {
     goodsImage: fetchGoodsData.thumbnailImageUrl,
   });
   const getClearCommonData = () => ({
-    goodsId: '',
-    lot: '',
-    goodsName: '',
-    goodsImage: '',
+    goodsId: "",
+    lot: "",
+    goodsName: "",
+    goodsImage: "",
   });
 
-  const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
+  const sendWebSocketMessage = (
+    type: string,
+    additionalData: Record<string, any> = {}
+  ) => {
     if (!isAuctioneerFlg) {
-      if(type === 'sendMessage'){
+      if (type === "sendMessage") {
         // メッセージ配信は可能
-      }else{
+      } else {
         return; //「セット」を押した者以外配信不可
       }
     }
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       let message;
-      if (type === 'clear') {
+      if (type === "clear") {
         message = {
           type,
           ...getClearCommonData(),
@@ -367,7 +437,7 @@ useEffect(() => {
   };
   useEffect(() => {
     if (isAuctioneerFlg) {
-      sendWebSocketMessage('set', {
+      sendWebSocketMessage("set", {
         currentPrice: formatPriceNum(currentPrice),
         bidUnit: formatPriceNum(bidUnit),
         nextLotList: nextLotList,
@@ -378,17 +448,18 @@ useEffect(() => {
 
   // スタートボタン用関数
   const start = async () => {
-    sendWebSocketMessage('start', {
+    sendWebSocketMessage("start", {
       nextPrice: formatPriceNum(nextPrice),
       currentPrice: formatPriceNum(currentPrice),
-    });    
+    });
 
     if (kenriUserId) {
       setLiveBidLog((prevLog) => [
-        { userId: kenriUserId ? kenriUserId.toString() : '',
+        {
+          userId: kenriUserId ? kenriUserId.toString() : "",
           bidPrice: currentPrice,
           bidTime: now.toLocaleString(),
-          bidKbn: '1'
+          bidKbn: "1",
         },
         ...prevLog, // 最新のデータを上部に追加
       ]);
@@ -396,29 +467,36 @@ useEffect(() => {
   };
 
   // 強制クリア用関数
-  const clear = async () => {   
-    sendWebSocketMessage('clear', {
-      nextPrice: '',
-      currentPrice: '',
+  const clear = async () => {
+    sendWebSocketMessage("clear", {
+      nextPrice: "",
+      currentPrice: "",
     });
   };
 
   //もうすぐ落札を配信用
   const bidComingSoonHaishin = async () => {
-    sendWebSocketMessage('bidComingSoon');
+    sendWebSocketMessage("bidComingSoon");
   };
 
   // 入札終了を配信用の処理
-  const { liveBidKekkaRegistErrors, liveBidKekkaUpdateAPI } = useLiveBidKekkaUpdateAPI();
-  const [liveBidkekkaData, setLiveBidkekkaData] = useState<LiveBidKekkaData>(initialLiveBidKekkaData);
+  const { liveBidKekkaRegistErrors, liveBidKekkaUpdateAPI } =
+    useLiveBidKekkaUpdateAPI();
+  const [liveBidkekkaData, setLiveBidkekkaData] = useState<LiveBidKekkaData>(
+    initialLiveBidKekkaData
+  );
   const bidEnd = async () => {
-    sendWebSocketMessage('bidEnd', {
-      kenriUserId: kenriUserId
+    sendWebSocketMessage("bidEnd", {
+      kenriUserId: kenriUserId,
     });
 
-    const isSuccess = await liveBidKekkaUpdateAPI(liveBidkekkaData, liveBidLog, connectionCount);
+    const isSuccess = await liveBidKekkaUpdateAPI(
+      liveBidkekkaData,
+      liveBidLog,
+      connectionCount
+    );
     if (isSuccess) {
-      const nextLot = (Number(searchLot)+1).toString()
+      const nextLot = (Number(searchLot) + 1).toString();
       goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
       liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai, nextLot);
       liveBidInfoSearchAPI(false, 0, searchSelectedKaisai, nextLot, nextLot);
@@ -427,69 +505,81 @@ useEffect(() => {
   };
 
   //落札処理を配信用の処理
-  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false); 
+  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
   const rakusatusuProcess = async () => {
-    sendWebSocketMessage('rakusatsuProcessing');
+    sendWebSocketMessage("rakusatsuProcessing");
   };
 
   //入札再開を配信用の処理
   const bidRestart = async () => {
-    sendWebSocketMessage('bidRestart');
+    sendWebSocketMessage("bidRestart");
   };
 
   //オンライン入札価格を配信用
-  const [belowSaiteiPriceUserIdList, setBelowSaiteiPriceUserIdList] = useState<string[]>([]);
+  const [belowSaiteiPriceUserIdList, setBelowSaiteiPriceUserIdList] = useState<
+    string[]
+  >([]);
   const onlinePriceHaishin = async () => {
     if (onlineBidHistory.length === 0) {
-      console.error('オンライン入札履歴が空です');
+      console.error("オンライン入札履歴が空です");
       return;
     }
 
     const newOnlineBid = onlineBidHistory[0]; // 最新の入札履歴を取得
     const onlineBidPrice = newOnlineBid.bidPrice;
-    const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, '') || '0');
+    const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, "") || "0");
     // 現在価格を最新の入札価格に更新
     setCurrentPrice(formatPriceWithCommas(newOnlineBid.bidPrice));
 
     // 最高入札者情報をセット
     const newBidPriceNumber = Number(newOnlineBid.bidPrice);
-    const firstPreBidPriceNumber = Number(firstPreBidPrice.replace(/,/g, ''));
-    const newHighestUserId =  newBidPriceNumber <= firstPreBidPriceNumber ? firstPreBidUserId : Number(newOnlineBid.userId);
-    const newHighestBidKbn = newBidPriceNumber <= firstPreBidPriceNumber ? '1' : '2';
+    const firstPreBidPriceNumber = Number(firstPreBidPrice.replace(/,/g, ""));
+    const newHighestUserId =
+      newBidPriceNumber <= firstPreBidPriceNumber
+        ? firstPreBidUserId
+        : Number(newOnlineBid.userId);
+    const newHighestBidKbn =
+      newBidPriceNumber <= firstPreBidPriceNumber ? "1" : "2";
 
     // 権利者情報をセット
-    const newKenriUserId = 
-      newBidPriceNumber > Number(kenriUpdatePrice) 
-        ? Number(newOnlineBid.userId) 
-        : (newBidPriceNumber == Number(kenriUpdatePrice) && !kenriUserId ? Number(newOnlineBid.userId) : kenriUserId);
+    const newKenriUserId =
+      newBidPriceNumber > Number(kenriUpdatePrice)
+        ? Number(newOnlineBid.userId)
+        : newBidPriceNumber == Number(kenriUpdatePrice) && !kenriUserId
+        ? Number(newOnlineBid.userId)
+        : kenriUserId;
     setKenriUserId(newKenriUserId);
-    setLiveBidkekkaData((prevLiveBidkekkaData) => ({ 
-      ...prevLiveBidkekkaData, 
-      rakusatsuUserId: newKenriUserId, 
+    setLiveBidkekkaData((prevLiveBidkekkaData) => ({
+      ...prevLiveBidkekkaData,
+      rakusatsuUserId: newKenriUserId,
       rakusatsuPrice: newKenriUserId ? newBidPriceNumber.toString() : null,
-      auctionKekkaStatus: newKenriUserId == null ? 1 : 2
-    }))
+      auctionKekkaStatus: newKenriUserId == null ? 1 : 2,
+    }));
 
     // 次価格を計算してセット
-    const nextPriceCalculated = (Number(onlineBidPrice) + Number(bidUnit)).toString();
+    const nextPriceCalculated = (
+      Number(onlineBidPrice) + Number(bidUnit)
+    ).toString();
     setNextPrice(formatPriceDivision(nextPriceCalculated));
 
     // 最低落札価格に達していないフラグ
-    const isBelowSaiteiPrice = Number(saiteiRakusatsuPrice.replace(/,/g, '')) > Number(onlineBidPrice);
+    const isBelowSaiteiPrice =
+      Number(saiteiRakusatsuPrice.replace(/,/g, "")) > Number(onlineBidPrice);
 
-    sendWebSocketMessage('updatePrice', {
+    sendWebSocketMessage("updatePrice", {
       bidUserId: newOnlineBid.userId,
       kenriUserId: newKenriUserId,
       nextPrice: nextPriceCalculated,
       currentPrice: newOnlineBid.bidPrice,
       isBelowSaiteiPriceFlg: isBelowSaiteiPrice,
     });
-    
+
     setLiveBidLog((prevLog) => [
-      { userId: newHighestUserId ? newHighestUserId.toString() : '',
+      {
+        userId: newHighestUserId ? newHighestUserId.toString() : "",
         bidPrice: newOnlineBid.bidPrice,
         bidTime: now.toLocaleString(),
-        bidKbn: newHighestBidKbn
+        bidKbn: newHighestBidKbn,
       },
       ...prevLog, // 最新のデータを上部に追加
     ]);
@@ -498,14 +588,16 @@ useEffect(() => {
   //オンライン入札価格（ライブオークションは入札後自動で配信）
   useEffect(() => {
     if (onlineBidHistory.length > 0) {
-      {spnKbn == "2" && ( onlinePriceHaishin() )} 
+      {
+        spnKbn == "2" && onlinePriceHaishin();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineBidHistory]);
 
   //現在価格を配信用関数
   const currentPriceHaishin = async () => {
-    sendWebSocketMessage('updatePrice', {
+    sendWebSocketMessage("updatePrice", {
       nextPrice: formatPriceMultiplication(nextPrice),
       currentPrice: formatPriceMultiplication(currentPrice),
     });
@@ -515,25 +607,24 @@ useEffect(() => {
   const [message, setMessage] = useState<string>();
   const handleSetMessageChange = (value: string) => {
     setMessage(value);
-
   };
   const sendMessage = async () => {
-    sendWebSocketMessage('sendMessage', {
+    sendWebSocketMessage("sendMessage", {
       message: message,
     });
   };
 
   // クリア処理
   const auctioneerClear = async () => {
-    setSaiteiRakusatsuPricePrice('');
+    setSaiteiRakusatsuPricePrice("");
     setFirstPreBidUserId(null);
-    setFirstPreBidPrice('');
+    setFirstPreBidPrice("");
     setSecondPreBidUserId(null);
-    setSecondPreBidPrice('');
-    setStartPrice('');
-    setCurrentPrice('');
-    setNextPrice('');
-    setBidUnit('');
+    setSecondPreBidPrice("");
+    setStartPrice("");
+    setCurrentPrice("");
+    setNextPrice("");
+    setBidUnit("");
     setKenriUserId(null);
     setOnlineBidHistory([]);
     setLiveBidLog([]);
@@ -541,12 +632,12 @@ useEffect(() => {
     setLiveBidkekkaData(initialLiveBidKekkaData);
     setNextLotList([]);
     setNextLotListRow(1);
-    fetchGoodsData.startPrice = '';
-    goodsData.goodsName = '';
-    goodsData.goodsSetsumei = '';
+    fetchGoodsData.startPrice = "";
+    goodsData.goodsName = "";
+    goodsData.goodsSetsumei = "";
     goodsData.thumbnailImageUrl = "/no_image.png";
-    setSearchLot('');
-    setMsg('');
+    setSearchLot("");
+    setMsg("");
     setIsCallButtonClicked(false);
     setIsStartButtonClicked(false);
     setIsSetButtonClicked(false);
@@ -558,75 +649,102 @@ useEffect(() => {
       <div className={styles.leftColumn}>
         <div className={styles.topLeft}>
           <div className={styles.labelRow}>
-            <label className={styles.goodslabel}>{texts.goods.auctionName}</label>
+            <label className={styles.goodslabel}>
+              {texts.goods.auctionName}
+            </label>
             <KaisaiListPullDown
-              className={`${styles.select} ${inputSeatchErrors?.auctionSeq ? 'bg-red-300' : ''}`}
-              onChange={(value) => handleSearchKaisaiChange('auctionSeq', value)}
-              selectedId={searchSelectedKaisai !== null ? String(searchSelectedKaisai) : ''}
+              className={`${styles.select} ${
+                inputSeatchErrors?.auctionSeq ? "bg-red-300" : ""
+              }`}
+              onChange={(value) =>
+                handleSearchKaisaiChange("auctionSeq", value)
+              }
+              selectedId={
+                searchSelectedKaisai !== null
+                  ? String(searchSelectedKaisai)
+                  : ""
+              }
               kaisaiStatus={5}
-              spnKbns={typeof spnKbn === 'string' ? [spnKbn] : spnKbn}
+              spnKbns={typeof spnKbn === "string" ? [spnKbn] : spnKbn}
             />
-
           </div>
 
           <div className={styles.labelRow}>
             <label className={styles.goodslabel}>{texts.goods.goodsName}</label>
-            <label id="goodsName" className={styles.goodsvalue}>{goodsData.goodsName || ''}</label>
+            <label id="goodsName" className={styles.goodsvalue}>
+              {goodsData.goodsName || ""}
+            </label>
           </div>
 
           <div className={styles.labelRow}>
-            <label className={styles.goodslabel}>{texts.goods.goodsSetsumei}</label>
-            <label id="goodsSetsumei" className={styles.goodsvalue}>{goodsData.goodsSetsumei || ''}</label>
+            <label className={styles.goodslabel}>
+              {texts.goods.goodsSetsumei}
+            </label>
+            <label id="goodsSetsumei" className={styles.goodsvalue}>
+              {goodsData.goodsSetsumei || ""}
+            </label>
           </div>
-          <div style={{
-            position: 'relative',
-            width: '100%',
-            paddingBottom: '56.25%',
-            marginBottom: '20px'
-          }}>
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              paddingBottom: "56.25%",
+              marginBottom: "20px",
+            }}
+          >
             <Image
               src={goodsData.thumbnailImageUrl || "/no_image.png"}
               alt=""
               fill
               quality={100}
               loading="lazy"
-              style={{ objectFit: 'contain' }}
+              style={{ objectFit: "contain" }}
             />
           </div>
-
-
-
         </div>
         <div className={styles.bottomLeft}>
           <span className={styles.sectionTitle}>次商品</span>
           <div className={styles.nextGoodsLabelRow}>
             <label className={styles.goodslabel}>{texts.goods.goodsName}</label>
-            <label id="nextGoodsName" className={styles.goodsvalue}>{nextLotList[nextLotListRow]?.goodsName || ''}</label>
+            <label id="nextGoodsName" className={styles.goodsvalue}>
+              {nextLotList[nextLotListRow]?.goodsName || ""}
+            </label>
           </div>
 
           <div className={styles.nextGoodsLabelRow}>
             <label className={styles.goodslabel}>{texts.goods.lot}</label>
-            <label id="nextGoodsLot" className={styles.goodsvalue}>{nextLotList[nextLotListRow]?.lot || ''}</label>
+            <label id="nextGoodsLot" className={styles.goodsvalue}>
+              {nextLotList[nextLotListRow]?.lot || ""}
+            </label>
           </div>
 
           <div className={styles.nextGoodsLabelRow}>
-            <label className={styles.goodslabel}>{texts.goods.startPrice}</label>
-            <label id="nextGoodsStartPrice" className={styles.goodsvalue}>{nextLotList[nextLotListRow]?.startPrice || ''}</label>
+            <label className={styles.goodslabel}>
+              {texts.goods.startPrice}
+            </label>
+            <label id="nextGoodsStartPrice" className={styles.goodsvalue}>
+              {nextLotList[nextLotListRow]?.startPrice || ""}
+            </label>
           </div>
 
-          <div style={{
-            position: 'relative',
-            width: '100%',
-            height: '150px',
-            marginBottom: '20px'
-          }}>
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "150px",
+              marginBottom: "20px",
+            }}
+          >
             <Image
-              src={nextLotList[nextLotListRow]?.thumbnailImageUrl || "/no_image.png"}
+              src={
+                nextLotList[nextLotListRow]?.thumbnailImageUrl ||
+                "/no_image.png"
+              }
               alt=""
               fill
               quality={100}
               loading="lazy"
-              style={{ objectFit: 'contain' }}
+              style={{ objectFit: "contain" }}
             />
           </div>
         </div>
@@ -635,20 +753,38 @@ useEffect(() => {
         <div className={styles.topRight}>
           <div className={styles.gridContainer}>
             <div>
-
               <div className={styles.labelRow}>
-                <label className={styles.auctionlabel}>{texts.goods.saiteiRakusatsuPrice}</label>
-                <label id="saiteiRakusatsuPrice" className={styles.auctionvalue}>{saiteiRakusatsuPrice}</label>
+                <label className={styles.auctionlabel}>
+                  {texts.goods.saiteiRakusatsuPrice}
+                </label>
+                <label
+                  id="saiteiRakusatsuPrice"
+                  className={styles.auctionvalue}
+                >
+                  {saiteiRakusatsuPrice}
+                </label>
               </div>
               <div className={styles.labelRow}>
-                <label className={styles.auctionlabel}>{texts.goods.farst_jizen_nyusatsu}</label>
-                <label id="firstPreBidUserId" className={styles.auctionuserid}>{firstPreBidUserId}</label>
-                <label id="firstPreBidPrice" className={styles.auctionvalue}>{firstPreBidPrice}</label>
+                <label className={styles.auctionlabel}>
+                  {texts.goods.farst_jizen_nyusatsu}
+                </label>
+                <label id="firstPreBidUserId" className={styles.auctionuserid}>
+                  {firstPreBidUserId}
+                </label>
+                <label id="firstPreBidPrice" className={styles.auctionvalue}>
+                  {firstPreBidPrice}
+                </label>
               </div>
               <div className={styles.labelRow}>
-                <label className={styles.auctionlabel}>{texts.goods.second_jizen_nyusatsu}</label>
-                <label id="secondPreBidUserId" className={styles.auctionuserid}>{secondPreBidUserId}</label>
-                <label id="secondPreBidPrice" className={styles.auctionvalue}>{secondPreBidPrice}</label>
+                <label className={styles.auctionlabel}>
+                  {texts.goods.second_jizen_nyusatsu}
+                </label>
+                <label id="secondPreBidUserId" className={styles.auctionuserid}>
+                  {secondPreBidUserId}
+                </label>
+                <label id="secondPreBidPrice" className={styles.auctionvalue}>
+                  {secondPreBidPrice}
+                </label>
               </div>
             </div>
 
@@ -657,9 +793,19 @@ useEffect(() => {
               <div className={styles.bidHistoryWrapper}>
                 <ul className={styles.bidList}>
                   {onlineBidHistory.map((bid, index) => (
-                    <li key={index} className={[styles.bidItem, index === 0 ? styles.latestBid : ''].join(' ')}>
-                      <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
-                      <span className={styles.bidPrice}>入札価格: {formatPriceWithCommas(bid.bidPrice)}</span>
+                    <li
+                      key={index}
+                      className={[
+                        styles.bidItem,
+                        index === 0 ? styles.latestBid : "",
+                      ].join(" ")}
+                    >
+                      <span className={styles.bidUserId}>
+                        ユーザーID: {bid.userId}
+                      </span>
+                      <span className={styles.bidPrice}>
+                        入札価格: {formatPriceWithCommas(bid.bidPrice)}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -671,8 +817,13 @@ useEffect(() => {
                 <ul className={styles.bidList}>
                   {liveBidLog.map((bid, index) => (
                     <li key={index} className={styles.bidItem}>
-                      <span className={styles.bidUserId}>ユーザーID: {bid.userId}</span>
-                      <span className={styles.bidPrice}>入札価格: {bid.bidKbn == '1' ? '事前 ' : ''}{formatPriceWithCommas(bid.bidPrice)}</span>
+                      <span className={styles.bidUserId}>
+                        ユーザーID: {bid.userId}
+                      </span>
+                      <span className={styles.bidPrice}>
+                        入札価格: {bid.bidKbn == "1" ? "事前 " : ""}
+                        {formatPriceWithCommas(bid.bidPrice)}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -684,27 +835,45 @@ useEffect(() => {
         <div className={styles.centerRight}>
           <div className={styles.gridContainer4}>
             <div className={styles.currentInfoDiv}>
-              <div><span className={styles.currentInfoLabel}>現在価格：</span></div>
-              <div className={styles.currentInfoData}><span>{currentPrice}</span></div>
+              <div>
+                <span className={styles.currentInfoLabel}>現在価格：</span>
+              </div>
+              <div className={styles.currentInfoData}>
+                <span>{currentPrice}</span>
+              </div>
             </div>
             <div className={styles.currentInfoDiv}>
-              <div><span className={styles.currentInfoLabel}>現在権利者：</span></div>
-              <div className={styles.currentInfoData}><span>{kenriUserId}</span></div>
+              <div>
+                <span className={styles.currentInfoLabel}>現在権利者：</span>
+              </div>
+              <div className={styles.currentInfoData}>
+                <span>{kenriUserId}</span>
+              </div>
             </div>
             <div className={styles.currentInfoDiv}>
-              <div><span className={styles.currentInfoLabel}>セリ幅：</span></div>
-              <div className={styles.currentInfoData}><span>{bidUnit}</span></div>
+              <div>
+                <span className={styles.currentInfoLabel}>セリ幅：</span>
+              </div>
+              <div className={styles.currentInfoData}>
+                <span>{bidUnit}</span>
+              </div>
             </div>
             <div className={styles.currentInfoDiv}>
-              <div><span className={styles.currentInfoLabel}>参加者数：</span></div>
-              <div className={styles.currentInfoData}><span>{connectionCount}</span></div>
+              <div>
+                <span className={styles.currentInfoLabel}>参加者数：</span>
+              </div>
+              <div className={styles.currentInfoData}>
+                <span>{connectionCount}</span>
+              </div>
             </div>
           </div>
         </div>
         <div className={styles.bottomRight}>
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
-              <label htmlFor="lot" className={styles.goodslabel}>{texts.goods.lot}</label>
+              <label htmlFor="lot" className={styles.goodslabel}>
+                {texts.goods.lot}
+              </label>
               <input
                 id="lot"
                 type="text"
@@ -713,19 +882,27 @@ useEffect(() => {
                 value={searchLot}
                 onChange={handleSearchLotChange}
                 className={`border p-2 rounded h-10 w-40
-                    ${inputSeatchErrors?.lot ? 'bg-red-300' : ''}`}
+                    ${inputSeatchErrors?.lot ? "bg-red-300" : ""}`}
               />
 
               <CallButton onClick={lotSearch} />
-              <LotBeforeAffterButton onClick={() => lotBeforeAffterSearch(true)} isBefore={true} disabled={!isCallButtonClicked} />
-              <LotBeforeAffterButton onClick={() => lotBeforeAffterSearch(false)} isBefore={false} disabled={!isCallButtonClicked} />
+              <LotBeforeAffterButton
+                onClick={() => lotBeforeAffterSearch(true)}
+                isBefore={true}
+                disabled={!isCallButtonClicked}
+              />
+              <LotBeforeAffterButton
+                onClick={() => lotBeforeAffterSearch(false)}
+                isBefore={false}
+                disabled={!isCallButtonClicked}
+              />
             </div>
             <div className={styles.rightButtons}>
               <SetButton onClick={set} disabled={!isCallButtonClicked} />
               <StartButton onClick={start} disabled={!isSetButtonClicked} />
               <ConfirmDialog
                 title={texts.livemessage.confirmClear}
-                description=''
+                description=""
                 buttonTitle={texts.button.liveClear}
                 className={`bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-full w-40`}
                 dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
@@ -759,7 +936,6 @@ useEffect(() => {
             </div>
           )}
 
-
           {spnKbn == "1" && (
             <div className={styles.adjustButtons}>
               <SerihabaButton
@@ -785,45 +961,97 @@ useEffect(() => {
                   setNextPrice(newNextPrice);
                 }}
               />
-            </div>    
+            </div>
           )}
-          
+
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
-              <StatusButton onClick={() => bidComingSoonHaishin()} status={1} disabled={!isStartButtonClicked} />
+              <StatusButton
+                onClick={() => bidComingSoonHaishin()}
+                status={1}
+                disabled={!isStartButtonClicked}
+              />
               {spnKbn == "1" && (
-                <StatusButton onClick={() => bidEnd()} status={2} disabled={!isStartButtonClicked} />
+                <StatusButton
+                  onClick={() => bidEnd()}
+                  status={2}
+                  disabled={!isStartButtonClicked}
+                />
               )}
               {spnKbn == "2" && (
-                <StatusButton onClick={() => !isRakusatsuProcessFlg ? rakusatusuProcess() : bidRestart()} status={!isRakusatsuProcessFlg ? 3 : 4} disabled={!isStartButtonClicked} />
+                <StatusButton
+                  onClick={() =>
+                    !isRakusatsuProcessFlg ? rakusatusuProcess() : bidRestart()
+                  }
+                  status={!isRakusatsuProcessFlg ? 3 : 4}
+                  disabled={!isStartButtonClicked}
+                />
               )}
             </div>
             <div className={styles.rightButtons}>
               {spnKbn == "1" && (
-                <PriceButton onClick={() => onlinePriceHaishin()} isonline={true} disabled={!isStartButtonClicked} />         
+                <PriceButton
+                  onClick={() => onlinePriceHaishin()}
+                  isonline={true}
+                  disabled={!isStartButtonClicked}
+                />
               )}
               {spnKbn == "1" && (
-                <PriceButton onClick={() => currentPriceHaishin()} isonline={false} disabled={!isStartButtonClicked} />   
+                <PriceButton
+                  onClick={() => currentPriceHaishin()}
+                  isonline={false}
+                  disabled={!isStartButtonClicked}
+                />
               )}
             </div>
           </div>
           <div className={styles.labelRow}>
             <div className={styles.leftButtons}>
               {spnKbn == "1" && (
-                <ResultsButton onClick={() => onlinePriceHaishin()} status={1} disabled={!isStartButtonClicked} />
+                <ResultsButton
+                  onClick={() => onlinePriceHaishin()}
+                  status={1}
+                  disabled={!isStartButtonClicked}
+                />
               )}
               {spnKbn == "1" && (
-                <ResultsButton onClick={() => currentPriceHaishin()} status={2} disabled={!isStartButtonClicked} />
+                <ResultsButton
+                  onClick={() => currentPriceHaishin()}
+                  status={2}
+                  disabled={!isStartButtonClicked}
+                />
               )}
               {spnKbn == "2" && (
                 <ConfirmDialog
                   title={texts.livemessage.updateSerikekka}
-                  description={`${texts.livemessage.updateSerikekkaData_1} ${liveBidkekkaData.auctionKekkaStatus === 2 ? texts.livemessage.rakusatsu : texts.livemessage.furakusatsu}
-                      ${liveBidkekkaData.auctionKekkaStatus === 2 ? '\n' + texts.livemessage.updateSerikekkaData_2 + liveBidkekkaData.rakusatsuUserId : ''}
-                      ${liveBidkekkaData.auctionKekkaStatus === 2 ? '\n' + texts.livemessage.updateSerikekkaData_3 + formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice)) : ''}
+                  description={`${texts.livemessage.updateSerikekkaData_1} ${
+                    liveBidkekkaData.auctionKekkaStatus === 2
+                      ? texts.livemessage.rakusatsu
+                      : texts.livemessage.furakusatsu
+                  }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_2 +
+                            liveBidkekkaData.rakusatsuUserId
+                          : ""
+                      }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_3 +
+                            formatPriceWithCommas(
+                              Number(liveBidkekkaData.rakusatsuPrice)
+                            )
+                          : ""
+                      }
                   `}
                   buttonTitle={texts.button.updateSerikekka}
-                  className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-20 text-2xl text-white ${!isRakusatsuProcessFlg ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-20 text-2xl text-white ${
+                    !isRakusatsuProcessFlg
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
                   dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                   dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
                   onSubmit={bidEnd}
@@ -831,12 +1059,12 @@ useEffect(() => {
                 />
               )}
             </div>
-            <div className={styles.rightButtons}>
-
-            </div>
+            <div className={styles.rightButtons}></div>
           </div>
           <div className={styles.liveMessageDiv}>
-            <label className={styles.goodslabel}>{texts.livemessage.message}</label>
+            <label className={styles.goodslabel}>
+              {texts.livemessage.message}
+            </label>
             <LiveMessageListPullDown
               className={styles.selectLiveMessage}
               onChange={(value) => handleSetMessageChange(value)}
@@ -844,11 +1072,15 @@ useEffect(() => {
             <MessageButton onClick={sendMessage} disabled={false} />
           </div>
           <div className={styles.flowingMsgDiv}>
-            <span key={marqueeKey} className={styles.marquee}>{msg}</span>
+            <span key={marqueeKey} className={styles.marquee}>
+              {msg}
+            </span>
           </div>
           <div className={styles.msgDiv}>
-            {isBidComingSoonMsgFlg && (<span>{texts.button.BidComingSoon}</span>)}
-            {isRakusatsuProcessFlg && (<span>{texts.livemessage.rakusatsuProcessMsg}</span>          )}
+            {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
+            {isRakusatsuProcessFlg && (
+              <span>{texts.livemessage.rakusatsuProcessMsg}</span>
+            )}
           </div>
         </div>
       </div>

@@ -1,24 +1,23 @@
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 export const useAdminLogoutAPI = () => {
-    const adminLogout  = async ()=>{
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_ADMIN_API_URL}logout`, {
-          method: 'POST',
-          credentials: 'include',
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+  const adminLogout = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_ADMIN_API_URL}logout`,
+        {
+          method: "POST",
+          credentials: "include",
         }
+      );
 
-      } catch (error) {
-        console.error('Failed to logout:', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
-   
-    return { adminLogout };
+    } catch (error) {
+      // エラーハンドリングは不要
+    }
   };
-  export default useAdminLogoutAPI;
 
-
-
+  return { adminLogout };
+};
+export default useAdminLogoutAPI;
