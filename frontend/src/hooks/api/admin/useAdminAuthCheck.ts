@@ -18,7 +18,13 @@ export const useAdminAuthCheck = async (context: GetServerSidePropsContext) => {
   }
 
   const sessionData = await response.json();
-  const { username = null, faviconImagePath = null, logoImagePath = null,kengen = null, optionInvoice = false } = sessionData;
+  const { username = null,
+     faviconImagePath = null, 
+     logoImagePath = null,
+     kengen = null, 
+     optionInvoice = false, 
+     optionLiveMessage = false, 
+     optionLiveYoutube = false } = sessionData;
 
   return {
     props: {
@@ -27,6 +33,8 @@ export const useAdminAuthCheck = async (context: GetServerSidePropsContext) => {
       logoImagePath,
       kengen,
       optionInvoice,
+      optionLiveMessage,
+      optionLiveYoutube,
     },
   };
 };

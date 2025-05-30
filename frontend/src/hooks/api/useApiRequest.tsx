@@ -1,75 +1,74 @@
-import { texts } from '@/config/texts';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { texts } from "@/config/texts";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export const useApiRequest = () => {
   const router = useRouter();
 
   const getBaseUrl = (endPointKbn: string) => {
     switch (endPointKbn) {
-      case 'admin':
+      case "admin":
         return process.env.NEXT_PUBLIC_ADMIN_API_URL;
-      case 'member':
+      case "member":
         return process.env.NEXT_PUBLIC_MEMBER_API_URL;
-      case 'public':
+      case "public":
         return process.env.NEXT_PUBLIC_API_URL;
       default:
-        throw new Error('無効なエンドポイント区分です');
+        throw new Error("無効なエンドポイント区分です");
     }
   };
   const apiRequest = async (
-    endPointKbn : string,
+    endPointKbn: string,
     endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' ,
+    method: "GET" | "POST" | "PUT",
     body: object | null = null,
-    successMessage: string ,
-    returnJson: boolean = false ,
-    headers?:  Record<string, string> ,
-    showToast: boolean = true 
+    successMessage: string,
+    returnJson: boolean = false,
+    headers?: Record<string, string>,
+    showToast: boolean = true
   ) => {
-    const toastId = showToast ? toast.loading('Loading...') : null;
+    const toastId = showToast ? toast.loading("Loading...") : null;
     try {
-      
       const baseUrl = getBaseUrl(endPointKbn);
       const fetchHeaders: Record<string, string> = headers || {};
-        // FormData の場合、Content-Type ヘッダーを設定しない
+      // FormData の場合、Content-Type ヘッダーを設定しない
       if (!(body instanceof FormData)) {
-        fetchHeaders['Content-Type'] = 'application/json';
+        fetchHeaders["Content-Type"] = "application/json";
       }
 
       const res = await fetch(`${baseUrl}${endpoint}`, {
         method,
         headers: fetchHeaders,
-        credentials: 'include',
-        body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
+        credentials: "include",
+        body:
+          body instanceof FormData ? body : body ? JSON.stringify(body) : null,
       });
       let responseData;
       if (res.status === 401) {
-        if (endPointKbn === 'admin') {
-          router.push('/admin/login');
-        } else if (endPointKbn === 'member') {
-          router.push('/login');
+        if (endPointKbn === "admin") {
+          router.push("/admin/login");
+        } else if (endPointKbn === "member") {
+          router.push("/login");
         }
         if (showToast) {
-          toast.update(toastId!, { 
-            render: texts.message.redirect, 
-            type: 'warning', 
+          toast.update(toastId!, {
+            render: texts.message.redirect,
+            type: "warning",
             isLoading: false,
-            autoClose: 3000 
+            autoClose: 3000,
           });
         }
         return { status: res.status, data: false };
-      }else if (res.status === 404) {
+      } else if (res.status === 404) {
         if (showToast) {
-          toast.update(toastId!, { 
-            render: texts.message.noResult, 
-            type: 'warning', 
+          toast.update(toastId!, {
+            render: texts.message.noResult,
+            type: "warning",
             isLoading: false,
-            autoClose: 3000 
+            autoClose: 3000,
           });
         }
         return { status: res.status, data: false };
-      
       }
 
       if (res.status === 200) {
@@ -77,15 +76,15 @@ export const useApiRequest = () => {
         try {
           responseData = returnJson ? await res.json() : true;
         } catch (error) {
-          
+          // エラーハンドリングは不要
         }
 
         if (successMessage) {
-          toast.update(toastId!, { 
-            render: successMessage, 
-            type: 'success', 
+          toast.update(toastId!, {
+            render: successMessage,
+            type: "success",
             isLoading: false,
-            autoClose: 3000 
+            autoClose: 3000,
           });
         } else {
           toast.dismiss(toastId!);
@@ -94,33 +93,33 @@ export const useApiRequest = () => {
       } else if (res.status === 400) {
         responseData = await res.json();
         if (showToast) {
-          toast.update(toastId!, { 
-            render: texts.message.error400, 
-            type: 'error', 
+          toast.update(toastId!, {
+            render: texts.message.error400,
+            type: "error",
             isLoading: false,
-            autoClose: 3000 
+            autoClose: 3000,
           });
         }
         return { status: res.status, data: responseData.data };
       } else {
         const errorMessage = await res.text();
         if (showToast) {
-          toast.update(toastId!, { 
-            render: `エラーが発生しました: ${errorMessage}`, 
-            type: 'error', 
+          toast.update(toastId!, {
+            render: `エラーが発生しました: ${errorMessage}`,
+            type: "error",
             isLoading: false,
-            autoClose: 3000 
+            autoClose: 3000,
           });
         }
         return { status: res.status, data: false };
       }
     } catch (error) {
       if (showToast) {
-        toast.update(toastId!, { 
-          render: '通信エラーが発生しました', 
-          type: 'error', 
+        toast.update(toastId!, {
+          render: "通信エラーが発生しました",
+          type: "error",
           isLoading: false,
-          autoClose: 3000 
+          autoClose: 3000,
         });
       }
       return { status: 500, data: false };

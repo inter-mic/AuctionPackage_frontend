@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useCallback, useRouter, apiRequest } = useCommonSetup();
 
   useKengenRedirect(kengen, 202);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -89,11 +89,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectAll(false);
     setSelectedIds([]);
     setGoodsData([]);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     const params = {
       ...goodsParams,
-      pageNumber: 1, 
-      pageSize: itemsPerPage, 
+      pageNumber: 1,
+      pageSize: itemsPerPage,
     };
     await goodsSearchAPI(params);
     await goodsSearchCountAPI(params);
@@ -180,15 +180,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
     goodsCsvForAdminGoodsRegist(selectedIds);
   };
-    //落札手数料取込用CSV出力
-    const { goodsCsvForTesuryo } = useGoodsCsvForTesuryoAPI();
-    const handleCsvForTesuryoExport = () => {
-      if (selectedIds.length === 0) {
-        toast.error(texts.message.selectAtLeastOne);
-        return;
-      }
-      goodsCsvForTesuryo(selectedIds);
-    };
+  //落札手数料取込用CSV出力
+  const { goodsCsvForTesuryo } = useGoodsCsvForTesuryoAPI();
+  const handleCsvForTesuryoExport = () => {
+    if (selectedIds.length === 0) {
+      toast.error(texts.message.selectAtLeastOne);
+      return;
+    }
+    goodsCsvForTesuryo(selectedIds);
+  };
 
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [hoveredShuppin, setHoveredShuppin] = useState<number | null>(null); // 出品者ホバー状態
@@ -422,18 +422,40 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <th className="py-2 px-4 border-b" >{texts.goods.goodsId}</th>
                 <th className="py-2 px-4 border-b" >{texts.goods.sku}</th>
                 <th rowSpan={2} className="py-2 px-4 border-b w-24" >{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b w-44" >{texts.goods.startPrice}</th>
-                <th className="py-2 px-4 border-b w-24" >{texts.goods.favoriteCount}</th>
-                <th rowSpan={2} className="py-2 px-4 border-b w-96" >{texts.auction.bidKikan}</th>
-                <th rowSpan={2} className="py-2 px-4 border-b" >{texts.goods.kekkaStatus}</th>
-                <th className="py-2 px-4 border-b" >{texts.goods.shuppinUserName}/{texts.goods.shuppinCompanyName}</th>
+                {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
+                  <>
+                    <th rowSpan={2} className="py-2 px-4 border-b w-44">{texts.goods.startPrice}</th>
+                    <th rowSpan={2} className="py-2 px-4 border-b w-44">{texts.goods.rakusatsuPrice}</th>
+                  </>
+                ) : (
+                  <>
+
+                    <th className="py-2 px-4 border-b w-24">{texts.goods.favoriteCount}</th>
+                    <th className="py-2 px-4 border-b w-44">{texts.goods.startPrice}</th>
+                    <th rowSpan={2} className="py-2 px-4 border-b w-96">{texts.auction.bidKikan}</th>
+                  </>
+                )}
+                <th rowSpan={2} className="py-2 px-4 border-b">
+                  {texts.goods.kekkaStatus}
+                </th>
+                <th className="py-2 px-4 border-b">
+                  {texts.goods.shuppinUserName}/{texts.goods.shuppinCompanyName}
+                </th>
+
               </tr>
               <tr>
                 <th colSpan={2} className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-44" >{texts.goods.currentPrice}</th>
-                <th className="py-2 px-4 border-b w-24" >{texts.goods.bidCount}</th>
-
+                {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
+                  <></>
+                ) : (
+                  <>
+                    <th className="py-2 px-4 border-b w-24">{texts.goods.bidCount}</th>
+                    <th className="py-2 px-4 border-b w-44" >{texts.goods.currentPrice}</th>
+                  </>
+                )}
                 <th className="py-2 px-4 border-b">{texts.goods.rakusatsuUserName}/{texts.goods.rakusatsuCompanyName}</th>
+
+
               </tr>
             </thead>
             <tbody>
@@ -470,20 +492,31 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-2 px-4 border-b text-left">{result.goodsId}</td>
                     <td className="py-2 px-4 border-b text-left">{result.sku}</td>
                     <td rowSpan={2} className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
-                    <td className="py-2 px-4 border-b text-right w-44">{result.startPrice}</td>
-                    <td className="py-2 px-4 border-b text-right w-24">{result.favoriteCount}</td>
-                    <td rowSpan={2} className="py-2 px-4 border-b text-right w-96">{result.bidTime}</td>
-                    <td rowSpan={2} className="py-2 px-4 border-b text-left">{result.auctionKekkaStatusStr}</td>
-                    <td
-                      className={`py-2 px-4 border-b text-left ${hoveredShuppin === result.goodsId ? "bg-blue-100" : ""
-                        }`}
-                      onMouseEnter={() => handleMouseEnterShuppin(result.goodsId)}
-                      onMouseLeave={handleMouseLeaveShuppin}
-                      onClick={(e) => handleRowUserClick(e, result.shuppinUserId)}// 出品者名のクリックでイベントを止める
-                    >
-                      {result.shuppinUserName} {result.shuppinCompanyName}
-                    </td>
+                    {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
+                      <>
+                        <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">{result.startPrice}</td>
+                        <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">{result.rakusatsuPrice}</td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="py-2 px-4 border-b text-right w-24">{result.favoriteCount}</td>
+                        <td className="py-2 px-4 border-b text-right w-44">{result.startPrice}</td>
+                        <td rowSpan={2} className="py-2 px-4 border-b text-right w-96">{result.bidTime}</td>
+
+                      </>
+                    )}
+                     <td rowSpan={2} className="py-2 px-4 border-b text-left">{result.auctionKekkaStatusStr}</td>
+                  <td
+                    className={`py-2 px-4 border-b text-left ${hoveredShuppin === result.goodsId ? "bg-blue-100" : ""
+                      }`}
+                    onMouseEnter={() => handleMouseEnterShuppin(result.goodsId)}
+                    onMouseLeave={handleMouseLeaveShuppin}
+                    onClick={(e) => handleRowUserClick(e, result.shuppinUserId)}// 出品者名のクリックでイベントを止める
+                  >
+                    {result.shuppinUserName} {result.shuppinCompanyName}
+                  </td>
                   </tr>
+                 
                   <tr
                     className={`cursor-pointer ${hoveredRow === result.goodsId ? "bg-gray-100" : ""
                       }`}
@@ -494,9 +527,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td colSpan={2} className="py-2 px-4 border-b text-left">
                       {result.goodsName}
                     </td>
-                    <td className="py-2 px-4 border-b text-right w-44">{result.currentPrice}</td>
-                    <td className="py-2 px-4 border-b text-right w-24">{result.bidCount}</td>
-
+                    {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
+                      <></>
+                    ) : (
+                      <>
+                        <td className="py-2 px-4 border-b text-right w-24">{result.bidCount}</td>
+                        <td className="py-2 px-4 border-b text-right w-44">{result.currentPrice}</td>
+                      </>
+                    )}
                     <td
                       className={`py-2 px-4 border-b text-left ${hoveredRakusatsu === result.goodsId ? "bg-green-100" : ""
                         }`}
@@ -506,6 +544,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     >
                       {result.rakusatsuUserName} {result.rakusatsuCompanyName}
                     </td>
+
                   </tr>
                 </React.Fragment>
               ))}
@@ -513,7 +552,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </table>
           <div >
             <Pagination className={adminStyles.paginationContainer}
-             count={Math.max(1, Math.ceil(count / itemsPerPage))} 
+              count={Math.max(1, Math.ceil(count / itemsPerPage))}
               page={currentPage}
               onChange={handlePageChange}
             />

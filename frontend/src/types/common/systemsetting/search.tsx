@@ -12,5 +12,6 @@ export interface Result {
     logoImagePath: string;
     kiyakuPath: string;
     privacyPolicyPath: string;
+    youtubeIframe: string;
     [key: string]: any; 
 }

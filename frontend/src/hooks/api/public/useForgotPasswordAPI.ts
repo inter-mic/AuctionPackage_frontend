@@ -1,11 +1,10 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 export const useForgotPasswordAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [mail, setMail] = useState('');
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
+    useCommonSetup();
+  const [mail, setMail] = useState("");
   const [errors, setErrors] = useState<{ mail?: string }>({});
   const [responseData, setResponseData] = useState(null);
   const router = useRouter();
@@ -19,11 +18,16 @@ export const useForgotPasswordAPI = () => {
     e.preventDefault();
     const endPoint = `forgotPassword/${AdminFlg ? "staff" : "user"}`;
     const requestBody = { mail };
-    const { status, data: responseData } = await apiRequest("public", endPoint, 'POST', requestBody, texts.message.forgotPassword, true);
+    const { status, data: responseData } = await apiRequest(
+      "public",
+      endPoint,
+      "POST",
+      requestBody,
+      texts.message.forgotPassword,
+      true
+    );
     if (status == 400) {
       setErrors(responseData);
-    } else if (status == 200) {
-     
     }
   };
 

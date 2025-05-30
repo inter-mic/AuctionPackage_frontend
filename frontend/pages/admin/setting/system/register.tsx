@@ -31,7 +31,6 @@ import { FileUpload } from '@/components/ui/fileUpload/fileUpload';
 import { MemberRegistrationPullDown } from '@/components/ui/pulldowns/MemberRegistrationPullDown';
 import { MemberApprovalPullDown } from '@/components/ui/pulldowns/MemberApprovalPullDown';
 import { NologinViewPullDown } from '@/components/ui/pulldowns/NologinViewPullDown';
-import { ImageDownloadPullDown } from '@/components/ui/pulldowns/ImageDownloadPullDown';
 //ボタン
 import { SystemSettingRegistButton } from '@/components/ui/buttons/admin/systemSettingRegistButton';
 import { FaviconImageRegistButton, FaviconImageDeleteButton } from '@/components/ui/buttons/admin/faviconImageButton';
@@ -53,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   };
 });
 
-const Page: React.FC<PageProps> = ({ kengen }) => {
+const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
 
   useKengenRedirect(kengen, 503);
@@ -64,6 +63,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [logoImageFlg, setLogoImageFlg] = useState(false);
   const [riyoKiyakuFlg, setriyoKiyakuFlg] = useState(false);
   const [privacyPolicyFlg, setPrivacyPolicyFlg] = useState(false);
+  const [youtubeIframe, setYoutubeIframe] = useState('');
   useEffect(() => {
     systemSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,6 +78,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       if (data.logoImagePath) { setLogoImageFlg(true); }
       if (data.kiyakuPath) { setriyoKiyakuFlg(true); }
       if (data.privacyPolicyPath) { setPrivacyPolicyFlg(true); } 
+      if (data.youtubeIframe) { setYoutubeIframe(data.youtubeIframe)};
     }
   }, [data]);
 
@@ -106,6 +107,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const handleNologinViewChange = (name: string, value: string) => {
     setSelectedNologinView(value);
     setSystemData((prevSystemData) => ({ ...prevSystemData, [name]: value }));
+  };
+
+    const handleYouTubeChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+     setSystemData((prevSystemData) => ({ ...prevSystemData, [name]: value }));
   };
   
 
@@ -266,6 +272,21 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   />
                   <div>{texts.system.systemRegist_note_4}</div>
                 </div>
+
+                {optionLiveYoutube && (
+                  <div className="content-area space-y-2">
+                  <div>{texts.system.youtubeLink}</div>
+                   <textarea
+                      id="youtubeIframe"
+                      name="youtubeIframe"
+                      value={systemData.youtubeIframe || ''}
+                      onChange={handleYouTubeChange}
+                      rows={10}
+                      className="w-full px-3 py-2 mt-1 border rounded-md "
+                    />
+                  <div>{texts.system.systemRegist_note_4}</div>
+                </div>
+                )}
                
                 {executionPermission(503, 2) && (
                   <div className="text-right">
@@ -417,44 +438,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
         </div>
       </div>
-      {/* <div className="flex flex-col items-center justify-center my-3 bg-gray-100">
-        <div className="w-full space-y-6 bg-white shadow-md md:max-w-full md:rounded">
-          <div className="p-4">
-            <div className="w-full space-y-20">
-              <form className="space-y-10">
-                <div className="content-area space-y-2">
-                  <div>{texts.system.zipCodeUpload}</div>
-                  {executionPermission(503, 2) && data && (
-                    <>
-                      <FileUpload
-                            onFileChange={handleZipCodeChange}
-                            allowedExtensions={['zip']}
-                          />
-                          {formErrors?.zipCode && <p className="error-message">{formErrors.zipCode}</p>}
-                          <div>
-                            {texts.system.systemRegist_note_9}<br/>
-                            
-                            <Link href="https://www.post.japanpost.jp/zipcode/dl/oogaki-zip.html"　className="text-blue-600 underline" target="_blank">
-                            {texts.system.systemRegist_note_10}
-                            </Link>
-                            <Image
-                            src="/zipcodedownload.png"
-                            alt=""
-                            width={1000}
-                            height={1000}
-                          />
-                          </div>
-                          <div className="text-right">
-                            <RegistButton label={texts.button.regist} onClick={handleZipUploadRegist}/>
-                          </div>
-                    </>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div> */}
+      
     </div>
   );
 };

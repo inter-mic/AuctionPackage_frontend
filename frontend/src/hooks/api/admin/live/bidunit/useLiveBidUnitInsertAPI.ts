@@ -2,7 +2,7 @@
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 //型定義
 import { Errors } from '@/types/errors';
-import { TLiveBidUnitRegistRequest } from '@/types/admin/live/bidUnit';
+import { TLiveBidUnitRegistRequest } from '@/types/common/bidUnit';
 
 
 
