@@ -108,15 +108,15 @@ export const texts = {
     deleteJizenBidToggle: "事前入札を削除する",
     onlineBidshoninOn: "オンライン入札承認",
     call: "呼び出し",
-    beforeLot: "前LOT",
-    affterLot: "次LOT",
-    set: "セット",
-    start: "スタート",
+    beforeLot: "前LOT(←)",
+    affterLot: "次LOT(→)",
+    set: "セット(F3)",
+    start: "スタート(F4)",
     liveClear: "強制クリア",
-    minusSerihaba: "-セリ幅",
-    plusSerihaba: "+セリ幅",
-    currentPrice: "現在価格を配信",
-    onlinePrice: "オンライン入札価格を配信",
+    minusSerihaba: "-セリ幅(↓)",
+    plusSerihaba: "+セリ幅(↑)",
+    currentPrice: "現在価格を配信(enter)",
+    onlinePrice: "オンライン入札価格を配信(shift)",
     BidComingSoon: "もうすぐ落札",
     BidFinush: "入札終了",
     furakusatsu: "不落札",
@@ -174,8 +174,7 @@ export const texts = {
     kiyaku: "利用規約",
     privacyPolicy: "プライバシーポリシー",
     consent: "に同意する",
-    shonin_note_1:
-      "※承認する：会員様にログインに必要なログインID,パスワードがメール送信されます。",
+    shonin_note_1: "※承認する：会員様にログインに必要なログインID,パスワードがメール送信されます。",
     shonin_note_2:
       "※未承認に戻す：ログイン不可になります。会員様がパスワードを紛失されたなど、再発行が必要時に使用してください。",
     mailcopy: "メールアドレスコピー",
@@ -261,8 +260,7 @@ export const texts = {
     image_note_1: "※一枚目の画像が商品一覧に表示されます。",
     image_note_2: "※登録可能なファイル形式は'jpg', 'jpeg', 'png'です。",
     goods_note_1: "締め済みのため、登録ボタン・削除ボタンは非表示になります。",
-    goods_note_2:
-      "入札済みのため、オークションに関する項目は変更不可となります。",
+    goods_note_2: "入札済みのため、オークションに関する項目は変更不可となります。",
     goods_search_1: "自分が入札した商品",
     goods_search_2: "お気に入り登録した商品",
     goods_search_3: "注目商品",
@@ -290,23 +288,19 @@ export const texts = {
     shorichu: "処理中",
     shorizumi: "処理済み",
     error: "エラー",
-    goodsUpload_note_1:
-      "CSVファイルを選択してください、その他の形式はアップロードできません。",
+    goodsUpload_note_1: "CSVファイルを選択してください、その他の形式はアップロードできません。",
     goodsUpload_note_2:
       "ZIP形式の画像フォルダを選択してください、その他の形式画像はアップロードできません。",
     goodsUpload_note_3: "ZIPファイルサイズは2.0GB以下にしてください。",
-    goodsUpload_note_4:
-      "※登録後、30日以内で登録済みでないフォルダが表示されます。",
+    goodsUpload_note_4: "※登録後、30日以内で登録済みでないフォルダが表示されます。",
     goodsUpload_note_5: "※30日経過して商品に紐づかない画像は削除されます。",
     goodsUpload_note_6:
       "CSVファイル内のデータは、項目ごとにダブルクォーテーション「””」で囲ってください。",
     goodsUpload_note_7:
       "CSVファイルのアップロード後、ファイル内データのチェック処理を実行します。登録できないデータがある場合はエラーメッセージに表示されます。",
-    goodsUpload_note_8:
-      "すべてのデータについてチェックが通った場合のみ登録されます。",
+    goodsUpload_note_8: "すべてのデータについてチェックが通った場合のみ登録されます。",
     goodsUpload_note_9: "画像登録スケジュール",
-    goodsUpload_note_10:
-      "毎時10分、30分、50分：100商品ごとに画像と商品を紐づけて登録",
+    goodsUpload_note_10: "毎時10分、30分、50分：100商品ごとに画像と商品を紐づけて登録",
     goodsUpload_note_11: "毎時15分、45分：ZIPファイルの解凍",
   },
   auction: {
@@ -324,12 +318,10 @@ export const texts = {
     auctionGaiyoPreview: "概要プレビュー",
     auctionImage: "オークションメイン画像",
     auctionImage_note_1: "※登録可能なファイル形式は'jpg', 'jpeg', 'png'です。",
-    auctionImage_note_2:
-      "※推奨サイズ：横1920×縦1080 16:9の画像比率が推奨です。",
+    auctionImage_note_2: "※推奨サイズ：横1920×縦1080 16:9の画像比率が推奨です。",
     goodsListUrl: "商品リスト",
     goodsListUrl_note_1: "※登録可能なファイル形式は'pdf', 'xlsx'です。",
-    goodsListUrl_note_2:
-      "※登録すると、会員様が商品一覧よりダウンロード可能となります",
+    goodsListUrl_note_2: "※登録すると、会員様が商品一覧よりダウンロード可能となります",
     shime: "オークション締め",
     shime_note_1: "※締め処理を行うと、登録された商品情報が変更不可になります。",
     auctionGaiyoOpen: "開催概要を確認する+",
@@ -347,8 +339,7 @@ export const texts = {
     paymentDeadlineDate: "支払期限",
   },
   signup: {
-    signup_note_1:
-      "管理者側にて、承認後ログイン情報が登録されたメールに送信されます。",
+    signup_note_1: "管理者側にて、承認後ログイン情報が登録されたメールに送信されます。",
     signup_note_2: "ログイン情報が登録されたメールに送信されました。",
   },
   contact: {
@@ -408,16 +399,14 @@ export const texts = {
     riyoKiyaku: "利用規約",
     privacyPolicy: "プライバシーポリシー",
     zipCodeUpload: "郵便番号データアップロード",
-    systemRegist_note_1:
-      "※管理者のみ：会員側の画面で新規会員登録画面が非表示となります。",
+    systemRegist_note_1: "※管理者のみ：会員側の画面で新規会員登録画面が非表示となります。",
     systemRegist_note_2:
       "※承認する：会員側で新規会員登録があった場合、管理者側で承認作業をしたのちにログイン情報がメール送信されます。",
     systemRegist_note_3:
       "※承認しない：会員側で新規会員登録があった場合、即時ログイン情報がメール送信されます。",
     systemRegist_note_4:
       "※ログイン者のみ：ログインしていない場合、TOP・スケジュール・商品一覧・商品詳細画面が表示されません 。",
-    systemRegist_note_5:
-      "※許可する：会員側の商品詳細画面で画像ダウンロードが可能になります。",
+    systemRegist_note_5: "※許可する：会員側の商品詳細画面で画像ダウンロードが可能になります。",
     systemRegist_note_6: "※ファイル形式は.icoのみになります。",
     systemRegist_note_7: "※ファイル形式は.jpg、.pngのみになります。",
     systemRegist_note_8: "※ファイル形式は.pdfのみになります。",
@@ -435,8 +424,7 @@ export const texts = {
   },
   mail: {
     shomei: "署名",
-    mail_note_2:
-      "※入力不可の箇所は、システムから自動生成になりますので編集不可となります。",
+    mail_note_2: "※入力不可の箇所は、システムから自動生成になりますので編集不可となります。",
     templateName: "テンプレート名",
     templateSetsumei: "使用ケース",
     subject: "メールタイトル",
@@ -550,8 +538,7 @@ export const texts = {
     delete_note_1: "※データが削除され,管理者側でも非表示になります。",
     forgotPassword_note_1:
       "パスワードを再設定するためのメールを送信しますので、お客様のメールアドレスをご記入ください。",
-    forgotPassword_note_2:
-      "登録されてないメールアドレスを入力された場合は、メール送信されません。",
+    forgotPassword_note_2: "登録されてないメールアドレスを入力された場合は、メール送信されません。",
     registPassword_note_1:
       "数字、記号、アルファベットを含めた8文字以上を半角文字で入力してください。",
     hankakuInput: "※半角数字で入力してください",
@@ -559,8 +546,7 @@ export const texts = {
     text_note_1: "※テキスト形式、HTML形式どちらでも入力可能です。",
     text_note_2: "※改行したいときは、改行コード<br/>を入力してください。",
     csvBtn_note_1: "検索結果を出力します。",
-    csvForAdminGoodsRegistBtn_note_1:
-      "商品一括アップロード画面に使用する情報を出力します。",
+    csvForAdminGoodsRegistBtn_note_1: "商品一括アップロード画面に使用する情報を出力します。",
     select_note_1: "選択してください。",
     open_search_joken: "検索条件を開く",
     sort: "並び順",
@@ -572,15 +558,13 @@ export const texts = {
     redirect: "ログイン画面に遷移します。",
     regist: "登録完了しました。",
     delete: "削除完了しました。",
-    shoninRegist:
-      "承認完了しました。ログイン情報が会員にメール送信されました。",
+    shoninRegist: "承認完了しました。ログイン情報が会員にメール送信されました。",
     noShoninRegist: "承認解除しました。",
     selectAtLeastOne: "対象が選択されていません。",
     confirmDelete: "本当に削除してもよろしいですか？",
     confirmShime: "締め処理を行います。よろしいですか？",
     nologin: "ログインできません",
-    forgotPassword:
-      "登録されたメールアドレスにパスワード再発行のメールが送信されました。",
+    forgotPassword: "登録されたメールアドレスにパスワード再発行のメールが送信されました。",
     changePassword: "パスワード変更が完了しました。",
     noResult: "検索結果がありません。",
     error400: "入力内容に誤りがあります。",

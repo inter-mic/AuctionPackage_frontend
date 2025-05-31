@@ -26,19 +26,17 @@ import { formatPriceWithCommas } from "@/components/common/PriceUtils";
 import { LiveBidButton } from "@/components/ui/buttons/member/liveBidButton";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
-import styles from "@/styles/member/Live.module.css";
+import styles from "@/styles/member/Live/Bid.module.css";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-export const getServerSideProps: GetServerSideProps = withAuth(
-  async (context) => {
-    return {
-      props: {
-        pageTitle: texts.menu.memberLive,
-      },
-    };
-  }
-);
+export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+  return {
+    props: {
+      pageTitle: texts.menu.memberLive,
+    },
+  };
+});
 
 const Page: React.FC<TPageProps> = (PageProps) => {
   const [viewOnlyChecked, setViewOnlyChecked] = useState<boolean>(false);
@@ -47,8 +45,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [bidStatus, setBidStatus] = useState(0);
   const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
-  const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] =
-    useState(false);
+  const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
   const [isPriceUpdated, setIsPriceUpdated] = useState(false);
   const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
   const [msg, setMsg] = useState<string | null>();
@@ -70,9 +67,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [fetchAuctionDate, setFetcheAuctionDate] = useState<string>("");
   useEffect(() => {
     if (fetchNextAuction && fetchNextAuction.auctionDatetime) {
-      const formattedDate = dayjs(fetchNextAuction.auctionDatetime).format(
-        "YYYY/MM/DD HH:mm"
-      );
+      const formattedDate = dayjs(fetchNextAuction.auctionDatetime).format("YYYY/MM/DD HH:mm");
       setFetcheAuctionDate(formattedDate);
     } else {
       setFetcheAuctionDate("未定");
@@ -102,13 +97,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         data.type === "clear"
       ) {
         setReceivedData(data);
-        setBidStatus(
-          loginUserId === data.kenriUserId
-            ? 1
-            : data.isBelowSaiteiPriceFlg
-            ? 5
-            : 0
-        );
+        setBidStatus(loginUserId === data.kenriUserId ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
       }
       if (data.type === "set") {
         setBidHistory([]);
@@ -145,9 +134,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       if (data.type === "bidEnd") {
         setIsBidDisabled(true);
         setReceivedData(data);
-        setBidStatus(
-          !data.kenriUserId ? 4 : loginUserId === data.kenriUserId ? 2 : 3
-        );
+        setBidStatus(!data.kenriUserId ? 4 : loginUserId === data.kenriUserId ? 2 : 3);
       }
       if (data.type === "clear") {
         setBidHistory([]);
@@ -172,19 +159,14 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleViewOnlyCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleViewOnlyCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setViewOnlyChecked(event.target.checked);
   };
 
   const getCommonData = () => ({
     userId: PageProps.userId,
   });
-  const sendWebSocketMessage = (
-    type: string,
-    additionalData: Record<string, any> = {}
-  ) => {
+  const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const message = {
         type,
@@ -307,9 +289,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
             <div className={styles.bidSection}>
               <div className={styles.priceContainer}>
                 <div className={styles.priceInfo}>
-                  <span className={styles.currentPriceLabel}>
-                    {texts.goods.currentPrice}
-                  </span>
+                  <span className={styles.currentPriceLabel}>{texts.goods.currentPrice}</span>
                   <label
                     className={`${styles.currentPrice} ${
                       isPriceUpdated ? styles.priceUpdated : ""
@@ -317,9 +297,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                   >
                     \
                     {receivedData?.currentPrice &&
-                      new Intl.NumberFormat("ja-JP").format(
-                        receivedData.currentPrice
-                      )}
+                      new Intl.NumberFormat("ja-JP").format(receivedData.currentPrice)}
                   </label>
                 </div>
                 {!viewOnlyChecked && (
@@ -328,9 +306,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                     disabled={isBidDisabled}
                     text={
                       receivedData?.nextPrice &&
-                      new Intl.NumberFormat("ja-JP").format(
-                        receivedData.nextPrice
-                      )
+                      new Intl.NumberFormat("ja-JP").format(receivedData.nextPrice)
                     }
                   />
                 )}
@@ -365,12 +341,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
               </span>
             </div>
             <div className={styles.msgDiv}>
-              {isBidComingSoonMsgFlg && (
-                <span>{texts.button.BidComingSoon}</span>
-              )}
-              {isRakusatsuProcessingMsgFlg && (
-                <span>{texts.livemessage.rakusatsuProcessMsg}</span>
-              )}
+              {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
+              {isRakusatsuProcessingMsgFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
             </div>
           </div>
           <div className={styles.rightSection}>
@@ -382,9 +354,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                   )}
                   <span
                     className={
-                      bid.userId === PageProps.userId
-                        ? styles.bidPriceYourBid
-                        : styles.bidPrice
+                      bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice
                     }
                   >
                     {formatPriceWithCommas(bid.bidPrice)}
@@ -413,9 +383,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                   <div className={styles.nextLotPrice}>
                     \
                     {item.startPrice ||
-                      new Intl.NumberFormat("ja-JP").format(
-                        Number(item.startPrice)
-                      )}
+                      new Intl.NumberFormat("ja-JP").format(Number(item.startPrice))}
                   </div>
                 </div>
               </div>

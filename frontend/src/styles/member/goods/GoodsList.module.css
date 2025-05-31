@@ -2,7 +2,7 @@
   width: 24%;
   padding: 5px;
   text-align: left;
-  border: 1px solid #D2D2D2;
+  border: 1px solid #d2d2d2;
   height: 660px;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -12,18 +12,17 @@
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 }
 .GoodsPointer:hover {
-  cursor: pointer; 
+  cursor: pointer;
 }
-
 
 .imageWrapper {
   position: relative;
-  width: 100%; 
+  width: 100%;
   height: 300px;
-  transition: background-color 0.3s ease; 
+  transition: background-color 0.3s ease;
 }
 .imageWrapper:hover {
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .goodsImage {
@@ -31,7 +30,6 @@
   height: auto;
   object-fit: cover;
   border-radius: 8px;
-  
 }
 .imageWrapper:hover .goodsImage {
   opacity: 0.8; /* 画像を少し暗くする */
@@ -53,8 +51,8 @@
 .lotContainer {
   display: flex;
   justify-content: space-between;
-  align-items: center;  
-  margin-top: 8px;  
+  align-items: center;
+  margin-top: 8px;
 }
 
 .lot {
@@ -66,7 +64,7 @@
 .goodsName {
   font-size: 1.1rem;
   text-align: left;
-  height:50px;
+  height: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -85,11 +83,8 @@
   height: 23px;
 }
 
-
-
-
-.currentPrice
-,.bidPrice {
+.currentPrice,
+.bidPrice {
   color: #cb5201;
   font-size: 1.8rem;
   font-weight: 600;
@@ -97,7 +92,6 @@
 }
 .bidPrice {
   color: #cb5201;
-
 }
 .bidPrice {
   color: #808080;
@@ -122,7 +116,6 @@
   word-wrap: break-word; /* 長い単語を適切に折り返し */
 }
 
-
 .auctionStatus {
   position: absolute;
   bottom: 0;
@@ -137,22 +130,22 @@
   border-bottom-right-radius: 8px;
 }
 
-.bidButton{
+.bidButton {
   height: 2.5rem;
-  width: 100%; 
+  width: 100%;
 }
 
 .headerContainer {
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
-  width: 100%; 
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   padding: 0px 5px;
 }
 
 .sortContainer {
   display: flex;
-  gap: 8px; 
+  gap: 8px;
   align-items: center;
 }
 
@@ -160,21 +153,49 @@
   animation: priceChange 1.5s ease-in-out;
 }
 
+.ToLiveApplicationButton {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  font-size: 15px;
+  height: 3rem;
+  background-color: #dca42f;
+  color: #fff;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 2px 0;
+  border-radius: 5px;
+}
+
+.ToLiveApplicationButton:hover {
+  opacity: 0.65;
+}
+
 @keyframes priceChange {
-  0% { color: red; transform: scale(1.1); }
-  50% { color: orange; transform: scale(1.5); }
-  100% { color: #cb5201; transform: scale(1); }
+  0% {
+    color: red;
+    transform: scale(1.1);
+  }
+  50% {
+    color: orange;
+    transform: scale(1.5);
+  }
+  100% {
+    color: #cb5201;
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 1024px) {
   .goodsCard {
-    flex: 1 1 calc(50% - 16px); 
+    flex: 1 1 calc(50% - 16px);
   }
 }
 
 @media (max-width: 768px) {
   .goodsCard {
-    flex: 1 1 100%; 
+    flex: 1 1 100%;
     margin-top: 20px;
     margin: 20px;
   }
@@ -182,5 +203,10 @@
   .goodsCard:hover {
     transform: none;
     box-shadow: none;
+  }
+  .ToLiveApplicationButton {
+    position: static;
+    width: 90%;
+    margin: auto 5%;
   }
 }

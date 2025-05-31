@@ -1,25 +1,37 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { LiveBidInfoData, initialLiveBidInfoData } from '@/types/admin/live/bidInfo';
-import { Errors } from '@/types/errors';
-
+import { LiveBidInfoData, initialLiveBidInfoData } from "@/types/admin/live/bidInfo";
+import { Errors } from "@/types/errors";
 
 export const useLiveBidInfoSearchAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [liveBidInfoSearchErrors, setLiveBidInfoSearchErrors] = useState<Errors>();
-  const [fetchLiveBidInfoData, setFetchliveBidInfoData] = useState<LiveBidInfoData>(initialLiveBidInfoData);
+  const [fetchLiveBidInfoData, setFetchliveBidInfoData] =
+    useState<LiveBidInfoData>(initialLiveBidInfoData);
 
-  const liveBidInfoSearchAPI = async (flg: boolean, goodsId: number, auctionSeq: string , lotFrom: string, lotTo: string) => {
-
+  const liveBidInfoSearchAPI = async (
+    flg: boolean,
+    goodsId: number,
+    auctionSeq: string,
+    lotFrom: string,
+    lotTo: string
+  ) => {
     const endPoint = `liveBidInfo/search`;
     let requestBody = {};
-    if(flg){
+    if (flg) {
       requestBody = { goodsId, auctionSeq };
     } else {
       requestBody = { auctionSeq, lotFrom, lotTo };
     }
-    const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', requestBody, "", true);
+    const { status, data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      requestBody,
+      "",
+      true
+    );
     if (status == 400) {
       setLiveBidInfoSearchErrors(responseData);
     } else if (status == 200 && responseData) {
