@@ -29,7 +29,7 @@ export function StatusButton({
 }: Props) {
   let buttonText = "";
   if (status === 1) {
-    buttonText = texts.button.BidComingSoon;
+    buttonText = texts.button.BidComingSoon + "(F7)";
   } else if (status === 2) {
     buttonText = texts.button.rakusatsuProcess;
   } else if (status === 3) {
@@ -80,7 +80,7 @@ export function StatusButton({
 
   return (
     <button
-      className={`bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full w-80 h-20 text-2xl text-white ${
+      className={`bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={handleClick}

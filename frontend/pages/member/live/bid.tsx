@@ -11,6 +11,7 @@ import withMemberLayout from "@/hocs/withMemberLayout";
 //API
 import { useCheckLiveAuctionAPI } from "@/hooks/api/member/live/useCheckLiveAuctionAPI";
 import { useSearchNextLiveAuctionAPI } from "@/hooks/api/member/live/useSearchNextLiveAuctionAPI";
+import { useSearchPaddleNoAPI } from "@/hooks/api/member/live/useSearchPaddleNoAPI";
 import { useSystemSearchAPI } from "@/hooks/api/member/useSystemSearchAPI";
 //カスタムフック
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -54,11 +55,15 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const ws = useRef<WebSocket | null>(null);
 
   const { fetchSystemSettingData, systemSearchAPI } = useSystemSearchAPI();
-  const { isLiveAuction } = useCheckLiveAuctionAPI();
+  const { fetchAuction } = useCheckLiveAuctionAPI();
   const [isFetchLiveAuction, setIsFetchLiveAuction] = useState<boolean>(false);
+  const { fetchPaddleNo, searchPaddleNoAPI } = useSearchPaddleNoAPI();
   useEffect(() => {
-    setIsFetchLiveAuction(isLiveAuction);
-  }, [isLiveAuction]);
+    if (fetchAuction?.auctionSeq !== undefined) {
+      setIsFetchLiveAuction(true);
+      searchPaddleNoAPI(fetchAuction.auctionSeq);
+    }
+  }, [fetchAuction]);
   const { nextAuction } = useSearchNextLiveAuctionAPI();
   const [fetchNextAuction, setFetchNextAuction] = useState<TAuction>();
   useEffect(() => {
@@ -102,6 +107,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       if (data.type === "set") {
         setBidHistory([]);
         setNextLotList(data.nextLotList);
+        setIsBidDisabled(true);
       }
       if (data.type === "start") {
         setIsBidDisabled(false);
@@ -165,6 +171,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
   const getCommonData = () => ({
     userId: PageProps.userId,
+    paddleNo: fetchPaddleNo,
   });
   const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
@@ -186,6 +193,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       bidPrice: receivedData?.nextPrice,
       timestamp: currentTime,
     });
+    setIsBidDisabled(true);
   };
 
   const [showVideo, setShowVideo] = useState(false);

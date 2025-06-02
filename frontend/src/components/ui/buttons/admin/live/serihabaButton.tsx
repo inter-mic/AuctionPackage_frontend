@@ -1,7 +1,12 @@
 import { texts } from "@/config/texts";
 import React, { forwardRef, useImperativeHandle } from "react";
-import { formatPriceDivision, formatPriceMultiplication } from "@/components/common/PriceUtils";
-
+import {
+  formatPriceDivision,
+  formatPriceMultiplication,
+  formatPriceWithCommas,
+} from "@/components/common/PriceUtils";
+import { useBidUnit } from "@/hooks/useBidUnit";
+import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 export interface SerihabaButtonHandle {
   trigger: () => void;
 }
@@ -11,23 +16,48 @@ interface SerihabaButtonProps {
   currentPrice: string;
   nextPrice: string;
   fetchGoodsData: { bidUnit: string | null };
+  fetchBidUnitList: TMtLiveBidUnit[];
+  setBidUnit: (price: string) => void;
   onUpdatePrices: (current: string, next: string) => void;
+  spnKbn: string | string[] | undefined;
 }
 export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonProps>(
-  ({ isplus, disabled, currentPrice, nextPrice, fetchGoodsData, onUpdatePrices }, ref) => {
+  (
+    {
+      isplus,
+      disabled,
+      currentPrice,
+      nextPrice,
+      fetchGoodsData,
+      onUpdatePrices,
+      fetchBidUnitList,
+      setBidUnit,
+      spnKbn,
+    },
+    ref
+  ) => {
     const handleClick = () => {
-      const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, "") || "0");
-
       const current = formatPriceMultiplication(currentPrice);
-      const newCurrentPrice = isplus ? current + bidUnit : current - bidUnit;
-
-      const next = formatPriceMultiplication(nextPrice);
-      const newNextPrice = isplus ? next + bidUnit : next - bidUnit;
-
-      onUpdatePrices(
-        formatPriceDivision(newCurrentPrice.toString()),
-        formatPriceDivision(newNextPrice.toString())
+      const fetchBitUnit = useBidUnit(
+        spnKbn,
+        fetchGoodsData?.bidUnit,
+        fetchBidUnitList,
+        current.toString()
       );
+      if (fetchBitUnit) {
+        const bidUnit = Number(fetchBitUnit);
+        setBidUnit(formatPriceWithCommas(bidUnit));
+
+        const newCurrentPrice = isplus ? current + bidUnit : current - bidUnit;
+
+        const next = formatPriceMultiplication(nextPrice);
+        const newNextPrice = isplus ? next + bidUnit : next - bidUnit;
+
+        onUpdatePrices(
+          formatPriceDivision(newCurrentPrice.toString()),
+          formatPriceDivision(newNextPrice.toString())
+        );
+      }
     };
 
     // 外部から trigger() を呼べるようにする

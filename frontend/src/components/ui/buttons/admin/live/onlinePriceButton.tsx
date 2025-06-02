@@ -26,8 +26,10 @@ interface OnlinePriceButtonProps {
   saiteiRakusatsuPrice: string;
   sendWebSocketMessage: (type: string, data: any) => void;
   setCurrentPrice: (price: string) => void;
+  setDisplayCurrentPrice: (price: string) => void;
   setNextPrice: (price: string) => void;
   setKenriUserId: (id: number | null) => void;
+  setKenriPaddleNo: (paddleNo: string | null) => void;
   setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
   setLiveBidLog: React.Dispatch<React.SetStateAction<TLiveBidLog[]>>;
 }
@@ -46,8 +48,10 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
 
       sendWebSocketMessage,
       setCurrentPrice,
+      setDisplayCurrentPrice,
       setNextPrice,
       setKenriUserId,
+      setKenriPaddleNo,
       setLiveBidkekkaData,
       setLiveBidLog,
     },
@@ -62,7 +66,9 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       const newOnlineBid = onlineBidHistory[0];
       const onlineBidPrice = newOnlineBid.bidPrice;
       const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, "") || "0");
-      setCurrentPrice(formatPriceWithCommas(newOnlineBid.bidPrice));
+      setCurrentPrice(formatPriceDivision(newOnlineBid.bidPrice));
+
+      setDisplayCurrentPrice(formatPriceWithCommas(newOnlineBid.bidPrice));
 
       const newBidPriceNumber = Number(newOnlineBid.bidPrice);
       const firstPreBidPriceNumber = Number(firstPreBidPrice.replace(/,/g, ""));
@@ -81,6 +87,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       if (newKenriUserId != undefined && newKenriUserId != null) {
         setKenriUserId(newKenriUserId);
       }
+      setKenriPaddleNo(newOnlineBid.paddleNo);
 
       setLiveBidkekkaData((prev) => ({
         ...prev,
@@ -106,6 +113,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setLiveBidLog((prevLog) => [
         {
           userId: newHighestUserId ? newHighestUserId.toString() : "",
+          paddleNo: newOnlineBid.paddleNo,
           bidPrice: newOnlineBid.bidPrice,
           bidTime: now.toLocaleString(),
           bidKbn: newHighestBidKbn,

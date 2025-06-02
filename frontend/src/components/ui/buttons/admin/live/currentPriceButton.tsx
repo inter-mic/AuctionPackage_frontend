@@ -14,6 +14,7 @@ export interface PriceButtonHandle {
 
 interface PriceButtonProps {
   disabled: boolean;
+  setKenriPaddleNo: (paddleNo: string | null) => void;
   currentPrice: string;
   nextPrice: string;
   sendWebSocketMessage: (type: string, data: any) => void;
@@ -25,6 +26,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
   (
     {
       disabled,
+      setKenriPaddleNo,
       currentPrice,
       nextPrice,
       sendWebSocketMessage,
@@ -45,10 +47,11 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
         formatPriceMultiplication(currentPrice?.replace(/,/g, "")).toString()
       );
       setDisplayCurrentPrice(price);
-
+      setKenriPaddleNo("会場");
       setLiveBidLog((prevLog) => [
         {
           userId: "",
+          paddleNo: "",
           bidPrice: price,
           bidTime: now.toLocaleString(),
           bidKbn: "",

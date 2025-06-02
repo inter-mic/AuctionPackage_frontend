@@ -35,6 +35,7 @@ export const StartButton = forwardRef<StartButtonHandle, StartButtonProps>(
         setLiveBidLog((prevLog) => [
           {
             userId: kenriUserId.toString(),
+            paddleNo: "",
             bidPrice: currentPrice,
             bidTime: now.toLocaleString(),
             bidKbn: "1",
