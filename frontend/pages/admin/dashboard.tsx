@@ -1,26 +1,25 @@
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
+import { GetServerSideProps } from "next";
+import { texts } from "@/config/texts";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //コンポーネント
-import { hasPermission, KengenMap } from '@/components/admin/PermissoionsComponent';
+import { hasPermission, KengenMap } from "@/components/admin/PermissoionsComponent";
 //スタイル
-import styles from '@/styles/admin/Dashboard.module.css';
+import styles from "@/styles/admin/Dashboard.module.css";
 //型定義
-import { PageProps } from '@/types/admin/adminPage';
+import { PageProps } from "@/types/admin/adminPage";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminDashboard
+      pageTitle: texts.menu.adminDashboard,
     },
   };
 });
 type SectionProps = {
   title: string;
   children: React.ReactNode;
- 
 };
 type ButtonProps = {
   label: string;
@@ -34,13 +33,11 @@ const Section: React.FC<SectionProps> = ({ title, children }) => (
   </div>
 );
 
-
-
 const Button: React.FC<ButtonProps> = ({ label, url }) => {
   const handleClick = () => {
     // タブ名を安全にエンコードし、URLの一部が異なっても同じタブで開くようにする
-    const tabName = encodeURIComponent(url.split('?')[0]); // クエリを無視してタブ名を生成
-    const existingTab = window.open('', tabName);
+    const tabName = encodeURIComponent(url.split("?")[0]); // クエリを無視してタブ名を生成
+    const existingTab = window.open("", tabName);
 
     if (existingTab && !existingTab.closed) {
       // 既存タブがあればURLを変更してフォーカスする
@@ -48,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({ label, url }) => {
       existingTab.focus();
     } else {
       // 新しいタブを開く
-      window.open(url, tabName, 'noopener,noreferrer');
+      window.open(url, tabName, "noopener,noreferrer");
     }
   };
 
@@ -59,48 +56,104 @@ const Button: React.FC<ButtonProps> = ({ label, url }) => {
   );
 };
 
-
 const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen, optionLiveMessage }) => (
-
-    <div className={styles.container}>
+  <div className={styles.container}>
     <Section title={texts.menu.adminMemberTitle}>
-      {hasPermission(kengen, 101) && <Button label={texts.menu.adminMemberRegist} url="/admin/member/register"/>}
-      {hasPermission(kengen, 102) && <Button label={texts.menu.adminMemberList} url="/admin/member/search"/>}
-      {hasPermission(kengen, 103) && <Button label={texts.menu.adminMemberAddinfoItemRegist} url="/admin/member/addinfoItemRegister"/>}
-      {hasPermission(kengen, 104) && <Button label={texts.menu.adminTorihikiJisseki} url="/admin/member/torihikijisseki/search"/>}
+      {hasPermission(kengen, 101) && (
+        <Button label={texts.menu.adminMemberRegist} url="/admin/member/register" />
+      )}
+      {hasPermission(kengen, 102) && (
+        <Button label={texts.menu.adminMemberList} url="/admin/member/search" />
+      )}
+      {hasPermission(kengen, 103) && (
+        <Button
+          label={texts.menu.adminMemberAddinfoItemRegist}
+          url="/admin/member/addinfoItemRegister"
+        />
+      )}
+      {hasPermission(kengen, 104) && (
+        <Button
+          label={texts.menu.adminTorihikiJisseki}
+          url="/admin/member/torihikijisseki/search"
+        />
+      )}
     </Section>
 
     <Section title={texts.menu.adminGoodsTitle}>
-    {hasPermission(kengen, 201) &&<Button label={texts.menu.adminGoodsRegist} url="/admin/goods/register"/>}
-      {hasPermission(kengen, 202) &&<Button label={texts.menu.adminGoodsList} url="/admin/goods/search"/>}
-      {hasPermission(kengen, 203) &&<Button label={texts.menu.adminGoodsBulkRegist} url="/admin/goods/bulkRegister"/>}
-      {hasPermission(kengen, 206) &&<Button label={texts.menu.adminGoodsAddinfoItemRegist} url="/admin/goods/addinfoItemRegister"/>}
-      {hasPermission(kengen, 207) &&<Button label={texts.menu.adminCategoryRegist} url="/admin/goods/category"/>}
+      {hasPermission(kengen, 201) && (
+        <Button label={texts.menu.adminGoodsRegist} url="/admin/goods/register" />
+      )}
+      {hasPermission(kengen, 202) && (
+        <Button label={texts.menu.adminGoodsList} url="/admin/goods/search" />
+      )}
+      {hasPermission(kengen, 203) && (
+        <Button label={texts.menu.adminGoodsBulkRegist} url="/admin/goods/bulkRegister" />
+      )}
+      {hasPermission(kengen, 206) && (
+        <Button
+          label={texts.menu.adminGoodsAddinfoItemRegist}
+          url="/admin/goods/addinfoItemRegister"
+        />
+      )}
+      {hasPermission(kengen, 207) && (
+        <Button label={texts.menu.adminCategoryRegist} url="/admin/goods/category" />
+      )}
     </Section>
     <Section title={texts.menu.adminAuctionTitle}>
-      {hasPermission(kengen, 301) && <Button label={texts.menu.adminKaisaiRegist} url="/admin/auction/register"/>}
-      {hasPermission(kengen, 302) && <Button label={texts.menu.adminBidList} url="/admin/auction/bid/search"/>}
-      {hasPermission(kengen, 303) && <Button label={texts.menu.adminBidLogList} url="/admin/auction/bid/logSearch"/>}
-      {hasPermission(kengen, 304) && <Button label={texts.menu.adminLiveAuctioner} url="/admin/live/auctioneer?spnKbn=2"/>}
-      {hasPermission(kengen, 304) && <Button label={texts.menu.adminLiveBidAuctioner} url="/admin/live/auctioneer?spnKbn=1"/>}
-      {hasPermission(kengen, 305) && <Button label={texts.menu.adminLiveBidUnitRegist} url="/admin/live/bidunit"/>}
-      {hasPermission(kengen, 306) && <Button label={texts.menu.adminLiveMessageRegist} url="/admin/live/message"/>}
+      {hasPermission(kengen, 301) && (
+        <Button label={texts.menu.adminKaisaiRegist} url="/admin/auction/register" />
+      )}
+      {hasPermission(kengen, 302) && (
+        <Button label={texts.menu.adminBidList} url="/admin/auction/bid/search" />
+      )}
+      {hasPermission(kengen, 303) && (
+        <Button label={texts.menu.adminBidLogList} url="/admin/auction/bid/logSearch" />
+      )}
+      {hasPermission(kengen, 304) && (
+        <Button label={texts.menu.adminAuctionner} url="/admin/live/auctioneer?spnKbn=2" />
+      )}
+      {hasPermission(kengen, 304) && (
+        <Button label={texts.menu.adminAuctionner} url="/admin/live/auctioneer?spnKbn=1" />
+      )}
+      {hasPermission(kengen, 305) && (
+        <Button label={texts.menu.adminLiveBidUnitRegist} url="/admin/live/bidunit" />
+      )}
+      {hasPermission(kengen, 306) && (
+        <Button label={texts.menu.adminLiveMessageRegist} url="/admin/live/message" />
+      )}
     </Section>
     <Section title={texts.menu.adminStaffTitle}>
-      {hasPermission(kengen, 401) && <Button label={texts.menu.adminStaffRegist} url="/admin/staff/register"/>}
-      {hasPermission(kengen, 402) && <Button label={texts.menu.adminStaffList} url="/admin/staff/search"/>}
-      {hasPermission(kengen, 403) && <Button label={texts.menu.adminKengenRegist} url="/admin/staff/kengen"/>}
+      {hasPermission(kengen, 401) && (
+        <Button label={texts.menu.adminStaffRegist} url="/admin/staff/register" />
+      )}
+      {hasPermission(kengen, 402) && (
+        <Button label={texts.menu.adminStaffList} url="/admin/staff/search" />
+      )}
+      {hasPermission(kengen, 403) && (
+        <Button label={texts.menu.adminKengenRegist} url="/admin/staff/kengen" />
+      )}
     </Section>
     <Section title={texts.menu.adminSettingTitle}>
-      {hasPermission(kengen, 501) && <Button label={texts.menu.adminInfoRegist} url="/admin/setting/info/register"/>}
-      {hasPermission(kengen, 502) && <Button label={texts.menu.adminTopImageRegist} url="/admin/setting/topImage/register"/>}
-      {hasPermission(kengen, 503) && <Button label={texts.menu.adminSystemRegist} url="/admin/setting/system/register"/>}
-      {hasPermission(kengen, 504) && <Button label={texts.menu.adminAdminRegist} url="/admin/setting/admin/register"/>}
-      {hasPermission(kengen, 505) && <Button label={texts.menu.adminMailRegist} url="/admin/setting/mail/register"/>}
-      {hasPermission(kengen, 506) && <Button label={texts.menu.adminPageSetting} url="/admin/setting/page/register"/>}
+      {hasPermission(kengen, 501) && (
+        <Button label={texts.menu.adminInfoRegist} url="/admin/setting/info/register" />
+      )}
+      {hasPermission(kengen, 502) && (
+        <Button label={texts.menu.adminTopImageRegist} url="/admin/setting/topImage/register" />
+      )}
+      {hasPermission(kengen, 503) && (
+        <Button label={texts.menu.adminSystemRegist} url="/admin/setting/system/register" />
+      )}
+      {hasPermission(kengen, 504) && (
+        <Button label={texts.menu.adminAdminRegist} url="/admin/setting/admin/register" />
+      )}
+      {hasPermission(kengen, 505) && (
+        <Button label={texts.menu.adminMailRegist} url="/admin/setting/mail/register" />
+      )}
+      {hasPermission(kengen, 506) && (
+        <Button label={texts.menu.adminPageSetting} url="/admin/setting/page/register" />
+      )}
     </Section>
   </div>
-
 );
 
 export default withAdminLayout(Page);

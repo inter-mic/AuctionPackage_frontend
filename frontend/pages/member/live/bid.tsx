@@ -140,7 +140,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       if (data.type === "bidEnd") {
         setIsBidDisabled(true);
         setReceivedData(data);
-        setBidStatus(!data.kenriUserId ? 4 : loginUserId === data.kenriUserId ? 2 : 3);
+        setBidStatus(!data.kenriPaddleNo ? 4 : fetchPaddleNo === data.kenriPaddleNo ? 2 : 3);
       }
       if (data.type === "clear") {
         setBidHistory([]);
@@ -163,7 +163,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchPaddleNo]);
 
   const handleViewOnlyCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setViewOnlyChecked(event.target.checked);

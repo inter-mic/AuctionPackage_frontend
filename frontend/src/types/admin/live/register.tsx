@@ -10,6 +10,6 @@ export const initialLiveBidKekkaData: LiveBidKekkaData = {
   goodsId: null,
   rakusatsuPrice: null,
   rakusatsuUserId: null,
-  rakusatsuPaddleNo: null,
+  rakusatsuPaddleNo: "",
   auctionKekkaStatus: 1,
 };

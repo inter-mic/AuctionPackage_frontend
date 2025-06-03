@@ -219,13 +219,29 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
 
       //次価格セット
-      if (fetchLiveBidInfoData.nextPrice) {
-        const formattedNextPrice = formatPriceWithCommas(
-          Number(fetchLiveBidInfoData.nextPrice.replace(/,/g, "")) / 1000
-        );
-        setNextPrice(formattedNextPrice);
+      const fetchBitUnit = useBidUnit(
+        spnKbn,
+        fetchLiveBidInfoData.bidUnit,
+        fetchBidUnitList,
+        fetchLiveBidInfoData.currentPrice
+      );
+      if (spnKbn === "1") {
+        if (fetchLiveBidInfoData.currentPrice) {
+          const nextPrice = formatPriceWithCommas(
+            (Number(fetchLiveBidInfoData.currentPrice.replace(/,/g, "")) + Number(fetchBitUnit)) /
+              1000
+          );
+          setNextPrice(nextPrice);
+        }
       } else {
-        setNextPrice("");
+        if (fetchLiveBidInfoData.nextPrice) {
+          const formattedNextPrice = formatPriceWithCommas(
+            Number(fetchLiveBidInfoData.nextPrice.replace(/,/g, "")) / 1000
+          );
+          setNextPrice(formattedNextPrice);
+        } else {
+          setNextPrice("");
+        }
       }
 
       //権利者セット
@@ -242,12 +258,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
 
       //セリ幅セット
-      const fetchBitUnit = useBidUnit(
-        spnKbn,
-        fetchLiveBidInfoData.bidUnit,
-        fetchBidUnitList,
-        fetchLiveBidInfoData.currentPrice
-      );
+
       if (fetchBitUnit) {
         setBidUnit(formatPriceWithCommas(Number(fetchBitUnit)));
       }
@@ -297,6 +308,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [msg, setMsg] = useState<string | null>();
   const [marqueeKey, setMarqueeKey] = useState(0);
   const lotInputRef = useRef<HTMLInputElement>(null);
+  const currentPriceInputRef = useRef<HTMLInputElement>(null);
+  const [isOnlineBidReceive, setIsOnlineBidReceive] = useState(false);
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
     // WebSocketの初期化
@@ -309,11 +322,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
     ws.current.onmessage = (event) => {
       var data = JSON.parse(event.data);
+      setIsOnlineBidReceive(false);
       if (data.type === "set") {
         setIsCallButtonClicked(false);
         setIsSetButtonClicked(true);
         setBidUnit(data.bidUnit ? formatPriceWithCommas(Number(data.bidUnit)) : "");
         setCurrentPrice(data.currentPrice ? formatPriceDivision(data.currentPrice) : "");
+        currentPriceInputRef.current?.focus();
       }
       if (data.type === "start") {
         setIsStartButtonClicked(true);
@@ -325,6 +340,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           ...prevHistory, // 最新のデータを上部に追加
         ]);
         setBidComingSoonMsg(false);
+        setIsOnlineBidReceive(true);
       }
       if (data.type === "bidComingSoon") {
         setBidComingSoonMsg(true);
@@ -371,7 +387,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [kenriPaddleNo]);
 
   const getCommonData = () => ({
     goodsId: fetchGoodsData.goodsId,
@@ -448,8 +464,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (isSuccess) {
       const nextLot = (Number(searchLot) + 1).toString();
       goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
-      liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai, nextLot);
-      liveBidInfoSearchAPI(false, 0, searchSelectedKaisai, nextLot, nextLot);
       setLiveBidkekkaData(initialLiveBidKekkaData);
     }
   };
@@ -474,6 +488,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     sendWebSocketMessage("sendMessage", {
       message: message,
     });
+  };
+
+  //落札者パドル番号
+  const handleRakusatsuPaddleNoChange = (value: string) => {
+    setLiveBidkekkaData((prev) => ({
+      ...prev,
+      rakusatsuPaddleNo: value,
+    }));
   };
 
   // クリア処理
@@ -721,7 +743,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   {onlineBidHistory.map((bid, index) => (
                     <li
                       key={index}
-                      className={[styles.bidItem, index === 0 ? styles.latestBid : ""].join(" ")}
+                      className={[
+                        styles.bidItem,
+                        isOnlineBidReceive && index === 0 ? styles.latestBid : "",
+                      ].join(" ")}
                     >
                       <span className={styles.listSpanLeft}>
                         {spnKbn === "1" ? (
@@ -886,6 +911,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       type="text"
                       className={styles.priceInput}
                       value={currentPrice}
+                      ref={currentPriceInputRef}
                       onChange={(e) => setCurrentPrice(e.target.value)}
                     />
                     <span>,000</span>
@@ -1001,13 +1027,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   </span>
                   <input
                     type="text"
-                    className={styles.priceInput}
-                    value={liveBidkekkaData.rakusatsuPaddleNo ?? undefined}
-                    onChange={(e) => setNextPrice(e.target.value)}
+                    className={styles.paddleInput}
+                    value={liveBidkekkaData.rakusatsuPaddleNo ?? ""}
+                    onChange={(e) => handleRakusatsuPaddleNoChange(e.target.value)}
                   />
                   <ConfirmDialog
                     disabled={!isRakusatsuProcessFlg}
-                    description=""
+                    description="落札します。よろしいでしょうか？"
                     buttonTitle={texts.button.rakusatsu}
                     className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
                       !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
@@ -1015,6 +1041,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                     dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
                     onSubmit={bidEnd}
+                    buttonText={texts.button.rakusatsu}
                   />
                 </>
               )}

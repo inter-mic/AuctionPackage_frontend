@@ -177,6 +177,16 @@
   width: 300px;
   height: 70px;
   text-align: right;
+  font-size: 2rem;
+}
+
+.paddleInput {
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 150px;
+  height: 70px;
+  text-align: right;
+  font-size: 2rem;
 }
 
 .adjustButtons {

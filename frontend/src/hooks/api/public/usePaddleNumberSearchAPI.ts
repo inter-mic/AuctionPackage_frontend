@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 //型定義
-import { TMtPaddleNumber } from '@/types/public/paddleNumber';
-
+import { TMtPaddleNumber } from "@/types/public/paddleNumber";
 
 export const usePaddleNumberSearchAPI = () => {
   const [paddleKbnList, setPaddleKbnList] = useState<TMtPaddleNumber[]>([]);
@@ -9,22 +8,18 @@ export const usePaddleNumberSearchAPI = () => {
     const paddleNumberSearchAPI = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}paddleNumber/search`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          
         });
-        const data:TMtPaddleNumber[] = await res.json();
+        const data: TMtPaddleNumber[] = await res.json();
         setPaddleKbnList(data);
       } catch (error) {
-        
       } finally {
-       
       }
     };
-
     paddleNumberSearchAPI();
   }, []);
-  return { paddleKbnList};
+  return { paddleKbnList };
 };
