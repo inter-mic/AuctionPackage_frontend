@@ -317,7 +317,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
     ws.current.onopen = () => {
       console.log("WebSocket connection established");
-      ws.current?.send(JSON.stringify({ type: "admin" }));
+      let message = {
+          type: "admin",
+          ...getCommonData(),
+          // ...additionalData,
+          nextLotList,
+          liveBidLog,
+        };
+      ws.current?.send(JSON.stringify(message));
     };
 
     ws.current.onmessage = (event) => {
@@ -387,7 +394,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kenriPaddleNo]);
+  }, []);
 
   const getCommonData = () => ({
     goodsId: fetchGoodsData.goodsId,
@@ -423,6 +430,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           type,
           ...getCommonData(),
           ...additionalData,
+          nextLotList,
+          liveBidLog,
         };
       }
       ws.current.send(JSON.stringify(message));
@@ -436,6 +445,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     sendWebSocketMessage("clear", {
       nextPrice: "",
       currentPrice: "",
+      nextLotList: [],
+      liveBidLog: [],
     });
   };
 
@@ -862,7 +873,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 sendWebSocketMessage={sendWebSocketMessage}
                 currentPrice={currentPrice}
                 bidUnit={bidUnit}
-                nextLotList={nextLotList}
               />
 
               <StartButton
@@ -991,6 +1001,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     setKenriUserId={setKenriUserId}
                     setKenriPaddleNo={setKenriPaddleNo}
                     setLiveBidkekkaData={setLiveBidkekkaData}
+                    liveBidLog={liveBidLog}
                     setLiveBidLog={setLiveBidLog}
                   />
 
@@ -1002,6 +1013,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     nextPrice={nextPrice}
                     sendWebSocketMessage={sendWebSocketMessage}
                     setDisplayCurrentPrice={setDisplayCurrentPrice}
+                    liveBidLog={liveBidLog}
                     setLiveBidLog={setLiveBidLog}
                   />
                 </>

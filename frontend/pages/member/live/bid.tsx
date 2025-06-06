@@ -95,6 +95,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     const loginUserId = PageProps.userId;
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      
+      //↓↓毎回取得
+      setNextLotList(data.nextLotList);
+      setBidHistory(data.liveBidLog);
+
       if (
         data.type === "set" ||
         data.type === "start" ||
@@ -105,8 +110,6 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         setBidStatus(loginUserId === data.kenriUserId ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
       }
       if (data.type === "set") {
-        setBidHistory([]);
-        setNextLotList(data.nextLotList);
         setIsBidDisabled(true);
       }
       if (data.type === "start") {
@@ -114,38 +117,30 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === "updatePrice") {
         setIsBidDisabled(loginUserId === data.kenriUserId);
-        setBidHistory((prevHistory) => [
-          {
-            bidPrice: data.currentPrice,
-            userId: data.bidUserId,
-            timestamp: data.timestamp,
-          },
-          ...prevHistory,
-        ]);
         setIsPriceUpdated(true);
         setTimeout(() => setIsPriceUpdated(false), 1000);
       }
       if (data.type === "bidComingSoon") {
         setBidComingSoonMsg(true);
       } else {
-        setBidComingSoonMsg(false);
+        if (data.type === "sendMessage") {
+          //メッセージ配信時は「もうすぐ落札」を表示したままにする
+        }else{
+          setBidComingSoonMsg(false);
+        }
       }
       if (data.type === "rakusatsuProcessing") {
         setRakusatsuProcessingMsgFlg(true);
         setIsBidDisabled(true);
       } else {
         setRakusatsuProcessingMsgFlg(false);
-        setIsBidDisabled(false);
       }
       if (data.type === "bidEnd") {
         setIsBidDisabled(true);
-        setReceivedData(data);
         setBidStatus(!data.kenriPaddleNo ? 4 : fetchPaddleNo === data.kenriPaddleNo ? 2 : 3);
       }
       if (data.type === "clear") {
-        setBidHistory([]);
         setIsBidDisabled(true);
-        setNextLotList([]);
       }
       if (data.type === "sendMessage") {
         setMsg(data.message);
@@ -355,14 +350,14 @@ const Page: React.FC<TPageProps> = (PageProps) => {
           </div>
           <div className={styles.rightSection}>
             <ul className={styles.bidList}>
-              {bidHistory.map((bid, index) => (
+              {bidHistory?.map((bid, index) => (
                 <li key={index} className={styles.bidItem}>
-                  {bid.userId === PageProps.userId && (
+                  {bid.userId === PageProps.userId?.toString() && (
                     <span className={styles.bidUserId}>your bid</span>
                   )}
                   <span
                     className={
-                      bid.userId === PageProps.userId ? styles.bidPriceYourBid : styles.bidPrice
+                      bid.userId === PageProps.userId?.toString() ? styles.bidPriceYourBid : styles.bidPrice
                     }
                   >
                     {formatPriceWithCommas(bid.bidPrice)}
@@ -373,7 +368,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
           </div>
         </div>
         <div className={styles.nextLotListContainer}>
-          {nextLotList.length > 1 ? (
+          {nextLotList?.length > 1 ? (
             nextLotList.slice(1).map((item: NextLotList, idx: number) => (
               <div key={idx} className={styles.nextLotCard}>
                 <div className={styles.nextLotImageWrapper}>
@@ -386,8 +381,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                   />
                 </div>
                 <div className={styles.nextLotCaption}>
-                  <div className={styles.nextLotName}>{item.goodsName}</div>
                   <div className={styles.nextLotLot}>LOT {item.lot}</div>
+                  <div className={styles.nextLotName}>{item.goodsName}</div>
                   <div className={styles.nextLotPrice}>
                     \
                     {item.startPrice ||

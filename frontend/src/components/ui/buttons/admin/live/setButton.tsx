@@ -9,7 +9,6 @@ interface SetButtonProps {
   sendWebSocketMessage: (type: string, payload: any) => void;
   currentPrice: string;
   bidUnit: string;
-  nextLotList: any[]; // 適切な型があればそれに変更
 }
 
 export function SetButton({
@@ -20,7 +19,6 @@ export function SetButton({
   sendWebSocketMessage,
   currentPrice,
   bidUnit,
-  nextLotList,
 }: SetButtonProps) {
   const { texts, useEffect } = useCommonSetup();
   const handleClick = async () => {
@@ -32,7 +30,6 @@ export function SetButton({
       sendWebSocketMessage("set", {
         currentPrice: formatPriceMultiplication(currentPrice),
         bidUnit: formatPriceNum(bidUnit),
-        nextLotList: nextLotList,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
