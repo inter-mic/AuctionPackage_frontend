@@ -10,8 +10,6 @@ import withAdminNoHeaderLayout from "@/hocs/withAdminNoHeaderLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
-import { useExecutionPermission } from "@/hooks/useExecutionPermission";
-//型定義
 
 import { PageProps } from "@/types/admin/adminPage";
 
@@ -28,8 +26,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect } = useCommonSetup();
-  useKengenRedirect(kengen, 304);
-  const { executionPermission } = useExecutionPermission(kengen);
+  useKengenRedirect(kengen, 354);
 
   const [receivedData, setReceivedData] = useState<any>(null);
   const [msg, setMsg] = useState<string | null>();
@@ -39,9 +36,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
-    ws.current.onopen = () => {
-      console.log("WebSocket connection established");
-    };
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (
@@ -57,10 +51,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setMsg(data.message);
         setMarqueeKey((k) => k + 1);
       }
-    };
-
-    ws.current.onclose = () => {
-      console.log("WebSocket closed");
     };
 
     return () => {

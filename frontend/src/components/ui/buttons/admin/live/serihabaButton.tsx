@@ -5,7 +5,7 @@ import {
   formatPriceMultiplication,
   formatPriceWithCommas,
 } from "@/components/common/PriceUtils";
-import { useBidUnit } from "@/hooks/useBidUnit";
+import { getBidUnit } from "@/components/admin/live/getBidUnit";
 import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 export interface SerihabaButtonHandle {
   trigger: () => void;
@@ -38,7 +38,7 @@ export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonPro
   ) => {
     const handleClick = () => {
       const current = formatPriceMultiplication(currentPrice);
-      const fetchBitUnit = useBidUnit(
+      const fetchBitUnit = getBidUnit(
         spnKbn,
         fetchGoodsData?.bidUnit,
         fetchBidUnitList,
@@ -82,3 +82,4 @@ export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonPro
     );
   }
 );
+SerihabaButton.displayName = "SerihabaButton";

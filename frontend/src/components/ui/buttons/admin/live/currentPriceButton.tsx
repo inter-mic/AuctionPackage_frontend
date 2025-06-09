@@ -62,7 +62,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
       setSendWS(true); // WS送信タイミングが共通のliveBidLog更新時であるため
     };
 
-    useEffect(() => {      
+    useEffect(() => {
       if (liveBidLog.length > 0 && sendWS) {
         sendWebSocketMessage("updatePrice", {
           nextPrice: formatPriceMultiplication(nextPrice),
@@ -72,6 +72,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
         });
         setSendWS(false);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [liveBidLog]);
 
     useImperativeHandle(ref, () => ({
@@ -91,3 +92,5 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
     );
   }
 );
+
+CurrentPriceButton.displayName = "CurrentPriceButton";

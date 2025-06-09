@@ -1,60 +1,67 @@
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
-import { useSearchParams } from 'next/navigation';
-import { toast } from 'react-toastify';
-import dayjs, { Dayjs } from 'dayjs';
+import { GetServerSideProps } from "next";
+import { texts } from "@/config/texts";
+import { useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+import dayjs, { Dayjs } from "dayjs";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSort } from '@/hooks/useSort';
-import { usePagination } from '@/hooks/usePagination';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
-import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useSort } from "@/hooks/useSort";
+import { usePagination } from "@/hooks/usePagination";
+import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
+import { useToGoodsRegist } from "@/hooks/moveScreen/useToGoodsRegist";
 
 //API
-import { useTorihikiJissekiMeisaiShuppinSearchAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiShuppinSearchAPI';
-import { useTorihikiJissekiMeisaiRakusatsuSearchAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchAPI';
-import { useTorihikiJissekiMeisaiRakusatsuSearchCountAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchCountAPI';
-import { useTorihikiJissekiMeisaiDateUpdateAPI } from '@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiDateUpdateAPI';
-import { useInvoicePdfAPI } from '@/hooks/api/admin/pdf/useInvoicePdfAPI';
+import { useTorihikiJissekiMeisaiShuppinSearchAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiShuppinSearchAPI";
+import { useTorihikiJissekiMeisaiRakusatsuSearchAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchAPI";
+import { useTorihikiJissekiMeisaiRakusatsuSearchCountAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchCountAPI";
+import { useTorihikiJissekiMeisaiDateUpdateAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiDateUpdateAPI";
+import { useInvoicePdfAPI } from "@/hooks/api/admin/pdf/useInvoicePdfAPI";
 //型定義
-import { TAdminTorihikiJissekiRequest, TTorihikiJissekiMeisaiRakusatsuSelect, TTorihikiJissekiMeisaiShuppinSelect } from '@/types/admin/torihikiJisseki/search';
-import { PageProps } from '@/types/admin/adminPage';
+import {
+  TAdminTorihikiJissekiRequest,
+  TTorihikiJissekiMeisaiRakusatsuSelect,
+  TTorihikiJissekiMeisaiShuppinSelect,
+} from "@/types/admin/torihikiJisseki/search";
+import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
-import { CustomDatePicker } from '@/components/ui/dateTime/CustomDatePicker';
+import { CustomDatePicker } from "@/components/ui/dateTime/CustomDatePicker";
 //ボタン
-import { RegistButton } from '@/components/ui/buttons/admin/registButton';
-import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
+import { RegistButton } from "@/components/ui/buttons/admin/registButton";
+import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
-import formSearchStyles from '@/styles/admin/FormSearch.module.css';
-import styles from '@/styles/admin/TorihikiJissekiMeisai.module.css';
-import adminStyles from '@/styles/admin/AdminCommon.module.css';
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
+import formSearchStyles from "@/styles/admin/FormSearch.module.css";
+import styles from "@/styles/admin/TorihikiJissekiMeisai.module.css";
+import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminTorihikiJissekiMeisai
+      pageTitle: texts.menu.adminTorihikiJissekiMeisai,
     },
   };
 });
 
-const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
+const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
 
   useKengenRedirect(kengen, 105);
   const { executionPermission } = useExecutionPermission(kengen);
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
-  const { rakusatsuList, torihikiJissekiMeisaiRakusatsuSearchAPI } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
-  const { count, torihikiJissekiMeisaiRakusatsuSearchCountAPI } = useTorihikiJissekiMeisaiRakusatsuSearchCountAPI();
-  const { shuppinList, torihikiJissekiMeisaiShuppinSearchAPI } = useTorihikiJissekiMeisaiShuppinSearchAPI();
+  const { rakusatsuList, torihikiJissekiMeisaiRakusatsuSearchAPI } =
+    useTorihikiJissekiMeisaiRakusatsuSearchAPI();
+  const { count, torihikiJissekiMeisaiRakusatsuSearchCountAPI } =
+    useTorihikiJissekiMeisaiRakusatsuSearchCountAPI();
+  const { shuppinList, torihikiJissekiMeisaiShuppinSearchAPI } =
+    useTorihikiJissekiMeisaiShuppinSearchAPI();
   const params = useSearchParams();
-  const paramsAuctionSeq = params ? params.get('auctionSeq') : null;
-  const paramsUserId = params ? params.get('userId') : null;
+  const paramsAuctionSeq = params ? params.get("auctionSeq") : null;
+  const paramsUserId = params ? params.get("userId") : null;
   useEffect(() => {
     if (paramsAuctionSeq && paramsUserId) {
       const requestParams: TAdminTorihikiJissekiRequest = {
@@ -70,50 +77,60 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsAuctionSeq, paramsUserId]);
 
-
-  const { rakusatsuList: allSelectData, torihikiJissekiMeisaiRakusatsuSearchAPI: allSelectSearchAPI } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
-    const [allData, setAllData] = useState<TTorihikiJissekiMeisaiRakusatsuSelect[]>([]);
-    const fetchAllIds = async () => {
-      const requestParams: TAdminTorihikiJissekiRequest = {
-        auctionSeq: Number(paramsAuctionSeq),
-        userId: paramsUserId ?? undefined,
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-      };
-      await allSelectSearchAPI(requestParams);
+  const {
+    rakusatsuList: allSelectData,
+    torihikiJissekiMeisaiRakusatsuSearchAPI: allSelectSearchAPI,
+  } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
+  const [allData, setAllData] = useState<TTorihikiJissekiMeisaiRakusatsuSelect[]>([]);
+  const fetchAllIds = async () => {
+    const requestParams: TAdminTorihikiJissekiRequest = {
+      auctionSeq: Number(paramsAuctionSeq),
+      userId: paramsUserId ?? undefined,
+      pageNumber: 1,
+      pageSize: itemsPerPage,
     };
-    useEffect(() => {
-      if (allSelectData) {
-        setAllData(allSelectData);
-      }
-    }, [allSelectData]);
-  
+    await allSelectSearchAPI(requestParams);
+  };
+  useEffect(() => {
+    if (allSelectData) {
+      setAllData(allSelectData);
+    }
+  }, [allSelectData]);
+
   //ソート設定
   const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
     itemsPerPage,
     params: {
       auctionSeq: Number(paramsAuctionSeq),
-        userId: paramsUserId,
+      userId: paramsUserId,
       pageNumber: 1,
       pageSize: itemsPerPage,
-    },  
+    },
   });
   const { currentPage, handlePageChange } = usePagination({
     itemsPerPage,
     searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
     searchParams: {
       auctionSeq: Number(paramsAuctionSeq),
-        userId: paramsUserId,
+      userId: paramsUserId,
       pageNumber: 1,
       pageSize: itemsPerPage,
-    },  
+    },
   });
   //チェックボックス
-  const { selectAll: rakusatsuSelectAll, setSelectAll:rakusatsuSetSelectAll, selectedIds:rakusatsuSelectedIds, setSelectedIds:rakusatsuSetSelectedIds, handleSelectAll:rakusatsuHandleSelectAll, handleSelect:rakusatsuHandleSelect } = useCheckboxSelection(
-    rakusatsuList.map(goods => goods.goodsId)
-    , allData.map(goods => goods.goodsId)
-    , fetchAllIds);
+  const {
+    selectAll: rakusatsuSelectAll,
+    setSelectAll: rakusatsuSetSelectAll,
+    selectedIds: rakusatsuSelectedIds,
+    setSelectedIds: rakusatsuSetSelectedIds,
+    handleSelectAll: rakusatsuHandleSelectAll,
+    handleSelect: rakusatsuHandleSelect,
+  } = useCheckboxSelection(
+    rakusatsuList.map((goods) => goods.goodsId),
+    allData.map((goods) => goods.goodsId),
+    fetchAllIds
+  );
 
   //商品登録画面に遷移
   const { toGoodsRegist } = useToGoodsRegist(kengen);
@@ -121,7 +138,7 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
     toGoodsRegist(e, goodsId);
   };
   //日付登録
-  const [rakusatsuUpdateKbn, setRakusatsuUpdateKbn] = useState<string>('');
+  const [rakusatsuUpdateKbn, setRakusatsuUpdateKbn] = useState<string>("");
   const handleRakusatsuUpdateKbnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setRakusatsuUpdateKbn(event.target.value);
   };
@@ -129,13 +146,12 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
   const [paramsRakusatsuDate, setParamsRakusatsuDate] = useState<string | null>(null);
   const handleRakusatsuDateChange = () => (date: Dayjs | null) => {
     if (date) {
-      const localDate = dayjs(date).format('YYYY-MM-DDT00:00:00'); // JavaScriptのDateオブジェクト
+      const localDate = dayjs(date).format("YYYY-MM-DDT00:00:00"); // JavaScriptのDateオブジェクト
       setRakusatsuDate(date); // ローカルタイムで表示
       setParamsRakusatsuDate(localDate); // ローカルタイムで表示
-
     }
   };
-  const [shuppinUpdateKbn, setShuppinUpdateKbn] = useState<string>('');
+  const [shuppinUpdateKbn, setShuppinUpdateKbn] = useState<string>("");
   const handleShuppinUpdateKbnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setShuppinUpdateKbn(event.target.value);
   };
@@ -143,12 +159,13 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
   const [paramsShuppinDate, setParamsShuppinDate] = useState<string | null>(null);
   const handleShuppinDateChange = () => (date: Dayjs | null) => {
     if (date) {
-      const localDate = dayjs(date).format('YYYY-MM-DDT00:00:00'); // JavaScriptのDateオブジェクト
+      const localDate = dayjs(date).format("YYYY-MM-DDT00:00:00"); // JavaScriptのDateオブジェクト
       setShuppinDate(date); // ローカルタイムで表示
       setParamsShuppinDate(localDate); // ローカルタイムで表示
     }
   };
-  const { torihikiJissekiMeisaiDateUpdateAPI, errors , rakusatsuResponseData, shuppinResponseData} = useTorihikiJissekiMeisaiDateUpdateAPI();
+  const { torihikiJissekiMeisaiDateUpdateAPI, errors, rakusatsuResponseData, shuppinResponseData } =
+    useTorihikiJissekiMeisaiDateUpdateAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const handleDateUpdate = (isRakusatsu: boolean) => {
     if (isRakusatsu) {
@@ -156,17 +173,22 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
         toast.error(texts.message.selectAtLeastOne);
         return;
       }
-      torihikiJissekiMeisaiDateUpdateAPI(rakusatsuSelectedIds, paramsRakusatsuDate, rakusatsuUpdateKbn, paramsAuctionSeq, paramsUserId);
-    } else {
-     
+      torihikiJissekiMeisaiDateUpdateAPI(
+        rakusatsuSelectedIds,
+        paramsRakusatsuDate,
+        rakusatsuUpdateKbn,
+        paramsAuctionSeq,
+        paramsUserId
+      );
     }
-
   };
   useEffect(() => {
-    if (errors) { setFormErrors(errors); }
+    if (errors) {
+      setFormErrors(errors);
+    }
   }, [errors]);
   useEffect(() => {
-    if (rakusatsuResponseData) { 
+    if (rakusatsuResponseData) {
       rakusatsuSetSelectAll(false);
       rakusatsuSetSelectedIds([]);
     }
@@ -174,66 +196,65 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
   }, [rakusatsuResponseData]);
   // useEffect(() => {
   //   if (shuppinResponseData) {
-  //      setFetchShuppinList(shuppinResponseData); 
+  //      setFetchShuppinList(shuppinResponseData);
   //      shuppinSetSelectAll(false);
   //      shuppinSetSelectedIds([]);
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [shuppinResponseData]);
-  
+
   const { invoicePdfAPI } = useInvoicePdfAPI();
-   const handleInvoice = () => {
+  const handleInvoice = () => {
     const userIds = paramsUserId ? [Number(paramsUserId)] : [];
-      invoicePdfAPI(Number(paramsAuctionSeq), userIds);
-    };
+    invoicePdfAPI(Number(paramsAuctionSeq), userIds);
+  };
 
   return (
     <div>
       <div className={breadcrumbStyles.breadcrumb}>
-        <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminTorihikiJissekiMeisai}</span>
+        <span className={breadcrumbStyles.breadcrumbItem}>
+          {texts.menu.adminTorihikiJissekiMeisai}
+        </span>
       </div>
       <div className={styles.container}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="auction" >{texts.goods.auctionName}</label>
+            <label htmlFor="auction">{texts.goods.auctionName}</label>
             {rakusatsuList && rakusatsuList.length > 0
               ? rakusatsuList[0].auctionName
               : shuppinList && shuppinList.length > 0
-                ? shuppinList[0].auctionName
-                : ""}
+              ? shuppinList[0].auctionName
+              : ""}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="userId" >{texts.member.userId}</label>
+            <label htmlFor="userId">{texts.member.userId}</label>
             {rakusatsuList && rakusatsuList.length > 0
               ? rakusatsuList[0].userId
               : shuppinList && shuppinList.length > 0
-                ? shuppinList[0].userId
-                : ""}
+              ? shuppinList[0].userId
+              : ""}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="userName" >{texts.member.userName}</label>
+            <label htmlFor="userName">{texts.member.userName}</label>
             {rakusatsuList && rakusatsuList.length > 0
               ? rakusatsuList[0].userName
               : shuppinList && shuppinList.length > 0
-                ? shuppinList[0].userName
-                : ""}
+              ? shuppinList[0].userName
+              : ""}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="companyName" >{texts.member.companyName}</label>
+            <label htmlFor="companyName">{texts.member.companyName}</label>
             {rakusatsuList && rakusatsuList.length > 0
               ? rakusatsuList[0].companyName
               : shuppinList && shuppinList.length > 0
-                ? shuppinList[0].companyName
-                : ""}
+              ? shuppinList[0].companyName
+              : ""}
           </div>
-
         </div>
         <div className="text-right">
           <OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />
         </div>
       </div>
-
-      
 
       {rakusatsuList && rakusatsuList.length > 0 ? (
         <div className={styles.container}>
@@ -243,7 +264,12 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
               <div className={adminStyles.resultContainer}>
                 <div className={adminStyles.resultRow}>
                   <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                  <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                  <select
+                    id="sortName"
+                    className={adminStyles.sort}
+                    value={sortName}
+                    onChange={handleSortNameChange}
+                  >
                     <option value="lot">{texts.goods.lot}</option>
                     <option value="sku">{texts.goods.sku}</option>
                     <option value="rakusatsuPrice">{texts.torihikiJisseki.rakusatsuPrice}</option>
@@ -261,16 +287,19 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
               <label className="sm:ml-4 flex items-center">
                 {texts.torihikiJisseki.rakusatsusu}:
                 <span className="text-xl font-bold mx-1">
-                  {rakusatsuList.length}{texts.label.resultCount}
+                  {rakusatsuList.length}
+                  {texts.label.resultCount}
                 </span>
               </label>
               <label className="sm:ml-2 flex items-center">
                 {texts.torihikiJisseki.rakusatsuTotalPrice}:
                 <span className="text-xl font-bold mx-1">
-                  {rakusatsuList.reduce((acc, result) => {
-                    const price = parseFloat(result.rakusatsuTotalPrice.replace(/,/g, '')) || 0;
-                    return acc + price;
-                  }, 0).toLocaleString()}
+                  {rakusatsuList
+                    .reduce((acc, result) => {
+                      const price = parseFloat(result.rakusatsuTotalPrice.replace(/,/g, "")) || 0;
+                      return acc + price;
+                    }, 0)
+                    .toLocaleString()}
                 </span>
               </label>
             </div>
@@ -279,39 +308,40 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
           <div className="xl:flex justify-end">
             {executionPermission(207, 2) ? (
               <>
-              <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
-                <label className="sm:items-center ">{texts.torihikiJisseki.updateDate}</label>
-                {formErrors?.updateKbn && <p className="error-message">{formErrors.updateKbn}</p>}
-                <div className="flex items-center mb-2 sm:mb-0">
-                  <select
-                    id="updateKbn"
-                    name="updateKbn"
-                    value={rakusatsuUpdateKbn}
-                    onChange={handleRakusatsuUpdateKbnChange}
-                    className={`${styles.updateDateInput} w-48 `}
-                  >
-                    <option value="">---</option>
-                    <option value="1">{texts.torihikiJisseki.nyukinbi}</option>
-                    <option value="2">{texts.torihikiJisseki.hassobi}</option>
-                  </select>
-                  <CustomDatePicker
-                    name="date"
-                    selectedDate={rakusatsuDate}
-                    onDateChange={handleRakusatsuDateChange()}
+                <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
+                  <label className="sm:items-center ">{texts.torihikiJisseki.updateDate}</label>
+                  {formErrors?.updateKbn && <p className="error-message">{formErrors.updateKbn}</p>}
+                  <div className="flex items-center mb-2 sm:mb-0">
+                    <select
+                      id="updateKbn"
+                      name="updateKbn"
+                      value={rakusatsuUpdateKbn}
+                      onChange={handleRakusatsuUpdateKbnChange}
+                      className={`${styles.updateDateInput} w-48 `}
+                    >
+                      <option value="">---</option>
+                      <option value="1">{texts.torihikiJisseki.nyukinbi}</option>
+                      <option value="2">{texts.torihikiJisseki.hassobi}</option>
+                    </select>
+                    <CustomDatePicker
+                      name="date"
+                      selectedDate={rakusatsuDate}
+                      onDateChange={handleRakusatsuDateChange()}
+                    />
+                  </div>
+                  <RegistButton
+                    label={texts.button.regist}
+                    onClick={() => handleDateUpdate(true)}
                   />
                 </div>
-                <RegistButton label={texts.button.regist} onClick={() => handleDateUpdate(true)} />
-              </div>
-              
               </>
             ) : null}
           </div>
 
-
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b  w-24" >
+                <th className="py-2 px-4 border-b  w-24">
                   <input
                     type="checkbox"
                     checked={rakusatsuSelectAll}
@@ -319,44 +349,57 @@ const Page: React.FC<PageProps> = ({ kengen,optionInvoice }) => {
                   />
                 </th>
                 <th className="py-2 px-4 border-b w-48">{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b w-24" >{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b" >{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-48" >{texts.torihikiJisseki.rakusatsuPrice}</th>
-                <th className="py-2 px-4 border-b w-48" >{texts.torihikiJisseki.rakusatsuTesuryoPrice}</th>
-                <th className="py-2 px-4 border-b w-48" >{texts.torihikiJisseki.rakusatsuTotalPrice}</th>
-                <th className="py-2 px-4 border-b w-32" >{texts.torihikiJisseki.nyukinbi}</th>
-                <th className="py-2 px-4 border-b w-32" >{texts.torihikiJisseki.hassobi}</th>
+                <th className="py-2 px-4 border-b w-24">{texts.goods.lot}</th>
+                <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
+                <th className="py-2 px-4 border-b w-48">{texts.torihikiJisseki.rakusatsuPrice}</th>
+                <th className="py-2 px-4 border-b w-48">
+                  {texts.torihikiJisseki.rakusatsuTesuryoPrice}
+                </th>
+                <th className="py-2 px-4 border-b w-48">
+                  {texts.torihikiJisseki.rakusatsuTotalPrice}
+                </th>
+                <th className="py-2 px-4 border-b w-32">{texts.torihikiJisseki.nyukinbi}</th>
+                <th className="py-2 px-4 border-b w-32">{texts.torihikiJisseki.hassobi}</th>
               </tr>
             </thead>
             <tbody>
-              {rakusatsuList.length > 0 && rakusatsuList.map((result) => (
-                <tr
-                  key={result.goodsId}
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={(e) => handleRowClick(e, result.goodsId)}
-                >
-                  <td
-                    className="py-2 px-4 border-b text-center  w-24"
-                    onClick={(e) => {
-                      e.stopPropagation(); // チェックボックスでイベントを止める
-                    }}
+              {rakusatsuList.length > 0 &&
+                rakusatsuList.map((result) => (
+                  <tr
+                    key={result.goodsId}
+                    className="cursor-pointer hover:bg-gray-100"
+                    onClick={(e) => handleRowClick(e, result.goodsId)}
                   >
-                    <input
-                      type="checkbox"
-                      checked={rakusatsuSelectedIds.includes(result.goodsId)}
-                      onChange={() => rakusatsuHandleSelect(result.goodsId)}
-                    />
-                  </td>
-                  <td className="py-2 px-4 border-b text-left w-48">{result.sku}</td>
-                  <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
-                  <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
-                  <td className="py-2 px-4 border-b text-right w-48">{result.rakusatsuPrice}</td>
-                  <td className="py-2 px-4 border-b text-right w-48">{result.rakusatsuTesuryoPrice}</td>
-                  <td className="py-2 px-4 border-b text-right w-48">{result.rakusatsuTotalPrice}</td>
-                  <td className="py-2 px-4 border-b text-center w-32">{result.rakusatsuKessaibi}</td>
-                  <td className="py-2 px-4 border-b text-center w-32">{result.rakusatsuHassobi}</td>
-                </tr>
-              ))}
+                    <td
+                      className="py-2 px-4 border-b text-center  w-24"
+                      onClick={(e) => {
+                        e.stopPropagation(); // チェックボックスでイベントを止める
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={rakusatsuSelectedIds.includes(result.goodsId)}
+                        onChange={() => rakusatsuHandleSelect(result.goodsId)}
+                      />
+                    </td>
+                    <td className="py-2 px-4 border-b text-left w-48">{result.sku}</td>
+                    <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
+                    <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
+                    <td className="py-2 px-4 border-b text-right w-48">{result.rakusatsuPrice}</td>
+                    <td className="py-2 px-4 border-b text-right w-48">
+                      {result.rakusatsuTesuryoPrice}
+                    </td>
+                    <td className="py-2 px-4 border-b text-right w-48">
+                      {result.rakusatsuTotalPrice}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center w-32">
+                      {result.rakusatsuKessaibi}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center w-32">
+                      {result.rakusatsuHassobi}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

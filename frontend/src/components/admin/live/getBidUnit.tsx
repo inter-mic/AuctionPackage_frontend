@@ -1,5 +1,5 @@
 import { TMtLiveBidUnit } from "@/types/common/bidUnit";
-export function useBidUnit(
+export function getBidUnit(
   spnKbn: string | string[] | undefined,
   goodsBidUnit: string | null,
   fetchBidUnitList: TMtLiveBidUnit[],

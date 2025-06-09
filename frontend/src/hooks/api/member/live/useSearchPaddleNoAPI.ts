@@ -3,7 +3,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 export const useSearchPaddleNoAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [fetchPaddleNo, setFetchPaddleNo] = useState<String>("");
+  const [fetchPaddleNo, setFetchPaddleNo] = useState<string>("");
   const searchPaddleNoAPI = async (auctionSeq: number) => {
     const { data: responseData } = await apiRequest(
       "member",

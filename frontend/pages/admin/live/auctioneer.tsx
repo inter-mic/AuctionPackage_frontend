@@ -13,7 +13,7 @@ import withAdminNoHeaderLayout from "@/hocs/withAdminNoHeaderLayout";
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
-import { useBidUnit } from "@/hooks/useBidUnit";
+import { getBidUnit } from "@/components/admin/live/getBidUnit";
 //API
 import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI";
 import { useLiveBidInfoGetNextLotListAPI } from "@/hooks/api/admin/live/bidInfo/useLiveBidInfoGetNextLotListAPI";
@@ -71,7 +71,7 @@ export interface OnlinePriceButtonHandle {
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect } = useCommonSetup();
-  useKengenRedirect(kengen, 304);
+  useKengenRedirect(kengen, 601);
   const { executionPermission } = useExecutionPermission(kengen);
   const { spnKbn } = useRouter().query;
 
@@ -131,6 +131,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai, searchLot);
       liveBidInfoSearchAPI(false, 0, searchSelectedKaisai, searchLot, searchLot);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchGoodsData]);
   useEffect(() => {
     if (goodsSearchErrors) {
@@ -219,7 +220,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
 
       //次価格セット
-      const fetchBitUnit = useBidUnit(
+      const fetchBitUnit = getBidUnit(
         spnKbn,
         fetchLiveBidInfoData.bidUnit,
         fetchBidUnitList,
@@ -316,19 +317,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onopen = () => {
-      console.log("WebSocket connection established");
-      let message = {
-          type: "admin",
-          ...getCommonData(),
-          // ...additionalData,
-          nextLotList,
-          liveBidLog,
-        };
+      const message = {
+        type: "admin",
+        ...getCommonData(),
+        // ...additionalData,
+        nextLotList,
+        liveBidLog,
+      };
       ws.current?.send(JSON.stringify(message));
     };
 
     ws.current.onmessage = (event) => {
-      var data = JSON.parse(event.data);
+      const data = JSON.parse(event.data);
       setIsOnlineBidReceive(false);
       if (data.type === "set") {
         setIsCallButtonClicked(false);
@@ -435,8 +435,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         };
       }
       ws.current.send(JSON.stringify(message));
-    } else {
-      console.error(`[${type.toUpperCase()}] WebSocket is not open`);
     }
   };
 
@@ -596,6 +594,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     searchSelectedKaisai,
     searchLot,
@@ -835,303 +834,297 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
           </div>
         </div>
-        <div className={styles.bottomRight}>
-          <div className={styles.labelRow}>
-            <div className={styles.leftButtons}>
-              <label htmlFor="lot" className={styles.goodslabel}>
-                {texts.goods.lot}
-              </label>
-              <input
-                id="lot"
-                type="text"
-                name="lot"
-                ref={lotInputRef}
-                value={searchLot}
-                onChange={handleSearchLotChange}
-                className={`border p-2 rounded h-10 w-40
+        {executionPermission(350, 2) ? (
+          <>
+            <div className={styles.bottomRight}>
+              <div className={styles.labelRow}>
+                <div className={styles.leftButtons}>
+                  <label htmlFor="lot" className={styles.goodslabel}>
+                    {texts.goods.lot}
+                  </label>
+                  <input
+                    id="lot"
+                    type="text"
+                    name="lot"
+                    ref={lotInputRef}
+                    value={searchLot}
+                    onChange={handleSearchLotChange}
+                    className={`border p-2 rounded h-10 w-40
                     ${inputSeatchErrors?.lot ? "bg-red-300" : ""}`}
-              />
-
-              <CallButton onClick={lotSearch} />
-              <LotBeforeAffterButton
-                onClick={() => lotBeforeAffterSearch(true)}
-                isBefore={true}
-                disabled={!isCallButtonClicked}
-              />
-              <LotBeforeAffterButton
-                onClick={() => lotBeforeAffterSearch(false)}
-                isBefore={false}
-                disabled={!isCallButtonClicked}
-              />
-            </div>
-            <div className={styles.rightButtons}>
-              <SetButton
-                disabled={!isCallButtonClicked}
-                onClick={set}
-                setAuctioneerFlg={setAuctioneerFlg}
-                isAuctioneerFlg={isAuctioneerFlg}
-                sendWebSocketMessage={sendWebSocketMessage}
-                currentPrice={currentPrice}
-                bidUnit={bidUnit}
-              />
-
-              <StartButton
-                ref={startButtonRef}
-                disabled={!isSetButtonClicked}
-                sendWebSocketMessage={sendWebSocketMessage}
-                kenriUserId={kenriUserId ?? null}
-                currentPrice={currentPrice}
-                nextPrice={nextPrice}
-                setLiveBidLog={setLiveBidLog}
-              />
-              <ConfirmDialog
-                description={texts.livemessage.confirmClear}
-                disabled={false}
-                buttonTitle={texts.button.liveClear}
-                className={`bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-full w-40`}
-                dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
-                dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
-                onSubmit={clear}
-                buttonText={texts.button.liveClear}
-              />
-            </div>
-          </div>
-          <div className={styles.labelRow}>
-            <div className={styles.leftButtons}>
-              <div className={styles.msgDiv}>
-                {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
-                {isRakusatsuProcessFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
-              </div>
-            </div>
-            <div className={styles.rightButtons}>
-              {spnKbn == "1" && (
-                <div className={styles.priceSection}>
-                  <div className={styles.priceGroup}>
-                    <span className={styles.priceLabel}>次価格</span>
-                    <input
-                      type="text"
-                      className={styles.priceInput}
-                      value={nextPrice}
-                      onChange={(e) => setNextPrice(e.target.value)}
-                    />
-                    <span>,000</span>
-
-                    <span className={styles.priceLabel}>現在価格</span>
-                    <input
-                      type="text"
-                      className={styles.priceInput}
-                      value={currentPrice}
-                      ref={currentPriceInputRef}
-                      onChange={(e) => setCurrentPrice(e.target.value)}
-                    />
-                    <span>,000</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {spnKbn == "1" && (
-            <div className={styles.adjustButtons}>
-              <SerihabaButton
-                ref={plusRef}
-                isplus={true}
-                disabled={!isStartButtonClicked}
-                currentPrice={currentPrice}
-                nextPrice={nextPrice}
-                fetchGoodsData={fetchGoodsData}
-                fetchBidUnitList={fetchBidUnitList}
-                spnKbn={spnKbn}
-                setBidUnit={setBidUnit}
-                onUpdatePrices={(newCurrentPrice, newNextPrice) => {
-                  setCurrentPrice(newCurrentPrice);
-                  setNextPrice(newNextPrice);
-                }}
-              />
-
-              <SerihabaButton
-                ref={minusRef}
-                isplus={false}
-                disabled={!isStartButtonClicked}
-                currentPrice={currentPrice}
-                nextPrice={nextPrice}
-                fetchGoodsData={fetchGoodsData}
-                fetchBidUnitList={fetchBidUnitList}
-                spnKbn={spnKbn}
-                setBidUnit={setBidUnit}
-                onUpdatePrices={(newCurrentPrice, newNextPrice) => {
-                  setCurrentPrice(newCurrentPrice);
-                  setNextPrice(newNextPrice);
-                }}
-              />
-            </div>
-          )}
-
-          <div className={styles.labelRow}>
-            <div className={styles.leftButtons}>
-              <StatusButton
-                status={1}
-                disabled={!isStartButtonClicked}
-                sendWebSocketMessage={sendWebSocketMessage}
-              />
-
-              <StatusButton
-                status={!isRakusatsuProcessFlg ? 2 : 3}
-                disabled={!isStartButtonClicked}
-                sendWebSocketMessage={sendWebSocketMessage}
-              />
-            </div>
-            <div className={styles.rightButtons}>
-              {spnKbn == "1" && (
-                <>
-                  <OnlinePriceButton
-                    ref={onlinePriceButtonRef}
-                    disabled={!isStartButtonClicked}
-                    onlineBidHistory={onlineBidHistory}
-                    fetchGoodsData={fetchGoodsData}
-                    firstPreBidPrice={firstPreBidPrice}
-                    firstPreBidUserId={firstPreBidUserId}
-                    kenriUpdatePrice={kenriUpdatePrice}
-                    kenriUserId={kenriUserId}
-                    saiteiRakusatsuPrice={saiteiRakusatsuPrice}
-                    sendWebSocketMessage={sendWebSocketMessage}
-                    setCurrentPrice={setCurrentPrice}
-                    setDisplayCurrentPrice={setDisplayCurrentPrice}
-                    setNextPrice={setNextPrice}
-                    setKenriUserId={setKenriUserId}
-                    setKenriPaddleNo={setKenriPaddleNo}
-                    setLiveBidkekkaData={setLiveBidkekkaData}
-                    liveBidLog={liveBidLog}
-                    setLiveBidLog={setLiveBidLog}
                   />
 
-                  <CurrentPriceButton
-                    ref={priceButtonRef}
-                    disabled={!isStartButtonClicked}
-                    setKenriPaddleNo={setKenriPaddleNo}
+                  <CallButton onClick={lotSearch} />
+                  <LotBeforeAffterButton
+                    onClick={() => lotBeforeAffterSearch(true)}
+                    isBefore={true}
+                    disabled={!isCallButtonClicked}
+                  />
+                  <LotBeforeAffterButton
+                    onClick={() => lotBeforeAffterSearch(false)}
+                    isBefore={false}
+                    disabled={!isCallButtonClicked}
+                  />
+                </div>
+                <div className={styles.rightButtons}>
+                  <SetButton
+                    disabled={!isCallButtonClicked}
+                    onClick={set}
+                    setAuctioneerFlg={setAuctioneerFlg}
+                    isAuctioneerFlg={isAuctioneerFlg}
+                    sendWebSocketMessage={sendWebSocketMessage}
+                    currentPrice={currentPrice}
+                    bidUnit={bidUnit}
+                  />
+
+                  <StartButton
+                    ref={startButtonRef}
+                    disabled={!isSetButtonClicked}
+                    sendWebSocketMessage={sendWebSocketMessage}
+                    kenriUserId={kenriUserId ?? null}
                     currentPrice={currentPrice}
                     nextPrice={nextPrice}
-                    sendWebSocketMessage={sendWebSocketMessage}
-                    setDisplayCurrentPrice={setDisplayCurrentPrice}
-                    liveBidLog={liveBidLog}
                     setLiveBidLog={setLiveBidLog}
                   />
-                </>
-              )}
-            </div>
-          </div>
-          <div className={styles.liveMessageDiv}>
-            <label className={styles.goodslabel}>{texts.livemessage.message}</label>
-            <LiveMessageListPullDown
-              className={styles.selectLiveMessage}
-              onChange={(value) => handleSetMessageChange(value)}
-            />
-            <MessageButton onClick={sendMessage} disabled={false} />
-          </div>
-          <div className={styles.labelRow}>
-            <div className={styles.leftButtons}>
-              {spnKbn == "1" && (
-                <>
-                  <span className={styles.priceLabel}>
-                    落札者
-                    <br />
-                    パドル番号
-                  </span>
-                  <input
-                    type="text"
-                    className={styles.paddleInput}
-                    value={liveBidkekkaData.rakusatsuPaddleNo ?? ""}
-                    onChange={(e) => handleRakusatsuPaddleNoChange(e.target.value)}
+                  <ConfirmDialog
+                    description={texts.livemessage.confirmClear}
+                    disabled={false}
+                    buttonTitle={texts.button.liveClear}
+                    className={`bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-full w-40`}
+                    dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
+                    dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
+                    onSubmit={clear}
+                    buttonText={texts.button.liveClear}
                   />
+                </div>
+              </div>
+
+              <div className={styles.labelRow}>
+                <div className={styles.leftButtons}>
+                  <div className={styles.msgDiv}>
+                    {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
+                    {isRakusatsuProcessFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
+                  </div>
+                </div>
+                <div className={styles.rightButtons}>
+                  {spnKbn == "1" && (
+                    <div className={styles.priceSection}>
+                      <div className={styles.priceGroup}>
+                        <span className={styles.priceLabel}>次価格</span>
+                        <input
+                          type="text"
+                          className={styles.priceInput}
+                          value={nextPrice}
+                          onChange={(e) => setNextPrice(e.target.value)}
+                        />
+                        <span>,000</span>
+
+                        <span className={styles.priceLabel}>現在価格</span>
+                        <input
+                          type="text"
+                          className={styles.priceInput}
+                          value={currentPrice}
+                          ref={currentPriceInputRef}
+                          onChange={(e) => setCurrentPrice(e.target.value)}
+                        />
+                        <span>,000</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {spnKbn == "1" && (
+                <div className={styles.adjustButtons}>
+                  <SerihabaButton
+                    ref={plusRef}
+                    isplus={true}
+                    disabled={!isStartButtonClicked}
+                    currentPrice={currentPrice}
+                    nextPrice={nextPrice}
+                    fetchGoodsData={fetchGoodsData}
+                    fetchBidUnitList={fetchBidUnitList}
+                    spnKbn={spnKbn}
+                    setBidUnit={setBidUnit}
+                    onUpdatePrices={(newCurrentPrice, newNextPrice) => {
+                      setCurrentPrice(newCurrentPrice);
+                      setNextPrice(newNextPrice);
+                    }}
+                  />
+
+                  <SerihabaButton
+                    ref={minusRef}
+                    isplus={false}
+                    disabled={!isStartButtonClicked}
+                    currentPrice={currentPrice}
+                    nextPrice={nextPrice}
+                    fetchGoodsData={fetchGoodsData}
+                    fetchBidUnitList={fetchBidUnitList}
+                    spnKbn={spnKbn}
+                    setBidUnit={setBidUnit}
+                    onUpdatePrices={(newCurrentPrice, newNextPrice) => {
+                      setCurrentPrice(newCurrentPrice);
+                      setNextPrice(newNextPrice);
+                    }}
+                  />
+                </div>
+              )}
+
+              <div className={styles.labelRow}>
+                <div className={styles.leftButtons}>
+                  <StatusButton
+                    status={1}
+                    disabled={!isStartButtonClicked}
+                    sendWebSocketMessage={sendWebSocketMessage}
+                  />
+
+                  <StatusButton
+                    status={!isRakusatsuProcessFlg ? 2 : 3}
+                    disabled={!isStartButtonClicked}
+                    sendWebSocketMessage={sendWebSocketMessage}
+                  />
+                </div>
+                <div className={styles.rightButtons}>
+                  {spnKbn == "1" && (
+                    <>
+                      <OnlinePriceButton
+                        ref={onlinePriceButtonRef}
+                        disabled={!isStartButtonClicked}
+                        onlineBidHistory={onlineBidHistory}
+                        fetchGoodsData={fetchGoodsData}
+                        firstPreBidPrice={firstPreBidPrice}
+                        firstPreBidUserId={firstPreBidUserId}
+                        kenriUpdatePrice={kenriUpdatePrice}
+                        kenriUserId={kenriUserId}
+                        saiteiRakusatsuPrice={saiteiRakusatsuPrice}
+                        sendWebSocketMessage={sendWebSocketMessage}
+                        setCurrentPrice={setCurrentPrice}
+                        setDisplayCurrentPrice={setDisplayCurrentPrice}
+                        setNextPrice={setNextPrice}
+                        setKenriUserId={setKenriUserId}
+                        setKenriPaddleNo={setKenriPaddleNo}
+                        setLiveBidkekkaData={setLiveBidkekkaData}
+                        liveBidLog={liveBidLog}
+                        setLiveBidLog={setLiveBidLog}
+                      />
+
+                      <CurrentPriceButton
+                        ref={priceButtonRef}
+                        disabled={!isStartButtonClicked}
+                        setKenriPaddleNo={setKenriPaddleNo}
+                        currentPrice={currentPrice}
+                        nextPrice={nextPrice}
+                        sendWebSocketMessage={sendWebSocketMessage}
+                        setDisplayCurrentPrice={setDisplayCurrentPrice}
+                        liveBidLog={liveBidLog}
+                        setLiveBidLog={setLiveBidLog}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className={styles.liveMessageDiv}>
+                <label className={styles.goodslabel}>{texts.livemessage.message}</label>
+                <LiveMessageListPullDown
+                  className={styles.selectLiveMessage}
+                  onChange={(value) => handleSetMessageChange(value)}
+                />
+                <MessageButton onClick={sendMessage} disabled={false} />
+              </div>
+
+              <div className={styles.labelRow}>
+                <div className={styles.leftButtons}>
+                  {spnKbn == "1" && (
+                    <>
+                      <span className={styles.priceLabel}>
+                        落札者
+                        <br />
+                        パドル番号
+                      </span>
+                      <input
+                        type="text"
+                        className={styles.paddleInput}
+                        value={liveBidkekkaData.rakusatsuPaddleNo ?? ""}
+                        onChange={(e) => handleRakusatsuPaddleNoChange(e.target.value)}
+                      />
+                      <ConfirmDialog
+                        disabled={!isRakusatsuProcessFlg}
+                        description={`${texts.livemessage.updateSerikekkaData_1} ${
+                          liveBidkekkaData.auctionKekkaStatus === 2
+                            ? texts.livemessage.rakusatsu
+                            : texts.livemessage.furakusatsu
+                        }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_2 +
+                            liveBidkekkaData.rakusatsuUserId
+                          : ""
+                      }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_3 +
+                            formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice))
+                          : ""
+                      }
+                  `}
+                        buttonTitle={texts.button.updateSerikekka}
+                        className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
+                          !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
+                        dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
+                        onSubmit={bidEnd}
+                        buttonText={texts.button.updateSerikekka}
+                      />
+                    </>
+                  )}
+                </div>
+                <div className={styles.rightButtons}>
                   <ConfirmDialog
                     disabled={!isRakusatsuProcessFlg}
-                    description="落札します。よろしいでしょうか？"
-                    buttonTitle={texts.button.rakusatsu}
+                    description={`${texts.livemessage.updateSerikekkaData_1} ${
+                      liveBidkekkaData.auctionKekkaStatus === 2
+                        ? texts.livemessage.rakusatsu
+                        : texts.livemessage.furakusatsu
+                    }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_2 +
+                            liveBidkekkaData.rakusatsuUserId
+                          : ""
+                      }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_3 +
+                            formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice))
+                          : ""
+                      }
+                  `}
+                    buttonTitle={texts.button.furakusatsu}
                     className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
                       !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                     dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
                     onSubmit={bidEnd}
-                    buttonText={texts.button.rakusatsu}
+                    buttonText={texts.button.furakusatsu}
                   />
-                </>
-              )}
-              {spnKbn == "2" && (
-                <ConfirmDialog
-                  disabled={!isRakusatsuProcessFlg}
-                  description={`${texts.livemessage.updateSerikekkaData_1} ${
-                    liveBidkekkaData.auctionKekkaStatus === 2
-                      ? texts.livemessage.rakusatsu
-                      : texts.livemessage.furakusatsu
-                  }
-                      ${
-                        liveBidkekkaData.auctionKekkaStatus === 2
-                          ? "\n" +
-                            texts.livemessage.updateSerikekkaData_2 +
-                            liveBidkekkaData.rakusatsuUserId
-                          : ""
-                      }
-                      ${
-                        liveBidkekkaData.auctionKekkaStatus === 2
-                          ? "\n" +
-                            texts.livemessage.updateSerikekkaData_3 +
-                            formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice))
-                          : ""
-                      }
-                  `}
-                  buttonTitle={texts.button.updateSerikekka}
-                  className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-20 text-2xl text-white ${
-                    !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
-                  dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
-                  onSubmit={bidEnd}
-                  buttonText={texts.button.updateSerikekka}
-                />
-              )}
-            </div>
-            <div className={styles.rightButtons}>
-              <ConfirmDialog
-                disabled={!isRakusatsuProcessFlg}
-                description={`${texts.livemessage.updateSerikekkaData_1} ${
-                  liveBidkekkaData.auctionKekkaStatus === 2
-                    ? texts.livemessage.rakusatsu
-                    : texts.livemessage.furakusatsu
-                }
-                      ${
-                        liveBidkekkaData.auctionKekkaStatus === 2
-                          ? "\n" +
-                            texts.livemessage.updateSerikekkaData_2 +
-                            liveBidkekkaData.rakusatsuUserId
-                          : ""
-                      }
-                      ${
-                        liveBidkekkaData.auctionKekkaStatus === 2
-                          ? "\n" +
-                            texts.livemessage.updateSerikekkaData_3 +
-                            formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice))
-                          : ""
-                      }
-                  `}
-                buttonTitle={texts.button.furakusatsu}
-                className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
-                  !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
-                dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
-                onSubmit={bidEnd}
-                buttonText={texts.button.furakusatsu}
-              />
-            </div>
-          </div>
+                </div>
+              </div>
 
-          <div className={styles.flowingMsgDiv}>
-            <span key={marqueeKey} className={styles.marquee}>
-              {msg}
-            </span>
-          </div>
-        </div>
+              <div className={styles.flowingMsgDiv}>
+                <span key={marqueeKey} className={styles.marquee}>
+                  {msg}
+                </span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

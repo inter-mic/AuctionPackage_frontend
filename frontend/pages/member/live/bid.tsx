@@ -63,6 +63,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       setIsFetchLiveAuction(true);
       searchPaddleNoAPI(fetchAuction.auctionSeq);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAuction]);
   const { nextAuction } = useSearchNextLiveAuctionAPI();
   const [fetchNextAuction, setFetchNextAuction] = useState<TAuction>();
@@ -89,13 +90,10 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   useEffect(() => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
-    ws.current.onopen = () => {
-      console.log("WebSocket connection established");
-    };
     const loginUserId = PageProps.userId;
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      
+
       //↓↓毎回取得
       setNextLotList(data.nextLotList);
       setBidHistory(data.liveBidLog);
@@ -125,7 +123,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       } else {
         if (data.type === "sendMessage") {
           //メッセージ配信時は「もうすぐ落札」を表示したままにする
-        }else{
+        } else {
           setBidComingSoonMsg(false);
         }
       }
@@ -146,10 +144,6 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         setMsg(data.message);
         setMarqueeKey((k) => k + 1);
       }
-    };
-
-    ws.current.onclose = () => {
-      console.log("WebSocket closed");
     };
 
     return () => {
@@ -176,8 +170,6 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         ...additionalData,
       };
       ws.current.send(JSON.stringify(message));
-    } else {
-      console.error(`[${type.toUpperCase()}] WebSocket is not open`);
     }
   };
 
@@ -357,7 +349,9 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                   )}
                   <span
                     className={
-                      bid.userId === PageProps.userId?.toString() ? styles.bidPriceYourBid : styles.bidPrice
+                      bid.userId === PageProps.userId?.toString()
+                        ? styles.bidPriceYourBid
+                        : styles.bidPrice
                     }
                   >
                     {formatPriceWithCommas(bid.bidPrice)}

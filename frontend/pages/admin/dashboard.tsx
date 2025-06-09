@@ -56,7 +56,7 @@ const Button: React.FC<ButtonProps> = ({ label, url }) => {
   );
 };
 
-const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen, optionLiveMessage }) => (
+const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen, liveauction, livebit }) => (
   <div className={styles.container}>
     <Section title={texts.menu.adminMemberTitle}>
       {hasPermission(kengen, 101) && (
@@ -109,19 +109,30 @@ const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen, optionLiv
       {hasPermission(kengen, 303) && (
         <Button label={texts.menu.adminBidLogList} url="/admin/auction/bid/logSearch" />
       )}
-      {hasPermission(kengen, 304) && (
-        <Button label={texts.menu.adminAuctionner} url="/admin/live/auctioneer?spnKbn=2" />
-      )}
-      {hasPermission(kengen, 304) && (
-        <Button label={texts.menu.adminAuctionner} url="/admin/live/auctioneer?spnKbn=1" />
-      )}
-      {hasPermission(kengen, 305) && (
-        <Button label={texts.menu.adminLiveBidUnitRegist} url="/admin/live/bidunit" />
-      )}
-      {hasPermission(kengen, 306) && (
-        <Button label={texts.menu.adminLiveMessageRegist} url="/admin/live/message" />
-      )}
     </Section>
+    {(livebit || liveauction) && (
+      <Section title={texts.menu.adminLiveTitle}>
+        {hasPermission(kengen, 350) && (
+          <Button label={texts.menu.adminAuctionner_1} url="/admin/live/auctioneer?spnKbn=1" />
+        )}
+        {hasPermission(kengen, 350) && (
+          <Button label={texts.menu.adminAuctionner_2} url="/admin/live/auctioneer?spnKbn=2" />
+        )}
+        {hasPermission(kengen, 351) && (
+          <Button label={texts.menu.adminLiveBidUnitRegist} url="/admin/live/bidunit" />
+        )}
+        {hasPermission(kengen, 352) && (
+          <Button label={texts.menu.adminLiveMessageRegist} url="/admin/live/message" />
+        )}
+        {hasPermission(kengen, 353) && (
+          <Button label={texts.menu.adminPaddleManagement} url="/admin/live/paddle" />
+        )}
+        {hasPermission(kengen, 354) && (
+          <Button label={texts.menu.adminLiveScreen} url="/admin/live/screen" />
+        )}
+      </Section>
+    )}
+
     <Section title={texts.menu.adminStaffTitle}>
       {hasPermission(kengen, 401) && (
         <Button label={texts.menu.adminStaffRegist} url="/admin/staff/register" />

@@ -102,9 +102,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setLiveBidkekkaData((prev) => ({
         ...prev,
         rakusatsuUserId: calculatedKenriUserId ?? null,
-        rakusatsuPrice: calculatedKenriUserId
-          ? newBidPriceNumber.toString()
-          : null,
+        rakusatsuPrice: calculatedKenriUserId ? newBidPriceNumber.toString() : null,
         auctionKekkaStatus: calculatedKenriUserId == null ? 1 : 2,
       }));
 
@@ -113,8 +111,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setNextPrice(formatPriceDivision(nextPriceCalc));
 
       // ── 8. 最低落札価格を下回っているかどうか ──
-      const isBelowFlag =
-        Number(saiteiRakusatsuPrice.replace(/,/g, "")) > newBidPriceNumber;
+      const isBelowFlag = Number(saiteiRakusatsuPrice.replace(/,/g, "")) > newBidPriceNumber;
 
       // ── 9. 「配信履歴 (liveBidLog)」にこの入札を追加 ──
       const addedLog: TLiveBidLog = {
@@ -137,16 +134,16 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
 
       // ── 11. sendWSフラグTrue ──
       setSendWS(true); // WS送信タイミングが共通のliveBidLog更新時であるため
-
     };
 
     useEffect(() => {
       if (liveBidLog.length > 0 && sendWS) {
-      // ログが新たに追加されたときにだけ一度 send
-      sendWebSocketMessage("updatePrice", queuedPayload);
-      setQueuedPayload(null);
+        // ログが新たに追加されたときにだけ一度 send
+        sendWebSocketMessage("updatePrice", queuedPayload);
+        setQueuedPayload(null);
       }
       setSendWS(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [liveBidLog]);
 
     useImperativeHandle(ref, () => ({
@@ -166,3 +163,4 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
     );
   }
 );
+OnlinePriceButton.displayName = "OnlinePriceButton";
