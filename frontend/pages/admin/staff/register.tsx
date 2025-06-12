@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { useSearchParams } from "next/navigation";
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";

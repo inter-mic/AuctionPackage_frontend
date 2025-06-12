@@ -3,9 +3,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import { texts } from "@/config/texts";
+import { useLocale } from "@/hooks/useLocale";
 
 interface ConfirmDialogProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   disabled: boolean; // 無効化
   description: string; // ダイアログの内容
   buttonTitle: string; // ボタンタイトル
@@ -17,6 +19,8 @@ interface ConfirmDialogProps {
 }
 
 export default function ConfirmDialogProps({
+  open,
+  setOpen,
   disabled,
   description,
   buttonTitle,
@@ -26,8 +30,6 @@ export default function ConfirmDialogProps({
   onSubmit,
   buttonText,
 }: ConfirmDialogProps) {
-  const [open, setOpen] = React.useState(false);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -40,7 +42,7 @@ export default function ConfirmDialogProps({
     onSubmit(); // ページごとのAPI呼び出しを実行
     handleClose(); // ダイアログを閉じる
   };
-
+  const { texts } = useLocale();
   return (
     <React.Fragment>
       <button onClick={handleClickOpen} className={className} disabled={disabled}>

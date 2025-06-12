@@ -1,9 +1,10 @@
-import { texts } from '@/config/texts';
-import styles from '@/styles/Button.module.css';
+import { useLocale } from "@/hooks/useLocale";
+import styles from "@/styles/Button.module.css";
 export function LoginButton() {
-    return (
-        <button className={styles.loginButton}>
-            <span >{ texts.button.login }</span>
-         </button>
-    );
+  const { texts } = useLocale();
+  return (
+    <button className={styles.loginButton}>
+      <span>{texts.button.login}</span>
+    </button>
+  );
 }

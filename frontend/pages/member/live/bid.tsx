@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { GetServerSideProps } from "next";
 import { useEffect, useState, useRef } from "react";
-import { texts } from "@/config/texts";
+import { getTexts } from "@/config/texts";
 import Image from "next/image";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
@@ -15,6 +15,7 @@ import { useSearchPaddleNoAPI } from "@/hooks/api/member/live/useSearchPaddleNoA
 import { useSystemSearchAPI } from "@/hooks/api/member/useSystemSearchAPI";
 //カスタムフック
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useLocale } from "@/hooks/useLocale";
 //型定義
 import { TBidHisotry } from "@/types/member/live";
 import { TPageProps } from "@/types/member/memberPage";
@@ -32,6 +33,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+  const { locale } = context;
+  const texts = getTexts(locale);
   return {
     props: {
       pageTitle: texts.menu.memberLive,
@@ -53,7 +56,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [marqueeKey, setMarqueeKey] = useState(0);
 
   const ws = useRef<WebSocket | null>(null);
-
+  const { texts } = useLocale();
   const { fetchSystemSettingData, systemSearchAPI } = useSystemSearchAPI();
   const { fetchAuction } = useCheckLiveAuctionAPI();
   const [isFetchLiveAuction, setIsFetchLiveAuction] = useState<boolean>(false);

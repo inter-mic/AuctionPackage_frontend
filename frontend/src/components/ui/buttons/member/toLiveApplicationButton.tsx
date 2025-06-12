@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
-//コンフィグ
-import { texts } from "@/config/texts";
+import { useLocale } from "@/hooks/useLocale";
 interface Props {
   auctionSeq?: number;
   className: string;
@@ -8,6 +7,7 @@ interface Props {
 
 export function ToLiveApplicationButton({ auctionSeq, className }: Props) {
   const router = useRouter();
+  const { texts } = useLocale();
   const handleClick = () => {
     router.push(`/member/live/application?auctionSeq=${auctionSeq}`);
   };

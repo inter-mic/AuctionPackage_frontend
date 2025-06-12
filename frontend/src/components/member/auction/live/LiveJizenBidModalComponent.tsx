@@ -1,15 +1,15 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
-import Modal from '@mui/material/Modal';
+import { useRef, useState, useEffect, useCallback } from "react";
+import Modal from "@mui/material/Modal";
+import { useLocale } from "@/hooks/useLocale";
 //API
-import { useLiveJizenBidRegistAPI } from '@/hooks/api/member/goods/useLiveJizenBidRegistAPI';
+import { useLiveJizenBidRegistAPI } from "@/hooks/api/member/goods/useLiveJizenBidRegistAPI";
 //アイコン
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import CloseIcon from '@mui/icons-material/Close';
-import CurrencyYenIcon from '@mui/icons-material/CurrencyYen';
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import CloseIcon from "@mui/icons-material/Close";
+import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
 //スタイル
-import styles from '@/styles/member/auction/internetTender/BidModal.module.css';
-import { texts } from '@/config/texts';
+import styles from "@/styles/member/auction/internetTender/BidModal.module.css";
 
 interface Props {
   isOpen: boolean;
@@ -30,21 +30,19 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
   bidGoodsId,
   bidPrice,
   startPrice,
-  bidUnit
+  bidUnit,
 }) => {
-
-  const parseCurrency = (value: string): number =>
-    parseInt(value.replace(/,/g, ''), 10);
-
+  const parseCurrency = (value: string): number => parseInt(value.replace(/,/g, ""), 10);
+  const { texts } = useLocale();
   const initialPrice = parseCurrency(startPrice);
   const unitPrice = parseCurrency(bidUnit);
 
-  const [currentBid, setCurrentBid] = useState<number>(Number(bidPrice.replace(/,/g, '')));
+  const [currentBid, setCurrentBid] = useState<number>(Number(bidPrice.replace(/,/g, "")));
   useEffect(() => {
-    setCurrentBid(Number(bidPrice.replace(/,/g, '')));
+    setCurrentBid(Number(bidPrice.replace(/,/g, "")));
   }, [bidPrice]);
 
-  const unitValue = parseFloat(bidUnit.replace(/,/g, '')) || 0;
+  const unitValue = parseFloat(bidUnit.replace(/,/g, "")) || 0;
   // +ボタンで価格を増やす処理
   const handleIncrease = useCallback(() => {
     setCurrentBid((prev) => prev + unitPrice);
@@ -54,8 +52,6 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
   const handleDecrease = useCallback(() => {
     setCurrentBid((prev) => Math.max(initialPrice, prev - unitPrice));
   }, [initialPrice, unitPrice]);
-
-
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const formatNumberWithCommas = (value: string) => {
@@ -75,12 +71,16 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
         if (inputRef.current) {
           const newCommaCount = (formattedValue.slice(0, cursorPosition).match(/,/g) || []).length;
           const positionOffset = newCommaCount - commaCountBefore;
-          inputRef.current.setSelectionRange(cursorPosition + positionOffset, cursorPosition + positionOffset);
+          inputRef.current.setSelectionRange(
+            cursorPosition + positionOffset,
+            cursorPosition + positionOffset
+          );
         }
       }, 0);
     }
   };
-  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidRegistAPI } = useLiveJizenBidRegistAPI();
+  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidRegistAPI } =
+    useLiveJizenBidRegistAPI();
   const handleSubmit = () => {
     liveJizenBidRegistAPI(bidGoodsId, currentBid);
   };
@@ -90,15 +90,23 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
   };
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   useEffect(() => {
-    if (liveJizenBidErrors) { setFormErrors(liveJizenBidErrors); }
+    if (liveJizenBidErrors) {
+      setFormErrors(liveJizenBidErrors);
+    }
   }, [liveJizenBidErrors]);
   useEffect(() => {
-    if (liveJizenBidResponseStatus === 200) { handleToggleFilter(); }
+    if (liveJizenBidResponseStatus === 200) {
+      handleToggleFilter();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveJizenBidResponseStatus]);
 
   useEffect(() => {
-    if (liveJizenBidResponseStatus) { if (liveJizenBidResponseStatus == 200) { handleToggleFilter(); } }
+    if (liveJizenBidResponseStatus) {
+      if (liveJizenBidResponseStatus == 200) {
+        handleToggleFilter();
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveJizenBidResponseStatus]);
 
@@ -109,18 +117,21 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
           <CloseIcon />
         </button>
         <div className={styles.goodsInfo}>
-          <span >Lot {lot} {goodsName}</span>
+          <span>
+            Lot {lot} {goodsName}
+          </span>
         </div>
 
         <div className={styles.bidLabel}>{texts.goods.bidPrice}</div>
         <div className={styles.priceSection}>
-
           <div className={styles.inputContainer}>
-            <CurrencyYenIcon sx={{
-              color: "red",
-              fontSize: "2.5rem",
-              paddingBottom: "10px",
-            }} />
+            <CurrencyYenIcon
+              sx={{
+                color: "red",
+                fontSize: "2.5rem",
+                paddingBottom: "10px",
+              }}
+            />
             <input
               ref={inputRef}
               type="text"
@@ -136,29 +147,30 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
               className="bg-gray-300 text-white 
             hover:bg-opacity-50 py-2  ml-1 lg:w-44 w-32 rounded-full"
             >
-              <RemoveIcon className="lg:mr-4" /><CurrencyYenIcon />{unitValue.toLocaleString()}
+              <RemoveIcon className="lg:mr-4" />
+              <CurrencyYenIcon />
+              {unitValue.toLocaleString()}
             </button>
             <button
               onClick={handleIncrease}
               className="bg-gray-300 text-white  
             hover:bg-opacity-50 py-2  ml-1 lg:w-44 w-32 rounded-full"
             >
-              <AddIcon className="lg:mr-4" /><CurrencyYenIcon />{unitValue.toLocaleString()}
+              <AddIcon className="lg:mr-4" />
+              <CurrencyYenIcon />
+              {unitValue.toLocaleString()}
             </button>
           </div>
-
         </div>
         {formErrors?.bidPrice && <p className="error-message">{formErrors.bidPrice}</p>}
 
-
         <div className={styles.confirmButtonContainer}>
           <button onClick={handleToggleFilter} className={styles.bidCancelButton}>
-            <span >{texts.button.cancel}</span>
+            <span>{texts.button.cancel}</span>
           </button>
           <button onClick={handleSubmit} className={styles.bidModalButton}>
-          {texts.button.jizenBidToggle}
-        </button>
-
+            {texts.button.jizenBidToggle}
+          </button>
         </div>
       </div>
     </Modal>

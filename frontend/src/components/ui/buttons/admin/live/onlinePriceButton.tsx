@@ -1,5 +1,6 @@
 //コンフィグ
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
+import { useLocale } from "@/hooks/useLocale";
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { formatPriceDivision, formatPriceWithCommas } from "@/components/common/PriceUtils";
 import { TBidHisotry, TLiveBidLog } from "@/types/admin/live/auctioneer";
@@ -60,7 +61,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       currentPrice: string;
       isBelowSaiteiPriceFlg: boolean;
     } | null>(null);
-
+    const { texts } = useLocale();
     const handleClick = () => {
       // ── 1. onlineBidHistory[0] が必ず存在することをチェック ──
       if (onlineBidHistory.length === 0) {

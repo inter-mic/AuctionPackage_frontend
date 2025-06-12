@@ -1,8 +1,9 @@
 import { GetServerSideProps } from "next";
-import { texts } from "@/config/texts";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
+
+import { texts } from "@/config/texts.ja";
 //コンポーネント
 import { hasPermission, KengenMap } from "@/components/admin/PermissoionsComponent";
 //スタイル

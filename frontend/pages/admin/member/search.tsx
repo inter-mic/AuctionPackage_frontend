@@ -1,48 +1,53 @@
-import { GetServerSideProps } from 'next';
-import { toast } from 'react-toastify';
-import { texts } from '@/config/texts';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
-import Pagination from '@mui/material/Pagination';
+import { GetServerSideProps } from "next";
+import { toast } from "react-toastify";
+import { texts } from "@/config/texts.ja";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from "@mui/material";
+import Pagination from "@mui/material/Pagination";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSort } from '@/hooks/useSort';
-import { usePagination } from '@/hooks/usePagination';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
-import { useToMemberRegist } from '@/hooks/moveScreen/useToMemberRegist';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useSort } from "@/hooks/useSort";
+import { usePagination } from "@/hooks/usePagination";
+import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
+import { useToMemberRegist } from "@/hooks/moveScreen/useToMemberRegist";
 //API
-import { useUserSearchAPI } from '@/hooks/api/admin/user/useUserSearchAPI';
-import { useUserSearchCountAPI } from '@/hooks/api/admin/user/useUserSearchCountAPI';
-import { useUserCsvAPI } from '@/hooks/api/admin/user/useUserCsvAPI';
-import { useUserSearchParams } from '@/hooks/searchParams/admin/useUserSearchParams';
+import { useUserSearchAPI } from "@/hooks/api/admin/user/useUserSearchAPI";
+import { useUserSearchCountAPI } from "@/hooks/api/admin/user/useUserSearchCountAPI";
+import { useUserCsvAPI } from "@/hooks/api/admin/user/useUserCsvAPI";
+import { useUserSearchParams } from "@/hooks/searchParams/admin/useUserSearchParams";
 //型定義
-import { TAdminUserSelect } from '@/types/admin/member/search';
-import { PageProps } from '@/types/admin/adminPage';
+import { TAdminUserSelect } from "@/types/admin/member/search";
+import { PageProps } from "@/types/admin/adminPage";
 //ボタン
-import { SearchButton } from '@/components/ui/buttons/admin/searchButton';
-import { ClearButton } from '@/components/ui/buttons/admin/clearButton';
-import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
-import { AddressCopyButton } from '@/components/ui/buttons/admin/addressCopyButton';
-import { ShoninOnButton, ShoninOffButton } from '@/components/ui/buttons/admin/shoninButton';
+import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
+import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
+import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
+import { AddressCopyButton } from "@/components/ui/buttons/admin/addressCopyButton";
+import { ShoninOnButton, ShoninOffButton } from "@/components/ui/buttons/admin/shoninButton";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
-import formSearchStyles from '@/styles/admin/FormSearch.module.css';
-import adminStyles from '@/styles/admin/AdminCommon.module.css';
-
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
+import formSearchStyles from "@/styles/admin/FormSearch.module.css";
+import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminMemberList
+      pageTitle: texts.menu.adminMemberList,
     },
   };
 });
-
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect, useCallback, texts } = useCommonSetup();
@@ -60,7 +65,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectAll(false);
     setSelectedIds([]);
     setMemberData([]);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     const params = {
       ...memberParams,
       pageNumber: 1,
@@ -117,10 +122,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: memberParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
-    memberData.map(member => member.userId)
-    , allData.map(member => member.userId)
-    , fetchAllIds);
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+    useCheckboxSelection(
+      memberData.map((member) => member.userId),
+      allData.map((member) => member.userId),
+      fetchAllIds
+    );
 
   //会員登録画面に遷移
   const { toMemberRegist } = useToMemberRegist(kengen);
@@ -156,7 +163,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setIsModalOpen(false); // モーダルを閉じる
   };
   return (
-
     <div>
       <div className={breadcrumbStyles.breadcrumb}>
         <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminMemberList}</span>
@@ -164,7 +170,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="userId" >{texts.member.userId}</label>
+            <label htmlFor="userId">{texts.member.userId}</label>
             <input
               id="userId"
               type="text"
@@ -175,7 +181,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="userName" >{texts.member.userName}</label>
+            <label htmlFor="userName">{texts.member.userName}</label>
             <input
               id="userName"
               type="text"
@@ -185,7 +191,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="companyName" >{texts.member.companyName}</label>
+            <label htmlFor="companyName">{texts.member.companyName}</label>
             <input
               id="companyName"
               type="text"
@@ -195,7 +201,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="address" >{texts.member.address}</label>
+            <label htmlFor="address">{texts.member.address}</label>
             <input
               id="address"
               type="text"
@@ -205,7 +211,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="freeWord" >{texts.common.freeWord}</label>
+            <label htmlFor="freeWord">{texts.common.freeWord}</label>
             <input
               id="freeWord"
               type="text"
@@ -215,7 +221,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="shoninFlg" >{texts.member.shonin}</label>
+            <label htmlFor="shoninFlg">{texts.member.shonin}</label>
             <select
               id="shoninFlg"
               name="shoninFlg"
@@ -228,7 +234,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </select>
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="auctionMailJushinFlg" >{texts.member.auctionMailJushinFlg}</label>
+            <label htmlFor="auctionMailJushinFlg">{texts.member.auctionMailJushinFlg}</label>
             <select
               id="auctionMailJushinFlg"
               name="auctionMailJushinFlg"
@@ -241,7 +247,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </select>
           </div>
         </div>
-        <div className="text-right mt-2" >
+        <div className="text-right mt-2">
           <SearchButton onClick={formSearch} />
           <ClearButton onClick={formClear} />
         </div>
@@ -255,15 +261,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className={adminStyles.resultContainer}>
                   <div className={adminStyles.resultRow}>
                     <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
-                    <span>{count} {texts.label.resultCount}</span>
+                    <span>
+                      {count} {texts.label.resultCount}
+                    </span>
                   </div>
                   <div className={adminStyles.resultRow}>
                     <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                    <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                    <select
+                      id="sortName"
+                      className={adminStyles.sort}
+                      value={sortName}
+                      onChange={handleSortNameChange}
+                    >
                       <option value="userId">{texts.member.userId}</option>
                       <option value="shoninFlg">{texts.member.shonin}</option>
                     </select>
-                    <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
+                    <select
+                      id="sortFlg"
+                      className={adminStyles.sort}
+                      onChange={handleSortFlgChange}
+                    >
                       <option value="asc">{texts.label.asc}</option>
                       <option value="desc">{texts.label.desc}</option>
                     </select>
@@ -276,9 +293,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <OutPutButton onClick={handleCsvExport} />
                     <AddressCopyButton onClick={handleAddressCopy} />
                   </div>
-                  <div className="lg:text-right">
-                    {texts.member.mailcopy_note}
-                  </div>
+                  <div className="lg:text-right">{texts.member.mailcopy_note}</div>
                 </div>
               )}
             </div>
@@ -286,20 +301,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               <thead>
                 <tr>
                   <th className="py-2 px-4 border-b">
-                    <input
-                      type="checkbox"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
-                    />
+                    <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
                   </th>
-                  <th className="py-2 px-4 border-b" >{texts.member.userId}</th>
-                  <th className="py-2 px-4 border-b" >{texts.member.userName} </th>
-                  <th className="py-2 px-4 border-b" >{texts.member.companyName}</th>
-                  <th className="py-2 px-4 border-b" >{texts.member.address}</th>
-                  <th className="py-2 px-4 border-b" >{texts.common.mail}</th>
-                  <th className="py-2 px-4 border-b" >{texts.member.adminBiko}</th>
-                  <th className="py-2 px-4 border-b" >{texts.member.auctionMailJushinFlg}</th>
-                  <th className="py-2 px-4 border-b" >{texts.member.shonin}</th>
+                  <th className="py-2 px-4 border-b">{texts.member.userId}</th>
+                  <th className="py-2 px-4 border-b">{texts.member.userName} </th>
+                  <th className="py-2 px-4 border-b">{texts.member.companyName}</th>
+                  <th className="py-2 px-4 border-b">{texts.member.address}</th>
+                  <th className="py-2 px-4 border-b">{texts.common.mail}</th>
+                  <th className="py-2 px-4 border-b">{texts.member.adminBiko}</th>
+                  <th className="py-2 px-4 border-b">{texts.member.auctionMailJushinFlg}</th>
+                  <th className="py-2 px-4 border-b">{texts.member.shonin}</th>
                 </tr>
               </thead>
               <tbody>
@@ -328,20 +339,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-1 px-4 border-b text-left">{result.mail}</td>
                     <td className="py-1 px-4 border-b text-left">{result.adminBiko}</td>
                     <td className="py-1 px-4 border-b text-center">
-                      {result.auctionMailJushinFlg ? texts.common.mailJushinOn : texts.common.mailJushinOff}
+                      {result.auctionMailJushinFlg
+                        ? texts.common.mailJushinOn
+                        : texts.common.mailJushinOff}
                     </td>
                     <td className="py-1 px-4 border-b text-center">
                       {executionPermission(102, 2) ? (
                         result.shoninFlg ? (
-                          <ShoninOffButton
-                            userId={result.userId}
-                            onUpdate={updateShoninFlg}
-                          />
+                          <ShoninOffButton userId={result.userId} onUpdate={updateShoninFlg} />
                         ) : (
-                          <ShoninOnButton
-                            userId={result.userId}
-                            onUpdate={updateShoninFlg}
-                          />
+                          <ShoninOnButton userId={result.userId} onUpdate={updateShoninFlg} />
                         )
                       ) : (
                         <span></span>
@@ -351,10 +358,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 ))}
               </tbody>
             </table>
-
           </div>
-          <div >
-            <Pagination className={adminStyles.paginationContainer}
+          <div>
+            <Pagination
+              className={adminStyles.paginationContainer}
               count={Math.max(1, Math.ceil(count / itemsPerPage))}
               page={currentPage}
               onChange={handlePageChange}
@@ -364,27 +371,25 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       ) : (
         <p></p>
       )}
-      <Dialog open={isModalOpen} onClose={closeModal}
+      <Dialog
+        open={isModalOpen}
+        onClose={closeModal}
         sx={{
-          '& .MuiDialog-paper': {
-            width: '700px',
-            height: '1000px',
+          "& .MuiDialog-paper": {
+            width: "700px",
+            height: "1000px",
           },
-        }}>
+        }}
+      >
         <DialogTitle>{texts.member.mailcopy}</DialogTitle>
         <DialogContent>
-          <TextField
-            value={modalContent}
-            multiline
-            fullWidth
-            rows={20}
-          />
+          <TextField value={modalContent} multiline fullWidth rows={20} />
         </DialogContent>
         <DialogActions>
           <Button
             onClick={() => {
               navigator.clipboard.writeText(modalContent);
-              alert('テキストがコピーされました');
+              alert("テキストがコピーされました");
             }}
           >
             {texts.member.mailcopy}
@@ -393,7 +398,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         </DialogActions>
       </Dialog>
     </div>
-
   );
 };
 

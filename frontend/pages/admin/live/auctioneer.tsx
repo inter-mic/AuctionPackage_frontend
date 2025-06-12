@@ -1,7 +1,7 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
@@ -70,7 +70,7 @@ export interface OnlinePriceButtonHandle {
 }
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 601);
   const { executionPermission } = useExecutionPermission(kengen);
   const { spnKbn } = useRouter().query;
@@ -450,8 +450,23 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const { liveBidKekkaUpdateAPI } = useLiveBidKekkaUpdateAPI();
 
-  const bidEnd = async () => {
-    if (spnKbn === "1") {
+  const bidLiveAuctionEnd = async () => {
+    sendWebSocketMessage("bidEnd", { kenriUserId: kenriUserId });
+    const isSuccess = await liveBidKekkaUpdateAPI(
+      liveBidkekkaData,
+      liveBidLog,
+      connectionCount,
+      spnKbn
+    );
+    if (isSuccess) {
+      const nextLot = (Number(searchLot) + 1).toString();
+      goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
+      setLiveBidkekkaData(initialLiveBidKekkaData);
+      setNextLotListRow(Number(nextLot) + 1);
+    }
+  };
+  const bidLiveBidEnd = async (isRakusatsu: boolean) => {
+    if (isRakusatsu) {
       if (
         liveBidkekkaData.rakusatsuPaddleNo === null ||
         liveBidkekkaData.rakusatsuPaddleNo === ""
@@ -461,7 +476,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
       sendWebSocketMessage("bidEnd", { kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo });
     } else if (spnKbn === "2") {
-      sendWebSocketMessage("bidEnd", { kenriUserId: kenriUserId });
+      sendWebSocketMessage("bidEnd", { kenriUserId: null });
     }
 
     const isSuccess = await liveBidKekkaUpdateAPI(
@@ -474,6 +489,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       const nextLot = (Number(searchLot) + 1).toString();
       goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
       setLiveBidkekkaData(initialLiveBidKekkaData);
+      setNextLotListRow(Number(nextLot) + 1);
     }
   };
   const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
@@ -524,10 +540,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setLiveBidkekkaData(initialLiveBidKekkaData);
     setNextLotList([]);
     setNextLotListRow(1);
-    fetchGoodsData.startPrice = "";
-    goodsData.goodsName = "";
-    goodsData.goodsSetsumei = "";
-    goodsData.thumbnailImageUrl = "/no_image.png";
+    setDisplayCurrentPrice(displayCurrentPrice);
+    setGoodsData(initialGoodsData);
     setSearchLot("");
     setMsg("");
     setIsCallButtonClicked(false);
@@ -545,9 +559,24 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const minusRef = useRef<SerihabaButtonHandle>(null);
   const priceButtonRef = useRef<PriceButtonHandle>(null);
   const onlinePriceButtonRef = useRef<OnlinePriceButtonHandle>(null);
+  const [rakusatsuConfirmOpen, setRakusatsuConfirmOpen] = useState(false);
+  const [furakusatsuConfirmOpen, setFuRakusatsuConfirmOpen] = useState(false);
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   //ショートカットキー
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "F1") {
+        event.preventDefault();
+        if (furakusatsuConfirmOpen) {
+          if (spnKbn == "1") {
+            bidLiveBidEnd(false);
+          } else {
+            bidLiveAuctionEnd();
+          }
+        } else {
+          setFuRakusatsuConfirmOpen(true);
+        }
+      }
       if (event.key === "F2") {
         event.preventDefault();
         lotSearch();
@@ -562,6 +591,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         event.preventDefault();
         startButtonRef.current?.trigger();
         return;
+      }
+      if (event.key === "F9") {
+        event.preventDefault();
+        if (rakusatsuConfirmOpen) {
+          if (spnKbn == "1") {
+            bidLiveBidEnd(true);
+          } else {
+            bidLiveAuctionEnd();
+          }
+        } else {
+          setRakusatsuConfirmOpen(true);
+        }
       }
       if (event.key === "Enter" && isStartButtonClicked) {
         event.preventDefault();
@@ -653,16 +694,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         <div className={styles.bottomLeft}>
           <span className={styles.sectionTitle}>次商品</span>
           <div className={styles.nextGoodsLabelRow}>
-            <label className={styles.goodslabel}>{texts.goods.goodsName}</label>
-            <label id="nextGoodsName" className={styles.goodsvalue}>
-              {nextLotList[nextLotListRow]?.goodsName || ""}
-            </label>
-          </div>
-
-          <div className={styles.nextGoodsLabelRow}>
             <label className={styles.goodslabel}>{texts.goods.lot}</label>
             <label id="nextGoodsLot" className={styles.goodsvalue}>
               {nextLotList[nextLotListRow]?.lot || ""}
+            </label>
+          </div>
+          <div className={styles.nextGoodsLabelRow}>
+            <label className={styles.goodslabel}>{texts.goods.goodsName}</label>
+            <label id="nextGoodsName" className={styles.goodsvalue}>
+              {nextLotList[nextLotListRow]?.goodsName || ""}
             </label>
           </div>
 
@@ -676,7 +716,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           <div
             style={{
               position: "relative",
-              width: "100%",
+              width: "150px",
               height: "150px",
               marginBottom: "20px",
             }}
@@ -886,6 +926,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     setLiveBidLog={setLiveBidLog}
                   />
                   <ConfirmDialog
+                    open={clearConfirmOpen}
+                    setOpen={setClearConfirmOpen}
                     description={texts.livemessage.confirmClear}
                     disabled={false}
                     buttonTitle={texts.button.liveClear}
@@ -1047,6 +1089,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         onChange={(e) => handleRakusatsuPaddleNoChange(e.target.value)}
                       />
                       <ConfirmDialog
+                        open={rakusatsuConfirmOpen}
+                        setOpen={setRakusatsuConfirmOpen}
                         disabled={!isRakusatsuProcessFlg}
                         description={`${texts.livemessage.updateSerikekkaData_1} ${
                           liveBidkekkaData.auctionKekkaStatus === 2
@@ -1074,20 +1118,21 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         }`}
                         dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                         dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
-                        onSubmit={bidEnd}
+                        onSubmit={() => bidLiveBidEnd(true)}
                         buttonText={texts.button.updateSerikekka}
                       />
                     </>
                   )}
-                </div>
-                <div className={styles.rightButtons}>
-                  <ConfirmDialog
-                    disabled={!isRakusatsuProcessFlg}
-                    description={`${texts.livemessage.updateSerikekkaData_1} ${
-                      liveBidkekkaData.auctionKekkaStatus === 2
-                        ? texts.livemessage.rakusatsu
-                        : texts.livemessage.furakusatsu
-                    }
+                  {spnKbn == "2" && (
+                    <ConfirmDialog
+                      open={rakusatsuConfirmOpen}
+                      setOpen={setRakusatsuConfirmOpen}
+                      disabled={!isRakusatsuProcessFlg}
+                      description={`${texts.livemessage.updateSerikekkaData_1} ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? texts.livemessage.rakusatsu
+                          : texts.livemessage.furakusatsu
+                      }
                       ${
                         liveBidkekkaData.auctionKekkaStatus === 2
                           ? "\n" +
@@ -1103,16 +1148,54 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           : ""
                       }
                   `}
-                    buttonTitle={texts.button.furakusatsu}
-                    className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
-                      !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                    dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
-                    dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
-                    onSubmit={bidEnd}
-                    buttonText={texts.button.furakusatsu}
-                  />
+                      buttonTitle={texts.button.updateSerikekka}
+                      className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
+                        !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
+                      dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
+                      onSubmit={bidLiveAuctionEnd}
+                      buttonText={texts.button.updateSerikekka}
+                    />
+                  )}
                 </div>
+                {spnKbn == "1" && (
+                  <div className={styles.rightButtons}>
+                    <ConfirmDialog
+                      open={furakusatsuConfirmOpen}
+                      setOpen={setFuRakusatsuConfirmOpen}
+                      disabled={!isRakusatsuProcessFlg}
+                      description={`${texts.livemessage.updateSerikekkaData_1} ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? texts.livemessage.rakusatsu
+                          : texts.livemessage.furakusatsu
+                      }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_2 +
+                            liveBidkekkaData.rakusatsuUserId
+                          : ""
+                      }
+                      ${
+                        liveBidkekkaData.auctionKekkaStatus === 2
+                          ? "\n" +
+                            texts.livemessage.updateSerikekkaData_3 +
+                            formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice))
+                          : ""
+                      }
+                  `}
+                      buttonTitle={texts.button.furakusatsu}
+                      className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
+                        !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
+                      dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
+                      onSubmit={() => bidLiveBidEnd(false)}
+                      buttonText={texts.button.furakusatsu}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className={styles.flowingMsgDiv}>

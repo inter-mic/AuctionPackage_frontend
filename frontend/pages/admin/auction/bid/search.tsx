@@ -1,42 +1,43 @@
-import { GetServerSideProps } from 'next';
-import { toast } from 'react-toastify';
-import { texts } from '@/config/texts';
-import Pagination from '@mui/material/Pagination';
+import { GetServerSideProps } from "next";
+import { toast } from "react-toastify";
+
+import { texts } from "@/config/texts.ja";
+import Pagination from "@mui/material/Pagination";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSort } from '@/hooks/useSort';
-import { usePagination } from '@/hooks/usePagination';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
-import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useSort } from "@/hooks/useSort";
+import { usePagination } from "@/hooks/usePagination";
+import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
+import { useToGoodsRegist } from "@/hooks/moveScreen/useToGoodsRegist";
 //API
-import { useBidSearchAPI } from '@/hooks/api/admin/bid/useBidSearchAPI';
-import { useBidSearchCountAPI } from '@/hooks/api/admin/bid/useBidSearchCountAPI';
-import { useBidCsvAPI } from '@/hooks/api/admin/bid/useBidCsvAPI';
-import { useBidSearchParams } from '@/hooks/searchParams/admin/useBidSearchParams';
+import { useBidSearchAPI } from "@/hooks/api/admin/bid/useBidSearchAPI";
+import { useBidSearchCountAPI } from "@/hooks/api/admin/bid/useBidSearchCountAPI";
+import { useBidCsvAPI } from "@/hooks/api/admin/bid/useBidCsvAPI";
+import { useBidSearchParams } from "@/hooks/searchParams/admin/useBidSearchParams";
 //型定義
-import { TAdminGoodsAuctionBidSelect } from '@/types/admin/bid/search';
-import { PageProps } from '@/types/admin/adminPage';
+import { TAdminGoodsAuctionBidSelect } from "@/types/admin/bid/search";
+import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
-import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
-import { RequiredMark } from '@/components/ui/marks/RequiredMark';
+import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown";
+import { RequiredMark } from "@/components/ui/marks/RequiredMark";
 //ボタン
-import { SearchButton } from '@/components/ui/buttons/admin/searchButton';
-import { ClearButton } from '@/components/ui/buttons/admin/clearButton';
-import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
+import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
+import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
+import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
-import formSearchStyles from '@/styles/admin/FormSearch.module.css';
-import adminStyles from '@/styles/admin/AdminCommon.module.css';
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
+import formSearchStyles from "@/styles/admin/FormSearch.module.css";
+import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminBidList
+      pageTitle: texts.menu.adminBidList,
     },
   };
 });
@@ -50,7 +51,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { bidParams, formChange, resetForm } = useBidSearchParams();
 
   const [bidList, setBidList] = useState<TAdminGoodsAuctionBidSelect[]>([]);
-  const [selectedKaisai, setSelectedKaisai] = useState<string>('');
+  const [selectedKaisai, setSelectedKaisai] = useState<string>("");
 
   const handleKaisaiChange = (name: string, value: string) => {
     setSelectedKaisai(value);
@@ -58,7 +59,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (errors?.[name]) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
@@ -71,7 +72,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectAll(false);
     setSelectedIds([]);
     setBidList([]);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     const params = {
       ...bidParams,
       pageNumber: 1,
@@ -104,7 +105,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [allSelectData]);
 
   useEffect(() => {
-    if (errors) { setFormErrors(errors); }
+    if (errors) {
+      setFormErrors(errors);
+    }
   }, [errors]);
 
   const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
@@ -118,10 +121,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: bidParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
-    bidList.map(bid => `${bid.goodsId}-${bid.userId}`)
-    , allGoodsData.map(bid => `${bid.goodsId}-${bid.userId}`)
-    , fetchAllIds);
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+    useCheckboxSelection(
+      bidList.map((bid) => `${bid.goodsId}-${bid.userId}`),
+      allGoodsData.map((bid) => `${bid.goodsId}-${bid.userId}`),
+      fetchAllIds
+    );
 
   //商品登録画面に遷移
   const { toGoodsRegist } = useToGoodsRegist(kengen);
@@ -154,17 +159,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="auction" ><RequiredMark />{texts.goods.auctionName}</label>
+            <label htmlFor="auction">
+              <RequiredMark />
+              {texts.goods.auctionName}
+            </label>
             <KaisaiListPullDown
-              onChange={(value) => handleKaisaiChange('auctionSeq', value)}
-              selectedId={selectedKaisai !== null ? String(selectedKaisai) : ''}
+              onChange={(value) => handleKaisaiChange("auctionSeq", value)}
+              selectedId={selectedKaisai !== null ? String(selectedKaisai) : ""}
               kaisaiStatus={0}
               defaultSetOption={1}
             />
             {formErrors?.auctionSeq && <p className="error-message">{formErrors.auctionSeq}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="goodsId" >{texts.goods.goodsId}</label>
+            <label htmlFor="goodsId">{texts.goods.goodsId}</label>
             <input
               id="goodsId"
               name="goodsId"
@@ -174,7 +182,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="goodsName" >{texts.goods.goodsName}</label>
+            <label htmlFor="goodsName">{texts.goods.goodsName}</label>
             <input
               id="goodsName"
               name="goodsName"
@@ -183,17 +191,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="goodsId" >{texts.goods.sku}</label>
-            <input
-              id="sku"
-              name="sku"
-              maxLength={9}
-              value={bidParams.sku}
-              onChange={formChange}
-            />
+            <label htmlFor="goodsId">{texts.goods.sku}</label>
+            <input id="sku" name="sku" maxLength={9} value={bidParams.sku} onChange={formChange} />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="userId" >{texts.member.userId}</label>
+            <label htmlFor="userId">{texts.member.userId}</label>
             <input
               id="userId"
               name="userId"
@@ -203,13 +205,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="userName" >{texts.member.userName}</label>
-            <input
-              id="userName"
-              name="userName"
-              value={bidParams.userName}
-              onChange={formChange}
-            />
+            <label htmlFor="userName">{texts.member.userName}</label>
+            <input id="userName" name="userName" value={bidParams.userName} onChange={formChange} />
           </div>
           <div className={formSearchStyles.formRow}>
             <div className={formSearchStyles.formItemHalfWidth}>
@@ -222,9 +219,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 onChange={formChange}
               />
             </div>
-            <div className={formSearchStyles.tilde}>
-              {texts.common.tilde}
-            </div>
+            <div className={formSearchStyles.tilde}>{texts.common.tilde}</div>
             <div className={formSearchStyles.formItemHalfWidth}>
               <input
                 id="lotTo"
@@ -236,7 +231,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
           </div>
         </div>
-        <div className="text-right mt-2" >
+        <div className="text-right mt-2">
           <SearchButton onClick={formSearch} />
           <ClearButton onClick={formClear} />
         </div>
@@ -248,11 +243,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               <div className={adminStyles.resultContainer}>
                 <div className={adminStyles.resultRow}>
                   <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
-                  <span>{count} {texts.label.resultCount}</span>
+                  <span>
+                    {count} {texts.label.resultCount}
+                  </span>
                 </div>
                 <div className={adminStyles.resultRow}>
                   <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                  <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                  <select
+                    id="sortName"
+                    className={adminStyles.sort}
+                    value={sortName}
+                    onChange={handleSortNameChange}
+                  >
                     <option value="lot">{texts.goods.lot}</option>
                     <option value="userId">{texts.member.userName}</option>
                     <option value="bidPrice">{texts.bid.bidPrice}</option>
@@ -275,55 +277,53 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <thead>
               <tr>
                 <th className="py-2 px-4 border-b">
-                  <input
-                    type="checkbox"
-                    checked={selectAll}
-                    onChange={handleSelectAll}
-                  />
+                  <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
                 </th>
-                <th className="py-2 px-4 border-b w-52" >{texts.goods.auctionName}</th>
-                <th className="py-2 px-4 border-b w-24" >{texts.goods.goodsId}</th>
+                <th className="py-2 px-4 border-b w-52">{texts.goods.auctionName}</th>
+                <th className="py-2 px-4 border-b w-24">{texts.goods.goodsId}</th>
                 <th className="py-2 px-4 border-b w-52">{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b" >{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-24" >{texts.goods.lot}</th>
+                <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
+                <th className="py-2 px-4 border-b w-24">{texts.goods.lot}</th>
                 <th className="py-2 px-4 border-b w-44">{texts.bid.bidPrice}</th>
-                <th className="py-2 px-4 border-b w-52" >{texts.bid.bidTime}</th>
-                <th className="py-2 px-4 border-b" >{texts.member.userName}</th>
+                <th className="py-2 px-4 border-b w-52">{texts.bid.bidTime}</th>
+                <th className="py-2 px-4 border-b">{texts.member.userName}</th>
               </tr>
             </thead>
             <tbody>
-              {bidList.length > 0 && bidList.map((result) => (
-                <tr
-                  key={`${result.goodsId}-${result.userId}`}
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={(e) => handleRowClick(e, result.goodsId)}
-                >
-                  <td
-                    className="py-2 px-4 border-b text-center"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
+              {bidList.length > 0 &&
+                bidList.map((result) => (
+                  <tr
+                    key={`${result.goodsId}-${result.userId}`}
+                    className="cursor-pointer hover:bg-gray-100"
+                    onClick={(e) => handleRowClick(e, result.goodsId)}
                   >
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(`${result.goodsId}-${result.userId}`)}
-                      onChange={() => handleSelect(`${result.goodsId}-${result.userId}`)}
-                    />
-                  </td>
-                  <td className="py-2 px-4 border-b text-left w-52">{result.auctionName}</td>
-                  <td className="py-2 px-4 border-b text-left w-24">{result.goodsId}</td>
-                  <td className="py-2 px-4 border-b text-left w-52">{result.sku}</td>
-                  <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
-                  <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
-                  <td className="py-2 px-4 border-b text-right w-44">{result.bidPrice}</td>
-                  <td className="py-2 px-4 border-b text-right w-52">{result.bidTime}</td>
-                  <td className="py-2 px-4 border-b text-left">{result.userName}</td>
-                </tr>
-              ))}
+                    <td
+                      className="py-2 px-4 border-b text-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(`${result.goodsId}-${result.userId}`)}
+                        onChange={() => handleSelect(`${result.goodsId}-${result.userId}`)}
+                      />
+                    </td>
+                    <td className="py-2 px-4 border-b text-left w-52">{result.auctionName}</td>
+                    <td className="py-2 px-4 border-b text-left w-24">{result.goodsId}</td>
+                    <td className="py-2 px-4 border-b text-left w-52">{result.sku}</td>
+                    <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
+                    <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
+                    <td className="py-2 px-4 border-b text-right w-44">{result.bidPrice}</td>
+                    <td className="py-2 px-4 border-b text-right w-52">{result.bidTime}</td>
+                    <td className="py-2 px-4 border-b text-left">{result.userName}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
-          <div >
-            <Pagination className={adminStyles.paginationContainer}
+          <div>
+            <Pagination
+              className={adminStyles.paginationContainer}
               count={Math.max(1, Math.ceil(count / itemsPerPage))}
               page={currentPage}
               onChange={handlePageChange}

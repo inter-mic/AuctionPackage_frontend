@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { texts } from '@/config/texts';
+import { getTexts } from "@/config/texts";
 
 interface Props {
   initialTime: string;
@@ -29,38 +29,37 @@ const RemainingTimeComponent: React.FC<Props> = ({ initialTime, onEnd }) => {
 
     // 秒数をフォーマットする関数
     const formatRemainingTime = (seconds: number): string => {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-  
-        if (hours > 0) {
-          return minutes > 0 ? `${hours}時間${minutes}分` : `${hours}時間`;
-        }
-        if (minutes > 0) {
-          return secs > 0 ? `${minutes}分${secs}秒` : `${minutes}分`;
-        }
-        return `${secs}秒`;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+
+      if (hours > 0) {
+        return minutes > 0 ? `${hours}時間${minutes}分` : `${hours}時間`;
+      }
+      if (minutes > 0) {
+        return secs > 0 ? `${minutes}分${secs}秒` : `${minutes}分`;
+      }
+      return `${secs}秒`;
     };
 
-    if(initialTime === '終了' || initialTime === '開始前'){
-        setRemainingTime(initialTime);
-    }else{
-        let secondsLeft = parseRemainingTime(initialTime);
-        if (secondsLeft > 0) {
-          if (secondsLeft <= 59) {
-            // 59秒以下なら 1秒ごとに更新
-            countdownTimer = setInterval(() => {
-                secondsLeft -= 1;
-                setRemainingTime(secondsLeft > 0 ? formatRemainingTime(secondsLeft) : "0秒");
-                setIsEndingSoon(secondsLeft <= 10);
-                if (secondsLeft <= 0 && countdownTimer) clearInterval(countdownTimer);
-            }, 1000);
-          }else{
-            setRemainingTime(initialTime);
-            setIsEndingSoon(false);
-          }
-    }
-  
+    if (initialTime === "終了" || initialTime === "開始前") {
+      setRemainingTime(initialTime);
+    } else {
+      let secondsLeft = parseRemainingTime(initialTime);
+      if (secondsLeft > 0) {
+        if (secondsLeft <= 59) {
+          // 59秒以下なら 1秒ごとに更新
+          countdownTimer = setInterval(() => {
+            secondsLeft -= 1;
+            setRemainingTime(secondsLeft > 0 ? formatRemainingTime(secondsLeft) : "0秒");
+            setIsEndingSoon(secondsLeft <= 10);
+            if (secondsLeft <= 0 && countdownTimer) clearInterval(countdownTimer);
+          }, 1000);
+        } else {
+          setRemainingTime(initialTime);
+          setIsEndingSoon(false);
+        }
+      }
     }
 
     return () => {
@@ -68,10 +67,7 @@ const RemainingTimeComponent: React.FC<Props> = ({ initialTime, onEnd }) => {
     };
   }, [initialTime]);
 
-  return (
-    
-    <span>{isEndingSoon && initialTime !== '終了' ? "もうすぐ終了" : remainingTime}</span>
-  );
+  return <span>{isEndingSoon && initialTime !== "終了" ? "もうすぐ終了" : remainingTime}</span>;
 };
 
 export default RemainingTimeComponent;

@@ -1,31 +1,30 @@
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
+import { GetServerSideProps } from "next";
+import { texts } from "@/config/texts.ja";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 //コンポーネント
-import { LoginKbnRadioButton } from '@/components/ui/radioButtons/LoginKbnRadioButton';
-import { FileUpload } from '@/components/ui/fileUpload/fileUpload';
+import { LoginKbnRadioButton } from "@/components/ui/radioButtons/LoginKbnRadioButton";
+import { FileUpload } from "@/components/ui/fileUpload/fileUpload";
 //API
-import { usePageSettingSearchAPI } from '@/hooks/api/admin/pagesetting/usePageSettingSearchAPI';
-import { usePageSettingRegistAPI } from '@/hooks/api/admin/pagesetting/usePageSettingRegistAPI';
+import { usePageSettingSearchAPI } from "@/hooks/api/admin/pagesetting/usePageSettingSearchAPI";
+import { usePageSettingRegistAPI } from "@/hooks/api/admin/pagesetting/usePageSettingRegistAPI";
 //型定義
-import { PageProps } from '@/types/admin/adminPage';
-import { TTtPageSetting } from '@/types/admin/pagesetting/search';
+import { PageProps } from "@/types/admin/adminPage";
+import { TTtPageSetting } from "@/types/admin/pagesetting/search";
 //ボタン
-import { PageSettingUpdateButton } from '@/components/ui/buttons/admin/PageSettingUpdateButton';
+import { PageSettingUpdateButton } from "@/components/ui/buttons/admin/PageSettingUpdateButton";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
-
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminPageSetting
+      pageTitle: texts.menu.adminPageSetting,
     },
   };
 });
@@ -43,8 +42,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [pageList, setPageList] = useState<TTtPageSetting[]>(
     Array.from({ length: 5 }, (_, index) => ({
       pageSeq: index + 1, // 必須プロパティ pageSeq を追加
-      pageName: '',
-      pageUrl: '',
+      pageName: "",
+      pageUrl: "",
       pageLoginFlg: false,
     }))
   );
@@ -61,14 +60,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       prevList.map((item, index) =>
         index === seq - 1
           ? {
-            ...item,
-            [name.includes('pageName') ? 'pageName' : 'pageUrl']: value,
-          }
+              ...item,
+              [name.includes("pageName") ? "pageName" : "pageUrl"]: value,
+            }
           : item
       )
     );
   };
-
 
   const handleLoginFlgChange = (index: number, newPageLoginFlg: boolean) => {
     setPageList((prevList) =>
@@ -77,8 +75,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       )
     );
   };
-
-
 
   const [selectedFiles, setSelectedFiles] = useState<{ [key: number]: File | null }>({});
 
@@ -89,10 +85,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }));
   };
   const { responseData, errors, pageSettingRegistAPI } = usePageSettingRegistAPI();
-  const handleSubmit = async (
-    seq: number,
-    data: TTtPageSetting
-  ) => {
+  const handleSubmit = async (seq: number, data: TTtPageSetting) => {
     const file = selectedFiles[seq] || null;
 
     // データとファイルを指定して送信
@@ -106,10 +99,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       </div>
       <div className="flex flex-col min-h-screen bg-gray-100">
         <div className="w-full p-8 space-y-6 bg-white shadow-md md:max-w-full md:rounded">
-           {texts.page.note_1}<br/>
-            {texts.page.note_2}<br/>
-            {texts.page.note_3}<br/>
-            {texts.page.note_4}
+          {texts.page.note_1}
+          <br />
+          {texts.page.note_2}
+          <br />
+          {texts.page.note_3}
+          <br />
+          {texts.page.note_4}
           <table className="w-full bg-white">
             <thead>
               <tr>
@@ -121,19 +117,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </tr>
             </thead>
             <tbody>
-            
               {Array.from({ length: 5 }, (_, index) => {
                 const seq = index + 1;
                 const data = pageList[index] || {};
                 return (
                   <tr key={seq}>
                     <td>
-
                       <input
                         id={`pageName_${seq}`}
                         name={`pageName_${seq}`}
                         type="text"
-                        value={data.pageName || ''}
+                        value={data.pageName || ""}
                         onChange={handleChange(seq)}
                         className="w-96  px-3 py-2 mt-1 border rounded-md "
                       />
@@ -143,7 +137,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         id={`pageUrl_${seq}`}
                         name={`pageUrl_${seq}`}
                         type="text"
-                        value={data.pageUrl || ''}
+                        value={data.pageUrl || ""}
                         onChange={handleChange(seq)}
                         className="w-96  px-3 py-2 mt-1 border rounded-md "
                       />
@@ -151,7 +145,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td>
                       <FileUpload
                         onFileChange={handleFileChange(seq)}
-                        allowedExtensions={['pdf']}
+                        allowedExtensions={["pdf"]}
                       />
                     </td>
                     <td className="py-1 px-4 border-b text-center">

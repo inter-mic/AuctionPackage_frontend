@@ -1,7 +1,7 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import { useRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 //ホック

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { texts } from "@/config/texts";
+import { getTexts } from "@/config/texts";
 import Pagination from "@mui/material/Pagination";
 import React from "react";
 //ホック
@@ -25,31 +25,27 @@ import { OutPutButton } from "@/components/ui/buttons/member/outputButton";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(
-  async (context) => {
-    return {
-      props: {
-        pageTitle: texts.menu.memberInvoice,
-      },
-    };
-  }
-);
+export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+  const { locale } = context;
+  const texts = getTexts(locale);
+  return {
+    props: {
+      pageTitle: texts.menu.memberInvoice,
+    },
+  };
+});
 
 const Page: React.FC<TPageProps> = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
-  const [searchParams, setSearchParams] =
-    useState<TAdminTorihikiJissekiRequest>({
-      auctionSeq: 0,
-      pageNumber: 1,
-      pageSize: itemsPerPage,
-    });
+  const [searchParams, setSearchParams] = useState<TAdminTorihikiJissekiRequest>({
+    auctionSeq: 0,
+    pageNumber: 1,
+    pageSize: itemsPerPage,
+  });
 
-  const { torihikiList, torihikiJissekiSearchAPI } =
-    useTorihikiJissekiSearchAPI();
-  const { count, torihikiJissekiSearchCountAPI } =
-    useTorihikiJissekiSearchCountAPI();
+  const { torihikiList, torihikiJissekiSearchAPI } = useTorihikiJissekiSearchAPI();
+  const { count, torihikiJissekiSearchCountAPI } = useTorihikiJissekiSearchCountAPI();
   useEffect(() => {
     const params = {
       pageNumber: 1,
@@ -74,9 +70,7 @@ const Page: React.FC<TPageProps> = () => {
   return (
     <>
       <div className={memberStyles.mainTitleContainer}>
-        <span className={memberStyles.mainTitle}>
-          {texts.menu.memberInvoice}
-        </span>
+        <span className={memberStyles.mainTitle}>{texts.menu.memberInvoice}</span>
       </div>
       <div className={memberStyles.memberContainer}>
         {torihikiList && torihikiList.length > 0 ? (
@@ -85,12 +79,8 @@ const Page: React.FC<TPageProps> = () => {
               <table className="w-full sm:w-3/4 bg-white mx-auto">
                 <thead>
                   <tr>
-                    <th className="py-2 px-4 border-b">
-                      {texts.auction.auctionName}
-                    </th>
-                    <th className="py-2 px-4 border-b w-24">
-                      {texts.torihikiJisseki.rakusatsusu}
-                    </th>
+                    <th className="py-2 px-4 border-b">{texts.auction.auctionName}</th>
+                    <th className="py-2 px-4 border-b w-24">{texts.torihikiJisseki.rakusatsusu}</th>
                     <th className="py-2 px-4 border-b w-56">
                       {texts.torihikiJisseki.rakusatsuTotalPrice}
                     </th>
@@ -102,9 +92,7 @@ const Page: React.FC<TPageProps> = () => {
                     torihikiList.map((result) => (
                       <React.Fragment key={result.auctionSeq}>
                         <tr>
-                          <td className="py-2 px-4 border-b text-left">
-                            {result.auctionName}
-                          </td>
+                          <td className="py-2 px-4 border-b text-left">{result.auctionName}</td>
                           <td className="py-2 px-4 border-b text-right w-24">
                             {result.rakusatsusu}
                           </td>

@@ -1,5 +1,5 @@
 //コンフィグ
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { TLiveBidLog } from "@/types/admin/live/auctioneer";
 import { formatPriceMultiplication, formatPriceWithCommas } from "@/components/common/PriceUtils";

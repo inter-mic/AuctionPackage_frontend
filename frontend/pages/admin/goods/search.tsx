@@ -1,50 +1,49 @@
-import { GetServerSideProps } from 'next';
-import React from 'react';
-import { toast } from 'react-toastify';
-import { texts } from '@/config/texts';
-import Image from 'next/image';
-import Pagination from '@mui/material/Pagination';
+import { GetServerSideProps } from "next";
+import React from "react";
+import { toast } from "react-toastify";
+import { texts } from "@/config/texts.ja";
+import Image from "next/image";
+import Pagination from "@mui/material/Pagination";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useSort } from '@/hooks/useSort';
-import { usePagination } from '@/hooks/usePagination';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
-import { useToGoodsRegist } from '@/hooks/moveScreen/useToGoodsRegist';
-import { useToMemberRegist } from '@/hooks/moveScreen/useToMemberRegist';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useSort } from "@/hooks/useSort";
+import { usePagination } from "@/hooks/usePagination";
+import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
+import { useToGoodsRegist } from "@/hooks/moveScreen/useToGoodsRegist";
+import { useToMemberRegist } from "@/hooks/moveScreen/useToMemberRegist";
 //API
-import { useGoodsSearchAPI } from '@/hooks/api/admin/goods/useGoodsSearchAPI';
-import { useGoodsSearchCountAPI } from '@/hooks/api/admin/goods/useGoodsSearchCountAPI';
-import { useGoodsCsvAPI } from '@/hooks/api/admin/goods/useGoodsCsvAPI';
-import { useGoodsCsvForAdminGoodsRegistAPI } from '@/hooks/api/admin/goods/useGoodsCsvForAdminGoodsRegistAPI';
-import { useGoodsCsvForTesuryoAPI } from '@/hooks/api/admin/goods/useGoodsCsvForTesuryoAPI';
-import { useGoodsSearchParams } from '@/hooks/searchParams/admin/useGoodsSearchParams';
+import { useGoodsSearchAPI } from "@/hooks/api/admin/goods/useGoodsSearchAPI";
+import { useGoodsSearchCountAPI } from "@/hooks/api/admin/goods/useGoodsSearchCountAPI";
+import { useGoodsCsvAPI } from "@/hooks/api/admin/goods/useGoodsCsvAPI";
+import { useGoodsCsvForAdminGoodsRegistAPI } from "@/hooks/api/admin/goods/useGoodsCsvForAdminGoodsRegistAPI";
+import { useGoodsCsvForTesuryoAPI } from "@/hooks/api/admin/goods/useGoodsCsvForTesuryoAPI";
+import { useGoodsSearchParams } from "@/hooks/searchParams/admin/useGoodsSearchParams";
 //型定義
-import { TAdminGoodsSelect } from '@/types/admin/goods/search';
-import { PageProps } from '@/types/admin/adminPage';
+import { TAdminGoodsSelect } from "@/types/admin/goods/search";
+import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
-import { CategoryListPullDown } from '@/components/ui/pulldowns/CategoryPullDown';
-import { KaisaiListPullDown } from '@/components/ui/pulldowns/KaisaiListPullDown';
-import { KekkaStatusPullDown } from '@/components/ui/pulldowns/KekkaStatusPullDown';
-import { RequiredMark } from '@/components/ui/marks/RequiredMark';
+import { CategoryListPullDown } from "@/components/ui/pulldowns/CategoryPullDown";
+import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown";
+import { KekkaStatusPullDown } from "@/components/ui/pulldowns/KekkaStatusPullDown";
+import { RequiredMark } from "@/components/ui/marks/RequiredMark";
 //ボタン
-import { SearchButton } from '@/components/ui/buttons/admin/searchButton';
-import { ClearButton } from '@/components/ui/buttons/admin/clearButton';
-import { OutPutButton } from '@/components/ui/buttons/admin/outputButton';
+import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
+import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
+import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
-import formSearchStyles from '@/styles/admin/FormSearch.module.css';
-import adminStyles from '@/styles/admin/AdminCommon.module.css';
-
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
+import formSearchStyles from "@/styles/admin/FormSearch.module.css";
+import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminGoodsList
+      pageTitle: texts.menu.adminGoodsList,
     },
   };
 });
@@ -69,7 +68,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectedKekkaStatus(value);
     formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
   };
-  const [selectedKaisai, setSelectedKaisai] = useState<string>('');
+  const [selectedKaisai, setSelectedKaisai] = useState<string>("");
   const handleKaisaiChange = (name: string, value: string) => {
     setSelectedKaisai(value);
     formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
@@ -77,7 +76,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (errors?.[name]) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
@@ -116,7 +115,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [data]);
 
   useEffect(() => {
-    if (errors) { setFormErrors(errors); }
+    if (errors) {
+      setFormErrors(errors);
+    }
   }, [errors]);
 
   const { data: allSelectData, goodsSearchAPI: allSelectGoodsSearchAPI } = useGoodsSearchAPI();
@@ -147,10 +148,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: goodsParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
-    goodsData.map(goods => goods.goodsId)
-    , allGoodsData.map(goods => goods.goodsId)
-    , fetchAllIds);
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+    useCheckboxSelection(
+      goodsData.map((goods) => goods.goodsId),
+      allGoodsData.map((goods) => goods.goodsId),
+      fetchAllIds
+    );
   //商品登録画面に遷移
   const { toGoodsRegist } = useToGoodsRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
@@ -217,7 +220,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setHoveredRakusatsu(null);
   };
 
-
   return (
     <div>
       <div className={breadcrumbStyles.breadcrumb}>
@@ -226,17 +228,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="auction" ><RequiredMark />{texts.goods.auctionName}</label>
+            <label htmlFor="auction">
+              <RequiredMark />
+              {texts.goods.auctionName}
+            </label>
             <KaisaiListPullDown
-              onChange={(value) => handleKaisaiChange('auctionSeq', value)}
-              selectedId={selectedKaisai !== null ? String(selectedKaisai) : ''}
+              onChange={(value) => handleKaisaiChange("auctionSeq", value)}
+              selectedId={selectedKaisai !== null ? String(selectedKaisai) : ""}
               kaisaiStatus={0}
               defaultSetOption={1}
             />
             {formErrors?.auctionSeq && <p className="error-message">{formErrors.auctionSeq}</p>}
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="goodsId" >{texts.goods.goodsId}</label>
+            <label htmlFor="goodsId">{texts.goods.goodsId}</label>
             <input
               type="number"
               id="goodsId"
@@ -247,7 +252,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="goodsName" >{texts.goods.goodsName}</label>
+            <label htmlFor="goodsName">{texts.goods.goodsName}</label>
             <input
               id="goodsName"
               name="goodsName"
@@ -256,7 +261,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="goodsId" >{texts.goods.sku}</label>
+            <label htmlFor="goodsId">{texts.goods.sku}</label>
             <input
               id="sku"
               name="sku"
@@ -266,10 +271,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="category" >{texts.goods.category}</label>
+            <label htmlFor="category">{texts.goods.category}</label>
             <CategoryListPullDown
-              onChange={(value) => handleCategoryChange('categorySeq', value)}
-              selectedId={selectedCategory !== null ? String(selectedCategory) : ''}
+              onChange={(value) => handleCategoryChange("categorySeq", value)}
+              selectedId={selectedCategory !== null ? String(selectedCategory) : ""}
             />
           </div>
           <div className={formSearchStyles.formRow}>
@@ -284,9 +289,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 onChange={formChange}
               />
             </div>
-            <div className={formSearchStyles.tilde}>
-              {texts.common.tilde}
-            </div>
+            <div className={formSearchStyles.tilde}>{texts.common.tilde}</div>
             <div className={formSearchStyles.formItemHalfWidth}>
               <input
                 type="number"
@@ -299,7 +302,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </div>
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="freeWord" >{texts.common.freeWord}</label>
+            <label htmlFor="freeWord">{texts.common.freeWord}</label>
             <input
               id="freeWord"
               name="freeWord"
@@ -309,14 +312,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
 
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="kekkaStatus" >{texts.goods.kekkaStatus}</label>
+            <label htmlFor="kekkaStatus">{texts.goods.kekkaStatus}</label>
             <KekkaStatusPullDown
-              onChange={(value) => handleKekkaStatusChange('kekkaStatus', value)}
-              selectedId={selectedKekkaStatus !== null ? String(selectedKekkaStatus) : ''}
+              onChange={(value) => handleKekkaStatusChange("kekkaStatus", value)}
+              selectedId={selectedKekkaStatus !== null ? String(selectedKekkaStatus) : ""}
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="shuppinUserId" >{texts.goods.shuppinUserId}</label>
+            <label htmlFor="shuppinUserId">{texts.goods.shuppinUserId}</label>
             <input
               type="number"
               id="shuppinUserId"
@@ -327,7 +330,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="shuppinUserName" >{texts.goods.shuppinUserName}/{texts.goods.shuppinCompanyName}</label>
+            <label htmlFor="shuppinUserName">
+              {texts.goods.shuppinUserName}/{texts.goods.shuppinCompanyName}
+            </label>
             <input
               id="shuppinUserName"
               name="shuppinUserName"
@@ -336,7 +341,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="rakusatsuUserId" >{texts.goods.rakusatsuUserId}</label>
+            <label htmlFor="rakusatsuUserId">{texts.goods.rakusatsuUserId}</label>
             <input
               type="number"
               id="rakusatsuUserId"
@@ -347,7 +352,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             />
           </div>
           <div className={formSearchStyles.formItem}>
-            <label htmlFor="rakusatsuUserName" >{texts.goods.rakusatsuUserName}/{texts.goods.rakusatsuCompanyName}</label>
+            <label htmlFor="rakusatsuUserName">
+              {texts.goods.rakusatsuUserName}/{texts.goods.rakusatsuCompanyName}
+            </label>
             <input
               id="rakusatsuUserName"
               name="rakusatsuUserName"
@@ -368,11 +375,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               <div className={adminStyles.resultContainer}>
                 <div className={adminStyles.resultRow}>
                   <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
-                  <span>{count} {texts.label.resultCount}</span>
+                  <span>
+                    {count} {texts.label.resultCount}
+                  </span>
                 </div>
                 <div className={adminStyles.resultRow}>
                   <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                  <select id="sortName" className={adminStyles.sort} value={sortName} onChange={handleSortNameChange}>
+                  <select
+                    id="sortName"
+                    className={adminStyles.sort}
+                    value={sortName}
+                    onChange={handleSortNameChange}
+                  >
                     <option value="lot">{texts.goods.lot}</option>
                     <option value="sku">{texts.goods.sku}</option>
                     <option value="startPrice">{texts.goods.startPrice}</option>
@@ -388,21 +402,36 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   </select>
                 </div>
               </div>
-
             </div>
             {executionPermission(202, 2) && (
               <div className="text-right">
                 <div>
                   <OutPutButton onClick={handleCsvExport} />
-                  <OutPutButton onClick={handleCsvForAdminGoodsRegistExport} text={texts.button.csvForAdminGoodsRegist} />
-                  <OutPutButton onClick={handleCsvForTesuryoExport} text={texts.button.csvForTesuryo} />
+                  <OutPutButton
+                    onClick={handleCsvForAdminGoodsRegistExport}
+                    text={texts.button.csvForAdminGoodsRegist}
+                  />
+                  <OutPutButton
+                    onClick={handleCsvForTesuryoExport}
+                    text={texts.button.csvForTesuryo}
+                  />
                 </div>
                 <div className="text-right">
                   <div>
-                    <span className="text-sm">{texts.common.asterisk}{texts.button.csv}{texts.common.colon}{texts.label.csvBtn_note_1}</span>
+                    <span className="text-sm">
+                      {texts.common.asterisk}
+                      {texts.button.csv}
+                      {texts.common.colon}
+                      {texts.label.csvBtn_note_1}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-sm">{texts.common.asterisk}{texts.button.csvForAdminGoodsRegist},{texts.button.csvForTesuryo}{texts.common.colon}{texts.label.csvForAdminGoodsRegistBtn_note_1}</span>
+                    <span className="text-sm">
+                      {texts.common.asterisk}
+                      {texts.button.csvForAdminGoodsRegist},{texts.button.csvForTesuryo}
+                      {texts.common.colon}
+                      {texts.label.csvForAdminGoodsRegistBtn_note_1}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -411,28 +440,33 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th rowSpan={2} className="py-2 px-4 border-b" >
-                  <input
-                    type="checkbox"
-                    checked={selectAll}
-                    onChange={handleSelectAll}
-                  />
+                <th rowSpan={2} className="py-2 px-4 border-b">
+                  <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
                 </th>
-                <th rowSpan={2} className="py-2 px-4 w-20 border-b" >{texts.goods.thumbnailImageUrl}</th>
-                <th className="py-2 px-4 border-b" >{texts.goods.goodsId}</th>
-                <th className="py-2 px-4 border-b" >{texts.goods.sku}</th>
-                <th rowSpan={2} className="py-2 px-4 border-b w-24" >{texts.goods.lot}</th>
-                {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
+                <th rowSpan={2} className="py-2 px-4 w-20 border-b">
+                  {texts.goods.thumbnailImageUrl}
+                </th>
+                <th className="py-2 px-4 border-b">{texts.goods.goodsId}</th>
+                <th className="py-2 px-4 border-b">{texts.goods.sku}</th>
+                <th rowSpan={2} className="py-2 px-4 border-b w-24">
+                  {texts.goods.lot}
+                </th>
+                {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
                   <>
-                    <th rowSpan={2} className="py-2 px-4 border-b w-44">{texts.goods.startPrice}</th>
-                    <th rowSpan={2} className="py-2 px-4 border-b w-44">{texts.goods.rakusatsuPrice}</th>
+                    <th rowSpan={2} className="py-2 px-4 border-b w-44">
+                      {texts.goods.startPrice}
+                    </th>
+                    <th rowSpan={2} className="py-2 px-4 border-b w-44">
+                      {texts.goods.rakusatsuPrice}
+                    </th>
                   </>
                 ) : (
                   <>
-
                     <th className="py-2 px-4 border-b w-24">{texts.goods.favoriteCount}</th>
                     <th className="py-2 px-4 border-b w-44">{texts.goods.startPrice}</th>
-                    <th rowSpan={2} className="py-2 px-4 border-b w-96">{texts.auction.bidKikan}</th>
+                    <th rowSpan={2} className="py-2 px-4 border-b w-96">
+                      {texts.auction.bidKikan}
+                    </th>
                   </>
                 )}
                 <th rowSpan={2} className="py-2 px-4 border-b">
@@ -441,117 +475,142 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <th className="py-2 px-4 border-b">
                   {texts.goods.shuppinUserName}/{texts.goods.shuppinCompanyName}
                 </th>
-
               </tr>
               <tr>
-                <th colSpan={2} className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
-                {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
+                <th colSpan={2} className="py-2 px-4 border-b">
+                  {texts.goods.goodsName}
+                </th>
+                {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
                   <></>
                 ) : (
                   <>
                     <th className="py-2 px-4 border-b w-24">{texts.goods.bidCount}</th>
-                    <th className="py-2 px-4 border-b w-44" >{texts.goods.currentPrice}</th>
+                    <th className="py-2 px-4 border-b w-44">{texts.goods.currentPrice}</th>
                   </>
                 )}
-                <th className="py-2 px-4 border-b">{texts.goods.rakusatsuUserName}/{texts.goods.rakusatsuCompanyName}</th>
-
-
+                <th className="py-2 px-4 border-b">
+                  {texts.goods.rakusatsuUserName}/{texts.goods.rakusatsuCompanyName}
+                </th>
               </tr>
             </thead>
             <tbody>
-              {goodsData.length > 0 && goodsData.map((result) => (
-                <React.Fragment key={result.goodsId}>
-                  <tr
-                    className={`cursor-pointer ${hoveredRow === result.goodsId ? "bg-gray-100" : ""
+              {goodsData.length > 0 &&
+                goodsData.map((result) => (
+                  <React.Fragment key={result.goodsId}>
+                    <tr
+                      className={`cursor-pointer ${
+                        hoveredRow === result.goodsId ? "bg-gray-100" : ""
                       }`}
-                    onMouseEnter={() => handleMouseEnterRow(result.goodsId)}
-                    onMouseLeave={handleMouseLeaveRow}
-                    onClick={(e) => handleRowClick(e, result.goodsId)}
-                  >
-                    <td
-                      rowSpan={2}
-                      className="py-2 px-4 border-b text-center"
-                      onClick={(e) => {
-                        e.stopPropagation(); // チェックボックスでイベントを止める
-                      }}
+                      onMouseEnter={() => handleMouseEnterRow(result.goodsId)}
+                      onMouseLeave={handleMouseLeaveRow}
+                      onClick={(e) => handleRowClick(e, result.goodsId)}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(result.goodsId)}
-                        onChange={() => handleSelect(result.goodsId)}
-                      />
-                    </td>
-                    <td rowSpan={2} className="py-2 px-4 w-20 border-b text-right">
-                      <Image
-                        src={result.thumbnailImageUrl && result.thumbnailImageUrl.trim() !== "" ? result.thumbnailImageUrl : "/no_image.png"}
-                        alt=""
-                        width={100}
-                        height={100}
-                      />
-                    </td>
-                    <td className="py-2 px-4 border-b text-left">{result.goodsId}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.sku}</td>
-                    <td rowSpan={2} className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
-                    {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
-                      <>
-                        <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">{result.startPrice}</td>
-                        <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">{result.rakusatsuPrice}</td>
-                      </>
-                    ) : (
-                      <>
-                        <td className="py-2 px-4 border-b text-right w-24">{result.favoriteCount}</td>
-                        <td className="py-2 px-4 border-b text-right w-44">{result.startPrice}</td>
-                        <td rowSpan={2} className="py-2 px-4 border-b text-right w-96">{result.bidTime}</td>
-
-                      </>
-                    )}
-                     <td rowSpan={2} className="py-2 px-4 border-b text-left">{result.auctionKekkaStatusStr}</td>
-                  <td
-                    className={`py-2 px-4 border-b text-left ${hoveredShuppin === result.goodsId ? "bg-blue-100" : ""
-                      }`}
-                    onMouseEnter={() => handleMouseEnterShuppin(result.goodsId)}
-                    onMouseLeave={handleMouseLeaveShuppin}
-                    onClick={(e) => handleRowUserClick(e, result.shuppinUserId)}// 出品者名のクリックでイベントを止める
-                  >
-                    {result.shuppinUserName} {result.shuppinCompanyName}
-                  </td>
-                  </tr>
-                 
-                  <tr
-                    className={`cursor-pointer ${hoveredRow === result.goodsId ? "bg-gray-100" : ""
-                      }`}
-                    onMouseEnter={() => handleMouseEnterRow(result.goodsId)}
-                    onMouseLeave={handleMouseLeaveRow}
-                    onClick={(e) => handleRowClick(e, result.goodsId)}
-                  >
-                    <td colSpan={2} className="py-2 px-4 border-b text-left">
-                      {result.goodsName}
-                    </td>
-                    {(goodsData[0].spnKbn === '1' || goodsData[0].spnKbn === '2') ? (
-                      <></>
-                    ) : (
-                      <>
-                        <td className="py-2 px-4 border-b text-right w-24">{result.bidCount}</td>
-                        <td className="py-2 px-4 border-b text-right w-44">{result.currentPrice}</td>
-                      </>
-                    )}
-                    <td
-                      className={`py-2 px-4 border-b text-left ${hoveredRakusatsu === result.goodsId ? "bg-green-100" : ""
+                      <td
+                        rowSpan={2}
+                        className="py-2 px-4 border-b text-center"
+                        onClick={(e) => {
+                          e.stopPropagation(); // チェックボックスでイベントを止める
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(result.goodsId)}
+                          onChange={() => handleSelect(result.goodsId)}
+                        />
+                      </td>
+                      <td rowSpan={2} className="py-2 px-4 w-20 border-b text-right">
+                        <Image
+                          src={
+                            result.thumbnailImageUrl && result.thumbnailImageUrl.trim() !== ""
+                              ? result.thumbnailImageUrl
+                              : "/no_image.png"
+                          }
+                          alt=""
+                          width={100}
+                          height={100}
+                        />
+                      </td>
+                      <td className="py-2 px-4 border-b text-left">{result.goodsId}</td>
+                      <td className="py-2 px-4 border-b text-left">{result.sku}</td>
+                      <td rowSpan={2} className="py-2 px-4 border-b text-left w-24">
+                        {result.lot}
+                      </td>
+                      {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
+                        <>
+                          <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">
+                            {result.startPrice}
+                          </td>
+                          <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">
+                            {result.rakusatsuPrice}
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-2 px-4 border-b text-right w-24">
+                            {result.favoriteCount}
+                          </td>
+                          <td className="py-2 px-4 border-b text-right w-44">
+                            {result.startPrice}
+                          </td>
+                          <td rowSpan={2} className="py-2 px-4 border-b text-right w-96">
+                            {result.bidTime}
+                          </td>
+                        </>
+                      )}
+                      <td rowSpan={2} className="py-2 px-4 border-b text-left">
+                        {result.auctionKekkaStatusStr}
+                      </td>
+                      <td
+                        className={`py-2 px-4 border-b text-left ${
+                          hoveredShuppin === result.goodsId ? "bg-blue-100" : ""
                         }`}
-                      onMouseEnter={() => handleMouseEnterRakusatsu(result.goodsId)}
-                      onMouseLeave={handleMouseLeaveRakusatsu}
-                      onClick={(e) => handleRowUserClick(e, result.rakusatsuUserId)} // 落札者名のクリックでイベントを止める
-                    >
-                      {result.rakusatsuUserName} {result.rakusatsuCompanyName}
-                    </td>
+                        onMouseEnter={() => handleMouseEnterShuppin(result.goodsId)}
+                        onMouseLeave={handleMouseLeaveShuppin}
+                        onClick={(e) => handleRowUserClick(e, result.shuppinUserId)} // 出品者名のクリックでイベントを止める
+                      >
+                        {result.shuppinUserName} {result.shuppinCompanyName}
+                      </td>
+                    </tr>
 
-                  </tr>
-                </React.Fragment>
-              ))}
+                    <tr
+                      className={`cursor-pointer ${
+                        hoveredRow === result.goodsId ? "bg-gray-100" : ""
+                      }`}
+                      onMouseEnter={() => handleMouseEnterRow(result.goodsId)}
+                      onMouseLeave={handleMouseLeaveRow}
+                      onClick={(e) => handleRowClick(e, result.goodsId)}
+                    >
+                      <td colSpan={2} className="py-2 px-4 border-b text-left">
+                        {result.goodsName}
+                      </td>
+                      {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
+                        <></>
+                      ) : (
+                        <>
+                          <td className="py-2 px-4 border-b text-right w-24">{result.bidCount}</td>
+                          <td className="py-2 px-4 border-b text-right w-44">
+                            {result.currentPrice}
+                          </td>
+                        </>
+                      )}
+                      <td
+                        className={`py-2 px-4 border-b text-left ${
+                          hoveredRakusatsu === result.goodsId ? "bg-green-100" : ""
+                        }`}
+                        onMouseEnter={() => handleMouseEnterRakusatsu(result.goodsId)}
+                        onMouseLeave={handleMouseLeaveRakusatsu}
+                        onClick={(e) => handleRowUserClick(e, result.rakusatsuUserId)} // 落札者名のクリックでイベントを止める
+                      >
+                        {result.rakusatsuUserName} {result.rakusatsuCompanyName}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                ))}
             </tbody>
           </table>
-          <div >
-            <Pagination className={adminStyles.paginationContainer}
+          <div>
+            <Pagination
+              className={adminStyles.paginationContainer}
               count={Math.max(1, Math.ceil(count / itemsPerPage))}
               page={currentPage}
               onChange={handlePageChange}

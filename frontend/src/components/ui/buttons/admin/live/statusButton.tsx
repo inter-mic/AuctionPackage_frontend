@@ -1,5 +1,5 @@
 //コンフィグ
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import { useEffect } from "react";
 
 interface Props {

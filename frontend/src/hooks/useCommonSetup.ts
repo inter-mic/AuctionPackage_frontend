@@ -1,13 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter }  from 'next/navigation';
-//コンフィグ
-import { texts } from '@/config/texts';
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 //カスタムフック
-import { useApiRequest } from '@/hooks/api/useApiRequest';
-
-
+import { useApiRequest } from "@/hooks/api/useApiRequest";
+import { useLocale } from "@/hooks/useLocale";
 
 export const useCommonSetup = () => {
+  const { texts } = useLocale();
   const { apiRequest } = useApiRequest();
   return {
     useState,

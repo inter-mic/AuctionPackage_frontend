@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import { useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import dayjs, { Dayjs } from "dayjs";

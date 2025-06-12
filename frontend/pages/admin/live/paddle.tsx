@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import Pagination from "@mui/material/Pagination";
 
 //ホック

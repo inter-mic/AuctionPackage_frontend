@@ -1,4 +1,4 @@
-import { texts } from "@/config/texts";
+import { texts } from "@/config/texts.ja";
 import React, { forwardRef, useImperativeHandle } from "react";
 import {
   formatPriceDivision,

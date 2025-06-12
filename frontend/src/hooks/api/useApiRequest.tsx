@@ -1,10 +1,10 @@
-import { texts } from "@/config/texts";
+import { useLocale } from "@/hooks/useLocale";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 export const useApiRequest = () => {
   const router = useRouter();
-
+  const { texts } = useLocale();
   const getBaseUrl = (endPointKbn: string) => {
     switch (endPointKbn) {
       case "admin":
@@ -40,8 +40,7 @@ export const useApiRequest = () => {
         method,
         headers: fetchHeaders,
         credentials: "include",
-        body:
-          body instanceof FormData ? body : body ? JSON.stringify(body) : null,
+        body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
       });
       let responseData;
       if (res.status === 401) {

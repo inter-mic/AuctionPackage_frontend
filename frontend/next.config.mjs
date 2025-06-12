@@ -1,13 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['mui-file-input'],
+  transpilePackages: ["mui-file-input"],
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 's3.ap-northeast-1.amazonaws.com',
+        protocol: "https",
+        hostname: "s3.ap-northeast-1.amazonaws.com",
       },
     ],
+  },
+  i18n: {
+    locales: ["en", "ja"],
+    defaultLocale: "ja",
   },
 };
 

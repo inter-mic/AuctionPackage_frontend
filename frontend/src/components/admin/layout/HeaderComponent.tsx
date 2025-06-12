@@ -3,8 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-//コンフィグ
-import { texts } from "@/config/texts";
+import { useLocale } from "@/hooks/useLocale";
 //コンポーネント
 import { hasPermission, KengenMap } from "@/components/admin/PermissoionsComponent";
 //ボタン
@@ -30,7 +29,7 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
   const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 
   const [isSubMenusOpen, setIsSubMenusOpen] = useState<{ [key: string]: boolean }>({});
-
+  const { texts } = useLocale();
   const toggleSubMenu = (menu: string) => {
     setIsSubMenusOpen((prev) => {
       const newIsSubMenusOpen = Object.keys(prev).reduce((acc, key) => {
