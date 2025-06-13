@@ -1,5 +1,5 @@
 import { useLocale } from "@/hooks/useLocale";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 export const useApiRequest = () => {
@@ -31,6 +31,7 @@ export const useApiRequest = () => {
     try {
       const baseUrl = getBaseUrl(endPointKbn);
       const fetchHeaders: Record<string, string> = headers || {};
+      fetchHeaders["Accept-Language"] = router.locale || "ja";
       // FormData の場合、Content-Type ヘッダーを設定しない
       if (!(body instanceof FormData)) {
         fetchHeaders["Content-Type"] = "application/json";

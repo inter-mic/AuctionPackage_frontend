@@ -475,7 +475,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         return;
       }
       sendWebSocketMessage("bidEnd", { kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo });
-    } else if (spnKbn === "2") {
+    } else {
       sendWebSocketMessage("bidEnd", { kenriUserId: null });
     }
 
@@ -1112,14 +1112,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           : ""
                       }
                   `}
-                        buttonTitle={texts.button.updateSerikekka}
+                        buttonTitle={texts.button.rakusatsu}
                         className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
                           !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                         dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                         dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
                         onSubmit={() => bidLiveBidEnd(true)}
-                        buttonText={texts.button.updateSerikekka}
+                        buttonText={texts.button.rakusatsu}
                       />
                     </>
                   )}
