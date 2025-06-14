@@ -10,6 +10,7 @@ export interface PriceButtonHandle {
 
 interface PriceButtonProps {
   disabled: boolean;
+  setKenriUserId: (id: number | null) => void;
   setKenriPaddleNo: (paddleNo: string | null) => void;
   currentPrice: string;
   nextPrice: string;
@@ -23,6 +24,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
   (
     {
       disabled,
+      setKenriUserId,
       setKenriPaddleNo,
       currentPrice,
       nextPrice,
@@ -44,6 +46,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
 
       // ── 2. 画面上の「現在価格」「表示用現在価格」を更新 ──
       setDisplayCurrentPrice(price);
+      setKenriUserId(null);
       setKenriPaddleNo("会場");
 
       // ── 3. 「配信履歴 (liveBidLog)」にこの入札を追加 ──

@@ -105,6 +105,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         data.type === "set" ||
         data.type === "start" ||
         data.type === "updatePrice" ||
+        data.type === "isBidDisabled" ||
         data.type === "clear"
       ) {
         setReceivedData(data);
@@ -115,6 +116,9 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === "start") {
         setIsBidDisabled(false);
+      }
+      if (data.type === "isBidDisabled") {
+        setIsBidDisabled(true);
       }
       if (data.type === "updatePrice") {
         setIsBidDisabled(loginUserId === data.kenriUserId);

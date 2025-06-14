@@ -32,7 +32,12 @@ import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 //コンポーネント
 import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown";
 import { LiveMessageListPullDown } from "@/components/ui/pulldowns/LiveMessageListPullDown";
-import { formatPriceDivision, formatPriceWithCommas } from "@/components/common/PriceUtils";
+import {
+  formatPriceDivision,
+  formatPriceWithCommas,
+  formatPriceMultiplication,
+  formatPriceNum,
+} from "@/components/common/PriceUtils";
 import ConfirmDialog from "@/components/ui/dialog/auctioneerConfirmDialog";
 //ボタン
 import { CallButton } from "@/components/ui/buttons/admin/live/callButton";
@@ -170,6 +175,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [kenriUserId, setKenriUserId] = useState<number | null>();
   const [kenriPaddleNo, setKenriPaddleNo] = useState<string | null>();
   const [kenriUpdatePrice, setKenriUpdatePrice] = useState<string>("");
+  const [isBelowSaiteiPriceFlg, setIsBelowSaiteiPriceFlg] = useState<boolean>(false);
   useEffect(() => {
     if (fetchLiveBidInfoData) {
       //最低落札価格セット
@@ -494,11 +500,22 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
   const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
 
-  //オンライン入札価格（ライブオークションは入札後自動で配信）
+  //オンライン入札時の処理価格
   useEffect(() => {
     if (onlineBidHistory.length > 0) {
-      {
-        spnKbn == "2" && onlinePriceButtonRef.current?.trigger();
+      if (spnKbn == "1") {
+        //オンライン＋会場入札：会員画面の入札ボタンを非表示にする
+        sendWebSocketMessage("isBidDisabled", {
+          currentPrice: formatPriceMultiplication(currentPrice),
+          bidUnit: formatPriceNum(bidUnit),
+          nextPrice: formatPriceMultiplication(nextPrice),
+          kenriUserId: kenriUserId,
+          isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
+        });
+      }
+      if (spnKbn == "2") {
+        //オンラインのみ：入札後自動で配信
+        onlinePriceButtonRef.current?.trigger();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1047,11 +1064,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         setLiveBidkekkaData={setLiveBidkekkaData}
                         liveBidLog={liveBidLog}
                         setLiveBidLog={setLiveBidLog}
+                        setIsBelowSaiteiPriceFlg={setIsBelowSaiteiPriceFlg}
                       />
 
                       <CurrentPriceButton
                         ref={priceButtonRef}
                         disabled={!isStartButtonClicked}
+                        setKenriUserId={setKenriUserId}
                         setKenriPaddleNo={setKenriPaddleNo}
                         currentPrice={currentPrice}
                         nextPrice={nextPrice}

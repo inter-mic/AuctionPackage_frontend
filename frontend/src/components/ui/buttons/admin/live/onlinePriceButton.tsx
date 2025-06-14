@@ -28,6 +28,7 @@ interface OnlinePriceButtonProps {
   setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
   liveBidLog: TLiveBidLog[];
   setLiveBidLog: React.Dispatch<React.SetStateAction<TLiveBidLog[]>>;
+  setIsBelowSaiteiPriceFlg: (flg: boolean) => void;
 }
 
 export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePriceButtonProps>(
@@ -50,6 +51,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setLiveBidkekkaData,
       liveBidLog,
       setLiveBidLog,
+      setIsBelowSaiteiPriceFlg,
     },
     ref
   ) => {
@@ -112,7 +114,8 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setNextPrice(formatPriceDivision(nextPriceCalc));
 
       // ── 8. 最低落札価格を下回っているかどうか ──
-      const isBelowFlag = Number(saiteiRakusatsuPrice.replace(/,/g, "")) > newBidPriceNumber;
+      const isBelowFlg = Number(saiteiRakusatsuPrice.replace(/,/g, "")) > newBidPriceNumber;
+      setIsBelowSaiteiPriceFlg(isBelowFlg);
 
       // ── 9. 「配信履歴 (liveBidLog)」にこの入札を追加 ──
       const addedLog: TLiveBidLog = {
@@ -130,7 +133,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
         kenriUserId: newHighestUserId,
         nextPrice: nextPriceCalc,
         currentPrice: onlineBidPrice,
-        isBelowSaiteiPriceFlg: isBelowFlag,
+        isBelowSaiteiPriceFlg: isBelowFlg,
       });
 
       // ── 11. sendWSフラグTrue ──
