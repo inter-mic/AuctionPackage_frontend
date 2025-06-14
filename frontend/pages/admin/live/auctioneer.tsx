@@ -571,6 +571,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setAuctioneerFlg(true);
   };
 
+  //現在価格配信時チェック用
+  const [isNextPriceBelow, setIsNextPriceBelow] = useState<boolean>(false);
+  useEffect(() => {
+    setIsNextPriceBelow(false);
+  }, [nextPrice]);
+  useEffect(() => {
+    setIsNextPriceBelow(false);
+  }, [currentPrice]);
+
   const startButtonRef = useRef<StartButtonHandle>(null);
   const plusRef = useRef<SerihabaButtonHandle>(null);
   const minusRef = useRef<SerihabaButtonHandle>(null);
@@ -971,7 +980,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         <span className={styles.priceLabel}>次価格</span>
                         <input
                           type="text"
-                          className={styles.priceInput}
+                          className={`${styles.priceInput} ${isNextPriceBelow ? "bg-red-300" : ""}`}
                           value={nextPrice}
                           onChange={(e) => setNextPrice(e.target.value)}
                         />
@@ -980,7 +989,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         <span className={styles.priceLabel}>現在価格</span>
                         <input
                           type="text"
-                          className={styles.priceInput}
+                          className={`${styles.priceInput} ${isNextPriceBelow ? "bg-red-300" : ""}`}
                           value={currentPrice}
                           ref={currentPriceInputRef}
                           onChange={(e) => setCurrentPrice(e.target.value)}
@@ -1078,6 +1087,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         setDisplayCurrentPrice={setDisplayCurrentPrice}
                         liveBidLog={liveBidLog}
                         setLiveBidLog={setLiveBidLog}
+                        setIsNextPriceBelow={setIsNextPriceBelow}
                       />
                     </>
                   )}

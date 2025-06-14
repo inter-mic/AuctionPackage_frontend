@@ -3,6 +3,7 @@ import { texts } from "@/config/texts.ja";
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { TLiveBidLog } from "@/types/admin/live/auctioneer";
 import { formatPriceMultiplication, formatPriceWithCommas } from "@/components/common/PriceUtils";
+import { toast } from "react-toastify";
 
 export interface PriceButtonHandle {
   trigger: () => void;
@@ -18,6 +19,7 @@ interface PriceButtonProps {
   setDisplayCurrentPrice: (price: string) => void;
   liveBidLog: TLiveBidLog[];
   setLiveBidLog: React.Dispatch<React.SetStateAction<TLiveBidLog[]>>;
+  setIsNextPriceBelow: (flg: boolean) => void;
 }
 
 export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps>(
@@ -32,12 +34,21 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
       setDisplayCurrentPrice,
       liveBidLog,
       setLiveBidLog,
+      setIsNextPriceBelow,
     },
     ref
   ) => {
     const [sendWS, setSendWS] = useState<boolean>(false);
     const handleClick = () => {
       const now = new Date();
+
+      // ── 0. 価格チェック ──
+      // 現在価格配信時に次価格が現在価格より低い場合はアラート表示
+      if (Number(nextPrice) <= Number(currentPrice)) {
+        setIsNextPriceBelow(true);
+        toast.error(texts.message.isNextPriceBelow);
+        return;
+      }
 
       // ── 1. 価格を計算 ──
       const price = formatPriceWithCommas(

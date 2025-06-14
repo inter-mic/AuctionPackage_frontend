@@ -573,6 +573,7 @@ export const texts = {
     registBid: "入札が完了しました。",
     highestBid: "落札権利を取得しました。",
     noHighestBid: "入札しましたが、落札権利を取得できませんでした。",
+    isNextPriceBelow: "次価格が現在価格以下でセットされています。",
   },
   pulldown: {
     keisaiFlgOn: "掲載",
