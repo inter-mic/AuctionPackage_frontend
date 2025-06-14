@@ -580,6 +580,22 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setIsNextPriceBelow(false);
   }, [currentPrice]);
 
+  //現在価格を手入力で変更後、セリ幅に応じて次価格も変更する
+  const manualSetNextPrice = async (value: string) => {
+    const current = formatPriceMultiplication(value);
+    const fetchBitUnit = getBidUnit(
+      spnKbn,
+      fetchGoodsData?.bidUnit,
+      fetchBidUnitList,
+      current.toString()
+    );
+    if (fetchBitUnit) {
+      const bidUnit = Number(fetchBitUnit);
+      const manualNextPrice = current + bidUnit;
+      setNextPrice(formatPriceDivision(manualNextPrice.toString()));
+    }
+  };
+
   const startButtonRef = useRef<StartButtonHandle>(null);
   const plusRef = useRef<SerihabaButtonHandle>(null);
   const minusRef = useRef<SerihabaButtonHandle>(null);
@@ -982,7 +998,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           type="text"
                           className={`${styles.priceInput} ${isNextPriceBelow ? "bg-red-300" : ""}`}
                           value={nextPrice}
-                          onChange={(e) => setNextPrice(e.target.value)}
+                          onChange={(e) => {
+                            setNextPrice(e.target.value);
+                            setIsNextPriceBelow(false);
+                          }}
                         />
                         <span>,000</span>
 
@@ -992,7 +1011,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           className={`${styles.priceInput} ${isNextPriceBelow ? "bg-red-300" : ""}`}
                           value={currentPrice}
                           ref={currentPriceInputRef}
-                          onChange={(e) => setCurrentPrice(e.target.value)}
+                          onChange={(e) => {
+                            setCurrentPrice(e.target.value);
+                            setIsNextPriceBelow(false);
+                            manualSetNextPrice(e.target.value);
+                          }}
                         />
                         <span>,000</span>
                       </div>
