@@ -145,14 +145,14 @@ export function HeaderComponent({
             </span>
           </>
         )}
-        <select
+        {/* <select
           value={router.locale}
           onChange={(e) => switchLanguage(e.target.value as "ja" | "en")}
           className={styles.languageSelector}
         >
           <option value="ja">日本語</option>
           <option value="en">English</option>
-        </select>
+        </select> */}
         <button className={styles.menuIcon} onClick={toggleMobileMenu}>
           {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>

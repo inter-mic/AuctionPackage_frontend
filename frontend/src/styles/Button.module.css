@@ -67,7 +67,7 @@
   opacity: 0.65;
 }
 
-.toGoodsListButton {
+.calendarButton {
   background-color: #ffffff;
   color: #999;
   border: 1px solid #d1d5db;
@@ -79,7 +79,7 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.toGoodsListButton:hover,
+.calendarButton:hover,
 .searchButton:hover,
 .clearButton:hover {
   background-color: #d1d5db;
@@ -173,5 +173,9 @@
   .bidDetailButton {
     width: 90%;
     margin-left: 5%;
+  }
+
+  .calendarButton {
+    margin: 10px auto;
   }
 }

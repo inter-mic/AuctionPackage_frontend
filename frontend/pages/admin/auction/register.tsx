@@ -286,9 +286,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               <label className={styles.label}>
                 <RequiredMark />
                 {texts.auction.displayKikan}
-                <br />
-                <span>{texts.auction.displayKikan_note_1}</span>
-                <br />
+                {selectedSpnKbn === "3" && (
+                  <>
+                    <br />
+                    <span>{texts.auction.displayKikan_note_1}</span>
+                    <br />
+                  </>
+                )}
               </label>
               <div className="w-full mt-1">
                 <div className="lg:flex ">
@@ -326,48 +330,50 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </div>
             </div>
           </div>
-          <div className="flex">
-            <div className="w-full xl:w-1/2">
-              <label className={styles.label}>
-                <RequiredMark />
-                {selectedSpnKbn === "1" ? texts.auction.shomenbidKikan : texts.auction.bidKikan}
-              </label>
-              <div className="w-full mt-1">
-                <div className="lg:flex">
-                  <CustomDatePicker
-                    name="bidStarttime"
-                    selectedDate={fetchedData.bidStartDate}
-                    onDateChange={handleDateChange("bidStartDate")}
-                    error={!!formErrors?.bidStarttime}
-                  />
-                  <CustomTimePicker
-                    name="bidStarttime"
-                    selectedTime={fetchedData.bidStarttime}
-                    onTimeChange={handleTimeChange("bidStarttime")}
-                    error={!!formErrors?.bidStarttime}
-                  />
-                  <div className="lg:ml-3 lg:mt-3  text-center">～</div>
-                  <CustomDatePicker
-                    name="bidEndtime"
-                    selectedDate={fetchedData.bidEndDate}
-                    onDateChange={handleDateChange("bidEndDate")}
-                    error={!!formErrors?.bidEndtime}
-                  />
-                  <CustomTimePicker
-                    name="bidEndtime"
-                    selectedTime={fetchedData.bidEndtime}
-                    onTimeChange={handleTimeChange("bidEndtime")}
-                    error={!!formErrors?.bidEndtime}
-                  />
+          {selectedSpnKbn != "1" && (
+            <div className="flex">
+              <div className="w-full xl:w-1/2">
+                <label className={styles.label}>
+                  <RequiredMark />
+                  {selectedSpnKbn === "1" ? texts.auction.shomenbidKikan : texts.auction.bidKikan}
+                </label>
+                <div className="w-full mt-1">
+                  <div className="lg:flex">
+                    <CustomDatePicker
+                      name="bidStarttime"
+                      selectedDate={fetchedData.bidStartDate}
+                      onDateChange={handleDateChange("bidStartDate")}
+                      error={!!formErrors?.bidStarttime}
+                    />
+                    <CustomTimePicker
+                      name="bidStarttime"
+                      selectedTime={fetchedData.bidStarttime}
+                      onTimeChange={handleTimeChange("bidStarttime")}
+                      error={!!formErrors?.bidStarttime}
+                    />
+                    <div className="lg:ml-3 lg:mt-3  text-center">～</div>
+                    <CustomDatePicker
+                      name="bidEndtime"
+                      selectedDate={fetchedData.bidEndDate}
+                      onDateChange={handleDateChange("bidEndDate")}
+                      error={!!formErrors?.bidEndtime}
+                    />
+                    <CustomTimePicker
+                      name="bidEndtime"
+                      selectedTime={fetchedData.bidEndtime}
+                      onTimeChange={handleTimeChange("bidEndtime")}
+                      error={!!formErrors?.bidEndtime}
+                    />
+                  </div>
                 </div>
+                {(formErrors?.bidStarttime || formErrors?.bidEndtime) && (
+                  <p className="error-message">
+                    {formErrors?.bidStarttime || formErrors?.bidEndtime}
+                  </p>
+                )}
               </div>
-              {(formErrors?.bidStarttime || formErrors?.bidEndtime) && (
-                <p className="error-message">
-                  {formErrors?.bidStarttime || formErrors?.bidEndtime}
-                </p>
-              )}
             </div>
-          </div>
+          )}
           {selectedSpnKbn === "1" && (
             <div className="flex">
               <div className="w-full xl:w-1/2">

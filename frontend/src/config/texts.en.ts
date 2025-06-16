@@ -367,6 +367,7 @@ export const texts = {
     onlineBidshonin: "オンライン入札承認",
     onlineBidshonin_note_1: "※承認すると、会員にメール送信されます。",
     shoninzumi: "承認済み",
+    liveApplication: "ライブ入札申請済み",
   },
   admin: {
     companyUrl: "企業情報URL",

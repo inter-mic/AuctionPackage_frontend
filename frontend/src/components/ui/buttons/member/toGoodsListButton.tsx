@@ -19,7 +19,7 @@ export function ToGoodsListButton({ auctionSeq, isLogin }: ToGoodsListButtonProp
     }
   };
   return (
-    <button onClick={handleClick} className={buttonStyles.toGoodsListButton}>
+    <button onClick={handleClick} className={buttonStyles.calendarButton}>
       <span>{texts.button.toGoodsList}</span>
     </button>
   );

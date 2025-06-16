@@ -379,7 +379,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         )}
                     </td>
                     <td className="py-1 px-4 border-b text-center">
-                      {result.paddleKbn == "3" ? (
+                      {result.paddleKbn == "2" ? (
                         result.onlinebidShohinFlg ? (
                           <span>{texts.paddle.shoninzumi}</span>
                         ) : (

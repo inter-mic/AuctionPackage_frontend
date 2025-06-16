@@ -36,12 +36,8 @@ interface MemberGoodsSearchPageProps extends TPageProps {
   loginUserId: number;
 }
 
-const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
-  isLogin,
-  loginUserId,
-}) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, loginUserId }) => {
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const { goodsList, goodsSearchAPI } = useGoodsSearchAPI();
   const { goodsCount, goodsCountAPI } = useGoodsCountAPI();
   const [fetchGoodsList, setFetchGoodsList] = useState<TGoodsSelect[]>([]);
@@ -50,8 +46,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
   const toggleFilter = () => setIsFilterOpen((prev) => !prev);
   const params = useSearchParams();
   const paramsAuctionSeq = params ? params.get("auctionSeq") : null;
-  const { auctionKeisaiChuList, auctionKeisaiChuSearchAPI } =
-    useAuctionKeisaiChuSearchAPI();
+  const { auctionKeisaiChuList, auctionKeisaiChuSearchAPI } = useAuctionKeisaiChuSearchAPI();
   const [fetchAuctionData, setFetchAuctionData] = useState<TAuction>();
   const { category } = useCategorySearchAPI();
   useEffect(() => {
@@ -95,9 +90,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
   };
   const handleCategoryChange = (id: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(id)
-        ? prev.filter((categoryId) => categoryId !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((categoryId) => categoryId !== id) : [...prev, id]
     );
   };
   const [currentPage, setCurrentPage] = useState(1);
@@ -195,20 +188,12 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
     <>
       {fetchAuctionData != null ? (
         <>
-          <AuctionInfo
-            auctionData={fetchAuctionData}
-            isToGoodsList={false}
-            isLogin={isLogin}
-          />
+          <AuctionInfo auctionData={fetchAuctionData} isToGoodsList={false} isLogin={isLogin} />
 
           {fetchAuctionData?.spnKbn === "1" &&
             isLogin &&
-            dayjs().isAfter(
-              dayjs(fetchAuctionData.onlinebidApplicationStarttime)
-            ) &&
-            dayjs().isBefore(
-              dayjs(fetchAuctionData.onlinebidApplicationEndtime)
-            ) && (
+            dayjs().isAfter(dayjs(fetchAuctionData.onlinebidApplicationStarttime)) &&
+            dayjs().isBefore(dayjs(fetchAuctionData.onlinebidApplicationEndtime)) && (
               <ToLiveApplicationButton
                 auctionSeq={fetchAuctionData.auctionSeq}
                 className={styles.ToLiveApplicationButton}
@@ -242,12 +227,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
             </div>
             <div className={formSearchStyles.formItem}>
               <label htmlFor="lot">{texts.goods.lot}</label>
-              <input
-                id="lot"
-                name="lot"
-                value={goodsParams.lot}
-                onChange={formChange}
-              />
+              <input id="lot" name="lot" value={goodsParams.lot} onChange={formChange} />
             </div>
           </div>
           <div className={formSearchStyles.formItem}>
@@ -375,26 +355,16 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
               </span>
               <div className={styles.sortContainer}>
                 <label htmlFor="sort">{texts.label.sort}</label>
-                <select
-                  id="sort"
-                  value={sortOption}
-                  onChange={handleSortChange}
-                >
+                <select id="sort" value={sortOption} onChange={handleSortChange}>
                   <option value="LotAsc">{texts.goods.sort_lot_asc}</option>
                   <option value="LotDesc">{texts.goods.sort_lot_desc}</option>
                   <option value="priceAsc">{texts.goods.sort_price_asc}</option>
-                  <option value="priceDesc">
-                    {texts.goods.sort_price_desc}
-                  </option>
+                  <option value="priceDesc">{texts.goods.sort_price_desc}</option>
                 </select>
               </div>
             </div>
           </div>
-          <GoodsList
-            list={fetchGoodsList}
-            isLogin={isLogin}
-            loginUserId={loginUserId}
-          />
+          <GoodsList list={fetchGoodsList} isLogin={isLogin} loginUserId={loginUserId} />
 
           <div className={memberStyles.paginationContainer}>
             <Pagination
