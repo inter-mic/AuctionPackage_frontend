@@ -22,6 +22,7 @@ import { useGoodsKekkaUpdateAPI } from "@/hooks/api/admin/goods/useGoodsKekkaUpd
 import { useGoodsKekkaDeleteAPI } from "@/hooks/api/admin/goods/useGoodsKekkaDeleteAPI";
 import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAPI";
 import { useUserGetInfoAPI } from "@/hooks/api/admin/user/useUserGetInfoAPI";
+import { useAuctionGetInfoAPI } from "@/hooks/api/admin/auction/useAuctionGetInfoAPI";
 //型定義
 import {
   GoodsData,
@@ -60,6 +61,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect, useRouter } = useCommonSetup();
   useKengenRedirect(kengen, 201);
   const { executionPermission } = useExecutionPermission(kengen);
+  const [spnKbn, setSpnkbn] = useState<string>("");
   const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
   const [kekkaData, setkekkaData] = useState<GoodsKekkaData>(initialGoodsKekkaData);
   const [images, setImages] = useState<
@@ -81,7 +83,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const handleSearchLotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchLot(e.target.value);
   };
-
+  const { data, auctionGetInfo } = useAuctionGetInfoAPI();
   const [selectedKaisai, setSelectedKaisai] = useState<string>("");
   const handleKaisaiChange = (name: string, value: string) => {
     setSelectedKaisai(value);
@@ -92,8 +94,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         [name]: "",
       }));
     }
-  };
 
+    auctionGetInfo(Number(value));
+  };
+  useEffect(() => {
+    if (data && data.spnKbn !== null && data.spnKbn !== undefined) {
+      setSpnkbn(data.spnKbn);
+      setGoodsData((prev) => ({
+        ...prev,
+        spnKbn: data.spnKbn,
+      }));
+    }
+  }, [data]);
   //検索
   const { fetchGoodsData, fetchGoodsKekkaData, goodsSearchErrors, goodsSearchByGoodsIdAPI } =
     useGoodsSearchByGoodsIdAPI();
@@ -160,6 +172,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       } else {
         setBitFlg(false);
       }
+
+      setSpnkbn(fetchGoodsData.spnKbn || "");
     }
     if (fetchGoodsKekkaData) {
       setkekkaData(fetchGoodsKekkaData);
@@ -603,7 +617,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     )}
                   </div>
                   <div className={styles.flexItem}>
-                    {goodsData.spnKbn !== "1" && (
+                    {spnKbn !== "1" && (
                       <>
                         <label htmlFor="bidUnit" className={styles.label}>
                           <RequiredMark />
@@ -626,24 +640,27 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 </div>
                 <div className={styles.flexContainer}>
                   <div className={styles.flexItem}>
-                    <label htmlFor="saiteiRakusatsuPrice" className={styles.label}>
-                      {texts.goods.saiteiRakusatsuPrice}
-                      <br />
-                      <label className={styles.note}>
-                        ※{texts.goods.saiteiRakusatsuPrice_note_1}
-                      </label>
-                    </label>
-
-                    <input
-                      id="saiteiRakusatsuPrice"
-                      name="saiteiRakusatsuPrice"
-                      onChange={handleGoodsDataChange}
-                      value={goodsData.saiteiRakusatsuPrice || ""}
-                      className={`${styles.input} text-right `}
-                      disabled={bitFlg}
-                    />
-                    {formErrors?.saiteiRakusatsuPrice && (
-                      <p className="error-message">{formErrors.saiteiRakusatsuPrice}</p>
+                    {spnKbn !== "1" && (
+                      <>
+                        <label htmlFor="saiteiRakusatsuPrice" className={styles.label}>
+                          {texts.goods.saiteiRakusatsuPrice}
+                          <br />
+                          <label className={styles.note}>
+                            ※{texts.goods.saiteiRakusatsuPrice_note_1}
+                          </label>
+                        </label>
+                        <input
+                          id="saiteiRakusatsuPrice"
+                          name="saiteiRakusatsuPrice"
+                          onChange={handleGoodsDataChange}
+                          value={goodsData.saiteiRakusatsuPrice || ""}
+                          className={`${styles.input} text-right `}
+                          disabled={bitFlg}
+                        />
+                        {formErrors?.saiteiRakusatsuPrice && (
+                          <p className="error-message">{formErrors.saiteiRakusatsuPrice}</p>
+                        )}
+                      </>
                     )}
                   </div>
                   <div className={styles.flexItem}>
@@ -757,8 +774,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   </div>
 
                   <div className={styles.flexItem}>
-                    {goodsData.spnKbn === "3" ||
-                      (goodsData.spnKbn === "4" && (
+                    {spnKbn === "3" ||
+                      (spnKbn === "4" && (
                         <>
                           <label className={styles.label}>{texts.goods.bidCount}</label>
                           <input
@@ -771,8 +788,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   </div>
                 </div>
               </div>
-              {goodsData.spnKbn === "3" ||
-                (goodsData.spnKbn === "4" && (
+              {spnKbn === "3" ||
+                (spnKbn === "4" && (
                   <div className="p-4">
                     <div className={styles.flexContainer}>
                       <div className={styles.flexItem}>
