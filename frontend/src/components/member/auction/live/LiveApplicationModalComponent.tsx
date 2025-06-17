@@ -44,7 +44,7 @@ export const LiveApplicationModalComponent: React.FC<Props> = ({
             {texts.button.cancel}
           </button>
           <button onClick={handleSubmit} className={styles.submitButton}>
-            {texts.button.toLiveApplication}
+            {texts.button.liveApplication}
           </button>
         </div>
       </div>

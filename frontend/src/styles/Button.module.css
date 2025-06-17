@@ -79,6 +79,20 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.toLiveButton {
+  background-color: #dca42f;
+  color: #fff;
+  border: 1px solid #d1d5db;
+  padding: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin: 10px 0px;
+  width: 15rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.toLiveButton:hover {
+  opacity: 0.65;
+}
 .calendarButton:hover,
 .searchButton:hover,
 .clearButton:hover {
@@ -175,7 +189,8 @@
     margin-left: 5%;
   }
 
-  .calendarButton {
+  .calendarButton,
+  .toLiveButton {
     margin: 10px auto;
   }
 }

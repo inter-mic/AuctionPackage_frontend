@@ -1,19 +1,14 @@
-import { useRouter } from "next/navigation";
 import { useLocale } from "@/hooks/useLocale";
+import buttonStyles from "@/styles/Button.module.css";
 interface Props {
-  auctionSeq?: number;
-  className: string;
+  onClick: () => void;
 }
 
-export function ToLiveApplicationButton({ auctionSeq, className }: Props) {
-  const router = useRouter();
+export function ToLiveApplicationButton({ onClick }: Props) {
   const { texts } = useLocale();
-  const handleClick = () => {
-    router.push(`/member/live/application?auctionSeq=${auctionSeq}`);
-  };
   return (
-    <button onClick={handleClick} className={className}>
-      <span>{texts.button.toLiveApplication}</span>
+    <button onClick={onClick} className={buttonStyles.calendarButton}>
+      <span>{texts.button.liveApplication}</span>
     </button>
   );
 }

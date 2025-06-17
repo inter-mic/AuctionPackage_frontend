@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //ボタン
 import { ToGoodsListButton } from "@/components/ui/buttons/member/toGoodsListButton";
+import { ToLiveButton } from "@/components/ui/buttons/member/toLiveButton";
+import { ToLiveApplicationButton } from "@/components/ui/buttons/member/toLiveApplicationButton";
 //コンポーネント
 import { LiveApplicationModalComponent } from "@/components/member/auction/live/LiveApplicationModalComponent";
 //型定義
@@ -123,6 +125,8 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isL
             {isToGoodsList && (
               <ToGoodsListButton auctionSeq={auctionData.auctionSeq} isLogin={isLogin} />
             )}
+          </div>
+          <div className={auctionStyles.buttonContainer}>
             {auctionData?.spnKbn === "1" &&
               isLogin &&
               dayjs().isAfter(dayjs(auctionData.onlinebidApplicationStarttime)) &&
@@ -132,13 +136,12 @@ const AuctionInfoComponent: React.FC<Props> = ({ auctionData, isToGoodsList, isL
                   {texts.paddle.liveApplication}
                 </span>
               ) : (
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className={buttonStyles.calendarButton}
-                >
-                  {texts.button.toLiveApplication}
-                </button>
+                <ToLiveApplicationButton onClick={() => setIsModalOpen(true)} />
               ))}
+            {/* auctionDateが今日だったらライブ参加ボタン表示 */}
+            {auctionData?.auctionDatetime && dayjs().isSame(auctionData.auctionDatetime, "day") && (
+              <ToLiveButton />
+            )}
           </div>
 
           {auctionData.auctionGaiyo && (

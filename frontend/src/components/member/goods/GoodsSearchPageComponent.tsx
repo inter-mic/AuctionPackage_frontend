@@ -23,7 +23,6 @@ import { TAuction } from "@/types/common/MtAuction";
 //ボタン
 import { SearchButton } from "@/components/ui/buttons/member/searchButton";
 import { ClearButton } from "@/components/ui/buttons/member/clearButton";
-import { ToLiveApplicationButton } from "@/components/ui/buttons/member/toLiveApplicationButton";
 //スタイル
 import formSearchStyles from "@/styles/member/FormSearch.module.css";
 import Checkbox from "@mui/material/Checkbox";
@@ -189,16 +188,6 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       {fetchAuctionData != null ? (
         <>
           <AuctionInfo auctionData={fetchAuctionData} isToGoodsList={false} isLogin={isLogin} />
-
-          {fetchAuctionData?.spnKbn === "1" &&
-            isLogin &&
-            dayjs().isAfter(dayjs(fetchAuctionData.onlinebidApplicationStarttime)) &&
-            dayjs().isBefore(dayjs(fetchAuctionData.onlinebidApplicationEndtime)) && (
-              <ToLiveApplicationButton
-                auctionSeq={fetchAuctionData.auctionSeq}
-                className={styles.ToLiveApplicationButton}
-              />
-            )}
         </>
       ) : (
         <div></div>
