@@ -12,6 +12,7 @@ export const useLiveBidKekkaUpdateAPI = () => {
   const [responseData, setResponseData] = useState<LiveBidKekkaData>();
   const router = useRouter();
   const liveBidKekkaUpdateAPI = async (
+    auctionKekkaStatus: number | null,
     liveBidKekka: LiveBidKekkaData,
     liveBidLog: TLiveBidLog[],
     connectionCount: number | null | undefined,
@@ -19,6 +20,7 @@ export const useLiveBidKekkaUpdateAPI = () => {
   ) => {
     const sanitizedKekkaData = {
       ...liveBidKekka,
+      auctionKekkaStatus: auctionKekkaStatus,
       rakusatsuPrice: liveBidKekka.rakusatsuPrice
         ? liveBidKekka.rakusatsuPrice.replace(/,/g, "")
         : null,
@@ -48,12 +50,13 @@ export const useLiveBidKekkaUpdateAPI = () => {
       texts.message.regist,
       true
     );
-    if (status === 400) {
-      setLiveBidKekkaRegistErrors(responseData);
-      return false; // エラーが発生したので false を返す
-    } else {
+    console.log(status);
+    if (status === 200) {
       setResponseData(responseData);
       return true; // 成功したので true を返す
+    } else {
+      setLiveBidKekkaRegistErrors(responseData);
+      return false; // エラーが発生したので false を返す
     }
   };
   return { responseData, liveBidKekkaRegistErrors, liveBidKekkaUpdateAPI };

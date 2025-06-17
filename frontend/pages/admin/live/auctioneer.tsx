@@ -176,6 +176,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [kenriPaddleNo, setKenriPaddleNo] = useState<string | null>();
   const [kenriUpdatePrice, setKenriUpdatePrice] = useState<string>("");
   const [isBelowSaiteiPriceFlg, setIsBelowSaiteiPriceFlg] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log(currentPrice);
+  }, [currentPrice]);
+
   useEffect(() => {
     if (fetchLiveBidInfoData) {
       //最低落札価格セット
@@ -362,7 +367,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
       if (data.type === "rakusatsuProcessing") {
         setRakusatsuProcessFlg(true);
-        if (kenriUserId != null) {
+        if (kenriPaddleNo != null) {
           setLiveBidkekkaData((prev) => ({
             ...prev,
             rakusatsuPaddleNo: kenriPaddleNo,
@@ -459,6 +464,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const bidLiveAuctionEnd = async () => {
     sendWebSocketMessage("bidEnd", { kenriUserId: kenriUserId });
     const isSuccess = await liveBidKekkaUpdateAPI(
+      liveBidkekkaData.auctionKekkaStatus,
       liveBidkekkaData,
       liveBidLog,
       connectionCount,
@@ -471,6 +477,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setNextLotListRow(Number(nextLot) + 1);
     }
   };
+
+  //落札処理用
+  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
+  const [isRakusatsuPaddleNoError, setIsRakusatsuPaddleNoError] = useState<boolean>(false);
   const bidLiveBidEnd = async (isRakusatsu: boolean) => {
     if (isRakusatsu) {
       if (
@@ -478,14 +488,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         liveBidkekkaData.rakusatsuPaddleNo === ""
       ) {
         toast.error("落札パドル番号を入力してください");
+        setIsRakusatsuPaddleNoError(true);
         return;
       }
-      sendWebSocketMessage("bidEnd", { kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo });
+      sendWebSocketMessage("bidEnd", {
+        kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo,
+      });
     } else {
-      sendWebSocketMessage("bidEnd", { kenriUserId: null });
+      sendWebSocketMessage("bidEnd", { kenriPaddleNo: null });
     }
 
     const isSuccess = await liveBidKekkaUpdateAPI(
+      isRakusatsu ? 2 : 1,
       liveBidkekkaData,
       liveBidLog,
       connectionCount,
@@ -498,7 +512,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setNextLotListRow(Number(nextLot) + 1);
     }
   };
-  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
 
   //オンライン入札時の処理価格
   useEffect(() => {
@@ -1111,6 +1124,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         liveBidLog={liveBidLog}
                         setLiveBidLog={setLiveBidLog}
                         setIsNextPriceBelow={setIsNextPriceBelow}
+                        setLiveBidkekkaData={setLiveBidkekkaData}
                       />
                     </>
                   )}
@@ -1136,34 +1150,33 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       </span>
                       <input
                         type="text"
-                        className={styles.paddleInput}
+                        className={`${styles.paddleInput} ${
+                          isRakusatsuPaddleNoError ? "bg-red-300" : ""
+                        }`}
                         value={liveBidkekkaData.rakusatsuPaddleNo ?? ""}
-                        onChange={(e) => handleRakusatsuPaddleNoChange(e.target.value)}
+                        onChange={(e) => {
+                          handleRakusatsuPaddleNoChange(e.target.value);
+                          setIsRakusatsuPaddleNoError(false);
+                        }}
                       />
                       <ConfirmDialog
                         open={rakusatsuConfirmOpen}
                         setOpen={setRakusatsuConfirmOpen}
                         disabled={!isRakusatsuProcessFlg}
                         description={`${texts.livemessage.updateSerikekkaData_1} ${
-                          liveBidkekkaData.auctionKekkaStatus === 2
-                            ? texts.livemessage.rakusatsu
-                            : texts.livemessage.furakusatsu
+                          texts.livemessage.rakusatsu
                         }
-                      ${
-                        liveBidkekkaData.auctionKekkaStatus === 2
-                          ? "\n" +
+                          ${
+                            "\n" +
                             texts.livemessage.updateSerikekkaData_2 +
-                            liveBidkekkaData.rakusatsuUserId
-                          : ""
-                      }
-                      ${
-                        liveBidkekkaData.auctionKekkaStatus === 2
-                          ? "\n" +
+                            liveBidkekkaData.rakusatsuPaddleNo
+                          }
+                          ${
+                            "\n" +
                             texts.livemessage.updateSerikekkaData_3 +
                             formatPriceWithCommas(Number(liveBidkekkaData.rakusatsuPrice))
-                          : ""
-                      }
-                  `}
+                          }
+                        `}
                         buttonTitle={texts.button.rakusatsu}
                         className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
                           !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""

@@ -109,7 +109,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         data.type === "clear"
       ) {
         setReceivedData(data);
-        setBidStatus(loginUserId === data.kenriUserId ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
+        setBidStatus(fetchPaddleNo === data.kenriPaddleNo ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
       }
       if (data.type === "set") {
         setIsBidDisabled(true);
@@ -121,7 +121,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
         setIsBidDisabled(true);
       }
       if (data.type === "updatePrice") {
-        setIsBidDisabled(loginUserId === data.kenriUserId);
+        setIsBidDisabled(fetchPaddleNo === data.kenriPaddleNo);
         setIsPriceUpdated(true);
         setTimeout(() => setIsPriceUpdated(false), 1000);
       }
@@ -140,9 +140,14 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       } else {
         setRakusatsuProcessingMsgFlg(false);
       }
+      if (data.type === "bidRestart") {
+        setIsBidDisabled(fetchPaddleNo === data.kenriPaddleNo);
+      }
       if (data.type === "bidEnd") {
         setIsBidDisabled(true);
-        setBidStatus(!data.kenriPaddleNo ? 4 : fetchPaddleNo === data.kenriPaddleNo ? 2 : 3);
+        setBidStatus(
+          !data.kenriPaddleNo ? 4 : String(fetchPaddleNo) === String(data.kenriPaddleNo) ? 2 : 3
+        );
       }
       if (data.type === "clear") {
         setIsBidDisabled(true);

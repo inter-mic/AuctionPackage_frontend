@@ -59,6 +59,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
     const [queuedPayload, setQueuedPayload] = useState<{
       bidUserId: string;
       kenriUserId: number | null | undefined;
+      kenriPaddleNo: string | null | undefined;
       nextPrice: string;
       currentPrice: string;
       isBelowSaiteiPriceFlg: boolean;
@@ -131,6 +132,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setQueuedPayload({
         bidUserId: newOnlineBid.userId,
         kenriUserId: newHighestUserId,
+        kenriPaddleNo: newOnlineBid.paddleNo,
         nextPrice: nextPriceCalc,
         currentPrice: onlineBidPrice,
         isBelowSaiteiPriceFlg: isBelowFlg,

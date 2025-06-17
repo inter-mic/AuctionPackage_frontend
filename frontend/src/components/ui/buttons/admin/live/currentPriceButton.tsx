@@ -4,6 +4,7 @@ import React, { forwardRef, useImperativeHandle, useState, useEffect } from "rea
 import { TLiveBidLog } from "@/types/admin/live/auctioneer";
 import { formatPriceMultiplication, formatPriceWithCommas } from "@/components/common/PriceUtils";
 import { toast } from "react-toastify";
+import { LiveBidKekkaData } from "@/types/admin/live/register";
 
 export interface PriceButtonHandle {
   trigger: () => void;
@@ -20,6 +21,7 @@ interface PriceButtonProps {
   liveBidLog: TLiveBidLog[];
   setLiveBidLog: React.Dispatch<React.SetStateAction<TLiveBidLog[]>>;
   setIsNextPriceBelow: (flg: boolean) => void;
+  setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
 }
 
 export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps>(
@@ -35,6 +37,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
       liveBidLog,
       setLiveBidLog,
       setIsNextPriceBelow,
+      setLiveBidkekkaData,
     },
     ref
   ) => {
@@ -74,6 +77,12 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
 
       // ── 4. sendWSフラグTrue ──
       setSendWS(true); // WS送信タイミングが共通のliveBidLog更新時であるため
+
+      // ── 5. 落札結果用データを更新 ──
+      setLiveBidkekkaData((prev) => ({
+        ...prev,
+        rakusatsuPrice: formatPriceMultiplication(currentPrice).toString(),
+      }));
     };
 
     useEffect(() => {
