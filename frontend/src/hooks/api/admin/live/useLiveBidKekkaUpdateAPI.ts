@@ -50,7 +50,6 @@ export const useLiveBidKekkaUpdateAPI = () => {
       texts.message.regist,
       true
     );
-    console.log(status);
     if (status === 200) {
       setResponseData(responseData);
       return true; // 成功したので true を返す

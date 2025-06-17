@@ -178,10 +178,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [isBelowSaiteiPriceFlg, setIsBelowSaiteiPriceFlg] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(currentPrice);
-  }, [currentPrice]);
-
-  useEffect(() => {
     if (fetchLiveBidInfoData) {
       //最低落札価格セット
       if (fetchLiveBidInfoData.saiteiRakusatsuPrice) {
