@@ -24,18 +24,10 @@ interface Props {
   setErrors: React.Dispatch<React.SetStateAction<Errors>>;
 }
 
-export const MemberFormFields: React.FC<Props> = ({
-  member,
-  handleChange,
-  errors,
-  setErrors,
-}) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors, setErrors }) => {
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
 
-  const [selectedTodofukenId, setSelectedTodofukenId] = useState<string | null>(
-    null
-  );
+  const [selectedTodofukenId, setSelectedTodofukenId] = useState<string | null>(null);
 
   const handleTodofukenChange = (name: string, value: string) => {
     setSelectedTodofukenId(value);
@@ -53,10 +45,8 @@ export const MemberFormFields: React.FC<Props> = ({
 
   const { address, zipCodeSearch } = useZipCodeSearchAPI();
   const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const zipCode1 = (document.getElementById("zipCode1") as HTMLInputElement)
-      .value;
-    const zipCode2 = (document.getElementById("zipCode2") as HTMLInputElement)
-      .value;
+    const zipCode1 = (document.getElementById("zipCode1") as HTMLInputElement).value;
+    const zipCode2 = (document.getElementById("zipCode2") as HTMLInputElement).value;
     handleChange({
       target: { name: "zipCode", value: `${zipCode1}-${zipCode2}` },
     } as React.ChangeEvent<HTMLInputElement>);
@@ -97,12 +87,9 @@ export const MemberFormFields: React.FC<Props> = ({
   };
 
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const mobile1 = (document.getElementById("mobile1") as HTMLInputElement)
-      .value;
-    const mobile2 = (document.getElementById("mobile2") as HTMLInputElement)
-      .value;
-    const mobile3 = (document.getElementById("mobile3") as HTMLInputElement)
-      .value;
+    const mobile1 = (document.getElementById("mobile1") as HTMLInputElement).value;
+    const mobile2 = (document.getElementById("mobile2") as HTMLInputElement).value;
+    const mobile3 = (document.getElementById("mobile3") as HTMLInputElement).value;
     handleChange({
       target: { name: "mobile", value: `${mobile1}-${mobile2}-${mobile3}` },
     } as React.ChangeEvent<HTMLInputElement>);
@@ -160,9 +147,7 @@ export const MemberFormFields: React.FC<Props> = ({
           onChange={handleInputChange}
           className={`${styles.commonInput} ${styles.input50}`}
         />
-        {errors?.loginId && (
-          <p className={`error-message ${styles.input50}`}>{errors.loginId}</p>
-        )}
+        {errors?.loginId && <p className={`error-message ${styles.input50}`}>{errors.loginId}</p>}
       </div>
       <div>
         <div className="flex items-center">
@@ -179,9 +164,7 @@ export const MemberFormFields: React.FC<Props> = ({
           onChange={handleInputChange}
           className={`${styles.commonInput} ${styles.input50}`}
         />
-        {errors?.userName && (
-          <p className={`error-message ${styles.input50}`}>{errors.userName}</p>
-        )}
+        {errors?.userName && <p className={`error-message ${styles.input50}`}>{errors.userName}</p>}
       </div>
       <div>
         <div className="flex items-center">
@@ -198,9 +181,7 @@ export const MemberFormFields: React.FC<Props> = ({
           className={`${styles.commonInput} ${styles.input50}`}
         />
         {errors?.userNameKana && (
-          <p className={`error-message ${styles.input50}`}>
-            {errors.userNameKana}
-          </p>
+          <p className={`error-message ${styles.input50}`}>{errors.userNameKana}</p>
         )}
       </div>
       <div>
@@ -218,9 +199,7 @@ export const MemberFormFields: React.FC<Props> = ({
           className={`${styles.commonInput} ${styles.input50}`}
         />
         {errors?.companyName && (
-          <p className={`error-message ${styles.input50}`}>
-            {errors.companyName}
-          </p>
+          <p className={`error-message ${styles.input50}`}>{errors.companyName}</p>
         )}
       </div>
       <div>
@@ -238,9 +217,7 @@ export const MemberFormFields: React.FC<Props> = ({
           className={`${styles.commonInput} ${styles.input50}`}
         />
         {errors?.companyNameKana && (
-          <p className={`error-message ${styles.input50}`}>
-            {errors.companyNameKana}
-          </p>
+          <p className={`error-message ${styles.input50}`}>{errors.companyNameKana}</p>
         )}
       </div>
       <div>
@@ -258,9 +235,7 @@ export const MemberFormFields: React.FC<Props> = ({
           className={`${styles.commonInput} ${styles.input50}`}
         />
         {errors?.companyUrl && (
-          <p className={`error-message ${styles.input50}`}>
-            {errors.companyUrl}
-          </p>
+          <p className={`error-message ${styles.input50}`}>{errors.companyUrl}</p>
         )}
       </div>
       <div>
@@ -278,9 +253,7 @@ export const MemberFormFields: React.FC<Props> = ({
           onChange={handleInputChange}
           className={`${styles.commonInput} ${styles.input50}`}
         />
-        {errors?.mail && (
-          <p className={`error-message ${styles.input50}`}>{errors.mail}</p>
-        )}
+        {errors?.mail && <p className={`error-message ${styles.input50}`}>{errors.mail}</p>}
       </div>
       <div>
         <div className="flex items-center">
@@ -304,7 +277,7 @@ export const MemberFormFields: React.FC<Props> = ({
           {texts.member.zipCode}
           {texts.label.hankakuInput}
         </label>
-        <div className="flex items-center space-x-2 lg:w-6/12 sm:w-full">
+        <div className="flex items-center space-x-2 lg:w-3/12 sm:w-full">
           <input
             id="zipCode1"
             name="zipCode1"
@@ -323,11 +296,9 @@ export const MemberFormFields: React.FC<Props> = ({
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
-        {errors?.zipCode && (
-          <p className={`error-message ${styles.input100}`}>{errors.zipCode}</p>
-        )}
+        {errors?.zipCode && <p className={`error-message ${styles.input100}`}>{errors.zipCode}</p>}
       </div>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col lg:w-2/12 sm:w-full">
         <label htmlFor="todofuken" className="formlabel w-full">
           {texts.member.todofuken}
         </label>
@@ -349,9 +320,7 @@ export const MemberFormFields: React.FC<Props> = ({
           className={`${styles.commonInput} ${styles.input100}`}
         />
         {errors?.address1 && (
-          <p className={`error-message ${styles.input100}`}>
-            {errors.address1}
-          </p>
+          <p className={`error-message ${styles.input100}`}>{errors.address1}</p>
         )}
       </div>
       <div>
@@ -367,9 +336,7 @@ export const MemberFormFields: React.FC<Props> = ({
           className={`${styles.commonInput} ${styles.input100}`}
         />
         {errors?.address2 && (
-          <p className={`error-message ${styles.input100}`}>
-            {errors.address2}
-          </p>
+          <p className={`error-message ${styles.input100}`}>{errors.address2}</p>
         )}
       </div>
       <div>
@@ -377,7 +344,7 @@ export const MemberFormFields: React.FC<Props> = ({
           {texts.member.tel}
           {texts.label.hankakuInput}
         </label>
-        <div className="flex items-center space-x-2 lg:w-6/12 sm:w-full">
+        <div className="flex items-center space-x-2 lg:w-4/12 sm:w-full">
           <input
             id="tel1"
             name="tel1"
@@ -405,16 +372,14 @@ export const MemberFormFields: React.FC<Props> = ({
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
-        {errors?.tel && (
-          <p className={`error-message ${styles.input50}`}>{errors.tel}</p>
-        )}
+        {errors?.tel && <p className={`error-message ${styles.input50}`}>{errors.tel}</p>}
       </div>
       <div>
         <label className="formlabel">
           {texts.member.fax}
           {texts.label.hankakuInput}
         </label>
-        <div className="flex items-center space-x-2 lg:w-6/12 sm:w-full">
+        <div className="flex items-center space-x-2 lg:w-4/12 sm:w-full">
           <input
             id="fax1"
             name="fax1"
@@ -442,16 +407,14 @@ export const MemberFormFields: React.FC<Props> = ({
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
-        {errors?.fax && (
-          <p className={`error-message ${styles.input50}`}>{errors.fax}</p>
-        )}
+        {errors?.fax && <p className={`error-message ${styles.input50}`}>{errors.fax}</p>}
       </div>
       <div>
         <label className="formlabel">
           {texts.member.mobile}
           {texts.label.hankakuInput}
         </label>
-        <div className="flex items-center space-x-2 lg:w-6/12 sm:w-full">
+        <div className="flex items-center space-x-2 lg:w-4/12 sm:w-full">
           <input
             id="mobile1"
             name="mobile1"
@@ -479,9 +442,7 @@ export const MemberFormFields: React.FC<Props> = ({
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
-        {errors?.mobile && (
-          <p className={`error-message ${styles.input50}`}>{errors.mobile}</p>
-        )}
+        {errors?.mobile && <p className={`error-message ${styles.input50}`}>{errors.mobile}</p>}
       </div>
       {userAddinfo.map(
         (data) =>

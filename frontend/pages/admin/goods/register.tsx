@@ -74,7 +74,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }[]
   >([]);
 
-  const [searchSelectedKaisai, setSearchSelectedKaisai] = useState<string>("");
+  const [searchSelectedKaisai, setSearchSelectedKaisai] = useState<string | null>(null);
   const [searchLot, setSearchLot] = useState<string>("");
   const handleSearchKaisaiChange = (name: string, value: string) => {
     setSearchSelectedKaisai(value);
@@ -120,7 +120,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectedCategory("");
     setShimeFlg(false);
     setBitFlg(false);
-    goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
+    if (searchSelectedKaisai != null) {
+      goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
+    }
   };
   useEffect(() => {
     if (goodsSearchErrors) {
@@ -159,7 +161,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (fetchGoodsData) {
       setGoodsData(fetchGoodsData);
       setSearchSelectedKaisai(
-        fetchGoodsData.auctionSeq !== null ? String(fetchGoodsData.auctionSeq) : ""
+        fetchGoodsData.auctionSeq !== null ? String(fetchGoodsData.auctionSeq) : null
       );
       setSearchLot(fetchGoodsData.lot !== null ? String(fetchGoodsData.lot) : "");
       if (fetchGoodsData.shimeTime != null) {
@@ -172,7 +174,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       } else {
         setBitFlg(false);
       }
-
+      console.log("###" + fetchGoodsData.spnKbn);
       setSpnkbn(fetchGoodsData.spnKbn || "");
     }
     if (fetchGoodsKekkaData) {
@@ -325,7 +327,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setGoodsData(initialGoodsData);
     setkekkaData(initialGoodsKekkaData);
     setImages([]);
-    setSearchSelectedKaisai("");
+    setSearchSelectedKaisai(null);
     setSelectedKaisai("");
     setSelectedCategory("");
     setSearchLot("");
@@ -345,7 +347,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (responseGoodsData) {
       setGoodsData(responseGoodsData);
       setSearchSelectedKaisai(
-        responseGoodsData.auctionSeq !== null ? String(responseGoodsData.auctionSeq) : ""
+        responseGoodsData.auctionSeq !== null ? String(responseGoodsData.auctionSeq) : null
       );
       setSearchLot(responseGoodsData.lot !== null ? String(responseGoodsData.lot) : "");
       if (responseGoodsData.shimeTime != null) {
@@ -425,12 +427,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <label htmlFor="auction" className={styles.label}>
                     {texts.goods.auctionName}
                   </label>
+
                   <KaisaiListPullDown
                     className="border p-2 rounded h-10 w-full"
                     onChange={(value) => handleSearchKaisaiChange("auctionSeq", value)}
-                    selectedId={searchSelectedKaisai !== null ? String(searchSelectedKaisai) : ""}
+                    selectedId={searchSelectedKaisai ?? ""}
                     kaisaiStatus={0}
-                    defaultSetOption={1}
+                    defaultSetOption={paramsGoodsId !== null ? 0 : 1}
                   />
                   {inputSeatchErrors?.auctionSeq && (
                     <p className="error-message">{inputSeatchErrors.auctionSeq}</p>
@@ -757,12 +760,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <input value={goodsData.displayTime || ""} className={styles.input} disabled />
                   </div>
                 </div>
-                <div className={styles.flexContainer}>
-                  <div className={styles.flexItem}>
-                    <label className={styles.label}>{texts.auction.bidKikan}</label>
-                    <input value={goodsData.bidTime || ""} className={styles.input} disabled />
-                  </div>
-                </div>
+                {spnKbn !== "1" && (
+                  <>
+                    <div className={styles.flexContainer}>
+                      <div className={styles.flexItem}>
+                        <label className={styles.label}>{texts.auction.bidKikan}</label>
+                        <input value={goodsData.bidTime || ""} className={styles.input} disabled />
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <div className={styles.flexContainer}>
                   <div className={styles.flexItem}>
                     <label className={styles.label}>{texts.goods.favoriteCount}</label>
@@ -772,74 +780,71 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       disabled
                     />
                   </div>
-
-                  <div className={styles.flexItem}>
-                    {spnKbn === "3" ||
-                      (spnKbn === "4" && (
-                        <>
-                          <label className={styles.label}>{texts.goods.bidCount}</label>
-                          <input
-                            value={goodsData.bidCount || ""}
-                            className={`${styles.input} text-right`}
-                            disabled
-                          />
-                        </>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              {spnKbn === "3" ||
-                (spnKbn === "4" && (
-                  <div className="p-4">
-                    <div className={styles.flexContainer}>
+                  {(spnKbn === "3" || spnKbn === "4") && (
+                    <>
                       <div className={styles.flexItem}>
-                        <label className={styles.label}>
-                          <GoodsListMark /> {texts.goods.currentPrice}
-                        </label>
+                        <label className={styles.label}>{texts.goods.bidCount}</label>
                         <input
-                          id="currentPrice"
-                          name="currentPrice"
-                          value={goodsData.currentPrice || ""}
+                          value={goodsData.bidCount || ""}
                           className={`${styles.input} text-right`}
                           disabled
                         />
                       </div>
-                      <div className={styles.flexItem}>
-                        <label className={styles.label}>{texts.goods.currentUserId}</label>
-                        <input
-                          id="currentKenriUserId"
-                          name="currentKenriUserId"
-                          value={goodsData.currentKenriUserId || ""}
-                          className={styles.input}
-                          disabled
-                        />
-                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              {(spnKbn === "3" || spnKbn === "4") && (
+                <div className="p-4">
+                  <div className={styles.flexContainer}>
+                    <div className={styles.flexItem}>
+                      <label className={styles.label}>
+                        <GoodsListMark /> {texts.goods.currentPrice}
+                      </label>
+                      <input
+                        id="currentPrice"
+                        name="currentPrice"
+                        value={goodsData.currentPrice || ""}
+                        className={`${styles.input} text-right`}
+                        disabled
+                      />
                     </div>
-                    <div className={styles.flexContainer}>
-                      <div className={styles.flexItem}>
-                        <label className={styles.label}>{texts.goods.currentUserName}</label>
-                        <input
-                          id="currentKenriUserName"
-                          name="currentKenriUserName"
-                          onChange={handleGoodsDataChange}
-                          value={goodsData.currentKenriUserName || ""}
-                          className={styles.input}
-                          disabled
-                        />
-                      </div>
-                      <div className={styles.flexItem}>
-                        <label className={styles.label}>{texts.goods.currentCompanyName}</label>
-                        <input
-                          id="currentKenriCompanyName"
-                          name="currentKenriCompanyName"
-                          value={goodsData.currentKenriCompanyName || ""}
-                          className={styles.input}
-                          disabled
-                        />
-                      </div>
+                    <div className={styles.flexItem}>
+                      <label className={styles.label}>{texts.goods.currentUserId}</label>
+                      <input
+                        id="currentKenriUserId"
+                        name="currentKenriUserId"
+                        value={goodsData.currentKenriUserId || ""}
+                        className={styles.input}
+                        disabled
+                      />
                     </div>
                   </div>
-                ))}
+                  <div className={styles.flexContainer}>
+                    <div className={styles.flexItem}>
+                      <label className={styles.label}>{texts.goods.currentUserName}</label>
+                      <input
+                        id="currentKenriUserName"
+                        name="currentKenriUserName"
+                        onChange={handleGoodsDataChange}
+                        value={goodsData.currentKenriUserName || ""}
+                        className={styles.input}
+                        disabled
+                      />
+                    </div>
+                    <div className={styles.flexItem}>
+                      <label className={styles.label}>{texts.goods.currentCompanyName}</label>
+                      <input
+                        id="currentKenriCompanyName"
+                        name="currentKenriCompanyName"
+                        value={goodsData.currentKenriCompanyName || ""}
+                        className={styles.input}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {kekkaData.kekkaRegisttime != "" && (
                 <div className="p-4 border-l border-gray-400">
