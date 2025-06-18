@@ -174,7 +174,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       } else {
         setBitFlg(false);
       }
-      console.log("###" + fetchGoodsData.spnKbn);
       setSpnkbn(fetchGoodsData.spnKbn || "");
     }
     if (fetchGoodsKekkaData) {
