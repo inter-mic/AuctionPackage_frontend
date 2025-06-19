@@ -83,7 +83,41 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const handleDateChange = (field: keyof auctionData) => (date: Dayjs | null, name: string) => {
-    setFetchedData((prev) => ({ ...prev, [field]: date }));
+    setFetchedData((prev) => {
+      let updatedData = { ...prev, [field]: date };
+
+      // displayStartDateが変更された場合
+      if (field === "displayStartDate") {
+        if (selectedSpnKbn === "1") {
+          // spnKbnが1の場合、onlinebidApplicationStartDateが空なら同じ値を設定
+          if (!prev.onlinebidApplicationStartDate) {
+            updatedData.onlinebidApplicationStartDate = date;
+          }
+        } else {
+          // spnKbnが1以外の場合、bidStartDateが空なら同じ値を設定
+          if (!prev.bidStartDate) {
+            updatedData.bidStartDate = date;
+          }
+        }
+      }
+
+      // displayEndDateが変更された場合
+      if (field === "displayEndDate") {
+        if (selectedSpnKbn === "1") {
+          // spnKbnが1の場合、onlinebidApplicationEndDateが空なら同じ値を設定
+          if (!prev.onlinebidApplicationEndDate) {
+            updatedData.onlinebidApplicationEndDate = date;
+          }
+        } else {
+          // spnKbnが1以外の場合、bidEndDateが空なら同じ値を設定
+          if (!prev.bidEndDate) {
+            updatedData.bidEndDate = date;
+          }
+        }
+      }
+
+      return updatedData;
+    });
     if (errors?.[name]) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -93,7 +127,41 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const handleTimeChange = (field: keyof auctionData) => (time: string | null, name: string) => {
-    setFetchedData((prev) => ({ ...prev, [field]: time }));
+    setFetchedData((prev) => {
+      let updatedData = { ...prev, [field]: time };
+
+      // displayStarttimeが変更された場合
+      if (field === "displayStarttime") {
+        if (selectedSpnKbn === "1") {
+          // spnKbnが1の場合、onlinebidApplicationStarttimeが空なら同じ値を設定
+          if (!prev.onlinebidApplicationStarttime) {
+            updatedData.onlinebidApplicationStarttime = time;
+          }
+        } else {
+          // spnKbnが1以外の場合、bidStarttimeが空なら同じ値を設定
+          if (!prev.bidStarttime) {
+            updatedData.bidStarttime = time;
+          }
+        }
+      }
+
+      // displayEndtimeが変更された場合
+      if (field === "displayEndtime") {
+        if (selectedSpnKbn === "1") {
+          // spnKbnが1の場合、onlinebidApplicationEndtimeが空なら同じ値を設定
+          if (!prev.onlinebidApplicationEndtime) {
+            updatedData.onlinebidApplicationEndtime = time;
+          }
+        } else {
+          // spnKbnが1以外の場合、bidEndtimeが空なら同じ値を設定
+          if (!prev.bidEndtime) {
+            updatedData.bidEndtime = time;
+          }
+        }
+      }
+
+      return updatedData;
+    });
     if (errors?.[name]) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -185,12 +253,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       return { ...prevFetchedData, shimeFlg: shimeFlg };
     });
   }, []);
-
-  const handleGoodsList = () => {
-    if (fetchedData.auctionListUrl) {
-      location.href = fetchedData.auctionListUrl;
-    }
-  };
 
   return (
     <div>
