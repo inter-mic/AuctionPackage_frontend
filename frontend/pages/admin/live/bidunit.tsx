@@ -50,9 +50,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setNewLiveBidUnit((prev) => ({ ...prev, [name]: value.replace(/[^0-9]/g, "") }));
   };
 
-  const handleInputChange = (seq: number, field: keyof TMtLiveBidUnit, value: number) => {
+  const handleInputChange = (seq: number, field: keyof TMtLiveBidUnit, value: string) => {
+    // カンマを除去して数値のみを取得
+    const numericValue = value.replace(/[^0-9]/g, "");
+    
+    // 空文字列の場合は0を設定
+    const finalValue = numericValue === "" ? 0 : parseInt(numericValue, 10);
+    
+    // NaNチェック
+    if (isNaN(finalValue)) {
+      return;
+    }
+    
     setFetchList((prev) =>
-      prev.map((item) => (item.seq === seq ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.seq === seq ? { ...item, [field]: finalValue } : item))
     );
   };
   const formatCurrency = (value: number) => {
@@ -187,7 +198,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <input
                         value={formatCurrency(Number(item.unitFrom))}
                         onChange={(e) =>
-                          handleInputChange(item.seq, "unitFrom", Number(e.target.value))
+                          handleInputChange(item.seq, "unitFrom", e.target.value)
                         }
                         className="w-full p-1 border rounded  text-right"
                       />
@@ -197,7 +208,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <input
                         value={formatCurrency(Number(item.unitTo))}
                         onChange={(e) =>
-                          handleInputChange(item.seq, "unitTo", Number(e.target.value))
+                          handleInputChange(item.seq, "unitTo", e.target.value)
                         }
                         className="w-full p-1 border rounded text-right"
                       />
@@ -206,7 +217,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <input
                         value={formatCurrency(Number(item.bitUnit))}
                         onChange={(e) =>
-                          handleInputChange(item.seq, "bitUnit", Number(e.target.value))
+                          handleInputChange(item.seq, "bitUnit", e.target.value)
                         }
                         className="w-full p-1 border rounded text-right"
                       />
