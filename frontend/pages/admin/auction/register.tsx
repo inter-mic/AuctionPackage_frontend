@@ -84,7 +84,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const handleDateChange = (field: keyof auctionData) => (date: Dayjs | null, name: string) => {
     setFetchedData((prev) => {
-      let updatedData = { ...prev, [field]: date };
+      const updatedData = { ...prev, [field]: date };
 
       // displayStartDateが変更された場合
       if (field === "displayStartDate") {
@@ -128,7 +128,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const handleTimeChange = (field: keyof auctionData) => (time: string | null, name: string) => {
     setFetchedData((prev) => {
-      let updatedData = { ...prev, [field]: time };
+      const updatedData = { ...prev, [field]: time };
 
       // displayStarttimeが変更された場合
       if (field === "displayStarttime") {
