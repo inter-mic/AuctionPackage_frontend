@@ -7,6 +7,9 @@
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.cardHeightSmall {
+  height: 550px !important;
+}
 .goodsCard:hover {
   transform: scale(1.05);
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);

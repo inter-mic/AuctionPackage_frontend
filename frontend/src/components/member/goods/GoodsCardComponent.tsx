@@ -1,23 +1,23 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import CurrencyYenIcon from '@mui/icons-material/CurrencyYen';
-import GavelIcon from '@mui/icons-material/Gavel';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import React from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
+import GavelIcon from "@mui/icons-material/Gavel";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 //コンポーネント
-import AuctionStatusComponent from '@/components/member/auction/internetTender/AuctionStatusComponent';
-import FavoriteToggleComponent from '@/components/member/goods/FavoriteToggleComponent';
-import BidModal from '@/components/member/auction/internetTender/BidModalComponent';
-import LiveJizenBidModal from '@/components/member/auction/live/LiveJizenBidModalComponent';
-import RemainingTime from '@/components/member/auction/internetTender/RemainingTimeComponent';
-import ConfirmDialog from '@/components/ui/dialog/confirmDialog';
+import AuctionStatusComponent from "@/components/member/auction/internetTender/AuctionStatusComponent";
+import FavoriteToggleComponent from "@/components/member/goods/FavoriteToggleComponent";
+import BidModal from "@/components/member/auction/internetTender/BidModalComponent";
+import LiveJizenBidModal from "@/components/member/auction/live/LiveJizenBidModalComponent";
+import RemainingTime from "@/components/member/auction/internetTender/RemainingTimeComponent";
+import ConfirmDialog from "@/components/ui/dialog/confirmDialog";
 //API
-import { useLiveJizenBidDeleteAPI } from '@/hooks/api/member/goods/useLiveJizenBidDeleteAPI';
+import { useLiveJizenBidDeleteAPI } from "@/hooks/api/member/goods/useLiveJizenBidDeleteAPI";
 //型定義
-import { TGoodsSelect } from '@/types/common/goods';
+import { TGoodsSelect } from "@/types/common/goods";
 //スタイル
-import styles from '@/styles/member/goods/GoodsList.module.css';
-import ButtonStyles from '@/styles/Button.module.css';
+import styles from "@/styles/member/goods/GoodsList.module.css";
+import ButtonStyles from "@/styles/Button.module.css";
 interface Props {
   data: TGoodsSelect;
   isLogin: boolean;
@@ -50,14 +50,17 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
     setJizenBidModalOpen(!isJizenBidModalOpen);
   };
 
-  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidDeleteAPI } = useLiveJizenBidDeleteAPI();
+  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidDeleteAPI } =
+    useLiveJizenBidDeleteAPI();
   const handleJizenBidDelete = (goodsId: number) => {
     liveJizenBidDeleteAPI(goodsId);
   };
   return (
-    <div className={styles.goodsCard} >
+    <div
+      className={`${styles.goodsCard} ${goodsInfo.spnKbn === "1" ? styles.cardHeightSmall : ""}`}
+    >
       <div className={styles.GoodsPointer} onClick={() => handleClick(goodsInfo.goodsId)}>
-        <div className={styles.imageWrapper} >
+        <div className={styles.imageWrapper}>
           <Image
             src={goodsInfo.squareImageUrl ?? "/no_image.png"}
             alt=""
@@ -66,7 +69,9 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
             sizes="(max-width: 600px) 100vw, 50vw"
             className={styles.goodsImage}
           />
-          {goodsInfo.chumokuFlg && <div className={styles.chumokuBadge}>{texts.goods.chumokuFlg}</div>}
+          {goodsInfo.chumokuFlg && (
+            <div className={styles.chumokuBadge}>{texts.goods.chumokuFlg}</div>
+          )}
           <AuctionStatusComponent
             auctionTimeStatus={goodsInfo.auctionTimeStatus}
             currentKenriUserId={goodsInfo.currentKenriUserId}
@@ -79,7 +84,13 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
         </div>
         <div className={styles.lotContainer}>
           <h2 className={styles.lot}>LOT {goodsInfo.lot}</h2>
-          {isLogin && <FavoriteToggleComponent goodsId={goodsInfo.goodsId} initialFavoriteState={goodsInfo.myFavoriteFlg} onClick={(event) => event.stopPropagation()} />}
+          {isLogin && (
+            <FavoriteToggleComponent
+              goodsId={goodsInfo.goodsId}
+              initialFavoriteState={goodsInfo.myFavoriteFlg}
+              onClick={(event) => event.stopPropagation()}
+            />
+          )}
         </div>
 
         <h2 className={styles.goodsName}>{goodsInfo.goodsName}</h2>
@@ -91,28 +102,45 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
           ) : (
             <span>{texts.goods.currentPrice}</span>
           )}
-          <span className={`${styles.currentPrice} ${data.isPriceUpdated ? styles.priceUpdated : ""}`}><CurrencyYenIcon />{goodsInfo.startCurrentPrice}</span>
+          <span
+            className={`${styles.currentPrice} ${data.isPriceUpdated ? styles.priceUpdated : ""}`}
+          >
+            <CurrencyYenIcon />
+            {goodsInfo.startCurrentPrice}
+          </span>
         </p>
-        <p className={styles.goodsRowInfo}>
-          {goodsInfo.spnKbn == "1" || goodsInfo.spnKbn == "2" ? (
-            <span>{texts.goods.jizenBidPrice}</span>
-          ) : (
-            <span>{texts.goods.bidPrice}</span>
-          )}
+        {goodsInfo.spnKbn !== "1" ? (
+          <p className={styles.goodsRowInfo}>
+            {goodsInfo.spnKbn == "2" ? (
+              <span>{texts.goods.jizenBidPrice}</span>
+            ) : (
+              <span>{texts.goods.bidPrice}</span>
+            )}
 
-          {goodsInfo.bidPrice != "" ? (
-            <span className={styles.bidPrice}><CurrencyYenIcon />{goodsInfo.bidPrice}</span>
-          ) : (
-            <span></span>
-          )}
-        </p>
+            {goodsInfo.bidPrice != "" ? (
+              <span className={styles.bidPrice}>
+                <CurrencyYenIcon />
+                {goodsInfo.bidPrice}
+              </span>
+            ) : (
+              <span></span>
+            )}
+          </p>
+        ) : (
+          <></>
+        )}
+
         {(goodsInfo.spnKbn === "3" || goodsInfo.spnKbn === "4") && (
           <div className={styles.goodsRowInfo}>
             <div className="flex items-center gap-1">
               {goodsInfo.spnKbn === "3" && goodsInfo.bidCount && (
                 <>
                   <GavelIcon className="text-gray-500" />
-                  <span className={`${styles.bidCount} ${data.isPriceUpdated ? styles.priceUpdated : ""}`}>
+                  <span
+                    className={`${styles.bidCount} ${
+                      data.isPriceUpdated ? styles.priceUpdated : ""
+                    }`}
+                  >
                     {goodsInfo.bidCount} {texts.label.resultCount}
                   </span>
                 </>
@@ -128,27 +156,28 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
             )}
           </div>
         )}
-
       </div>
 
-      {isLogin && goodsInfo.auctionTimeStatus === 2 && (
+      {isLogin && goodsInfo.auctionTimeStatus === 2 && goodsInfo.spnKbn !== "1" && (
         <>
           <button
-            onClick={
-              goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2"
-                ? handleJizenToggleModal
-                : handleBidToggleModal
-            }
+            onClick={goodsInfo.spnKbn === "2" ? handleJizenToggleModal : handleBidToggleModal}
             className={ButtonStyles.bidButton}
           >
             <GavelIcon className="text-white" />
-            {texts.button[goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2" ? "jizenBidToggle" : "bidToggle"]}
+            {
+              texts.button[
+                goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2"
+                  ? "jizenBidToggle"
+                  : "bidToggle"
+              ]
+            }
           </button>
 
           {goodsInfo.bidPrice != "" && (goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2") && (
             <ConfirmDialog
               title={texts.message.confirmDelete}
-              description=''
+              description=""
               buttonTitle={texts.button.delete}
               className={ButtonStyles.jizenBidDeleteButton}
               dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
@@ -157,7 +186,6 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
               buttonText={texts.button.deleteJizenBidToggle}
             />
           )}
-
         </>
       )}
 
