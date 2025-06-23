@@ -2,9 +2,11 @@
 import { texts } from "@/config/texts.ja";
 import { useLocale } from "@/hooks/useLocale";
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
-import { formatPriceDivision, formatPriceWithCommas } from "@/components/common/PriceUtils";
+import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas } from "@/components/common/PriceUtils";
 import { TBidHisotry, TLiveBidLog } from "@/types/admin/live/auctioneer";
 import { LiveBidKekkaData } from "@/types/admin/live/register";
+import { getBidUnit } from "@/components/admin/live/getBidUnit";
+import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 
 export interface OnlinePriceButtonHandle {
   trigger: () => void;
@@ -29,6 +31,9 @@ interface OnlinePriceButtonProps {
   liveBidLog: TLiveBidLog[];
   setLiveBidLog: React.Dispatch<React.SetStateAction<TLiveBidLog[]>>;
   setIsBelowSaiteiPriceFlg: (flg: boolean) => void;
+  spnKbn: string | string[] | undefined;
+  fetchBidUnitList: TMtLiveBidUnit[];
+  currentPrice: string;
 }
 
 export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePriceButtonProps>(
@@ -52,6 +57,9 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       liveBidLog,
       setLiveBidLog,
       setIsBelowSaiteiPriceFlg,
+      spnKbn,
+      fetchBidUnitList,
+      currentPrice,
     },
     ref
   ) => {
@@ -75,7 +83,14 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
 
       // ── 2. 価格・セリ幅などを計算 ──
       const onlineBidPrice = newOnlineBid.bidPrice;
-      const bidUnit = Number(fetchGoodsData?.bidUnit?.replace(/,/g, "") || "0");
+      const current = formatPriceMultiplication(currentPrice);
+      const fetchBitUnit = getBidUnit(
+        spnKbn,
+        fetchGoodsData?.bidUnit,
+        fetchBidUnitList,
+        current.toString()
+      );
+      const bidUnit = Number(fetchBitUnit);
 
       // ── 3. 画面上の「現在価格」「表示用現在価格」を更新 ──
       setCurrentPrice(formatPriceDivision(onlineBidPrice));
