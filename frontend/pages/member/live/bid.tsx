@@ -342,16 +342,9 @@ const Page: React.FC<TPageProps> = (PageProps) => {
               </div>
             </div>
 
-            <div className={styles.flowingMsgDiv}>
-              <span key={marqueeKey} className={styles.marquee}>
-                {msg}
-              </span>
-            </div>
-            <div className={styles.msgDiv}>
-              {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
-              {isRakusatsuProcessingMsgFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
-            </div>
+            
           </div>
+          
           <div className={styles.rightSection}>
             <ul className={styles.bidList}>
               {bidHistory?.map((bid, index) => (
@@ -372,6 +365,15 @@ const Page: React.FC<TPageProps> = (PageProps) => {
               ))}
             </ul>
           </div>
+        </div>
+        <div className={styles.flowingMsgDiv}>
+          <span key={marqueeKey} className={styles.marquee}>
+            {msg}
+          </span>
+        </div>
+        <div className={styles.msgDiv}>
+          {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
+          {isRakusatsuProcessingMsgFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
         </div>
         <div className={styles.nextLotListContainer}>
           {nextLotList?.length > 1 ? (

@@ -72,7 +72,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 700px;
+  max-height: 600px;
   overflow-y: auto;
 }
 
@@ -123,6 +123,7 @@
   height: 4rem;
   margin-top: 1rem;
   animation: blinking 0.5s ease-in-out infinite alternate;
+  justify-content: center;
 }
 
 .priceUpdated {
@@ -222,6 +223,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .marquee {
