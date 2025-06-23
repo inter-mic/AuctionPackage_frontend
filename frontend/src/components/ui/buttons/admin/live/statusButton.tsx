@@ -1,6 +1,7 @@
 //コンフィグ
 import { texts } from "@/config/texts.ja";
 import { useEffect } from "react";
+import { LiveBidKekkaData } from "@/types/admin/live/register";
 
 interface Props {
   status: number;
@@ -13,6 +14,7 @@ interface Props {
   sendWebSocketMessage: (type: string, payload?: any) => void;
   liveBidKekkaUpdateAPI?: (data: any, log: any, count: number) => Promise<boolean>;
   onNextLot?: () => void;
+  setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
 }
 
 export function StatusButton({
@@ -26,6 +28,7 @@ export function StatusButton({
   sendWebSocketMessage,
   liveBidKekkaUpdateAPI,
   onNextLot,
+  setLiveBidkekkaData,
 }: Props) {
   let buttonText = "";
   if (status === 1) {
@@ -52,6 +55,13 @@ export function StatusButton({
       bidComingSoonHaishin();
     } else if (status === 2) {
       rakusatusuProcess();
+      if (liveBidLog[0]?.paddleNo) {
+        const paddleNo = liveBidLog[0].paddleNo;
+        setLiveBidkekkaData((prev) => ({
+          ...prev,
+          rakusatsuPaddleNo: paddleNo,
+        }));
+      }
     } else if (status === 3) {
       bidRestart();
     }
