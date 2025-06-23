@@ -250,8 +250,8 @@
 }
 
 .latestBid {
-  background-color: rgba(212, 16, 16, 0.6);
   color: #fff;
+  background-color: rgba(212, 16, 16, 0.6);
 }
 
 .bidHistoryWrapper {

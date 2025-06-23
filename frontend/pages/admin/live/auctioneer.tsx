@@ -846,7 +846,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       key={index}
                       className={[
                         styles.bidItem,
-                        isOnlineBidReceive && index === 0 ? styles.latestBid : "",
+                        index === 0 ? styles.latestBid : ""
                       ].join(" ")}
                     >
                       <span className={styles.listSpanLeft}>
@@ -1075,12 +1075,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     status={1}
                     disabled={!isStartButtonClicked}
                     sendWebSocketMessage={sendWebSocketMessage}
+                    setLiveBidkekkaData={setLiveBidkekkaData}
+                    liveBidLog={liveBidLog}
                   />
 
                   <StatusButton
                     status={!isRakusatsuProcessFlg ? 2 : 3}
                     disabled={!isStartButtonClicked}
                     sendWebSocketMessage={sendWebSocketMessage}
+                    setLiveBidkekkaData={setLiveBidkekkaData}
+                    liveBidLog={liveBidLog}
                   />
                 </div>
                 <div className={styles.rightButtons}>
@@ -1106,6 +1110,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         liveBidLog={liveBidLog}
                         setLiveBidLog={setLiveBidLog}
                         setIsBelowSaiteiPriceFlg={setIsBelowSaiteiPriceFlg}
+                        spnKbn={spnKbn}
+                        fetchBidUnitList={fetchBidUnitList}
+                        currentPrice={currentPrice}
                       />
 
                       <CurrentPriceButton
