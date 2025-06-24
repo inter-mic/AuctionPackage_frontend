@@ -10,6 +10,7 @@ import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 export interface SerihabaButtonHandle {
   trigger: () => void;
 }
+
 interface SerihabaButtonProps {
   isplus: boolean;
   disabled: boolean;
@@ -21,6 +22,7 @@ interface SerihabaButtonProps {
   onUpdatePrices: (current: string, next: string) => void;
   spnKbn: string | string[] | undefined;
 }
+
 export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonProps>(
   (
     {
@@ -37,21 +39,32 @@ export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonPro
     ref
   ) => {
     const handleClick = () => {
+      // 文字列価格を数値に変換
+      const next = formatPriceMultiplication(nextPrice);
       const current = formatPriceMultiplication(currentPrice);
+
+      // 増額なら next、減額なら current - 1 を基準に入札単位を取得
+      const baseForUnit = isplus ? next : current - 1;
       const fetchBitUnit = getBidUnit(
         spnKbn,
         fetchGoodsData?.bidUnit,
         fetchBidUnitList,
-        current.toString()
+        baseForUnit.toString()
       );
+
       if (fetchBitUnit) {
         const bidUnit = Number(fetchBitUnit);
+        // UIに表示する入札単位をセット
         setBidUnit(formatPriceWithCommas(bidUnit));
 
-        const newCurrentPrice = isplus ? current + bidUnit : current - bidUnit;
+        // 新しい nextPrice と currentPrice を計算
+        const newNextPrice = isplus
+          ? next + bidUnit   // 増額後の次価格
+          : current;         // 減額時は旧 currentPrice を次価格に回す
 
-        const next = formatPriceMultiplication(nextPrice);
-        const newNextPrice = isplus ? next + bidUnit : next - bidUnit;
+        const newCurrentPrice = isplus
+          ? next             // 増額時は旧 nextPrice が新 currentPrice
+          : current - bidUnit; // 減額時は current から入札単位を引く
 
         onUpdatePrices(
           formatPriceDivision(newCurrentPrice.toString()),

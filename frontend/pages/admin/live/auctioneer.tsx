@@ -1112,7 +1112,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         setIsBelowSaiteiPriceFlg={setIsBelowSaiteiPriceFlg}
                         spnKbn={spnKbn}
                         fetchBidUnitList={fetchBidUnitList}
-                        currentPrice={currentPrice}
+                        nextPrice={nextPrice}
                       />
 
                       <CurrentPriceButton

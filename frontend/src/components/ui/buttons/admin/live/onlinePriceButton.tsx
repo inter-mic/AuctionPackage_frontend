@@ -33,7 +33,7 @@ interface OnlinePriceButtonProps {
   setIsBelowSaiteiPriceFlg: (flg: boolean) => void;
   spnKbn: string | string[] | undefined;
   fetchBidUnitList: TMtLiveBidUnit[];
-  currentPrice: string;
+  nextPrice: string;
 }
 
 export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePriceButtonProps>(
@@ -59,7 +59,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       setIsBelowSaiteiPriceFlg,
       spnKbn,
       fetchBidUnitList,
-      currentPrice,
+      nextPrice,
     },
     ref
   ) => {
@@ -83,12 +83,12 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
 
       // ── 2. 価格・セリ幅などを計算 ──
       const onlineBidPrice = newOnlineBid.bidPrice;
-      const current = formatPriceMultiplication(currentPrice);
+      const next = formatPriceMultiplication(nextPrice);
       const fetchBitUnit = getBidUnit(
         spnKbn,
         fetchGoodsData?.bidUnit,
         fetchBidUnitList,
-        current.toString()
+        next.toString()
       );
       const bidUnit = Number(fetchBitUnit);
 
