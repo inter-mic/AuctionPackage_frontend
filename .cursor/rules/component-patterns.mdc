@@ -1,0 +1,138 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# コンポーネントパターンとUI設計
+
+## コンポーネント分類
+- **ページコンポーネント**: `pages/` ディレクトリに配置
+- **レイアウトコンポーネント**: `src/components/layout/` に配置
+- **UIコンポーネント**: `src/components/ui/` に配置
+- **共通コンポーネント**: `src/components/common/` に配置
+
+## フォームコンポーネントパターン
+[MemberFormFields.tsx](mdc:frontend/src/components/common/MemberFormFields.tsx) を参考にしたフォーム実装：
+
+```typescript
+interface Props {
+  member: UserData;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: Errors;
+  setErrors: React.Dispatch<React.SetStateAction<Errors>>;
+}
+
+export const FormComponent: React.FC<Props> = ({ data, handleChange, errors, setErrors }) => {
+  // フォーム実装
+  return (
+    <div>
+      <div className="flex items-center">
+        <RequiredMark />
+        <label htmlFor="fieldName" className="formlabel">
+          {texts.field.label}
+        </label>
+      </div>
+      <input
+        id="fieldName"
+        name="fieldName"
+        type="text"
+        value={data.fieldName || ""}
+        onChange={handleChange}
+        className={`${styles.commonInput} ${styles.input50}`}
+      />
+      {errors?.fieldName && <p className={`error-message ${styles.input50}`}>{errors.fieldName}</p>}
+    </div>
+  );
+};
+```
+
+## ボタンコンポーネントパターン
+[registButton.tsx](mdc:frontend/src/components/ui/buttons/admin/registButton.tsx) を参考にしたボタン実装：
+
+```typescript
+interface ButtonProps {
+  label: string;
+  onClick?: () => void;
+}
+
+export function ButtonComponent({ label, onClick }: ButtonProps) {
+  return (
+    <button 
+      className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-40" 
+      onClick={onClick}
+    >
+      <span>{label}</span>
+    </button>
+  );
+}
+```
+
+## ページコンポーネントパターン
+[register.tsx](mdc:frontend/pages/admin/member/register.tsx) を参考にしたページ実装：
+
+```typescript
+export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+  return {
+    props: {
+      pageTitle: texts.menu.pageTitle,
+    },
+  };
+});
+
+const Page: React.FC<PageProps> = ({ kengen }) => {
+  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  
+  // 状態管理
+  const [data, setData] = useState<DataType>({});
+  
+  // イベントハンドラー
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSubmit = () => {
+    // 送信処理
+  };
+  
+  return (
+    <div>
+      <div className={breadcrumbStyles.breadcrumb}>
+        <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.pageTitle}</span>
+      </div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full p-8 space-y-6 bg-white shadow-md md:max-w-full md:rounded">
+          {/* フォームコンポーネント */}
+          <div className="text-right">
+            <ButtonComponent label={texts.button.submit} onClick={handleSubmit} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+```
+
+## スタイリング規約
+- **Tailwind CSS**: ユーティリティクラスを優先使用
+- **CSS Modules**: コンポーネント固有のスタイルに使用
+- **レスポンシブ**: `sm:`, `md:`, `lg:` プレフィックスを使用
+
+## 国際化
+[texts.ja.ts](mdc:frontend/src/config/texts.ja.ts) を使用した多言語対応：
+
+```typescript
+import { texts } from "@/config/texts.ja";
+
+// テキストの使用
+<span>{texts.menu.adminMemberRegist}</span>
+<label>{texts.member.userName}</label>
+```
+
+## 必須マーク
+[RequiredMark.tsx](mdc:frontend/src/components/ui/marks/RequiredMark.tsx) を使用して必須項目を表示
+
+## エラーメッセージ
+- フォームエラーは `error-message` クラスでスタイリング
+- エラーメッセージは入力フィールドの下に表示
+

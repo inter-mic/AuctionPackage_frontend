@@ -12,6 +12,12 @@
   font-size: 3rem;
   margin-bottom: 20px;
   height: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  white-space: normal;
 }
 
 .content {

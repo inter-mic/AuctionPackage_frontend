@@ -252,7 +252,9 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
           </div>
         </div>
         <div className="text-right">
-          <OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />
+          {optionInvoice && (
+            <OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />
+          )}
         </div>
       </div>
 

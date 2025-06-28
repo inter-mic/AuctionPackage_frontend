@@ -1,0 +1,136 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 型定義とTypeScriptパターン
+
+## 型定義の配置
+型定義は `src/types/` ディレクトリに機能別に配置：
+
+- `src/types/admin/` - 管理者機能の型定義
+- `src/types/member/` - 会員機能の型定義
+- `src/types/common/` - 共通型定義
+- `src/types/public/` - 公開機能の型定義
+
+## 基本型定義パターン
+[register.tsx](mdc:frontend/src/types/admin/member/register.tsx) を参考にした型定義：
+
+```typescript
+export type UserData = {
+  userId?: number;
+  loginId?: string;
+  userName?: string;
+  userNameKana?: string;
+  companyName?: string;
+  companyNameKana?: string;
+  companyUrl?: string;
+  zipCode?: string;
+  todofukenName?: string;
+  address1?: string;
+  address2?: string;
+  tel?: string;
+  mobile?: string;
+  fax?: string;
+  mail?: string;
+  auctionMailJushinFlg?: boolean;
+  adminBiko?: string;
+  shoninFlg?: boolean;
+  teishiFlg?: boolean;
+};
+```
+
+## コンポーネントProps型
+```typescript
+interface Props {
+  data: DataType;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: Errors;
+  setErrors: React.Dispatch<React.SetStateAction<Errors>>;
+}
+
+// または
+interface ComponentProps {
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}
+```
+
+## エラー型定義
+```typescript
+export type Errors = {
+  [key: string]: string;
+};
+
+// または
+export interface ValidationErrors {
+  fieldName?: string;
+  general?: string;
+}
+```
+
+## APIレスポンス型
+```typescript
+export type ApiResponse<T> = {
+  status: number;
+  data: T | false;
+};
+
+export type UserApiResponse = ApiResponse<UserData[]>;
+```
+
+## ページProps型
+```typescript
+export interface PageProps {
+  kengen?: number;
+  pageTitle?: string;
+}
+```
+
+## 型エクスポート規約
+- 型定義は `export type` を使用
+- インターフェースは `export interface` を使用
+- 定数型は `export const` を使用
+
+```typescript
+// 型定義
+export type UserData = { /* ... */ };
+
+// インターフェース
+export interface ComponentProps { /* ... */ };
+
+// 定数型
+export const STATUS = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+} as const;
+```
+
+## オプショナルプロパティ
+- 必須でないプロパティは `?` を使用
+- 初期値が設定されるプロパティは `?` を使用
+- 条件付きで存在するプロパティは `?` を使用
+
+## ユニオン型
+```typescript
+export type Status = 'active' | 'inactive' | 'pending';
+export type UserRole = 'admin' | 'member' | 'guest';
+```
+
+## ジェネリック型
+```typescript
+export type ApiResponse<T> = {
+  status: number;
+  data: T;
+  message?: string;
+};
+```
+
+## 型ガード
+```typescript
+export const isUserData = (data: unknown): data is UserData => {
+  return typeof data === 'object' && data !== null && 'userId' in data;
+};
+```
+

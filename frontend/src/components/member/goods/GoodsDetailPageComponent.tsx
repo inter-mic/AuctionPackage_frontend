@@ -42,9 +42,12 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
   const { fetchGoodsData, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
   const [thumImages, setThumImages] = useState<GoodsImageData[]>([]);
+  const router = useRouter();
   useEffect(() => {
     if (paramsGoodsId) {
       goodsSearchByGoodsIdAPI(Number(paramsGoodsId), isLogin);
+    } else {
+      router.push("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsGoodsId]);

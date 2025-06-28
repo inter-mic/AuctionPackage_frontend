@@ -1,5 +1,5 @@
 import React from "react";
-import dayjs from "dayjs";
+import { redirect } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import Pagination from "@mui/material/Pagination";
 //カスタムフック
@@ -37,6 +37,7 @@ interface MemberGoodsSearchPageProps extends TPageProps {
 
 const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, loginUserId }) => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const router = useRouter();
   const { goodsList, goodsSearchAPI } = useGoodsSearchAPI();
   const { goodsCount, goodsCountAPI } = useGoodsCountAPI();
   const [fetchGoodsList, setFetchGoodsList] = useState<TGoodsSelect[]>([]);
@@ -55,6 +56,9 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
         target: { name: "auctionSeq", value: auctionSeqValue },
       });
       auctionKeisaiChuSearchAPI(Number(paramsAuctionSeq), isLogin);
+    } else {
+      // paramsAuctionSeqがnullの場合は/loginにリダイレクト
+      router.push("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsAuctionSeq]);

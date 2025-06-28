@@ -24,7 +24,6 @@ import { PaddleKbnPullDown } from "@/components/ui/pulldowns/PaddleKbnPullDown";
 import { MemberSearchModal } from "@/components/admin/MemberSearchModalComponent";
 //スタイル
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
-import adminStyles from "@/styles/admin/AdminCommon.module.css";
 //型定義
 import {
   TAdminPaddleSelect,
@@ -97,6 +96,7 @@ const PaddleRegistrationFormAccordion: React.FC<Props> = ({ paddleKbnList }) => 
   };
   const {
     responseStatus,
+    setResponseStatus,
     errors: insertResponseErrors,
     paddleRegistAPI: insertPaddleRegistAPI,
   } = usePaddleRegistAPI();
@@ -114,7 +114,7 @@ const PaddleRegistrationFormAccordion: React.FC<Props> = ({ paddleKbnList }) => 
         auctionSeq: selectedRegistKaisai,
         paddleKbn: selectedRegistPaddleKbn ?? undefined,
       }));
-
+      setResponseStatus(undefined);
       inputRef.current?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -531,7 +531,7 @@ export const texts = {
   label: {
     require: "必須",
     goodsListMark: "商品一覧表示",
-    resultKekka: "検索結果：",
+    resultKekka: "検索結果:",
     resultCount: "件",
     newRegist: "新規登録",
     teishi: "停止",

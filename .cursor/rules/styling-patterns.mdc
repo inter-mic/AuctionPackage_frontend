@@ -1,0 +1,145 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# スタイリングとCSSパターン
+
+## CSS Modules
+CSS Modulesは `src/styles/` ディレクトリに配置され、コンポーネント固有のスタイルに使用：
+
+### 基本パターン
+[CommonRegister.module.css](mdc:frontend/src/styles/CommonRegister.module.css) を参考にしたCSS Modules：
+
+```css
+.commonInput {
+  padding: 0.5rem 0.75rem; 
+  margin-top: 0.25rem; 
+  border: 1px solid #ccc; 
+  outline: none; 
+}
+
+.input50 {
+  width: 100%; 
+  @media (min-width: 1024px) { 
+    width: 50%;
+  }
+}
+
+.input100 {
+  width: 100%; 
+}
+```
+
+### 使用パターン
+```typescript
+import styles from "@/styles/ComponentName.module.css";
+
+// クラス名の使用
+<input className={`${styles.commonInput} ${styles.input50}`} />
+```
+
+## Tailwind CSS
+Tailwind CSSを優先的に使用し、ユーティリティクラスでスタイリング：
+
+### レイアウト
+```typescript
+// フレックスレイアウト
+<div className="flex items-center justify-center">
+<div className="flex flex-col space-y-4">
+
+// グリッドレイアウト
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+```
+
+### ボタンスタイル
+```typescript
+// プライマリボタン
+<button className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-40">
+
+// セカンダリボタン
+<button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">
+
+// 危険ボタン
+<button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">
+```
+
+### フォームスタイル
+```typescript
+// ラベル
+<label className="formlabel">
+
+// 入力フィールド
+<input className="border border-gray-300 rounded px-3 py-2">
+
+// エラーメッセージ
+<p className="error-message text-red-500 text-sm">
+```
+
+## レスポンシブデザイン
+Tailwind CSSのブレークポイントを使用：
+
+- `sm:` - 640px以上
+- `md:` - 768px以上
+- `lg:` - 1024px以上
+- `xl:` - 1280px以上
+
+```typescript
+// レスポンシブな幅
+<div className="w-full md:w-1/2 lg:w-1/3">
+
+// レスポンシブな表示/非表示
+<div className="hidden md:block">
+<div className="block md:hidden">
+```
+
+## ページレイアウト
+```typescript
+// ページコンテナ
+<div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+
+// コンテンツカード
+<div className="w-full p-8 space-y-6 bg-white shadow-md md:max-w-full md:rounded">
+
+// パンくずリスト
+<div className={breadcrumbStyles.breadcrumb}>
+  <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.pageTitle}</span>
+</div>
+```
+
+## カラーパレット
+プロジェクトで使用される主要な色：
+
+- **プライマリ**: `yellow-500` (黄色)
+- **セカンダリ**: `gray-500` (グレー)
+- **危険**: `red-500` (赤)
+- **成功**: `green-500` (緑)
+- **警告**: `orange-500` (オレンジ)
+
+## スペーシング
+Tailwind CSSのスペーシングスケールを使用：
+
+- `space-y-4` - 垂直スペース
+- `space-x-4` - 水平スペース
+- `p-4` - パディング
+- `m-4` - マージン
+
+## アニメーション
+```typescript
+// ホバーエフェクト
+<button className="hover:bg-opacity-50 transition-colors">
+
+// トランジション
+<div className="transition-all duration-300">
+```
+
+## アクセシビリティ
+```typescript
+// フォーカス状態
+<input className="focus:outline-none focus:ring-2 focus:ring-yellow-500">
+
+// スクリーンリーダー対応
+<span className="sr-only">説明テキスト</span>
+```
+
+

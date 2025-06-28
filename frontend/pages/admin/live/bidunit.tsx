@@ -53,15 +53,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const handleInputChange = (seq: number, field: keyof TMtLiveBidUnit, value: string) => {
     // カンマを除去して数値のみを取得
     const numericValue = value.replace(/[^0-9]/g, "");
-    
+
     // 空文字列の場合は0を設定
     const finalValue = numericValue === "" ? 0 : parseInt(numericValue, 10);
-    
+
     // NaNチェック
     if (isNaN(finalValue)) {
       return;
     }
-    
+
     setFetchList((prev) =>
       prev.map((item) => (item.seq === seq ? { ...item, [field]: finalValue } : item))
     );
@@ -197,9 +197,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-2 px-4 border">
                       <input
                         value={formatCurrency(Number(item.unitFrom))}
-                        onChange={(e) =>
-                          handleInputChange(item.seq, "unitFrom", e.target.value)
-                        }
+                        onChange={(e) => handleInputChange(item.seq, "unitFrom", e.target.value)}
                         className="w-full p-1 border rounded  text-right"
                       />
                     </td>
@@ -207,18 +205,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-2 px-4 border">
                       <input
                         value={formatCurrency(Number(item.unitTo))}
-                        onChange={(e) =>
-                          handleInputChange(item.seq, "unitTo", e.target.value)
-                        }
+                        onChange={(e) => handleInputChange(item.seq, "unitTo", e.target.value)}
                         className="w-full p-1 border rounded text-right"
                       />
                     </td>
                     <td className="py-2 px-4 border">
                       <input
                         value={formatCurrency(Number(item.bitUnit))}
-                        onChange={(e) =>
-                          handleInputChange(item.seq, "bitUnit", e.target.value)
-                        }
+                        onChange={(e) => handleInputChange(item.seq, "bitUnit", e.target.value)}
                         className="w-full p-1 border rounded text-right"
                       />
                     </td>
@@ -226,7 +220,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       {executionPermission(351, 2) ? (
                         <button
                           onClick={() => handleDelete(item.seq)}
-                          className="lg:ml-2.5 mt-2 lg:mt-0 bg-white border border-solid border-red-500 text-red-500 font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
+                          className="bg-red-500 hover:bg-opacity-50  text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
                         >
                           {texts.button.delete}
                         </button>

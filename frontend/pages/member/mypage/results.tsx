@@ -114,7 +114,7 @@ const Page: React.FC<TPageProps> = () => {
           <>
             <div className="w-full flex flex-row justify-between items-center p-4">
               <div className="text-left">
-                {texts.label.resultKekka} {resultsList.length} {texts.label.resultCount}
+                {resultsList.length} {texts.label.resultCount}
               </div>
               <div className="text-right">
                 <span className="font-bold">

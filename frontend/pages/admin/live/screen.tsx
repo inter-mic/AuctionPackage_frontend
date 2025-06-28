@@ -19,7 +19,7 @@ import styles from "@/styles/admin/Screen.module.css";
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   return {
     props: {
-      pageTitle: texts.menu.adminAuctionner,
+      pageTitle: texts.menu.adminLiveScreen,
     },
   };
 });
