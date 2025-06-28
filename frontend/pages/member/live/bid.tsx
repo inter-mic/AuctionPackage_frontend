@@ -47,6 +47,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [receivedData, setReceivedData] = useState<any>(null);
   const [isBidDisabled, setIsBidDisabled] = useState(true);
   const [bidStatus, setBidStatus] = useState(0);
+  const [bidResults, setBidResults] = useState(0);
   const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
   const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
   const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
@@ -54,6 +55,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
   const [msg, setMsg] = useState<string | null>();
   const [marqueeKey, setMarqueeKey] = useState(0);
+  const [showBidEndPopup, setShowBidEndPopup] = useState(false);
+  const [bidEndData, setBidEndData] = useState<any>(null);
 
   const ws = useRef<WebSocket | null>(null);
   const { texts } = useLocale();
@@ -113,6 +116,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === "set") {
         setIsBidDisabled(true);
+        setShowBidEndPopup(false);
+        setBidEndData(null);
       }
       if (data.type === "start") {
         setIsBidDisabled(false);
@@ -145,9 +150,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
       if (data.type === "bidEnd") {
         setIsBidDisabled(true);
-        setBidStatus(
+        setBidResults(
           !data.kenriPaddleNo ? 4 : String(fetchPaddleNo) === String(data.kenriPaddleNo) ? 2 : 3
         );
+        setShowBidEndPopup(true);
+        setBidEndData(data);
       }
       if (data.type === "clear") {
         setIsBidDisabled(true);
@@ -201,6 +208,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   };
   const isMobile = useIsMobile();
 
+  const closeBidEndPopup = () => {
+    setShowBidEndPopup(false);
+    setBidEndData(null);
+  };
+
   return !isFetchLiveAuction ? (
     <div className={styles.noLiveContainer}>
       <div>
@@ -218,62 +230,94 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     <>
       <div className={memberStyles.memberContainer}>
         <div className={styles.liveContainer}>
-          <div className={styles.leftSection}>
-            {isMobile ? (
-              // スマホ時：ボタンに応じて表示切り替え
-              showVideo ? (
-                fetchSystemSettingData?.youtubeIframe && (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: fetchSystemSettingData.youtubeIframe,
-                    }}
+          {!isMobile && (
+            <div className={styles.leftSection}>
+              {/* 左側：nextLotList */}
+              <div className={styles.leftNextLotListContainer}>
+                {nextLotList?.length > 1 ? (
+                  nextLotList.slice(1).map((item: NextLotList, idx: number) => (
+                    <div key={idx} className={styles.leftNextLotCard}>
+                      <div className={styles.leftNextLotImageWrapper}>
+                        <Image
+                          src={item.thumbnailImageUrl || "/no_image.png"}
+                          alt={item.goodsName || ""}
+                          fill
+                          style={{ objectFit: "cover" }}
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className={styles.leftNextLotCaption}>
+                        <div className={styles.leftNextLotLot}>LOT {item.lot}</div>
+                        <div className={styles.leftNextLotName}>{item.goodsName}</div>
+                        <div className={styles.leftNextLotPrice}>
+                          {item.startPrice ||
+                            new Intl.NumberFormat("ja-JP").format(Number(item.startPrice))}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <></>
+                )}
+              </div>
+            </div>
+          )}
+          <div className={styles.rightSection}>
+            <div className={styles.mediaContainer}>
+              {isMobile ? (
+                // スマホ時：ボタンに応じて表示切り替え
+                showVideo ? (
+                  fetchSystemSettingData?.youtubeIframe && (
+                    <div
+                      className={styles.youtubeWrapper}
+                      dangerouslySetInnerHTML={{
+                        __html: fetchSystemSettingData.youtubeIframe,
+                      }}
+                      style={{ margin: "0 auto" }}
+                    />
+                  )
+                ) : (
+                  <Image
+                    src={receivedData?.goodsImage || "/no_image.png"}
+                    alt=""
+                    width={320}
+                    height={320}
+                    loading="lazy"
                     style={{ margin: "0 auto" }}
                   />
                 )
               ) : (
-                <Image
-                  src={receivedData?.goodsImage || "/no_image.png"}
-                  alt=""
-                  width={320}
-                  height={320}
-                  loading="lazy"
-                  style={{ margin: "0 auto" }}
-                />
-              )
-            ) : (
-              // PC時：ボタンに応じて動画のみ表示/非表示を切り替える
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: !showVideo ? "center" : "flex-start",
-                  alignItems: "center",
-                  gap: "3px",
-                }}
-              >
-                {/* 画像は常に表示 */}
-                <Image
-                  src={receivedData?.goodsImage || "/no_image.png"}
-                  alt=""
-                  width={320}
-                  height={320}
-                  loading="lazy"
-                />
-
-                {/* showVideo の状態に応じて iframe 表示 */}
-                {showVideo && fetchSystemSettingData?.youtubeIframe && (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: fetchSystemSettingData.youtubeIframe,
-                    }}
-                    style={{ maxWidth: 320 }}
+                // PC時：ボタンに応じて動画のみ表示/非表示を切り替える
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: !showVideo ? "center" : "flex-start",
+                    alignItems: "center",
+                    gap: "3px",
+                  }}
+                >
+                  {/* 画像は常に表示 */}
+                  <Image
+                    src={receivedData?.goodsImage || "/no_image.png"}
+                    alt=""
+                    width={320}
+                    height={320}
+                    loading="lazy"
                   />
-                )}
-              </div>
-            )}
 
-            <div className={styles.lot}>
-              <label>LOT {receivedData?.lot}</label>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  {/* showVideo の状態に応じて iframe 表示 */}
+                  {showVideo && fetchSystemSettingData?.youtubeIframe && (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchSystemSettingData.youtubeIframe,
+                      }}
+                    />
+                  )}
+                </div>
+              )}
+
+              {/* 動画切り替えボタン - 右下に配置 */}
+              <div className={styles.videoToggleButton}>
                 {showVideo ? (
                   <VideocamOffIcon
                     style={{ cursor: "pointer" }}
@@ -289,121 +333,144 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                 )}
               </div>
             </div>
-            <div className={styles.goodsName}>
-              <label>{receivedData?.goodsName}</label>
-            </div>
-            <LiveBidStatusComponent bidStatus={bidStatus} texts={texts.live} />
-            <div className={styles.bidSection}>
-              <div className={styles.priceContainer}>
-                <div className={styles.priceInfo}>
-                  <span className={styles.currentPriceLabel}>{texts.goods.currentPrice}</span>
-                  <label
-                    className={`${styles.currentPrice} ${
-                      isPriceUpdated ? styles.priceUpdated : ""
-                    }`}
-                  >
-                    \
-                    {receivedData?.currentPrice &&
-                      new Intl.NumberFormat("ja-JP").format(receivedData.currentPrice)}
-                  </label>
-                </div>
-                {!viewOnlyChecked && (
-                  <LiveBidButton
-                    onClick={bid}
-                    disabled={isBidDisabled}
-                    text={
-                      receivedData?.nextPrice &&
-                      new Intl.NumberFormat("ja-JP").format(receivedData.nextPrice)
-                    }
-                  />
-                )}
-              </div>
-              <div className={styles.checkboxContainer}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={viewOnlyChecked}
-                      onChange={handleViewOnlyCheckboxChange}
-                      sx={{
-                        color: "gray",
-                        "&.Mui-checked": {
-                          color: "#cb5201",
-                        },
-                        width: 40,
-                        height: 40,
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 32,
-                        },
-                      }}
-                    />
-                  }
-                  label="View Only"
-                />
-              </div>
-            </div>
 
-            
-          </div>
-          
-          <div className={styles.rightSection}>
-            <ul className={styles.bidList}>
-              {bidHistory?.map((bid, index) => (
-                <li key={index} className={styles.bidItem}>
-                  {bid.userId === PageProps.userId?.toString() && (
-                    <span className={styles.bidUserId}>your bid</span>
-                  )}
-                  <span
-                    className={
-                      bid.userId === PageProps.userId?.toString()
-                        ? styles.bidPriceYourBid
-                        : styles.bidPrice
-                    }
-                  >
-                    {formatPriceWithCommas(bid.bidPrice)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className={styles.flowingMsgDiv}>
-          <span key={marqueeKey} className={styles.marquee}>
-            {msg}
-          </span>
-        </div>
-        <div className={styles.msgDiv}>
-          {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
-          {isRakusatsuProcessingMsgFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
-        </div>
-        <div className={styles.nextLotListContainer}>
-          {nextLotList?.length > 1 ? (
-            nextLotList.slice(1).map((item: NextLotList, idx: number) => (
-              <div key={idx} className={styles.nextLotCard}>
-                <div className={styles.nextLotImageWrapper}>
-                  <Image
-                    src={item.thumbnailImageUrl || "/no_image.png"}
-                    alt={item.goodsName || ""}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    loading="lazy"
-                  />
-                </div>
-                <div className={styles.nextLotCaption}>
-                  <div className={styles.nextLotLot}>LOT {item.lot}</div>
-                  <div className={styles.nextLotName}>{item.goodsName}</div>
-                  <div className={styles.nextLotPrice}>
-                    \
-                    {item.startPrice ||
-                      new Intl.NumberFormat("ja-JP").format(Number(item.startPrice))}
+            {/* 右側：2等分グリッドレイアウト */}
+            <div className={styles.gridContainer}>
+              {/* 上段：商品情報と入札履歴 */}
+              <div className={styles.upperSection}>
+                <div className={styles.goodsInfoSection}>
+                  <div className={styles.lot}>
+                    <label>LOT {receivedData?.lot}</label>
+                  </div>
+                  <div className={styles.goodsName}>
+                    <label>{receivedData?.goodsName}</label>
                   </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className={styles.nextLotEmpty}>次の商品はありません</div>
-          )}
+
+              {/* 下段：メッセージと入札セクション */}
+              <div className={styles.lowerSection}>
+                <div className={styles.bidHistorySection}>
+                  <ul className={styles.bidList}>
+                    {bidHistory?.map((bid, index) => (
+                      <li key={index} className={styles.bidItem}>
+                        {bid.userId === PageProps.userId?.toString() && (
+                          <span className={styles.bidUserId}>your bid</span>
+                        )}
+                        {bid.userId === "" && <span className={styles.kaijoBid}>会場</span>}
+                        <span
+                          className={
+                            bid.userId === PageProps.userId?.toString()
+                              ? styles.bidPriceYourBid
+                              : styles.bidPrice
+                          }
+                        >
+                          {formatPriceWithCommas(bid.bidPrice)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className={styles.bidSectionContainer}>
+                  <div className={styles.priceContainer}>
+                    <div className={styles.msgDiv}>
+                      {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
+                      {isRakusatsuProcessingMsgFlg && (
+                        <span>{texts.livemessage.rakusatsuProcessMsg}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.bidSection}>
+                    <div className={styles.priceContainer}>
+                      <div className={styles.priceInfo}>
+                        <span className={styles.currentPriceLabel}>{texts.goods.currentPrice}</span>
+                        <label
+                          className={`${styles.currentPrice} ${
+                            isPriceUpdated ? styles.priceUpdated : ""
+                          }`}
+                        >
+                          {receivedData?.currentPrice != null && (
+                            <label>
+                              {new Intl.NumberFormat("ja-JP", {
+                                style: "currency",
+                                currency: "JPY",
+                              }).format(receivedData.currentPrice)}
+                            </label>
+                          )}
+                        </label>
+                      </div>
+                      <LiveBidStatusComponent bidStatus={bidStatus} texts={texts.live} />
+                      <div className={styles.priceInfo}>
+                        <div className={styles.checkboxContainer}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={viewOnlyChecked}
+                                onChange={handleViewOnlyCheckboxChange}
+                                sx={{
+                                  color: "gray",
+                                  "&.Mui-checked": {
+                                    color: "#cb5201",
+                                  },
+                                  width: 40,
+                                  height: 40,
+                                  "& .MuiSvgIcon-root": {
+                                    fontSize: 32,
+                                  },
+                                }}
+                              />
+                            }
+                            label="View Only"
+                          />
+                        </div>
+                        {!viewOnlyChecked && (
+                          <LiveBidButton
+                            onClick={bid}
+                            disabled={isBidDisabled}
+                            text={
+                              receivedData?.nextPrice != null
+                                ? new Intl.NumberFormat("ja-JP", {
+                                    style: "currency",
+                                    currency: "JPY",
+                                  }).format(receivedData.nextPrice)
+                                : ""
+                            }
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.flowingMsgDiv}>
+                <span key={marqueeKey} className={styles.marquee}>
+                  {msg}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* bidEndポップアップ */}
+      {showBidEndPopup && bidEndData && (
+        <div className={styles.popupOverlay}>
+          <div className={styles.popupContent}>
+            <div className={styles.popupHeader}>
+              <button className={styles.closeButton} onClick={closeBidEndPopup}>
+                ×
+              </button>
+            </div>
+            <div className={styles.popupBody}>
+              {bidResults === 2 && <p className={styles.winnerMessage}>{texts.live.bidStatus2}</p>}
+              {bidResults === 3 && <p className={styles.loserMessage}>{texts.live.bidStatus3}</p>}
+              {bidResults === 4 && <p className={styles.loserMessage}>{texts.live.bidStatus4}</p>}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -14,21 +14,9 @@ interface Props {
 const LiveBidStatusComponent: React.FC<Props> = ({ bidStatus, texts }) => {
   // ステータスに基づいて表示する内容を決定
   const bidStatusText =
-    bidStatus === 1
-      ? texts.bidStatus1
-      : bidStatus === 2
-      ? texts.bidStatus2
-      : bidStatus === 3
-      ? texts.bidStatus3
-      : bidStatus === 4
-      ? texts.bidStatus4
-      : bidStatus === 5
-      ? texts.bidStatus5
-      : "";
+    bidStatus === 1 ? texts.bidStatus1 : bidStatus === 5 ? texts.bidStatus5 : "";
 
-  const statusClass = `${statusStyles.bidStatusContainer} ${
-    statusStyles[`bidStatus${bidStatus}`]
-  }`;
+  const statusClass = `${statusStyles.bidStatusContainer} ${statusStyles[`bidStatus${bidStatus}`]}`;
   return <div className={statusClass}>{bidStatusText}</div>;
 };
 
