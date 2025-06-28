@@ -105,7 +105,7 @@ export const useApiRequest = () => {
         const errorMessage = await res.text();
         if (showToast) {
           toast.update(toastId!, {
-            render: `エラーが発生しました: ${errorMessage}`,
+            render: `システムエラーが発生しました`,
             type: "error",
             isLoading: false,
             autoClose: 3000,
