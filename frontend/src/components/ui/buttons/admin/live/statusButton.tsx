@@ -15,6 +15,7 @@ interface Props {
   liveBidKekkaUpdateAPI?: (data: any, log: any, count: number) => Promise<boolean>;
   onNextLot?: () => void;
   setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
+  onFocus?: () => void;
 }
 
 export function StatusButton({
@@ -29,6 +30,7 @@ export function StatusButton({
   liveBidKekkaUpdateAPI,
   onNextLot,
   setLiveBidkekkaData,
+  onFocus,
 }: Props) {
   let buttonText = "";
   if (status === 1) {
@@ -62,8 +64,16 @@ export function StatusButton({
           rakusatsuPaddleNo: paddleNo,
         }));
       }
+      // 落札処理ボタンクリック時にフォーカス
+      if (onFocus) {
+        onFocus();
+      }
     } else if (status === 3) {
       bidRestart();
+      // 入札再開ボタンクリック時にフォーカス
+      if (onFocus) {
+        onFocus();
+      }
     }
   };
 
@@ -79,8 +89,16 @@ export function StatusButton({
       if (e.key === "F8") {
         if (status === 2) {
           rakusatusuProcess();
+          // 落札処理ボタン（F8）の場合、フォーカス
+          if (onFocus) {
+            onFocus();
+          }
         } else if (status === 3) {
           bidRestart();
+          // 入札再開ボタン（F8）の場合、フォーカス
+          if (onFocus) {
+            onFocus();
+          }
         }
       }
     };

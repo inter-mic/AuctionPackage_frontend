@@ -321,6 +321,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [marqueeKey, setMarqueeKey] = useState(0);
   const lotInputRef = useRef<HTMLInputElement>(null);
   const currentPriceInputRef = useRef<HTMLInputElement>(null);
+  const rakusatsuPaddleNoInputRef = useRef<HTMLInputElement>(null);
   const [isOnlineBidReceive, setIsOnlineBidReceive] = useState(false);
   const ws = useRef<WebSocket | null>(null);
   useEffect(() => {
@@ -1116,6 +1117,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     sendWebSocketMessage={sendWebSocketMessage}
                     setLiveBidkekkaData={setLiveBidkekkaData}
                     liveBidLog={liveBidLog}
+                    onFocus={() => {
+                      if (!isRakusatsuProcessFlg) {
+                        rakusatsuPaddleNoInputRef.current?.focus();
+                      } else {
+                        currentPriceInputRef.current?.focus();
+                      }
+                    }}
                   />
                 </div>
                 <div className={styles.rightButtons}>
@@ -1184,6 +1192,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       </span>
                       <input
                         type="text"
+                        ref={rakusatsuPaddleNoInputRef}
                         className={`${styles.paddleInput} ${
                           isRakusatsuPaddleNoError ? "bg-red-300" : ""
                         }`}
