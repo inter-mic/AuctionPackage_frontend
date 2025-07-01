@@ -30,6 +30,7 @@ import {
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { CustomDatePicker } from "@/components/ui/dateTime/CustomDatePicker";
+import { TorihikiJissekiTableComponent } from "@/components/admin/torihikiJisseki/TorihikiJissekiTableComponent";
 //ボタン
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
@@ -72,7 +73,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
       };
       torihikiJissekiMeisaiRakusatsuSearchAPI(requestParams);
       torihikiJissekiMeisaiRakusatsuSearchCountAPI(requestParams);
-      ////torihikiJissekiMeisaiShuppinSearchAPI(requestParams);
+      torihikiJissekiMeisaiShuppinSearchAPI(requestParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsAuctionSeq, paramsUserId]);
@@ -180,6 +181,18 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
         paramsAuctionSeq,
         paramsUserId
       );
+    } else {
+      if (shuppinSelectedIds.length === 0) {
+        toast.error(texts.message.selectAtLeastOne);
+        return;
+      }
+      torihikiJissekiMeisaiDateUpdateAPI(
+        shuppinSelectedIds,
+        paramsShuppinDate,
+        shuppinUpdateKbn,
+        paramsAuctionSeq,
+        paramsUserId
+      );
     }
   };
   useEffect(() => {
@@ -194,20 +207,97 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rakusatsuResponseData]);
-  // useEffect(() => {
-  //   if (shuppinResponseData) {
-  //      setFetchShuppinList(shuppinResponseData);
-  //      shuppinSetSelectAll(false);
-  //      shuppinSetSelectedIds([]);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [shuppinResponseData]);
+  useEffect(() => {
+    if (shuppinResponseData) {
+      shuppinSetSelectAll(false);
+      shuppinSetSelectedIds([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shuppinResponseData]);
 
   const { invoicePdfAPI } = useInvoicePdfAPI();
   const handleInvoice = () => {
     const userIds = paramsUserId ? [Number(paramsUserId)] : [];
     invoicePdfAPI(Number(paramsAuctionSeq), userIds);
   };
+
+  // 出品リスト用のチェックボックス
+  const {
+    selectAll: shuppinSelectAll,
+    setSelectAll: shuppinSetSelectAll,
+    selectedIds: shuppinSelectedIds,
+    setSelectedIds: shuppinSetSelectedIds,
+    handleSelectAll: shuppinHandleSelectAll,
+    handleSelect: shuppinHandleSelect,
+  } = useCheckboxSelection(
+    shuppinList.map((goods) => goods.goodsId),
+    shuppinList.map((goods) => goods.goodsId),
+    () => Promise.resolve()
+  );
+
+  // 出品リスト用のソート機能
+  const [shuppinSortName, setShuppinSortName] = useState<string>("");
+  const [shuppinSortFlg, setShuppinSortFlg] = useState<string>("asc");
+  const [shuppinSortedData, setShuppinSortedData] = useState<TTorihikiJissekiMeisaiShuppinSelect[]>(
+    []
+  );
+
+  const handleSortShuppin = (sortName: string) => {
+    setShuppinSortName(sortName);
+    setShuppinSortFlg(shuppinSortFlg === "asc" ? "desc" : "asc");
+  };
+
+  const handleSortRakusatsu = (sortName: string) => {
+    // この関数は出品リストでは使用しないため、空の実装
+  };
+
+  // 出品リストのソート処理
+  useEffect(() => {
+    if (shuppinList && shuppinList.length > 0) {
+      const sorted = [...shuppinList].sort((a, b) => {
+        let aValue: any;
+        let bValue: any;
+
+        switch (shuppinSortName) {
+          case "sku":
+            aValue = a.sku || "";
+            bValue = b.sku || "";
+            break;
+          case "lot":
+            aValue = parseInt(a.lot) || 0;
+            bValue = parseInt(b.lot) || 0;
+            break;
+          case "goodsName":
+            aValue = a.goodsName || "";
+            bValue = b.goodsName || "";
+            break;
+          case "shuppinPrice":
+            aValue = parseFloat(a.shuppinPrice.replace(/,/g, "")) || 0;
+            bValue = parseFloat(b.shuppinPrice.replace(/,/g, "")) || 0;
+            break;
+          case "shuppinTesuryoPrice":
+            aValue = parseFloat(a.shuppinTesuryoPrice.replace(/,/g, "")) || 0;
+            bValue = parseFloat(b.shuppinTesuryoPrice.replace(/,/g, "")) || 0;
+            break;
+          case "shuppinTotalPrice":
+            aValue = parseFloat(a.shuppinTotalPrice.replace(/,/g, "")) || 0;
+            bValue = parseFloat(b.shuppinTotalPrice.replace(/,/g, "")) || 0;
+            break;
+          default:
+            return 0;
+        }
+
+        if (shuppinSortFlg === "asc") {
+          return aValue > bValue ? 1 : -1;
+        } else {
+          return aValue < bValue ? 1 : -1;
+        }
+      });
+      setShuppinSortedData(sorted);
+    } else {
+      setShuppinSortedData([]);
+    }
+  }, [shuppinList, shuppinSortName, shuppinSortFlg]);
 
   return (
     <div>
@@ -340,77 +430,33 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
             ) : null}
           </div>
 
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b  w-24">
-                  <input
-                    type="checkbox"
-                    checked={rakusatsuSelectAll}
-                    onChange={rakusatsuHandleSelectAll}
-                  />
-                </th>
-                <th className="py-2 px-4 border-b w-48">{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b w-24">{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-48">{texts.torihikiJisseki.rakusatsuPrice}</th>
-                <th className="py-2 px-4 border-b w-48">
-                  {texts.torihikiJisseki.rakusatsuTesuryoPrice}
-                </th>
-                <th className="py-2 px-4 border-b w-48">
-                  {texts.torihikiJisseki.rakusatsuTotalPrice}
-                </th>
-                <th className="py-2 px-4 border-b w-32">{texts.torihikiJisseki.nyukinbi}</th>
-                <th className="py-2 px-4 border-b w-32">{texts.torihikiJisseki.hassobi}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rakusatsuList.length > 0 &&
-                rakusatsuList.map((result) => (
-                  <tr
-                    key={result.goodsId}
-                    className="cursor-pointer hover:bg-gray-100"
-                    onClick={(e) => handleRowClick(e, result.goodsId)}
-                  >
-                    <td
-                      className="py-2 px-4 border-b text-center  w-24"
-                      onClick={(e) => {
-                        e.stopPropagation(); // チェックボックスでイベントを止める
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={rakusatsuSelectedIds.includes(result.goodsId)}
-                        onChange={() => rakusatsuHandleSelect(result.goodsId)}
-                      />
-                    </td>
-                    <td className="py-2 px-4 border-b text-left w-48">{result.sku}</td>
-                    <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
-                    <td className="py-2 px-4 border-b text-right w-48">{result.rakusatsuPrice}</td>
-                    <td className="py-2 px-4 border-b text-right w-48">
-                      {result.rakusatsuTesuryoPrice}
-                    </td>
-                    <td className="py-2 px-4 border-b text-right w-48">
-                      {result.rakusatsuTotalPrice}
-                    </td>
-                    <td className="py-2 px-4 border-b text-center w-32">
-                      {result.rakusatsuKessaibi}
-                    </td>
-                    <td className="py-2 px-4 border-b text-center w-32">
-                      {result.rakusatsuHassobi}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <TorihikiJissekiTableComponent
+            title={texts.torihikiJisseki.rakusatsuMeisai}
+            data={rakusatsuList}
+            selectedIds={rakusatsuSelectedIds}
+            selectAll={rakusatsuSelectAll}
+            onSelectAll={rakusatsuHandleSelectAll}
+            onSelect={rakusatsuHandleSelect}
+            onRowClick={handleRowClick}
+            columns={[
+              { key: "sku", label: texts.goods.sku, width: "w-48" },
+              { key: "lot", label: texts.goods.lot, width: "w-24" },
+              { key: "goodsName", label: texts.goods.goodsName },
+              { key: "rakusatsuPrice", label: texts.torihikiJisseki.rakusatsuPrice, width: "w-48", align: "right" },
+              { key: "rakusatsuTesuryoPrice", label: texts.torihikiJisseki.rakusatsuTesuryoPrice, width: "w-48", align: "right" },
+              { key: "rakusatsuTotalPrice", label: texts.torihikiJisseki.rakusatsuTotalPrice, width: "w-48", align: "right" },
+              { key: "rakusatsuKessaibi", label: texts.torihikiJisseki.nyukinbi, width: "w-32", align: "center" },
+              { key: "rakusatsuHassobi", label: texts.torihikiJisseki.hassobi, width: "w-32", align: "center" },
+            ]}
+            isRakusatsu={true}
+          />
         </div>
       ) : (
         <p></p>
       )}
-      {/* {shuppinList && shuppinList.length > 0 ? (
+      {shuppinList && shuppinList.length > 0 ? (
         <div className={styles.container}>
-           <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
+          <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
             <div className="text-left">
               <label className={styles.title}>{texts.torihikiJisseki.shuppinMeisai}</label>
             </div>
@@ -418,22 +464,26 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               <label className="sm:ml-4 flex items-center">
                 {texts.torihikiJisseki.shuppinsu}:
                 <span className="text-xl font-bold mx-1">
-                  {shuppinList.length}{texts.label.resultCount}
+                  {shuppinList.length}
+                  {texts.label.resultCount}
                 </span>
               </label>
               <label className="sm:ml-4 flex items-center">
                 {texts.torihikiJisseki.rakusatsusu}:
                 <span className="text-xl font-bold mx-1">
-                {shuppinList.filter(result => result.rakusatsuUserId !== "").length}{texts.label.resultCount}
+                  {shuppinList.filter((result) => result.rakusatsuUserId !== "").length}
+                  {texts.label.resultCount}
                 </span>
               </label>
               <label className="sm:ml-2 flex items-center">
                 {texts.torihikiJisseki.shuppinTotalPrice}:
                 <span className="text-xl font-bold mx-1">
-                  {shuppinList.reduce((acc, result) => {
-                    const price = parseFloat(result.shuppinTotalPrice.replace(/,/g, '')) || 0;
-                    return acc + price;
-                  }, 0).toLocaleString()}
+                  {shuppinList
+                    .reduce((acc, result) => {
+                      const price = parseFloat(result.shuppinTotalPrice.replace(/,/g, "")) || 0;
+                      return acc + price;
+                    }, 0)
+                    .toLocaleString()}
                 </span>
               </label>
             </div>
@@ -463,60 +513,30 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               </div>
             ) : null}
           </div>
-          
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b  w-24" >
-                  <input
-                    type="checkbox"
-                    checked={shuppinSelectAll}
-                    onChange={shuppinHandleSelectAll}
-                  />
-                </th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortShuppin('sku')}>{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b w-24" onClick={() => handleSortShuppin('lot')}>{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b" onClick={() => handleSortShuppin('goodsName')}>{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortShuppin('shuppinPrice')}>{texts.torihikiJisseki.shuppinPrice}</th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortShuppin('shuppinTesuryoPrice')}>{texts.torihikiJisseki.shuppinTesuryoPrice}</th>
-                <th className="py-2 px-4 border-b w-48" onClick={() => handleSortShuppin('shuppinTotalPrice')}>{texts.torihikiJisseki.shuppinTotalPrice}</th>
-                <th className="py-2 px-4 border-b w-32" onClick={() => handleSortRakusatsu('shuppinKessaibi')}>{texts.torihikiJisseki.shiharaibi}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shuppinSortedData.length > 0 && shuppinSortedData.map((result) => (
-                <tr
-                  key={result.goodsId}
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={(e) => handleRowClick(e, result.goodsId)}
-                >
-                  <td
-                    className="py-2 px-4 border-b text-center  w-24"
-                    onClick={(e) => {
-                      e.stopPropagation(); // チェックボックスでイベントを止める
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={shuppinSelectedIds.includes(result.goodsId)}
-                      onChange={() => shuppinHandleSelect(result.goodsId)}
-                    />
-                  </td>
-                  <td className="py-2 px-4 border-b text-left w-48">{result.sku}</td>
-                  <td className="py-2 px-4 border-b text-center w-24">{result.lot}</td>
-                  <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
-                  <td className="py-2 px-4 border-b text-right w-48">{result.shuppinPrice}</td>
-                  <td className="py-2 px-4 border-b text-right w-48">{result.shuppinTesuryoPrice}</td>
-                  <td className="py-2 px-4 border-b text-right w-48">{result.shuppinTotalPrice}</td>
-                  <td className="py-2 px-4 border-b text-center w-32">{result.shuppinKessaibi}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+          <TorihikiJissekiTableComponent
+            title={texts.torihikiJisseki.shuppinMeisai}
+            data={shuppinSortedData}
+            selectedIds={shuppinSelectedIds}
+            selectAll={shuppinSelectAll}
+            onSelectAll={shuppinHandleSelectAll}
+            onSelect={shuppinHandleSelect}
+            onRowClick={handleRowClick}
+            columns={[
+              { key: "sku", label: texts.goods.sku, width: "w-48", sortable: true, onSort: () => handleSortShuppin("sku") },
+              { key: "lot", label: texts.goods.lot, width: "w-24", sortable: true, onSort: () => handleSortShuppin("lot") },
+              { key: "goodsName", label: texts.goods.goodsName, sortable: true, onSort: () => handleSortShuppin("goodsName") },
+              { key: "shuppinPrice", label: texts.torihikiJisseki.shuppinPrice, width: "w-48", align: "right", sortable: true, onSort: () => handleSortShuppin("shuppinPrice") },
+              { key: "shuppinTesuryoPrice", label: texts.torihikiJisseki.shuppinTesuryoPrice, width: "w-48", align: "right", sortable: true, onSort: () => handleSortShuppin("shuppinTesuryoPrice") },
+              { key: "shuppinTotalPrice", label: texts.torihikiJisseki.shuppinTotalPrice, width: "w-48", align: "right", sortable: true, onSort: () => handleSortShuppin("shuppinTotalPrice") },
+              { key: "shuppinKessaibi", label: texts.torihikiJisseki.shiharaibi, width: "w-32", align: "center" },
+            ]}
+            isRakusatsu={false}
+          />
         </div>
       ) : (
         <p></p>
-      )} */}
+      )}
     </div>
   );
 };

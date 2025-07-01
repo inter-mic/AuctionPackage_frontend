@@ -1,4 +1,4 @@
-import  dayjs,{ Dayjs } from 'dayjs';
+import  { Dayjs } from 'dayjs';
 export interface TMtAuction {
     auctionSeq: number;
     auctionName: string;

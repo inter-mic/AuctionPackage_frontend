@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 //API
-import { useTodofukenAPI } from '@/hooks/api/public/useTodofukenAPI';
+import { useTodofukenAPI } from "@/hooks/api/public/useTodofukenAPI";
 
-import styles from '@/styles/CommonRegister.module.css';
+import styles from "@/styles/CommonRegister.module.css";
 
 type Props = {
   onChange: (selectedId: string) => void;
@@ -16,15 +16,15 @@ export const TodofukenPullDown = ({ onChange, selectedId }: Props) => {
   };
 
   return (
-    <select 
-        id="todofuken_name"
-        name="todofuken_name"
-        className={`${styles.commonInput} ${styles.input50}`}
-        onChange={handleChange}
-        value={selectedId ?? ''
-        }>
+    <select
+      id="todofuken_name"
+      name="todofuken_name"
+      className={`${styles.commonInput} ${styles.input25}`}
+      onChange={handleChange}
+      value={selectedId ?? ""}
+    >
       <option value="">---</option>
-      {todofuken.map(data => (
+      {todofuken.map((data) => (
         <option key={data.todofukenId} value={data.todofukenName}>
           {data.todofukenName}
         </option>

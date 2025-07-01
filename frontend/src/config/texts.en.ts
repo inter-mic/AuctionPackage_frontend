@@ -182,6 +182,15 @@ export const texts = {
     mailcopy_note:
       "※メールアドレスコピー：メールアドレスをコピーしてGmail等メーラーのBCCに貼り付ければ、一括送信が可能です",
     auctionMailJushinFlg: "お知らせメール受信",
+    ginkoCode: "Bank Code",
+    ginkoName: "Bank Name",
+    shitenCode: "Branch Code",
+    shitenName: "Branch Name",
+    kozaType: "Account Type",
+    kozameigi: "Account Holder",
+    kozabango: "Account Number",
+    kozaType1: "Regular",
+    kozaType2: "Current",
   },
   staff: {
     info: "スタッフ情報",
@@ -296,7 +305,7 @@ export const texts = {
     goodsUpload_note_4: "※登録後、30日以内で登録済みでないフォルダが表示されます。",
     goodsUpload_note_5: "※30日経過して商品に紐づかない画像は削除されます。",
     goodsUpload_note_6:
-      "CSVファイル内のデータは、項目ごとにダブルクォーテーション「””」で囲ってください。",
+      "CSVファイル内のデータは、項目ごとにダブルクォーテーション「""」で囲ってください。",
     goodsUpload_note_7:
       "CSVファイルのアップロード後、ファイル内データのチェック処理を実行します。登録できないデータがある場合はエラーメッセージに表示されます。",
     goodsUpload_note_8: "すべてのデータについてチェックが通った場合のみ登録されます。",

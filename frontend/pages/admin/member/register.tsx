@@ -1,6 +1,7 @@
 import { GetServerSideProps } from "next";
 import { useSearchParams } from "next/navigation";
 import { texts } from "@/config/texts.ja";
+import dayjs from "dayjs";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
@@ -115,6 +116,39 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       <div className={breadcrumbStyles.breadcrumb}>
         <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminMemberRegist}</span>
       </div>
+
+      {/* 日時情報テーブル */}
+      {member.userId && (
+        <div className="w-full flex  mb-4">
+          <div className="w-1/2 min-w-[320px] bg-white shadow-md p-4">
+            <table className="w-full">
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-4 font-semibold ">登録日時</td>
+                  <td className="py-2 px-4 ">
+                    {member.createTime
+                      ? dayjs(member.createTime).format("YYYY-MM-DD HH:mm:ss")
+                      : "---"}
+                  </td>
+                  <td className="py-2 px-4 font-semibold ">更新日時</td>
+                  <td className="py-2 px-4 ">
+                    {member.updateTime
+                      ? dayjs(member.updateTime).format("YYYY-MM-DD HH:mm:ss")
+                      : "---"}
+                  </td>
+                  <td className="py-2 px-4 font-semibold ">最終ログイン日時</td>
+                  <td className="py-2 px-4 ">
+                    {member.loginTime
+                      ? dayjs(member.loginTime).format("YYYY-MM-DD HH:mm:ss")
+                      : "---"}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full p-8 space-y-6 bg-white shadow-md md:max-w-full md:rounded">
           {

@@ -98,6 +98,14 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     const { name, value } = e.target;
     handleChange(e);
   };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    handleChange({
+      target: { name, value },
+    } as React.ChangeEvent<HTMLInputElement>);
+  };
+
   const [auctionMailJushinFlg, setAuctionMailJushinFlg] = useState("1");
   useEffect(() => {
     if (member.userId === undefined) {
@@ -298,7 +306,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
         </div>
         {errors?.zipCode && <p className={`error-message ${styles.input100}`}>{errors.zipCode}</p>}
       </div>
-      <div className="flex flex-col lg:w-2/12 sm:w-full">
+      <div className="flex flex-col w-full">
         <label htmlFor="todofuken" className="formlabel w-full">
           {texts.member.todofuken}
         </label>
@@ -443,6 +451,133 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           />
         </div>
         {errors?.mobile && <p className={`error-message ${styles.input50}`}>{errors.mobile}</p>}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="ginkoCode" className="formlabel">
+            {texts.member.ginkoCode}
+          </label>
+        </div>
+        <input
+          id="ginkoCode"
+          name="ginkoCode"
+          type="text"
+          value={member.ginkoCode || ""}
+          onChange={handleInputChange}
+          className={`${styles.commonInput} ${styles.input25}`}
+        />
+        {errors?.ginkoCode && (
+          <p className={`error-message ${styles.input25}`}>{errors.ginkoCode}</p>
+        )}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="ginkoName" className="formlabel">
+            {texts.member.ginkoName}
+          </label>
+        </div>
+        <input
+          id="ginkoName"
+          name="ginkoName"
+          type="text"
+          value={member.ginkoName || ""}
+          onChange={handleInputChange}
+          className={`${styles.commonInput} ${styles.input50}`}
+        />
+        {errors?.ginkoName && (
+          <p className={`error-message ${styles.input50}`}>{errors.ginkoName}</p>
+        )}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="shitenCode" className="formlabel">
+            {texts.member.shitenCode}
+          </label>
+        </div>
+        <input
+          id="shitenCode"
+          name="shitenCode"
+          type="text"
+          value={member.shitenCode || ""}
+          onChange={handleInputChange}
+          className={`${styles.commonInput} ${styles.input25}`}
+        />
+        {errors?.shitenCode && (
+          <p className={`error-message ${styles.input25}`}>{errors.shitenCode}</p>
+        )}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="shitenName" className="formlabel">
+            {texts.member.shitenName}
+          </label>
+        </div>
+        <input
+          id="shitenName"
+          name="shitenName"
+          type="text"
+          value={member.shitenName || ""}
+          onChange={handleInputChange}
+          className={`${styles.commonInput} ${styles.input50}`}
+        />
+        {errors?.shitenName && (
+          <p className={`error-message ${styles.input50}`}>{errors.shitenName}</p>
+        )}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="kozaType" className="formlabel">
+            {texts.member.kozaType}
+          </label>
+        </div>
+        <select
+          id="kozaType"
+          name="kozaType"
+          value={member.kozaType || ""}
+          onChange={handleSelectChange}
+          className={`${styles.commonInput} ${styles.input50}`}
+        >
+          <option value="">---</option>
+          <option value="1">{texts.member.kozaType1}</option>
+          <option value="2">{texts.member.kozaType2}</option>
+        </select>
+        {errors?.kozaType && <p className={`error-message ${styles.input50}`}>{errors.kozaType}</p>}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="kozameigi" className="formlabel">
+            {texts.member.kozameigi}
+          </label>
+        </div>
+        <input
+          id="kozameigi"
+          name="kozameigi"
+          type="text"
+          value={member.kozameigi || ""}
+          onChange={handleInputChange}
+          className={`${styles.commonInput} ${styles.input50}`}
+        />
+        {errors?.kozameigi && (
+          <p className={`error-message ${styles.input50}`}>{errors.kozameigi}</p>
+        )}
+      </div>
+      <div>
+        <div className="flex items-center">
+          <label htmlFor="kozabango" className="formlabel">
+            {texts.member.kozabango}
+          </label>
+        </div>
+        <input
+          id="kozabango"
+          name="kozabango"
+          type="text"
+          value={member.kozabango || ""}
+          onChange={handleInputChange}
+          className={`${styles.commonInput} ${styles.input50}`}
+        />
+        {errors?.kozabango && (
+          <p className={`error-message ${styles.input50}`}>{errors.kozabango}</p>
+        )}
       </div>
       {userAddinfo.map(
         (data) =>
