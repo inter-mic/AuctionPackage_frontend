@@ -73,6 +73,7 @@ export function StatusButton({
       if (disabled) return;
 
       if (e.key === "F7" && status === 1) {
+        e.preventDefault();
         bidComingSoonHaishin();
       }
       if (e.key === "F8") {

@@ -16,6 +16,7 @@ interface ConfirmDialogProps {
   dialogClassName: string; // クラス
   onSubmit: () => void; // 実行する関数（API呼び出し）
   buttonText?: string; // ボタンのテキスト（省略可能）
+  onKeyDown?: (e: React.KeyboardEvent) => void; // ショートカットハンドラ（省略可能）
 }
 
 export default function ConfirmDialogProps({
@@ -29,6 +30,7 @@ export default function ConfirmDialogProps({
   dialogClassName,
   onSubmit,
   buttonText,
+  onKeyDown,
 }: ConfirmDialogProps) {
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,6 +55,7 @@ export default function ConfirmDialogProps({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        onKeyDown={onKeyDown}
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description" style={{ whiteSpace: "pre-line" }}>

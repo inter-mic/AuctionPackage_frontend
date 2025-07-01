@@ -2,7 +2,7 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { texts } from "@/config/texts.ja";
-import { useRef } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,6 +39,7 @@ import {
   formatPriceNum,
 } from "@/components/common/PriceUtils";
 import ConfirmDialog from "@/components/ui/dialog/auctioneerConfirmDialog";
+import AuctioneerConfirmDialog from "@/components/ui/dialog/auctioneerConfirmDialog";
 //ボタン
 import { CallButton } from "@/components/ui/buttons/admin/live/callButton";
 import { LotBeforeAffterButton } from "@/components/ui/buttons/admin/live/LotBeforeAffterButton";
@@ -115,12 +116,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     useLiveBidInfoSearchAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
 
-  const lotSearch = async () => {
+  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
+  const [isRakusatsuPaddleNoError, setIsRakusatsuPaddleNoError] = useState<boolean>(false);
+
+  const lotSearch = useCallback(async () => {
     setOnlineBidHistory([]);
     setLiveBidLog([]);
     setAuctioneerFlg(false);
     goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, searchLot);
-  };
+  }, [goodsSearchByGoodsIdAPI, searchSelectedKaisai, searchLot]);
 
   //商品データセット
   useEffect(() => {
@@ -299,13 +303,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchGoodsData?.auctionSeq, fetchGoodsData?.lot]);
-  const lotBeforeAffterSearch = async (isBefore: boolean) => {
+  const lotBeforeAffterSearch = useCallback(async (isBefore: boolean) => {
     const goodsId = isBefore ? beforeAfterGoodsId?.beforeGoodsId : beforeAfterGoodsId?.afterGoodsId;
     await goodsSearchByGoodsIdAPI(true, Number(goodsId), "", "");
     await liveBidInfoSearchAPI(true, Number(goodsId), searchSelectedKaisai, "", "");
     await liveBidInfoGetNextLotListAPI(true, Number(goodsId), searchSelectedKaisai, searchLot);
     setNextLotListRow(isBefore ? nextLotListRow - 1 : nextLotListRow + 1);
-  };
+  }, [beforeAfterGoodsId, goodsSearchByGoodsIdAPI, liveBidInfoSearchAPI, liveBidInfoGetNextLotListAPI, searchSelectedKaisai, searchLot, nextLotListRow]);
   const [liveBidkekkaData, setLiveBidkekkaData] =
     useState<LiveBidKekkaData>(initialLiveBidKekkaData);
   const [onlineBidHistory, setOnlineBidHistory] = useState<TBidHisotry[]>([]);
@@ -403,20 +407,21 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getCommonData = () => ({
+  const getCommonData = useCallback(() => ({
     goodsId: fetchGoodsData.goodsId,
     lot: fetchGoodsData.lot,
     goodsName: fetchGoodsData.goodsName,
     goodsImage: fetchGoodsData.thumbnailImageUrl,
-  });
-  const getClearCommonData = () => ({
+  }), [fetchGoodsData]);
+
+  const getClearCommonData = useCallback(() => ({
     goodsId: "",
     lot: "",
     goodsName: "",
     goodsImage: "",
-  });
+  }), []);
 
-  const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
+  const sendWebSocketMessage = useCallback((type: string, additionalData: Record<string, any> = {}) => {
     if (!isAuctioneerFlg) {
       if (type === "sendMessage") {
         // メッセージ配信は可能
@@ -443,7 +448,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
       ws.current.send(JSON.stringify(message));
     }
-  };
+  }, [isAuctioneerFlg, ws, getClearCommonData, getCommonData, nextLotList, liveBidLog]);
 
   // 強制クリア用関数
   const clear = async () => {
@@ -455,29 +460,32 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     });
   };
 
-  const { liveBidKekkaUpdateAPI } = useLiveBidKekkaUpdateAPI();
+  const { liveBidKekkaUpdateAPI, liveBidKekkaRegistErrors } = useLiveBidKekkaUpdateAPI();
 
-  const bidLiveAuctionEnd = async () => {
+  const bidLiveAuctionEnd = useCallback(async () => {
     sendWebSocketMessage("bidEnd", { kenriUserId: kenriUserId });
-    const isSuccess = await liveBidKekkaUpdateAPI(
+    const result = await liveBidKekkaUpdateAPI(
       liveBidkekkaData.auctionKekkaStatus,
       liveBidkekkaData,
       liveBidLog,
       connectionCount,
       spnKbn
     );
-    if (isSuccess) {
+    if (result.success) {
       const nextLot = (Number(searchLot) + 1).toString();
       goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
       setLiveBidkekkaData(initialLiveBidKekkaData);
       setNextLotListRow(Number(nextLot) + 1);
+    } else {
+      if (result.errorMessage) {
+        toast.error(result.errorMessage);
+        setRakusatsuProcessFlg(true);
+      }
     }
-  };
+  }, [sendWebSocketMessage, kenriUserId, liveBidKekkaUpdateAPI, liveBidkekkaData, liveBidLog, connectionCount, spnKbn, searchLot, goodsSearchByGoodsIdAPI, searchSelectedKaisai, setLiveBidkekkaData, setNextLotListRow, setRakusatsuProcessFlg]);
 
   //落札処理用
-  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
-  const [isRakusatsuPaddleNoError, setIsRakusatsuPaddleNoError] = useState<boolean>(false);
-  const bidLiveBidEnd = async (isRakusatsu: boolean) => {
+  const bidLiveBidEnd = useCallback(async (isRakusatsu: boolean) => {
     if (isRakusatsu) {
       if (
         liveBidkekkaData.rakusatsuPaddleNo === null ||
@@ -494,20 +502,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       sendWebSocketMessage("bidEnd", { kenriPaddleNo: null });
     }
 
-    const isSuccess = await liveBidKekkaUpdateAPI(
+    const result = await liveBidKekkaUpdateAPI(
       isRakusatsu ? 2 : 1,
       liveBidkekkaData,
       liveBidLog,
       connectionCount,
       spnKbn
     );
-    if (isSuccess) {
+    if (result.success) {
       const nextLot = (Number(searchLot) + 1).toString();
       goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
       setLiveBidkekkaData(initialLiveBidKekkaData);
       setNextLotListRow(Number(nextLot) + 1);
+    } else {
+      if (result.errorMessage) {
+        toast.error(result.errorMessage);
+        setIsRakusatsuPaddleNoError(true);
+        setRakusatsuProcessFlg(true);
+      }
     }
-  };
+  }, [liveBidkekkaData, setIsRakusatsuPaddleNoError, sendWebSocketMessage, liveBidKekkaUpdateAPI, liveBidLog, connectionCount, spnKbn, searchLot, goodsSearchByGoodsIdAPI, searchSelectedKaisai, setLiveBidkekkaData, setNextLotListRow, setRakusatsuProcessFlg]);
 
   //オンライン入札時の処理価格
   useEffect(() => {
@@ -576,9 +590,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setAuctioneerFlg(false);
   };
 
-  const set = async () => {
+  const set = useCallback(async () => {
     setAuctioneerFlg(true);
-  };
+  }, [setAuctioneerFlg]);
 
   //現在価格配信時チェック用
   const [isNextPriceBelow, setIsNextPriceBelow] = useState<boolean>(false);
@@ -614,87 +628,104 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [furakusatsuConfirmOpen, setFuRakusatsuConfirmOpen] = useState(false);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   //ショートカットキー
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "F1") {
-        event.preventDefault();
-        if (furakusatsuConfirmOpen) {
-          if (spnKbn == "1") {
-            bidLiveBidEnd(false);
-          } else {
-            bidLiveAuctionEnd();
-          }
+  const handleKeyDown = React.useCallback((event: KeyboardEvent) => {
+    if (event.key === "F1") {
+      event.preventDefault(); // F1のときだけ最初に必ず呼ぶ
+      if (!isRakusatsuProcessFlg) return;
+      if (furakusatsuConfirmOpen) {
+        if (spnKbn == "1") {
+          bidLiveBidEnd(false);
         } else {
-          setFuRakusatsuConfirmOpen(true);
+          bidLiveAuctionEnd();
         }
+        setFuRakusatsuConfirmOpen(false); // モーダルを閉じる
+      } else {
+        setFuRakusatsuConfirmOpen(true);
       }
-      if (event.key === "F2") {
-        event.preventDefault();
-        lotSearch();
-        return;
-      }
-      if (event.key === "F3" && isCallButtonClicked) {
-        event.preventDefault();
-        set();
-        return;
-      }
-      if (event.key === "F4" && isSetButtonClicked) {
-        event.preventDefault();
-        startButtonRef.current?.trigger();
-        return;
-      }
-      if (event.key === "F9") {
-        event.preventDefault();
-        if (rakusatsuConfirmOpen) {
-          if (spnKbn == "1") {
-            bidLiveBidEnd(true);
-          } else {
-            bidLiveAuctionEnd();
-          }
+    }
+    if (event.key === "F2") {
+      event.preventDefault();
+      lotSearch();
+      return;
+    }
+    if (event.key === "F3" && isCallButtonClicked) {
+      event.preventDefault();
+      set();
+      return;
+    }
+    if (event.key === "F4" && isSetButtonClicked) {
+      event.preventDefault();
+      startButtonRef.current?.trigger();
+      return;
+    }
+    if (event.key === "F9") {
+      if (!isRakusatsuProcessFlg) return;
+      event.preventDefault();
+      if (rakusatsuConfirmOpen) {
+        if (spnKbn == "1") {
+          bidLiveBidEnd(true);
         } else {
-          setRakusatsuConfirmOpen(true);
+          bidLiveAuctionEnd();
         }
+        setRakusatsuConfirmOpen(false); // モーダルを閉じる
+      } else {
+        setRakusatsuConfirmOpen(true);
       }
-      if (event.key === "Enter" && isStartButtonClicked) {
-        event.preventDefault();
-        priceButtonRef.current?.trigger();
-      }
-      if (event.key === "Shift" && isStartButtonClicked) {
-        event.preventDefault();
-        onlinePriceButtonRef.current?.trigger();
-      }
-      if (event.key === "ArrowRight" && isCallButtonClicked) {
-        lotBeforeAffterSearch(false);
-        return;
-      }
-      if (event.key === "ArrowLeft" && isCallButtonClicked) {
-        lotBeforeAffterSearch(true);
-        return;
-      }
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        plusRef.current?.trigger();
-        return;
-      } else if (event.key === "ArrowDown") {
-        event.preventDefault();
-        minusRef.current?.trigger();
-        return;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+    if (event.key === "Enter" && isStartButtonClicked) {
+      event.preventDefault();
+      priceButtonRef.current?.trigger();
+    }
+    if (event.key === "Shift" && isStartButtonClicked) {
+      event.preventDefault();
+      onlinePriceButtonRef.current?.trigger();
+    }
+    if (event.key === "ArrowRight" && isCallButtonClicked) {
+      lotBeforeAffterSearch(false);
+      return;
+    }
+    if (event.key === "ArrowLeft" && isCallButtonClicked) {
+      lotBeforeAffterSearch(true);
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      plusRef.current?.trigger();
+      return;
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      minusRef.current?.trigger();
+      return;
+    }
   }, [
-    searchSelectedKaisai,
-    searchLot,
-    beforeAfterGoodsId,
+    furakusatsuConfirmOpen,
+    spnKbn,
+    bidLiveBidEnd,
+    bidLiveAuctionEnd,
+    setFuRakusatsuConfirmOpen,
+    lotSearch,
     isCallButtonClicked,
+    set,
     isSetButtonClicked,
+    startButtonRef,
+    rakusatsuConfirmOpen,
+    setRakusatsuConfirmOpen,
     isStartButtonClicked,
+    priceButtonRef,
+    onlinePriceButtonRef,
+    lotBeforeAffterSearch,
+    plusRef,
+    minusRef,
+    isRakusatsuProcessFlg,
   ]);
+
+  useEffect(() => {
+    const listener = (e: Event) => {
+      if (e instanceof KeyboardEvent) handleKeyDown(e);
+    };
+    window.addEventListener("keydown", listener, { capture: true });
+    return () => window.removeEventListener("keydown", listener, { capture: true });
+  }, [handleKeyDown]);
 
   return (
     <div className={styles.container}>
@@ -1162,7 +1193,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           setIsRakusatsuPaddleNoError(false);
                         }}
                       />
-                      <ConfirmDialog
+                      <AuctioneerConfirmDialog
                         open={rakusatsuConfirmOpen}
                         setOpen={setRakusatsuConfirmOpen}
                         disabled={!isRakusatsuProcessFlg}
@@ -1192,7 +1223,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     </>
                   )}
                   {spnKbn == "2" && (
-                    <ConfirmDialog
+                    <AuctioneerConfirmDialog
                       open={rakusatsuConfirmOpen}
                       setOpen={setRakusatsuConfirmOpen}
                       disabled={!isRakusatsuProcessFlg}
@@ -1229,7 +1260,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 </div>
                 {spnKbn == "1" && (
                   <div className={styles.rightButtons}>
-                    <ConfirmDialog
+                    <AuctioneerConfirmDialog
                       open={furakusatsuConfirmOpen}
                       setOpen={setFuRakusatsuConfirmOpen}
                       disabled={!isRakusatsuProcessFlg}

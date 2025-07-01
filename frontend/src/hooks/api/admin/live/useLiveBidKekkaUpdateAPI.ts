@@ -8,7 +8,7 @@ import { TLiveBidLog } from "@/types/admin/live/auctioneer";
 
 export const useLiveBidKekkaUpdateAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [liveBidKekkaRegistErrors, setLiveBidKekkaRegistErrors] = useState<Errors>();
+  const [liveBidKekkaRegistErrors, setLiveBidKekkaRegistErrors] = useState<string | undefined>();
   const [responseData, setResponseData] = useState<LiveBidKekkaData>();
   const router = useRouter();
   const liveBidKekkaUpdateAPI = async (
@@ -17,7 +17,7 @@ export const useLiveBidKekkaUpdateAPI = () => {
     liveBidLog: TLiveBidLog[],
     connectionCount: number | null | undefined,
     spnKbn: string | string[] | undefined
-  ) => {
+  ): Promise<{ success: boolean; errorMessage?: string }> => {
     const sanitizedKekkaData = {
       ...liveBidKekka,
       auctionKekkaStatus: auctionKekkaStatus,
@@ -48,14 +48,25 @@ export const useLiveBidKekkaUpdateAPI = () => {
       "POST",
       formData,
       texts.message.regist,
-      true
+      true,
+      {},
+      false
     );
     if (status === 200) {
       setResponseData(responseData);
-      return true; // 成功したので true を返す
+      return { success: true };
     } else {
-      setLiveBidKekkaRegistErrors(responseData);
-      return false; // エラーが発生したので false を返す
+      let errorMessage = "";
+      if (responseData && typeof responseData === "object") {
+        const values = Object.values(responseData);
+        if (values.length > 0) {
+          errorMessage = String(values[0]);
+        }
+      } else if (typeof responseData === "string") {
+        errorMessage = responseData;
+      }
+      setLiveBidKekkaRegistErrors(errorMessage);
+      return { success: false, errorMessage };
     }
   };
   return { responseData, liveBidKekkaRegistErrors, liveBidKekkaUpdateAPI };
