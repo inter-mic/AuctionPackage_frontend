@@ -26,6 +26,7 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
     "dayjs-plugin-utc": "^0.1.2",
+    "express": "^5.1.0",
     "formidable": "^3.5.2",
     "js-cookie": "^3.0.5",
     "js-image-zoom": "^0.7.0",

@@ -36,7 +36,7 @@ export const useAuctionWebSocket = (
       });
 
       batchSocketRef.current = connectWebSocket(
-        `${process.env.NEXT_PUBLIC_WS_BATCH_URL}`,
+        process.env.NEXT_PUBLIC_WS_BATCH_URL || "", // ← fallback対策
         (event) => {
           const auctionWebSocketDataList: TAuctionWebSocketData[] = JSON.parse(event.data);
           auctionWebSocketDataList.forEach(onUpdateBatch);
