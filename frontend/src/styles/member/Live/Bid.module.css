@@ -137,6 +137,10 @@
   font-size: 20px;
   padding-left: 0.5rem;
 }
+.bidUserId {
+  color: #cb5201;
+  font-weight: bold;
+}
 
 .bidPrice {
   text-align: right;
@@ -153,6 +157,7 @@
   flex: 1;
   /* 右側のスペースを確保 */
   color: #cb5201;
+  font-weight: bold;
   font-size: 20px;
   padding-right: 0.5rem;
 }
@@ -398,51 +403,10 @@
   font-size: 1.5rem;
 }
 
-/* 左側のnextLotListコンテナ */
-.leftNextLotListContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  max-height: 600px;
-  overflow-y: auto;
-}
-
-.leftNextLotCard {
-  display: flex;
-  background: #f5f5f5;
+/* ブラウザのスクロールバーを非表示 */
+.memberContainer {
   overflow: hidden;
-  color: black;
-  transition: transform 0.2s;
-  padding: 12px;
-  gap: 12px;
-}
-
-.leftNextLotImageWrapper {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  flex-shrink: 0;
-}
-
-.leftNextLotCaption {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.leftNextLotName {
-  font-size: 0.8rem;
-  line-height: 1.2;
-}
-
-.leftNextLotLot {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.leftNextLotPrice {
-  font-size: 0.8rem;
+  height: 100vh;
 }
 
 /* メインコンテンツエリア */

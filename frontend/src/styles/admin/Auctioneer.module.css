@@ -15,14 +15,14 @@
 }
 
 .topLeft {
-  height: 60%;
+  height: 50%;
   background-color: white;
   margin: 5px;
   padding: 5px;
 }
 
 .bottomLeft {
-  height: 40%;
+  height: 50%;
   background-color: white;
   margin: 5px;
 }

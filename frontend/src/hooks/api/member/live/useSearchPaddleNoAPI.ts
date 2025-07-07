@@ -4,8 +4,9 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 export const useSearchPaddleNoAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [fetchPaddleNo, setFetchPaddleNo] = useState<string>("");
+  const [responseStatus, setResponseStatus] = useState<number>();
   const searchPaddleNoAPI = async (auctionSeq: number) => {
-    const { data: responseData } = await apiRequest(
+    const { status, data: responseData } = await apiRequest(
       "member",
       `live/search/paddleNo/${auctionSeq}`,
       "POST",
@@ -15,8 +16,9 @@ export const useSearchPaddleNoAPI = () => {
     );
     if (responseData) {
       setFetchPaddleNo(responseData);
+      setResponseStatus(responseStatus);
     }
   };
 
-  return { fetchPaddleNo, searchPaddleNoAPI };
+  return { responseStatus, fetchPaddleNo, searchPaddleNoAPI };
 };

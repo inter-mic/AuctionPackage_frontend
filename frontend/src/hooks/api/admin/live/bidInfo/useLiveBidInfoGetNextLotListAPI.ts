@@ -1,26 +1,38 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { GoodsData, initialGoodsData } from '@/types/admin/goods/register';
-import { Errors } from '@/types/errors';
-
+import { TAdminGoodsSelect } from "@/types/admin/goods/search";
+import { Errors } from "@/types/errors";
 
 export const useLiveBidInfoGetNextLotListAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
   const [liveBidInfoGetNextLotListErrors, setLiveBidInfoGetNextLotListErrors] = useState<Errors>();
-  const [fetchLiveBidNextLotListData, setFetchLiveBidNextLotListData] = useState<GoodsData[]>([]);
+  const [fetchLiveBidNextLotListData, setFetchLiveBidNextLotListData] = useState<
+    TAdminGoodsSelect[]
+  >([]);
 
-  const liveBidInfoGetNextLotListAPI = async (flg: boolean,  goodsId: number, auctionSeq: string , lotFrom:string) => {
-
-    let endPoint = '';
+  const liveBidInfoGetNextLotListAPI = async (
+    flg: boolean,
+    goodsId: number,
+    auctionSeq: string,
+    lotFrom: string
+  ) => {
+    let endPoint = "";
     let requestBody = {};
     if (flg) {
       endPoint = `liveBidInfo/getNextLotListById/${goodsId}`;
     } else {
       endPoint = `liveBidInfo/getNextLotList`;
-      requestBody = { auctionSeq, lotFrom };
+      requestBody = { auctionSeq };
     }
-    const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', requestBody, "", true);
+    const { status, data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      requestBody,
+      "",
+      true
+    );
     if (status == 400) {
       setLiveBidInfoGetNextLotListErrors(responseData);
     } else if (status == 200 && responseData) {
@@ -28,5 +40,9 @@ export const useLiveBidInfoGetNextLotListAPI = () => {
     }
   };
 
-  return { fetchLiveBidNextLotListData, liveBidInfoGetNextLotListErrors, liveBidInfoGetNextLotListAPI };
+  return {
+    fetchLiveBidNextLotListData,
+    liveBidInfoGetNextLotListErrors,
+    liveBidInfoGetNextLotListAPI,
+  };
 };
