@@ -18,11 +18,13 @@ import { useBidLogSearchAPI } from "@/hooks/api/admin/bid/useBidLogSearchAPI";
 import { useBidLogSearchCountAPI } from "@/hooks/api/admin/bid/useBidLogSearchCountAPI";
 import { useBidLogCsvAPI } from "@/hooks/api/admin/bid/useBidLogCsvAPI";
 import { useBidLogSearchParams } from "@/hooks/searchParams/admin/useBidLogSearchParams";
+import { useAuctionGetInfoAPI } from "@/hooks/api/admin/auction/useAuctionGetInfoAPI";
 //型定義
-import { TAdminLogInternetBidSelect } from "@/types/admin/bid/logSearch";
+import { TAdminLogBidSelect } from "@/types/admin/bid/logSearch";
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown";
+import { BidKbnPullDown } from "@/components/ui/pulldowns/BidKbnPullDown";
 import { RequiredMark } from "@/components/ui/marks/RequiredMark";
 //ボタン
 import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
@@ -49,9 +51,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const { bidLogParams, formChange, resetForm } = useBidLogSearchParams();
 
-  const [bidList, setBidList] = useState<TAdminLogInternetBidSelect[]>([]);
+  const [bidList, setBidList] = useState<TAdminLogBidSelect[]>([]);
   const [selectedKaisai, setSelectedKaisai] = useState<string>("");
+  const [selectedBidKbn, setSelectedBidKbn] = useState<string>("");
 
+  const [spnKbn, setSpnkbn] = useState<string>("");
+  const [searchSpnKbn, setSearchSpnKbn] = useState<string>("");
+  const { data: auctionData, auctionGetInfo } = useAuctionGetInfoAPI();
   const handleKaisaiChange = (name: string, value: string) => {
     setSelectedKaisai(value);
     formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
@@ -62,7 +68,25 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         [name]: "",
       }));
     }
+    auctionGetInfo(Number(value));
   };
+
+  const handleBidKbnChange = (name: string, value: string) => {
+    setSelectedBidKbn(value);
+    formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
+    // エラーメッセージが存在する場合、対応するエラーメッセージをクリア
+    if (errors?.[name]) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+    }
+  };
+  useEffect(() => {
+    if (auctionData && auctionData.spnKbn !== null && auctionData.spnKbn !== undefined) {
+      setSpnkbn(auctionData.spnKbn);
+    }
+  }, [auctionData]);
 
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { data, errors, bidLogSearchAPI } = useBidLogSearchAPI();
@@ -73,6 +97,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setSelectedIds([]);
     setBidList([]);
     setCurrentPage(1);
+    setSearchSpnKbn(spnKbn);
     const params = {
       ...bidLogParams,
       pageNumber: 1,
@@ -85,6 +110,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const formClear = () => {
     resetForm();
     setSelectedKaisai("");
+    setSelectedBidKbn("");
+    setSearchSpnKbn("");
     setSelectAll(false);
     setSelectedIds([]);
     setBidList([]);
@@ -103,7 +130,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [errors]);
 
   const { data: allSelectData, bidLogSearchAPI: allSelectSearchAPI } = useBidLogSearchAPI();
-  const [allGoodsData, setAllGoodsData] = useState<TAdminLogInternetBidSelect[]>([]);
+  const [allGoodsData, setAllGoodsData] = useState<TAdminLogBidSelect[]>([]);
   const fetchAllIds = async () => {
     const params = {
       ...bidLogParams,
@@ -254,6 +281,28 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               onChange={formChange}
             />
           </div>
+          {spnKbn === "1" && (
+            <div className={formSearchStyles.formItem}>
+              <label htmlFor="paddleNo">{texts.paddle.paddleNo}</label>
+              <input
+                id="paddleNo"
+                name="paddleNo"
+                maxLength={9}
+                value={bidLogParams.paddleNo}
+                onChange={formChange}
+              />
+            </div>
+          )}
+          {(spnKbn === "1" || spnKbn === "2") && (
+            <div className={formSearchStyles.formItem}>
+              <label htmlFor="bidKbn">{texts.bid.bidKbn}</label>
+              <BidKbnPullDown
+                onChange={(value) => handleBidKbnChange("bidKbn", value)}
+                selectedId={selectedBidKbn !== null ? String(selectedBidKbn) : ""}
+                spnKbn={spnKbn}
+              />
+            </div>
+          )}
         </div>
         <div className="text-right mt-2">
           <SearchButton onClick={formSearch} />
@@ -312,6 +361,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <th className="py-2 px-4 border-b w-24">{texts.goods.lot}</th>
                 <th className="py-2 px-4 border-b w-44">{texts.bid.bidPrice}</th>
                 <th className="py-2 px-4 border-b w-52">{texts.bid.bidTime}</th>
+                {searchSpnKbn === "1" && (
+                  <th className="py-2 px-4 border-b w-32">{texts.paddle.paddleNo}</th>
+                )}
+                {(searchSpnKbn === "1" || searchSpnKbn === "2") && (
+                  <th className="py-2 px-4 border-b w-32">{texts.bid.bidKbn}</th>
+                )}
                 <th className="py-2 px-4 border-b">
                   {texts.member.userName}/{texts.member.companyName}
                 </th>
@@ -344,6 +399,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-2 px-4 border-b text-left">{result.lot}</td>
                     <td className="py-2 px-4 border-b text-right">{result.bidPrice}</td>
                     <td className="py-2 px-4 border-b text-right">{result.bidTime}</td>
+                    {searchSpnKbn === "1" && (
+                      <td className="py-2 px-4 border-b text-left">{result.paddleNo}</td>
+                    )}
+                    {(searchSpnKbn === "1" || searchSpnKbn === "2") && (
+                      <td className="py-2 px-4 border-b text-left">{result.bidKbnName}</td>
+                    )}
                     <td
                       className="py-2 px-4 border-b text-left hover:bg-blue-100 hover:cursor-pointer" // ホバー時に色とカーソル変更
                       onClick={(e) => handleRowUserClick(e, result.userId)} // 新しいクリックイベント

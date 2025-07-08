@@ -14,6 +14,8 @@ export const useBidLogSearchParams = () => {
     lotTo: '',
     userId: '',
     userName: '',
+    paddleNo: '',
+    bidKbn: '',
     pageNumber:1,
     pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
   });
@@ -36,6 +38,8 @@ export const useBidLogSearchParams = () => {
       lotTo: '',
       userId: '',
       userName: '',
+      paddleNo: '',
+      bidKbn: '',
       pageNumber:1,
       pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
     });

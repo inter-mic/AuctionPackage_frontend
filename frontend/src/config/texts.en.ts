@@ -367,6 +367,7 @@ export const texts = {
     auctionSeq: "開催回",
     bidPrice: "入札額",
     bidTime: "入札日時",
+    bidKbn: "入札区分",
   },
   paddle: {
     paddleKbn: "パドル区分",
