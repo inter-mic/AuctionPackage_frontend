@@ -8,6 +8,7 @@ interface Props {
   disabled: boolean;
   liveBidkekkaData?: any;
   liveBidLog?: any;
+  onlineBidHistory?: any;
   connectionCount?: number;
   kenriUserId?: string | null;
   isRakusatsuProcessFlg?: boolean;
@@ -23,6 +24,7 @@ export function StatusButton({
   disabled,
   liveBidkekkaData,
   liveBidLog,
+  onlineBidHistory,
   connectionCount,
   kenriUserId,
   isRakusatsuProcessFlg,
@@ -48,6 +50,25 @@ export function StatusButton({
     sendWebSocketMessage("rakusatsuProcessing");
   };
 
+  // 最新の有効なパドル番号を取得する関数
+  const getLatestPaddleNo = () => {
+    // まずonlineBidHistoryから最新のパドル番号を取得
+    if (onlineBidHistory && onlineBidHistory.length > 0 && onlineBidHistory[0].paddleNo) {
+      return onlineBidHistory[0].paddleNo;
+    }
+    
+    // onlineBidHistoryにない場合は、liveBidLogから最新の有効なパドル番号を取得
+    if (liveBidLog && liveBidLog.length > 0) {
+      for (const log of liveBidLog) {
+        if (log.paddleNo && log.paddleNo.trim() !== "") {
+          return log.paddleNo;
+        }
+      }
+    }
+    
+    return null;
+  };
+
   const bidRestart = () => {
     sendWebSocketMessage("bidRestart");
   };
@@ -57,8 +78,8 @@ export function StatusButton({
       bidComingSoonHaishin();
     } else if (status === 2) {
       rakusatusuProcess();
-      if (liveBidLog[0]?.paddleNo) {
-        const paddleNo = liveBidLog[0].paddleNo;
+      const paddleNo = getLatestPaddleNo();
+      if (paddleNo) {
         setLiveBidkekkaData((prev) => ({
           ...prev,
           rakusatsuPaddleNo: paddleNo,
@@ -89,6 +110,13 @@ export function StatusButton({
       if (e.key === "F8") {
         if (status === 2) {
           rakusatusuProcess();
+          const paddleNo = getLatestPaddleNo();
+          if (paddleNo) {
+            setLiveBidkekkaData((prev) => ({
+              ...prev,
+              rakusatsuPaddleNo: paddleNo,
+            }));
+          }
           // 落札処理ボタン（F8）の場合、フォーカス
           if (onFocus) {
             onFocus();
@@ -106,7 +134,7 @@ export function StatusButton({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, disabled]);
+  }, [status, disabled, onlineBidHistory, liveBidLog]);
 
   return (
     <button

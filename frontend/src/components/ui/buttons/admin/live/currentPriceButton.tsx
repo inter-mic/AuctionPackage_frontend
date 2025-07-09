@@ -22,6 +22,7 @@ interface PriceButtonProps {
   setLiveBidLog: React.Dispatch<React.SetStateAction<TLiveBidLog[]>>;
   setIsNextPriceBelow: (flg: boolean) => void;
   setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
+  onButtonClick?: () => void;
 }
 
 export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps>(
@@ -38,11 +39,15 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
       setLiveBidLog,
       setIsNextPriceBelow,
       setLiveBidkekkaData,
+      onButtonClick,
     },
     ref
   ) => {
     const [sendWS, setSendWS] = useState<boolean>(false);
     const handleClick = () => {
+      // ボタンクリック時のコールバックを実行
+      onButtonClick?.();
+      
       const now = new Date();
 
       // ── 0. 価格チェック ──

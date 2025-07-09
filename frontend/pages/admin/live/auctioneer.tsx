@@ -335,6 +335,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const rakusatsuPaddleNoInputRef = useRef<HTMLInputElement>(null);
   const [isOnlineBidReceive, setIsOnlineBidReceive] = useState(false);
   const ws = useRef<WebSocket | null>(null);
+  
+  // オンライン入札履歴の最上位行のlatestBid状態を管理
+  const [isLatestBidActive, setIsLatestBidActive] = useState(false);
   useEffect(() => {
     // WebSocketの初期化
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
@@ -371,6 +374,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         ]);
         setBidComingSoonMsg(false);
         setIsOnlineBidReceive(true);
+        setIsLatestBidActive(true);
       }
       if (data.type === "bidComingSoon") {
         setBidComingSoonMsg(true);
@@ -397,9 +401,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setLiveBidLog([]);
         setIsStartButtonClicked(false);
         setAuctioneerFlg(false);
+        setIsLatestBidActive(false);
       }
       if (data.type === "clear") {
         auctioneerClear();
+        setIsLatestBidActive(false);
         lotInputRef.current?.focus();
       }
       if (data.type === "connectionCount") {
@@ -635,6 +641,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setIsStartButtonClicked(false);
     setIsSetButtonClicked(false);
     setAuctioneerFlg(false);
+    setIsLatestBidActive(false);
   };
 
   const set = useCallback(async () => {
@@ -722,10 +729,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
       if (event.key === "Enter" && isStartButtonClicked) {
         event.preventDefault();
+        setIsLatestBidActive(false);
         priceButtonRef.current?.trigger();
       }
       if (event.key === "Shift" && isStartButtonClicked) {
         event.preventDefault();
+        setIsLatestBidActive(false);
         onlinePriceButtonRef.current?.trigger();
       }
       if (event.key === "ArrowRight" && isCallButtonClicked) {
@@ -887,7 +896,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   {onlineBidHistory.map((bid, index) => (
                     <li
                       key={index}
-                      className={[styles.bidItem, index === 0 ? styles.latestBid : ""].join(" ")}
+                      className={[styles.bidItem, index === 0 && isLatestBidActive ? styles.latestBid : ""].join(" ")}
                     >
                       <span className={styles.listSpanLeft}>
                         {spnKbn === "1" ? (
@@ -1117,6 +1126,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     sendWebSocketMessage={sendWebSocketMessage}
                     setLiveBidkekkaData={setLiveBidkekkaData}
                     liveBidLog={liveBidLog}
+                    onlineBidHistory={onlineBidHistory}
                   />
 
                   <StatusButton
@@ -1125,6 +1135,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     sendWebSocketMessage={sendWebSocketMessage}
                     setLiveBidkekkaData={setLiveBidkekkaData}
                     liveBidLog={liveBidLog}
+                    onlineBidHistory={onlineBidHistory}
                     onFocus={() => {
                       if (!isRakusatsuProcessFlg) {
                         rakusatsuPaddleNoInputRef.current?.focus();
@@ -1160,6 +1171,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         spnKbn={spnKbn}
                         fetchBidUnitList={fetchBidUnitList}
                         nextPrice={nextPrice}
+                        onButtonClick={() => setIsLatestBidActive(false)}
                       />
 
                       <CurrentPriceButton
@@ -1175,6 +1187,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         setLiveBidLog={setLiveBidLog}
                         setIsNextPriceBelow={setIsNextPriceBelow}
                         setLiveBidkekkaData={setLiveBidkekkaData}
+                        onButtonClick={() => setIsLatestBidActive(false)}
                       />
                     </>
                   )}

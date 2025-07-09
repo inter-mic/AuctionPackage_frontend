@@ -34,6 +34,7 @@ interface OnlinePriceButtonProps {
   spnKbn: string | string[] | undefined;
   fetchBidUnitList: TMtLiveBidUnit[];
   nextPrice: string;
+  onButtonClick?: () => void;
 }
 
 export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePriceButtonProps>(
@@ -60,6 +61,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       spnKbn,
       fetchBidUnitList,
       nextPrice,
+      onButtonClick,
     },
     ref
   ) => {
@@ -74,6 +76,9 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
     } | null>(null);
     const { texts } = useLocale();
     const handleClick = () => {
+      // ボタンクリック時のコールバックを実行
+      onButtonClick?.();
+      
       // ── 1. onlineBidHistory[0] が必ず存在することをチェック ──
       if (onlineBidHistory.length === 0) {
         return;

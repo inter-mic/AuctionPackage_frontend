@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import Image from "next/image";
 import { NextLotList } from "@/types/common/nextLotList";
 import styles from "@/styles/NextLotListComponent.module.css";
@@ -19,7 +19,7 @@ const NextLotListComponent: React.FC<NextLotListComponentProps> = ({
   const nextLotListContainerRef = useRef<HTMLDivElement>(null);
 
   // 現在のlotの位置までスクロールする関数
-  const scrollToCurrentLot = (currentLot: string) => {
+  const scrollToCurrentLot = useCallback((currentLot: string) => {
     if (!nextLotListContainerRef.current || !nextLotList.length) return;
 
     const container = nextLotListContainerRef.current;
@@ -28,7 +28,6 @@ const NextLotListComponent: React.FC<NextLotListComponentProps> = ({
     lotCards.forEach((card) => {
       const lotValue = card.getAttribute("data-lot");
       if (lotValue === currentLot) {
-        console.log(lotValue + ":" + currentLot);
         const cardElement = card as HTMLElement;
         const cardTop = cardElement.offsetTop;
         const containerHeight = container.clientHeight;
@@ -58,7 +57,7 @@ const NextLotListComponent: React.FC<NextLotListComponentProps> = ({
         }, 2000);
       }
     });
-  };
+  }, [nextLotList.length, screenType]);
 
   // receivedDataが更新されたときにスクロール
   React.useEffect(() => {
@@ -67,7 +66,7 @@ const NextLotListComponent: React.FC<NextLotListComponentProps> = ({
         scrollToCurrentLot(receivedData.lot);
       }, 100);
     }
-  }, [receivedData?.lot, nextLotList, screenType]);
+  }, [receivedData?.lot, nextLotList, screenType, scrollToCurrentLot]);
 
   return (
     <div

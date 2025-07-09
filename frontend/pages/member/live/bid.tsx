@@ -85,9 +85,6 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAuction?.auctionSeq]);
   useEffect(() => {
-    console.log("fetchLiveAuctionStatus", fetchLiveAuctionStatus);
-    console.log("fetchAuction", fetchAuction);
-    console.log("fetchPaddleNo", fetchPaddleNo);
     if (fetchLiveAuctionStatus === 0 && fetchAuction?.auctionSeq !== undefined) {
       if (fetchPaddleNo !== "") {
         setFetchLiveAuctionStatus(3);
