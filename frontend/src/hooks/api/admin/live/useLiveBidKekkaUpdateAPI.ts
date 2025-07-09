@@ -34,6 +34,7 @@ export const useLiveBidKekkaUpdateAPI = () => {
         formData.append("liveBidPriceList", row.bidPrice);
         formData.append("liveBidTimeList", row.bidTime);
         formData.append("liveBidKbnList", row.bidKbn);
+        formData.append("liveBidPaddleNoList", row.paddleNo);
       });
     }
 

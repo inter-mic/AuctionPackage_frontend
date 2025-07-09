@@ -564,8 +564,8 @@ export const texts = {
     open_search_joken: "検索条件を開く",
     sort: "並び順",
     download: "ダウンロード",
-    asc: "降順",
-    desc: "昇順",
+    asc: "昇順",
+    desc: "降順",
   },
   message: {
     redirect: "ログイン画面に遷移します。",

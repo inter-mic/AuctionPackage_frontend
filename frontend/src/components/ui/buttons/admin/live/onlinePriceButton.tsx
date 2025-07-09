@@ -108,7 +108,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
         newBidPriceNumber <= firstPreBidPriceNumber
           ? firstPreBidUserId
           : Number(newOnlineBid.userId);
-      const newHighestBidKbn = newBidPriceNumber <= firstPreBidPriceNumber ? "1" : "2";
+      const newHighestBidKbn = newBidPriceNumber <= firstPreBidPriceNumber ? "1" : "11";
 
       // ── 5. 新しい権利者 ID を計算して state 更新 ──
       const calculatedKenriUserId =
@@ -144,7 +144,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
         paddleNo: newOnlineBid.paddleNo,
         bidPrice: newOnlineBid.bidPrice,
         bidTime: now.toLocaleString(),
-        bidKbn: newHighestBidKbn, // 事前入札なら "1"、上書きなら "2"
+        bidKbn: newHighestBidKbn, // 事前入札なら "1"、上書きなら "11"
       };
       setLiveBidLog((prevLog) => [addedLog, ...prevLog]);
 

@@ -75,7 +75,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
           paddleNo: "",
           bidPrice: price,
           bidTime: now.toLocaleString(),
-          bidKbn: "",
+          bidKbn: "10",
         },
         ...prevLog,
       ]);
