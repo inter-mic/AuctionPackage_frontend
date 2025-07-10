@@ -1,5 +1,5 @@
 import React from "react";
-import statusStyles from "@/styles/member/goods/AuctionStatus.module.css";
+import statusStyles from "@/styles/member/live/AuctionStatus.module.css";
 interface Props {
   bidStatus: number | null;
   texts: {

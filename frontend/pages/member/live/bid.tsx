@@ -29,7 +29,7 @@ import { formatPriceWithCommas } from "@/components/common/PriceUtils";
 import { LiveBidButton } from "@/components/ui/buttons/member/liveBidButton";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
-import styles from "@/styles/member/Live/Bid.module.css";
+import styles from "@/styles/member/live/Bid.module.css";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -213,8 +213,12 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   };
 
   const [showVideo, setShowVideo] = useState(false);
+  const [showNextLotModal, setShowNextLotModal] = useState(false);
   const toggleVideo = () => {
     setShowVideo((prev) => !prev);
+  };
+  const toggleNextLotModal = () => {
+    setShowNextLotModal((prev) => !prev);
   };
   const isMobile = useIsMobile();
 
@@ -242,11 +246,13 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       <>
         <div className={memberStyles.memberContainer}>
           <div className={styles.liveContainer}>
-            <NextLotListComponent
-              nextLotList={nextLotList}
-              receivedData={receivedData}
-              userId={PageProps.userId}
-            />
+            {!isMobile && (
+              <NextLotListComponent
+                nextLotList={nextLotList}
+                receivedData={receivedData}
+                userId={PageProps.userId}
+              />
+            )}
             <div className={styles.rightSection}>
               <div className={styles.mediaContainer}>
                 {isMobile ? (
@@ -265,8 +271,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                     <Image
                       src={receivedData?.goodsImage || "/no_image.png"}
                       alt=""
-                      width={320}
-                      height={320}
+                      width={isMobile ? 200 : 320}
+                      height={isMobile ? 200 : 320}
                       loading="lazy"
                       style={{ margin: "0 auto" }}
                     />
@@ -361,14 +367,6 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                   </div>
 
                   <div className={styles.bidSectionContainer}>
-                    <div className={styles.priceContainer}>
-                      <div className={styles.msgDiv}>
-                        {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
-                        {isRakusatsuProcessingMsgFlg && (
-                          <span>{texts.livemessage.rakusatsuProcessMsg}</span>
-                        )}
-                      </div>
-                    </div>
                     <div className={styles.bidSection}>
                       <div className={styles.priceContainer}>
                         <div className={styles.priceInfo}>
@@ -390,7 +388,22 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                             )}
                           </label>
                         </div>
-                        <LiveBidStatusComponent bidStatus={bidStatus} texts={texts.live} />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <div className={styles.msgDiv} style={{ flex: 1, whiteSpace: "nowrap" }}>
+                            {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
+                            {isRakusatsuProcessingMsgFlg && (
+                              <span>{texts.livemessage.rakusatsuProcessMsg}</span>
+                            )}
+                          </div>
+                          <LiveBidStatusComponent bidStatus={bidStatus} texts={texts.live} />
+                        </div>
                         <div className={styles.priceInfo}>
                           <div className={styles.checkboxContainer}>
                             <FormControlLabel
@@ -439,6 +452,30 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                     {msg}
                   </span>
                 </div>
+
+                {/* スマホの場合のみ表示するNextLotボタン */}
+                {isMobile && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <button
+                      onClick={toggleNextLotModal}
+                      style={{
+                        padding: "10px 20px",
+                        backgroundColor: "#e5e7eb",
+                        color: "white",
+                        cursor: "pointer",
+                        fontSize: "20px",
+                        width: "80%",
+                      }}
+                    >
+                      商品一覧
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -459,6 +496,59 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                 )}
                 {bidResults === 3 && <p className={styles.loserMessage}>{texts.live.bidStatus3}</p>}
                 {bidResults === 4 && <p className={styles.loserMessage}>{texts.live.bidStatus4}</p>}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* NextLotモーダル */}
+        {showNextLotModal && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1000,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                borderRadius: "10px",
+                padding: "20px",
+                maxWidth: "90%",
+                height: "80%",
+                overflow: "auto",
+                position: "relative",
+              }}
+            >
+              <button
+                onClick={toggleNextLotModal}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "15px",
+                  background: "none",
+                  border: "none",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  color: "#666",
+                }}
+              >
+                ×
+              </button>
+              <div style={{ marginTop: "20px" }}>
+                <NextLotListComponent
+                  nextLotList={nextLotList}
+                  receivedData={receivedData}
+                  userId={PageProps.userId}
+                />
               </div>
             </div>
           </div>

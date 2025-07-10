@@ -167,8 +167,6 @@
   font-weight: bold;
   font-size: 1.8rem;
   text-align: center;
-  height: 2rem;
-  margin-top: 1rem;
   animation: blinking 0.5s ease-in-out infinite alternate;
   justify-content: center;
 }
@@ -302,7 +300,12 @@
     transform: translateX(-200%);
   }
 }
-
+@media (mix-width: 769px) {
+  .memberContainer {
+    overflow: hidden;
+    height: 100vh;
+  }
+}
 @media (max-width: 768px) {
   .youtubeWrapper {
     width: 100%;
@@ -401,12 +404,6 @@
 }
 .noLiveContainer > div > p {
   font-size: 1.5rem;
-}
-
-/* ブラウザのスクロールバーを非表示 */
-.memberContainer {
-  overflow: hidden;
-  height: 100vh;
 }
 
 /* メインコンテンツエリア */

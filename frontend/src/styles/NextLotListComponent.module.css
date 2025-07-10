@@ -118,10 +118,6 @@
     height: auto;
   }
 
-  .leftNextLotListContainer {
-    max-height: 300px;
-  }
-
   .auctioneerNextLotListContainer {
     max-height: 250px;
   }

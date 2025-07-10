@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useLocale } from "@/hooks/useLocale";
 import { useSearchNextLiveAuctionAPI } from "@/hooks/api/member/live/useSearchNextLiveAuctionAPI";
 import { TAuction } from "@/types/common/MtAuction";
-import styles from "@/styles/member/Live/Bid.module.css";
+import styles from "@/styles/member/live/Bid.module.css";
 
 interface Props {
   texts: any;
