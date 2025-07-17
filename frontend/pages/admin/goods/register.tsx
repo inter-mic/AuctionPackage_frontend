@@ -769,6 +769,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     </div>
                   </>
                 )}
+                {(spnKbn === "1" || spnKbn === "2") && (
+                  <>
+                    <div className={styles.flexContainer}>
+                      <div className={styles.flexItem}>
+                        <label className={styles.label}>{texts.goods.connectionCount}</label>
+                        <input
+                          value={goodsData.connectionCount || ""}
+                          className={`${styles.input} text-right`}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className={styles.flexContainer}>
                   <div className={styles.flexItem}>

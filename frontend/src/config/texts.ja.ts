@@ -244,6 +244,7 @@ export const texts = {
     hikeisaiFlg: "掲載",
     bidUnit: "入札幅",
     bidCount: "入札数",
+    connectionCount: "オンライン参加者数",
     favoriteCount: "お気に入り数",
     goodsInfo: "商品情報",
     tesuryoUpdate: "落札手数料更新",
