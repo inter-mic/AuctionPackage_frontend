@@ -23,6 +23,7 @@ import { useGoodsKekkaDeleteAPI } from "@/hooks/api/admin/goods/useGoodsKekkaDel
 import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAPI";
 import { useUserGetInfoAPI } from "@/hooks/api/admin/user/useUserGetInfoAPI";
 import { useAuctionGetInfoAPI } from "@/hooks/api/admin/auction/useAuctionGetInfoAPI";
+import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
 //型定義
 import {
   GoodsData,
@@ -45,6 +46,7 @@ import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
 import { FurakusatsuButton } from "@/components/ui/buttons/admin/furakusatsuButton";
+import { LotNavigationButton } from "@/components/ui/buttons/admin/lotNavigationButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/admin/GoodsRegister.module.css";
@@ -109,6 +111,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   //検索
   const { fetchGoodsData, fetchGoodsKekkaData, goodsSearchErrors, goodsSearchByGoodsIdAPI } =
     useGoodsSearchByGoodsIdAPI();
+  const { beforeAfterGoodsId, goodsSearchBeforeAfterLotAPI } = useGoodsSearchBeforeAfterLotAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
   const { goodsAddInfo } = useGoodsAddinfoItemAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
@@ -186,6 +189,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setSelectedCategory(fetchGoodsData.categorySeq.toString());
     }
   }, [fetchGoodsData, fetchGoodsKekkaData]);
+  useEffect(() => {
+    const auctionSeq = fetchGoodsData?.auctionSeq ?? 0;
+    const lot = fetchGoodsData?.lot ?? "";
+    if (auctionSeq != 0 && lot != "") {
+      goodsSearchBeforeAfterLotAPI(auctionSeq, lot, false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchGoodsData?.auctionSeq, fetchGoodsData?.lot]);
   useEffect(() => {
     if (fetchGoodsData.goodsId != null) {
       goodsSearchImage(Number(fetchGoodsData.goodsId));
@@ -416,13 +427,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
       <div className="flex flex-col items-center justify-center my-3 bg-gray-100">
         <div className="w-full space-y-3 bg-white shadow-md md:max-w-full md:rounded">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1  gap-6">
             <div className="p-4">
               <div
-                className="flex flex-col space-y-4 md:flex-row md:space-y-0 items-end"
+                className="flex flex-col lg:flex-row lg:space-y-0 items-end"
                 onFocus={handleInputSearchFocus}
               >
-                <div className="w-full md:flex-1 h-24">
+                <div className="w-full lg:w-[320px] h-24">
                   <label htmlFor="auction" className={styles.label}>
                     {texts.goods.auctionName}
                   </label>
@@ -438,7 +449,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <p className="error-message">{inputSeatchErrors.auctionSeq}</p>
                   )}
                 </div>
-                <div className="w-full md:flex-1 h-24">
+                <div className="w-full md:w-[160px] h-24">
                   <label htmlFor="lot" className={styles.label}>
                     {texts.goods.lot}
                   </label>
@@ -452,24 +463,67 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     ref={lotInputRef}
                   />
                   {inputSeatchErrors?.lot && (
-                    <p className="error-message">{inputSeatchErrors.lot}</p>
+                    <p className="error-message w-full sm:w-40">{inputSeatchErrors.lot}</p>
                   )}
                 </div>
-                <div className="w-full md:w-auto text-center mx-0 sm:mx-4 lg:pb-6">
-                  <SearchButton onClick={formSearch} />
+                <div className="w-full md:w-auto flex flex-row  items-center text-center sm:ml-4 lg:pb-6">
+                  <div className="w-1/2 md:w-auto">
+                    <SearchButton onClick={formSearch} />
+                  </div>
+                  <div className="w-1/2 md:w-auto ml-1 ">
+                    <ClearButton onClick={formClear} />
+                  </div>
                 </div>
-                <div className="w-full md:w-auto text-center  lg:pb-6">
-                  <ClearButton onClick={formClear} />
+                <div className="w-full md:w-auto flex flex-row  items-center text-center sm:ml-4 lg:pb-6">
+                  <div className="w-1/2 md:w-auto">
+                    {Number(beforeAfterGoodsId?.beforeGoodsId) > 0 ? (
+                      <LotNavigationButton
+                        type="before"
+                        onClick={() => {
+                          goodsSearchByGoodsIdAPI(
+                            true,
+                            Number(beforeAfterGoodsId?.beforeGoodsId),
+                            "",
+                            ""
+                          );
+                        }}
+                      />
+                    ) : (
+                      <div className="h-10" />
+                    )}
+                  </div>
+                  <div className="w-1/2 md:w-auto ml-1 md:ml-0">
+                    {Number(beforeAfterGoodsId?.afterGoodsId) > 0 ? (
+                      <LotNavigationButton
+                        type="after"
+                        onClick={() => {
+                          goodsSearchByGoodsIdAPI(
+                            true,
+                            Number(beforeAfterGoodsId?.afterGoodsId),
+                            "",
+                            ""
+                          );
+                        }}
+                      />
+                    ) : (
+                      <div className="h-10" />
+                    )}
+                  </div>
                 </div>
+
+                {/* <div className="w-full md:w-auto text-center lg:pb-6"></div>
+                <div className="w-full md:w-auto text-center lg:pb-6"></div> */}
               </div>
-            </div>
-            <div className="p-4">
-              {shimeFlg && <span>{texts.goods.goods_note_1}</span>}
-              <br />
-              {bitFlg && <span>{texts.goods.goods_note_2}</span>}
             </div>
           </div>
         </div>
+        {(shimeFlg || bitFlg) && (
+          <div className="p-4">
+            {shimeFlg && <span>{texts.goods.goods_note_1}</span>}
+            {shimeFlg && bitFlg && <br />}
+            {bitFlg && <span>{texts.goods.goods_note_2}</span>}
+          </div>
+        )}
 
         <div className="w-full space-y-6 bg-white shadow-md md:max-w-full md:rounded mt-1">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

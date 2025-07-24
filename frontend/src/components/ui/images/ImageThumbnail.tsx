@@ -107,6 +107,10 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
 
     // ドロップされたファイルを取得
     const files = Array.from(event.dataTransfer.files);
+    handleFiles(files);
+  };
+
+  const handleFiles = (files: File[]) => {
     // jpg または png ファイルのみをフィルタリング
     const validFiles = files.filter((file) => {
       const fileType = file.type;
@@ -115,14 +119,13 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
 
     if (validFiles.length === 0) {
       toast.error(texts.goods.image_note_2);
-
       return;
     }
 
     // 現在の最大 no 値を取得
     const maxNo = getMaxNo(images);
 
-    const promises = files.map((file, index) => {
+    const promises = validFiles.map((file, index) => {
       return new Promise<Image>((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -143,6 +146,13 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
     Promise.all(promises).then((newImages) => {
       onImagesUpdate([...images, ...newImages]);
     });
+  };
+
+  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    handleFiles(files);
+    // ファイル入力をリセット
+    event.target.value = '';
   };
   const getMaxNo = (images: Image[]): number => {
     const maxNo = images.reduce((max, image) => Math.max(max, parseInt(image.no, 10)), 0);
@@ -182,12 +192,29 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
           justifyContent: "center",
           backgroundColor: dropZoneActive ? "#e0e0e0" : "#f9f9f9",
           marginTop: "20px",
+          position: "relative",
+          cursor: "pointer",
         }}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        onClick={() => document.getElementById('file-input')?.click()}
       >
-        ドロップエリア
+        <input
+          id="file-input"
+          type="file"
+          multiple
+          accept="image/jpeg,image/png"
+          onChange={handleFileInputChange}
+          style={{
+            position: "absolute",
+            opacity: 0,
+            width: "100%",
+            height: "100%",
+            cursor: "pointer",
+          }}
+        />
+        ドロップエリア（クリックして画像を選択）
       </div>
     </div>
   );
