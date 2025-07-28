@@ -1,15 +1,18 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TLogBidAdminSearchRequest, TAdminLogBidSelect } from "@/types/admin/bid/logSearch";
+import {
+  TAdminGoodsFavoriteSearchRequest,
+  TAdminGoodsFavoriteSelect,
+} from "@/types/admin/goods/favoriteSearch";
 import { Errors } from "@/types/errors";
 
-export const useBidLogSearchAPI = () => {
+export const useGoodsFavoriteSearchAPI = () => {
   const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [data, setData] = useState<TAdminLogBidSelect[]>([]);
+  const [data, setData] = useState<TAdminGoodsFavoriteSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const bidLogSearchAPI = async (searchParams: TLogBidAdminSearchRequest) => {
-    const endPoint = "logBid/search";
+  const goodsFavoriteSearchAPI = async (searchParams: TAdminGoodsFavoriteSearchRequest) => {
+    const endPoint = "favorite/search";
     const { status, data: responseData } = await apiRequest(
       "admin",
       endPoint,
@@ -26,5 +29,5 @@ export const useBidLogSearchAPI = () => {
     }
   };
 
-  return { data, errors, bidLogSearchAPI };
+  return { data, errors, goodsFavoriteSearchAPI };
 };

@@ -4,17 +4,11 @@ const WebSocket = require("ws");
 
 const app = express();
 app.use(express.json());
-
 const server = http.createServer(app);
-
 const wssApp = new WebSocket.Server({ server, path: "/ws/app" });
-
 let clientsApp = [];
-let clientsBatch = [];
-
 wssApp.on("connection", (ws) => {
   clientsApp.push(ws);
-  console.log(`🟢 /ws/app connected (${clientsApp.length} clients)`);
   ws.on("close", () => {
     clientsApp = clientsApp.filter((c) => c !== ws);
   });

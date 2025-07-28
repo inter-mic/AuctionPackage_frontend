@@ -192,6 +192,11 @@ export function HeaderComponent({
 
                 {userId && (
                   <>
+                    {(liveauction || livebit) && (
+                      <div className={styles.menuItem}>
+                        <Link href="/member/live/bid">{texts.menu.memberJoinLive}</Link>
+                      </div>
+                    )}
                     <div className={styles.menuItem} onClick={() => toggleSubMenu("mypage")}>
                       {texts.menu.memberMyPage}
                       <span>{isMobileSubMenusOpen["mypage"] ? <RemoveIcon /> : <AddIcon />}</span>

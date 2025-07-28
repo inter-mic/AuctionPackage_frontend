@@ -595,7 +595,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       )}
                       <td
                         className={`py-2 px-4 border-b text-left ${
-                          hoveredRakusatsu === result.goodsId ? "bg-green-100" : ""
+                          hoveredRakusatsu === result.goodsId ? "bg-blue-100" : ""
                         }`}
                         onMouseEnter={() => handleMouseEnterRakusatsu(result.goodsId)}
                         onMouseLeave={handleMouseLeaveRakusatsu}

@@ -128,6 +128,9 @@ export const texts = {
     bidRestart: "入札再開(F8)",
     haishin: "配信",
     memberSearchModal: "会員検索",
+    memberRegister: "会員登録",
+    memberInfo: "会員情報",
+    bidHistory: "入札履歴",
     invoice: "請求書出力",
   },
   fileName: {
@@ -581,6 +584,7 @@ export const texts = {
     forgotPassword: "登録されたメールアドレスにパスワード再発行のメールが送信されました。",
     changePassword: "パスワード変更が完了しました。",
     noResult: "検索結果がありません。",
+    noData: "データがありません。",
     error400: "入力内容に誤りがあります。",
     registBid: "入札が完了しました。",
     highestBid: "落札権利を取得しました。",

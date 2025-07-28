@@ -1,4 +1,4 @@
-export interface LogBidAdminSearchRequest {
+export interface TLogBidAdminSearchRequest {
   goodsId?: string;
   goodsName?: string;
   sku?: string;
@@ -16,7 +16,7 @@ export interface LogBidAdminSearchRequest {
   sortFlg?: boolean;
 }
 
-export interface LogInternetBidAdminSearchRequest {
+export interface TLogInternetBidAdminSearchRequest {
   goodsId?: string;
   goodsName?: string;
   sku?: string;

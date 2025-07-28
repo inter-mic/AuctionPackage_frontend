@@ -1,32 +1,28 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
+import React from "react";
+import { GetServerSideProps } from "next";
+import { texts } from "@/config/texts.ja";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //API
-import { useRateSearchAPI } from '@/hooks/api/admin/rate/useRateSearchAPI';
-import { useCategoryRegistAPI } from '@/hooks/api/admin/category/useCategoryRegistAPI';
+import { useRateSearchAPI } from "@/hooks/api/admin/rate/useRateSearchAPI";
+import { useCategoryRegistAPI } from "@/hooks/api/admin/category/useCategoryRegistAPI";
 //型定義
-import { PageProps } from '@/types/admin/adminPage';
+import { PageProps } from "@/types/admin/adminPage";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const otherData = {};
   return {
     props: {
-      pageTitle: texts.menu.adminMailRegist
+      pageTitle: texts.menu.adminMailRegist,
     },
   };
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
+  const { rate } = useRateSearchAPI();
 
-    const { rate } = useRateSearchAPI();
-
-  return (
-    <></>
-  );
-
+  return <></>;
 };
 
 export default withAdminLayout(Page);

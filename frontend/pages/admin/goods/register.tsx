@@ -47,6 +47,9 @@ import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
 import { FurakusatsuButton } from "@/components/ui/buttons/admin/furakusatsuButton";
 import { LotNavigationButton } from "@/components/ui/buttons/admin/lotNavigationButton";
+import { MemberRegisterButton } from "@/components/ui/buttons/admin/memberRegisterButton";
+import { BidHistoryButton } from "@/components/ui/buttons/admin/bidHistoryButton";
+import { BidHistoryModal } from "@/components/ui/dialog/bidHistoryModal";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/admin/GoodsRegister.module.css";
@@ -159,6 +162,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const [shimeFlg, setShimeFlg] = useState(false);
   const [bitFlg, setBitFlg] = useState(false);
+  const [isBidHistoryModalOpen, setIsBidHistoryModalOpen] = useState(false);
   //データセット
   useEffect(() => {
     if (fetchGoodsData) {
@@ -417,6 +421,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (goodsData.goodsId != null) {
       goodsKekkaDeleteAPI(goodsData.goodsId);
     }
+  };
+
+  const handleBidHistoryClick = () => {
+    setIsBidHistoryModalOpen(true);
+  };
+
+  const handleBidHistoryModalClose = () => {
+    setIsBidHistoryModalOpen(false);
   };
   const { texts } = useLocale();
   return (
@@ -726,14 +738,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <label className={styles.note}>※{texts.goods.shuppinUserId_note_1}</label>
                     </label>
 
-                    <input
-                      id="shuppinUserId"
-                      name="shuppinUserId"
-                      onChange={handleGoodsDataChange}
-                      value={goodsData.shuppinUserId || ""}
-                      className={`${styles.input} `}
-                      disabled={bitFlg}
-                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        id="shuppinUserId"
+                        name="shuppinUserId"
+                        onChange={handleGoodsDataChange}
+                        value={goodsData.shuppinUserId || ""}
+                        className={`${styles.input} flex-1`}
+                        disabled={bitFlg}
+                      />
+                      {goodsData.shuppinUserId && (
+                        <MemberRegisterButton userId={goodsData.shuppinUserId} />
+                      )}
+                    </div>
                     {formErrors?.shuppinUserId && (
                       <p className="error-message">{formErrors.shuppinUserId}</p>
                     )}
@@ -851,11 +868,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <>
                       <div className={styles.flexItem}>
                         <label className={styles.label}>{texts.goods.bidCount}</label>
-                        <input
-                          value={goodsData.bidCount || ""}
-                          className={`${styles.input} text-right`}
-                          disabled
-                        />
+                        <div className="flex items-center space-x-2">
+                          <input
+                            value={goodsData.bidCount || ""}
+                            className={`${styles.input} text-right flex-1`}
+                            disabled
+                          />
+                          {goodsData.goodsId && (
+                            <BidHistoryButton
+                              goodsId={goodsData.goodsId}
+                              onClick={handleBidHistoryClick}
+                            />
+                          )}
+                        </div>
                       </div>
                     </>
                   )}
@@ -878,13 +903,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     </div>
                     <div className={styles.flexItem}>
                       <label className={styles.label}>{texts.goods.currentUserId}</label>
-                      <input
-                        id="currentKenriUserId"
-                        name="currentKenriUserId"
-                        value={goodsData.currentKenriUserId || ""}
-                        className={styles.input}
-                        disabled
-                      />
+                      <div className="flex items-center space-x-2">
+                        <input
+                          id="currentKenriUserId"
+                          name="currentKenriUserId"
+                          value={goodsData.currentKenriUserId || ""}
+                          className={`${styles.input} flex-1`}
+                          disabled
+                        />
+                        {goodsData.currentKenriUserId && (
+                          <MemberRegisterButton userId={goodsData.currentKenriUserId} />
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className={styles.flexContainer}>
@@ -946,13 +976,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <div className={styles.flexContainer}>
                     <div className={styles.flexItem}>
                       <label className={styles.label}>{texts.goods.rakusatsuUserId}</label>
-                      <input
-                        id="rakusatsuUserId"
-                        name="rakusatsuUserId"
-                        onChange={handleKekkaDataChange}
-                        value={kekkaData.rakusatsuUserId || ""}
-                        className={`${styles.input} `}
-                      />
+                      <div className="flex items-center space-x-2">
+                        <input
+                          id="rakusatsuUserId"
+                          name="rakusatsuUserId"
+                          onChange={handleKekkaDataChange}
+                          value={kekkaData.rakusatsuUserId || ""}
+                          className={`${styles.input} flex-1`}
+                        />
+                        {kekkaData.rakusatsuUserId && (
+                          <MemberRegisterButton userId={kekkaData.rakusatsuUserId} />
+                        )}
+                      </div>
                       {formKekkaErrors?.rakusatsuUserId && (
                         <p className="error-message">{formKekkaErrors.rakusatsuUserId}</p>
                       )}
@@ -1043,6 +1078,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           </div>
         </div>
       )}
+
+      <BidHistoryModal
+        isOpen={isBidHistoryModalOpen}
+        onClose={handleBidHistoryModalClose}
+        goodsId={goodsData.goodsId || 0}
+        auctionSeq={goodsData.auctionSeq || 0}
+      />
     </div>
   );
 };
