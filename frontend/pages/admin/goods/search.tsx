@@ -16,6 +16,8 @@ import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 import { useToGoodsRegist } from "@/hooks/moveScreen/useToGoodsRegist";
 import { useToMemberRegist } from "@/hooks/moveScreen/useToMemberRegist";
+import { BidHistoryModal } from "@/components/ui/dialog/bidHistoryModal";
+import { FavoriteModal } from "@/components/ui/dialog/favoriteModal";
 //API
 import { useGoodsSearchAPI } from "@/hooks/api/admin/goods/useGoodsSearchAPI";
 import { useGoodsSearchCountAPI } from "@/hooks/api/admin/goods/useGoodsSearchCountAPI";
@@ -196,6 +198,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [hoveredShuppin, setHoveredShuppin] = useState<number | null>(null); // 出品者ホバー状態
   const [hoveredRakusatsu, setHoveredRakusatsu] = useState<number | null>(null); // 落札者ホバー状態
+  const [hoveredBidCount, setHoveredBidCount] = useState<number | null>(null); // 入札数ホバー状態
+  const [hoveredFavoriteCount, setHoveredFavoriteCount] = useState<number | null>(null); // お気に入り数ホバー状態
+  const [isBidHistoryModalOpen, setIsBidHistoryModalOpen] = useState(false);
+  const [selectedBidHistoryGoodsId, setSelectedBidHistoryGoodsId] = useState<number>(0);
+  const [selectedBidHistoryAuctionSeq, setSelectedBidHistoryAuctionSeq] = useState<number>(0);
+  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false);
+  const [selectedFavoriteGoodsId, setSelectedFavoriteGoodsId] = useState<number>(0);
   const handleMouseEnterRow = (goodsId: number) => {
     setHoveredRow(goodsId);
   };
@@ -218,6 +227,43 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const handleMouseLeaveRakusatsu = () => {
     setHoveredRakusatsu(null);
+  };
+
+  const handleMouseEnterBidCount = (goodsId: number) => {
+    setHoveredBidCount(goodsId);
+  };
+
+  const handleMouseLeaveBidCount = () => {
+    setHoveredBidCount(null);
+  };
+
+  const handleBidCountClick = (e: React.MouseEvent<HTMLElement>, goodsId: number, auctionSeq: number) => {
+    e.stopPropagation(); // 行のクリックイベントを止める
+    setSelectedBidHistoryGoodsId(goodsId);
+    setSelectedBidHistoryAuctionSeq(auctionSeq);
+    setIsBidHistoryModalOpen(true);
+  };
+
+  const handleBidHistoryModalClose = () => {
+    setIsBidHistoryModalOpen(false);
+  };
+
+  const handleMouseEnterFavoriteCount = (goodsId: number) => {
+    setHoveredFavoriteCount(goodsId);
+  };
+
+  const handleMouseLeaveFavoriteCount = () => {
+    setHoveredFavoriteCount(null);
+  };
+
+  const handleFavoriteCountClick = (e: React.MouseEvent<HTMLElement>, goodsId: number) => {
+    e.stopPropagation(); // 行のクリックイベントを止める
+    setSelectedFavoriteGoodsId(goodsId);
+    setIsFavoriteModalOpen(true);
+  };
+
+  const handleFavoriteModalClose = () => {
+    setIsFavoriteModalOpen(false);
   };
 
   return (
@@ -546,7 +592,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         </>
                       ) : (
                         <>
-                          <td className="py-2 px-4 border-b text-right w-24">
+                          <td 
+                            className={`py-2 px-4 border-b text-right w-24 cursor-pointer ${
+                              hoveredFavoriteCount === result.goodsId ? "bg-blue-100" : ""
+                            }`}
+                            onMouseEnter={() => handleMouseEnterFavoriteCount(result.goodsId)}
+                            onMouseLeave={handleMouseLeaveFavoriteCount}
+                            onClick={(e) => handleFavoriteCountClick(e, result.goodsId)}
+                          >
                             {result.favoriteCount}
                           </td>
                           <td className="py-2 px-4 border-b text-right w-44">
@@ -587,7 +640,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         <></>
                       ) : (
                         <>
-                          <td className="py-2 px-4 border-b text-right w-24">{result.bidCount}</td>
+                          <td 
+                            className={`py-2 px-4 border-b text-right w-24 cursor-pointer ${
+                              hoveredBidCount === result.goodsId ? "bg-blue-100" : ""
+                            }`}
+                            onMouseEnter={() => handleMouseEnterBidCount(result.goodsId)}
+                            onMouseLeave={handleMouseLeaveBidCount}
+                            onClick={(e) => handleBidCountClick(e, result.goodsId, result.auctionSeq)}
+                          >
+                            {result.bidCount}
+                          </td>
                           <td className="py-2 px-4 border-b text-right w-44">
                             {result.currentPrice}
                           </td>
@@ -620,6 +682,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       ) : (
         <p></p>
       )}
+      
+      <BidHistoryModal
+        isOpen={isBidHistoryModalOpen}
+        onClose={handleBidHistoryModalClose}
+        goodsId={selectedBidHistoryGoodsId}
+        auctionSeq={selectedBidHistoryAuctionSeq}
+      />
+      
+      <FavoriteModal
+        isOpen={isFavoriteModalOpen}
+        onClose={handleFavoriteModalClose}
+        goodsId={selectedFavoriteGoodsId}
+      />
     </div>
   );
 };

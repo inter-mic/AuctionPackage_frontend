@@ -131,6 +131,7 @@ export const texts = {
     memberRegister: "会員登録",
     memberInfo: "会員情報",
     bidHistory: "入札履歴",
+    favoriteCheck: "お気に入り確認",
     invoice: "請求書出力",
   },
   fileName: {
@@ -372,6 +373,8 @@ export const texts = {
     bidPrice: "入札額",
     bidTime: "入札日時",
     bidKbn: "入札区分",
+    favoriteList: "お気に入り一覧",
+    registerTime: "登録日時",
   },
   paddle: {
     paddleKbn: "パドル区分",

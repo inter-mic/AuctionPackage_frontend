@@ -50,6 +50,8 @@ import { LotNavigationButton } from "@/components/ui/buttons/admin/lotNavigation
 import { MemberRegisterButton } from "@/components/ui/buttons/admin/memberRegisterButton";
 import { BidHistoryButton } from "@/components/ui/buttons/admin/bidHistoryButton";
 import { BidHistoryModal } from "@/components/ui/dialog/bidHistoryModal";
+import { FavoriteButton } from "@/components/ui/buttons/admin/favoriteButton";
+import { FavoriteModal } from "@/components/ui/dialog/favoriteModal";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/admin/GoodsRegister.module.css";
@@ -163,6 +165,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [shimeFlg, setShimeFlg] = useState(false);
   const [bitFlg, setBitFlg] = useState(false);
   const [isBidHistoryModalOpen, setIsBidHistoryModalOpen] = useState(false);
+  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false);
   //データセット
   useEffect(() => {
     if (fetchGoodsData) {
@@ -429,6 +432,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const handleBidHistoryModalClose = () => {
     setIsBidHistoryModalOpen(false);
+  };
+
+  const handleFavoriteClick = () => {
+    setIsFavoriteModalOpen(true);
+  };
+
+  const handleFavoriteModalClose = () => {
+    setIsFavoriteModalOpen(false);
   };
   const { texts } = useLocale();
   return (
@@ -858,11 +869,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className={styles.flexContainer}>
                   <div className={styles.flexItem}>
                     <label className={styles.label}>{texts.goods.favoriteCount}</label>
-                    <input
-                      value={goodsData.favoriteCount || ""}
-                      className={`${styles.input} text-right`}
-                      disabled
-                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        value={goodsData.favoriteCount || ""}
+                        className={`${styles.input} text-right flex-1`}
+                        disabled
+                      />
+                      {goodsData.goodsId && goodsData.favoriteCount != "0" && (
+                        <FavoriteButton goodsId={goodsData.goodsId} onClick={handleFavoriteClick} />
+                      )}
+                    </div>
                   </div>
                   {(spnKbn === "3" || spnKbn === "4") && (
                     <>
@@ -874,7 +890,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                             className={`${styles.input} text-right flex-1`}
                             disabled
                           />
-                          {goodsData.goodsId && (
+                          {goodsData.goodsId && goodsData.bidCount != "0" && (
                             <BidHistoryButton
                               goodsId={goodsData.goodsId}
                               onClick={handleBidHistoryClick}
@@ -1084,6 +1100,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         onClose={handleBidHistoryModalClose}
         goodsId={goodsData.goodsId || 0}
         auctionSeq={goodsData.auctionSeq || 0}
+      />
+
+      <FavoriteModal
+        isOpen={isFavoriteModalOpen}
+        onClose={handleFavoriteModalClose}
+        goodsId={goodsData.goodsId || 0}
       />
     </div>
   );

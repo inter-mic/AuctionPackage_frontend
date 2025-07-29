@@ -1,10 +1,30 @@
 import { useLocale } from "@/hooks/useLocale";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
 
 export const useApiRequest = () => {
   const router = useRouter();
   const { texts } = useLocale();
+  const [isLoading, setIsLoading] = useState(false);
+
+  // ローディング状態に応じてbodyタグのスタイルを変更
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.pointerEvents = "none";
+      document.body.style.userSelect = "none";
+    } else {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.userSelect = "auto";
+    }
+
+    // クリーンアップ関数
+    return () => {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.userSelect = "auto";
+    };
+  }, [isLoading]);
+
   const getBaseUrl = (endPointKbn: string) => {
     switch (endPointKbn) {
       case "admin":
@@ -17,6 +37,7 @@ export const useApiRequest = () => {
         throw new Error("無効なエンドポイント区分です");
     }
   };
+
   const apiRequest = async (
     endPointKbn: string,
     endpoint: string,
@@ -27,7 +48,9 @@ export const useApiRequest = () => {
     headers?: Record<string, string>,
     showToast: boolean = true
   ) => {
+    setIsLoading(true);
     const toastId = showToast ? toast.loading("Loading...") : null;
+    
     try {
       const baseUrl = getBaseUrl(endPointKbn);
       const fetchHeaders: Record<string, string> = headers || {};
@@ -123,8 +146,10 @@ export const useApiRequest = () => {
         });
       }
       return { status: 500, data: false };
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return { apiRequest };
+  return { apiRequest, isLoading };
 };

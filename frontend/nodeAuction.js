@@ -25,8 +25,6 @@ app.post("/auctionDataPush", (req, res) => {
       sentCount++;
     }
   });
-
-  console.log(`📤 Sent data to ${sentCount} clients.`);
   res.sendStatus(200);
 });
 

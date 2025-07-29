@@ -21,7 +21,7 @@ app.post("/auctionDataPush", (req, res) => {
   clientsBatch.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) client.send(data);
   });
-
+  console.log(`📤 Sent data to ${sentCount} clients.`);
   res.sendStatus(200);
 });
 
