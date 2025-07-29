@@ -1,49 +1,47 @@
-import { useState } from 'react';
+import { useState } from "react";
 //型定義
-import { LogInternetBidAdminSearchRequest } from '@/types/admin/bid/logSearch';
-
-
+import { TLogInternetBidAdminSearchRequest } from "@/types/admin/bid/logSearch";
 
 export const useBidLogSearchParams = () => {
-  const [bidLogParams, setBidParams] = useState<LogInternetBidAdminSearchRequest>({
-    goodsId: '',
-    goodsName: '',
-    sku: '',
-    auctionSeq: '',
-    lotFrom: '',
-    lotTo: '',
-    userId: '',
-    userName: '',
-    paddleNo: '',
-    bidKbn: '',
-    pageNumber:1,
-    pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
+  const [bidLogParams, setBidParams] = useState<TLogInternetBidAdminSearchRequest>({
+    goodsId: "",
+    goodsName: "",
+    sku: "",
+    auctionSeq: "",
+    lotFrom: "",
+    lotTo: "",
+    userId: "",
+    userName: "",
+    paddleNo: "",
+    bidKbn: "",
+    pageNumber: 1,
+    pageSize: Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`),
   });
 
   const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setBidParams(prevParams => ({
+    setBidParams((prevParams) => ({
       ...prevParams,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const resetForm = () => {
     setBidParams({
-      goodsId: '',
-      sku: '',
-      goodsName: '',
-      auctionSeq: '',
-      lotFrom: '',
-      lotTo: '',
-      userId: '',
-      userName: '',
-      paddleNo: '',
-      bidKbn: '',
-      pageNumber:1,
-      pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
+      goodsId: "",
+      sku: "",
+      goodsName: "",
+      auctionSeq: "",
+      lotFrom: "",
+      lotTo: "",
+      userId: "",
+      userName: "",
+      paddleNo: "",
+      bidKbn: "",
+      pageNumber: 1,
+      pageSize: Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`),
     });
   };
 
-  return { bidLogParams, formChange , resetForm};
+  return { bidLogParams, formChange, resetForm };
 };
