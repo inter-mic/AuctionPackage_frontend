@@ -97,6 +97,8 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
           currentPrice: formatPriceMultiplication(currentPrice),
           bidPrice: liveBidLog[0].bidPrice,
           bidTime: liveBidLog[0].bidTime,
+          isBidDisabled : false,
+          kenriPaddleNo : "会場",
         });
         setSendWS(false);
       }

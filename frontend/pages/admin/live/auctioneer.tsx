@@ -117,7 +117,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     useLiveBidInfoSearchAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
 
-  const [isRakusatsuProcessFlg, setRakusatsuProcessFlg] = useState(false);
+  const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
   const [isRakusatsuPaddleNoError, setIsRakusatsuPaddleNoError] = useState<boolean>(false);
 
   const lotSearch = useCallback(async () => {
@@ -321,13 +321,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       searchLot,
     ]
   );
-  const [liveBidkekkaData, setLiveBidkekkaData] =
-    useState<LiveBidKekkaData>(initialLiveBidKekkaData);
+  const [liveBidkekkaData, setLiveBidkekkaData] = useState<LiveBidKekkaData>(initialLiveBidKekkaData);
   const [onlineBidHistory, setOnlineBidHistory] = useState<TBidHisotry[]>([]);
   const [liveBidLog, setLiveBidLog] = useState<TLiveBidLog[]>([]);
   const [connectionCount, setConnectionCount] = useState<number | null>();
   const [isAuctioneerFlg, setAuctioneerFlg] = useState(false);
-  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
+  const [isBidComingSoonMsgFlg, setBidComingSoonMsgFlg] = useState(false);
   const [msg, setMsg] = useState<string | null>();
   const [marqueeKey, setMarqueeKey] = useState(0);
   const lotInputRef = useRef<HTMLInputElement>(null);
@@ -346,16 +345,25 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       const message = {
         type: "admin",
         ...getCommonData(),
-        // ...additionalData,
         nextLotList,
         liveBidLog,
+        msg,
       };
       ws.current?.send(JSON.stringify(message));
     };
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
+      if (data.type === "connectionCount") {
+        setConnectionCount(data.count);
+        return;
+      }
+
       setIsOnlineBidReceive(false);
+      setBidComingSoonMsgFlg(data.isBidComingSoonMsgFlg);
+      setRakusatsuProcessingMsgFlg(data.isRakusatsuProcessingMsgFlg);
+
       if (data.type === "set") {
         setIsCallButtonClicked(false);
         setIsSetButtonClicked(true);
@@ -372,17 +380,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           { userId: data.userId, paddleNo: data.paddleNo, bidPrice: data.bidPrice },
           ...prevHistory, // 最新のデータを上部に追加
         ]);
-        setBidComingSoonMsg(false);
         setIsOnlineBidReceive(true);
         setIsLatestBidActive(true);
       }
-      if (data.type === "bidComingSoon") {
-        setBidComingSoonMsg(true);
-      } else {
-        setBidComingSoonMsg(false);
-      }
       if (data.type === "rakusatsuProcessing") {
-        setRakusatsuProcessFlg(true);
         if (kenriPaddleNo != null) {
           setLiveBidkekkaData((prev) => ({
             ...prev,
@@ -390,7 +391,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           }));
         }
       } else {
-        setRakusatsuProcessFlg(false);
         setLiveBidkekkaData((prev) => ({
           ...prev,
           rakusatsuPaddleNo: "",
@@ -408,11 +408,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setIsLatestBidActive(false);
         lotInputRef.current?.focus();
       }
-      if (data.type === "connectionCount") {
-        setConnectionCount(data.count);
-      }
       if (data.type === "sendMessage") {
-        setMsg(data.message);
+        setMsg(data.msg);
         setMarqueeKey((k) => k + 1);
       }
     };
@@ -462,6 +459,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             ...getClearCommonData(),
             ...additionalData,
           };
+        } else if (type === "sendMessage") {
+          message = {
+            type,
+            ...getCommonData(),
+            ...additionalData,
+            nextLotList,
+            liveBidLog,
+          };
         } else {
           message = {
             type,
@@ -469,6 +474,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             ...additionalData,
             nextLotList,
             liveBidLog,
+            // msg,
           };
         }
         ws.current.send(JSON.stringify(message));
@@ -482,8 +488,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     sendWebSocketMessage("clear", {
       nextPrice: "",
       currentPrice: "",
+      kenriPaddleNo: "",
+      isBelowSaiteiPriceFlg: "",
       nextLotList: [],
       liveBidLog: [],
+      msg: "",
     });
   };
 
@@ -505,7 +514,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     } else {
       if (result.errorMessage) {
         toast.error(result.errorMessage);
-        setRakusatsuProcessFlg(true);
+        setRakusatsuProcessingMsgFlg(true);
       }
     }
   }, [
@@ -520,7 +529,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     goodsSearchByGoodsIdAPI,
     searchSelectedKaisai,
     setLiveBidkekkaData,
-    setRakusatsuProcessFlg,
+    setRakusatsuProcessingMsgFlg,
   ]);
 
   //落札処理用
@@ -535,11 +544,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           setIsRakusatsuPaddleNoError(true);
           return;
         }
-        sendWebSocketMessage("bidEnd", {
-          kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo,
-        });
-      } else {
-        sendWebSocketMessage("bidEnd", { kenriPaddleNo: null });
       }
 
       const result = await liveBidKekkaUpdateAPI(
@@ -550,14 +554,28 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         spnKbn
       );
       if (result.success) {
-        const nextLot = (Number(searchLot) + 1).toString();
-        goodsSearchByGoodsIdAPI(false, 0, searchSelectedKaisai, nextLot);
+        lotBeforeAffterSearch(false);
         setLiveBidkekkaData(initialLiveBidKekkaData);
+        if (isRakusatsu) {
+          sendWebSocketMessage("bidEnd", {
+            kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo,
+            isRakusatsuProcessingMsgFlg : false,
+            isBidDisabled : true,
+          });
+        } else {
+          sendWebSocketMessage("bidEnd", { 
+            kenriPaddleNo: null,
+            isRakusatsuProcessingMsgFlg : false,
+            isBidDisabled : true,
+          });
+        }
+        lotSearch;
+
       } else {
         if (result.errorMessage) {
           toast.error(result.errorMessage);
           setIsRakusatsuPaddleNoError(true);
-          setRakusatsuProcessFlg(true);
+          setRakusatsuProcessingMsgFlg(true);
         }
       }
     },
@@ -569,11 +587,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       liveBidLog,
       connectionCount,
       spnKbn,
-      searchLot,
-      goodsSearchByGoodsIdAPI,
-      searchSelectedKaisai,
+      lotBeforeAffterSearch,
+      lotSearch,
       setLiveBidkekkaData,
-      setRakusatsuProcessFlg,
+      setRakusatsuProcessingMsgFlg,
     ]
   );
 
@@ -588,6 +605,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           nextPrice: formatPriceMultiplication(nextPrice),
           kenriUserId: kenriUserId,
           isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
+          isBidDisabled : true,
         });
       }
       if (spnKbn == "2") {
@@ -605,7 +623,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
   const sendMessage = async () => {
     sendWebSocketMessage("sendMessage", {
-      message: message,
+      msg: message,
     });
   };
 
@@ -686,7 +704,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     (event: KeyboardEvent) => {
       if (event.key === "F1") {
         event.preventDefault(); // F1のときだけ最初に必ず呼ぶ
-        if (!isRakusatsuProcessFlg) return;
+        if (!isRakusatsuProcessingMsgFlg) return;
         if (furakusatsuConfirmOpen) {
           if (spnKbn == "1") {
             bidLiveBidEnd(false);
@@ -714,7 +732,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         return;
       }
       if (event.key === "F9") {
-        if (!isRakusatsuProcessFlg) return;
+        if (!isRakusatsuProcessingMsgFlg) return;
         event.preventDefault();
         if (rakusatsuConfirmOpen) {
           if (spnKbn == "1") {
@@ -774,7 +792,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       lotBeforeAffterSearch,
       plusRef,
       minusRef,
-      isRakusatsuProcessFlg,
+      isRakusatsuProcessingMsgFlg,
     ]
   );
 
@@ -1044,7 +1062,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className={styles.leftButtons}>
                   <div className={styles.msgDiv}>
                     {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
-                    {isRakusatsuProcessFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
+                    {isRakusatsuProcessingMsgFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
                   </div>
                 </div>
                 <div className={styles.rightButtons}>
@@ -1130,14 +1148,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   />
 
                   <StatusButton
-                    status={!isRakusatsuProcessFlg ? 2 : 3}
+                    status={!isRakusatsuProcessingMsgFlg ? 2 : 3}
                     disabled={!isStartButtonClicked}
                     sendWebSocketMessage={sendWebSocketMessage}
                     setLiveBidkekkaData={setLiveBidkekkaData}
                     liveBidLog={liveBidLog}
                     onlineBidHistory={onlineBidHistory}
                     onFocus={() => {
-                      if (!isRakusatsuProcessFlg) {
+                      if (!isRakusatsuProcessingMsgFlg) {
                         rakusatsuPaddleNoInputRef.current?.focus();
                       } else {
                         currentPriceInputRef.current?.focus();
@@ -1226,7 +1244,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <AuctioneerConfirmDialog
                         open={rakusatsuConfirmOpen}
                         setOpen={setRakusatsuConfirmOpen}
-                        disabled={!isRakusatsuProcessFlg}
+                        disabled={!isRakusatsuProcessingMsgFlg}
                         description={`${texts.livemessage.updateSerikekkaData_1} ${
                           texts.livemessage.rakusatsu
                         }
@@ -1243,7 +1261,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         `}
                         buttonTitle={texts.button.rakusatsu}
                         className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
-                          !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
+                          !isRakusatsuProcessingMsgFlg ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                         dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                         dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
@@ -1256,7 +1274,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <AuctioneerConfirmDialog
                       open={rakusatsuConfirmOpen}
                       setOpen={setRakusatsuConfirmOpen}
-                      disabled={!isRakusatsuProcessFlg}
+                      disabled={!isRakusatsuProcessingMsgFlg}
                       description={`${texts.livemessage.updateSerikekkaData_1} ${
                         liveBidkekkaData.auctionKekkaStatus === 2
                           ? texts.livemessage.rakusatsu
@@ -1279,7 +1297,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   `}
                       buttonTitle={texts.button.updateSerikekka}
                       className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
-                        !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
+                        !isRakusatsuProcessingMsgFlg ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                       dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
@@ -1293,7 +1311,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <AuctioneerConfirmDialog
                       open={furakusatsuConfirmOpen}
                       setOpen={setFuRakusatsuConfirmOpen}
-                      disabled={!isRakusatsuProcessFlg}
+                      disabled={!isRakusatsuProcessingMsgFlg}
                       description={`${texts.livemessage.updateSerikekkaData_1} ${
                         liveBidkekkaData.auctionKekkaStatus === 2
                           ? texts.livemessage.rakusatsu
@@ -1316,7 +1334,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   `}
                       buttonTitle={texts.button.furakusatsu}
                       className={`bg-red-500 hover:bg-red-700 py-2 px-4 rounded-full w-80 h-16 text-2xl text-white ${
-                        !isRakusatsuProcessFlg ? "opacity-50 cursor-not-allowed" : ""
+                        !isRakusatsuProcessingMsgFlg ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-full w-40"
                       dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 rounded-full w-40 float-left"
@@ -1327,11 +1345,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 )}
               </div>
 
-              <div className={styles.flowingMsgDiv}>
-                <span key={marqueeKey} className={styles.marquee}>
-                  {msg}
-                </span>
-              </div>
+                              <div className={styles.flowingMsgDiv}>
+                  <span key={marqueeKey} className={styles.marquee}>
+                    {typeof msg === 'string' ? msg : ''}
+                  </span>
+                </div>
             </div>
           </>
         ) : (

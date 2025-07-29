@@ -73,6 +73,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       nextPrice: string;
       currentPrice: string;
       isBelowSaiteiPriceFlg: boolean;
+      isBidDisabled : boolean;
     } | null>(null);
     const { texts } = useLocale();
     const handleClick = () => {
@@ -156,6 +157,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
         nextPrice: nextPriceCalc,
         currentPrice: onlineBidPrice,
         isBelowSaiteiPriceFlg: isBelowFlg,
+        isBidDisabled : false,
       });
 
       // ── 11. sendWSフラグTrue ──

@@ -1,3 +1,4 @@
+const { CollectionsBookmark } = require("@mui/icons-material");
 const WebSocket = require("ws");
 
 const wss = new WebSocket.Server({ port: 3001 });
@@ -5,11 +6,34 @@ const wss = new WebSocket.Server({ port: 3001 });
 let latestData = {}; // 最新のデータを保持
 let connectionCount = 0; // 接続数をトラッキング
 
+//　nodeLive.js内で以下データ保持（毎接続時に送信させる用）
+let currntPrice;
+let nextPrice;
+let kenriPaddleNo;
+let isBelowSaiteiPriceFlg;
+let isBidDisabled;
+let isBidComingSoonMsgFlg;
+let isRakusatsuProcessingMsgFlg;
+let msg;
+
 wss.on("connection", (ws) => {
   connectionCount++;
   updateMemberConnectionCount();
   if (latestData.type) {
-    ws.send(JSON.stringify(latestData));
+    let payload = {...latestData };
+    payload = {
+      ...payload,
+      currentPrice: currntPrice,
+      nextPrice: nextPrice,
+      kenriPaddleNo: kenriPaddleNo,
+      isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
+      isBidDisabled: isBidDisabled,
+      msg: msg,
+      isBidComingSoonMsgFlg: isBidComingSoonMsgFlg,
+      isRakusatsuProcessingMsgFlg: isRakusatsuProcessingMsgFlg,
+    };
+
+    ws.send(JSON.stringify(payload));
   }
   ws.isAdmin = false;
   ws.on("message", (message) => {
@@ -48,28 +72,45 @@ wss.on("connection", (ws) => {
           }
         } else {
           let payload = { type: data.type, ...commonData, ...latestData };
-          if (data.type === "start") {
-            payload = {
-              ...payload,
-              currentPrice: data.currentPrice,
-              nextPrice: data.nextPrice,
-            };
+
+          if (data.type === "clear") {
+            // 強制クリア時は以下リセット
+            currntPrice = "";
+            nextPrice = "";
+            kenriPaddleNo = "";
+            isBelowSaiteiPriceFlg = "";
+            isBidDisabled = true;
+            msg = "";
+            isBidComingSoonMsgFlg = false;
+            isRakusatsuProcessingMsgFlg = false;
           }
-          if (data.type === "updatePrice") {
-            payload = {
-              ...payload,
-              kenriUserId: data.kenriUserId,
-              currentPrice: data.currentPrice,
-              nextPrice: data.nextPrice,
-              isBelowSaiteiPriceFlg: data.isBelowSaiteiPriceFlg,
-            };
+
+          // data内に以下データがあったら保持
+          if(data.currentPrice != undefined){currntPrice = data.currentPrice}
+          if(data.nextPrice != undefined){nextPrice = data.nextPrice}
+          if(data.kenriPaddleNo != undefined){kenriPaddleNo = data.kenriPaddleNo}
+          if(data.isBelowSaiteiPriceFlg != undefined){isBelowSaiteiPriceFlg = data.isBelowSaiteiPriceFlg}
+          if(data.isBidDisabled != undefined){isBidDisabled = data.isBidDisabled}
+          if(data.msg != undefined){msg = data.msg}
+          if(data.isBidComingSoonMsgFlg != undefined){isBidComingSoonMsgFlg = data.isBidComingSoonMsgFlg}
+          if(data.isRakusatsuProcessingMsgFlg != undefined){isRakusatsuProcessingMsgFlg = data.isRakusatsuProcessingMsgFlg}
+
+          if (data.type != "bidComingSoon" && data.type != "sendMessage") {
+            //もうすぐ落札、メッセージ配信以外の時はもうすぐ落札を非表示
+            isBidComingSoonMsgFlg = false;
           }
-          if (data.type === "bidEnd") {
-            payload = {
-              ...payload,
-              kenriUserId: data.kenriUserId,
-            };
-          }
+
+          payload = {
+            ...payload,
+            currentPrice: currntPrice,
+            nextPrice: nextPrice,
+            kenriPaddleNo: kenriPaddleNo,
+            isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
+            isBidDisabled: isBidDisabled,
+            msg: msg,
+            isBidComingSoonMsgFlg: isBidComingSoonMsgFlg,
+            isRakusatsuProcessingMsgFlg: isRakusatsuProcessingMsgFlg,
+          };
           client.send(JSON.stringify(payload));
         }
       }

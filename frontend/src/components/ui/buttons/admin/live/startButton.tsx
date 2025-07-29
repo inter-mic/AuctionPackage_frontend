@@ -28,6 +28,7 @@ export const StartButton = forwardRef<StartButtonHandle, StartButtonProps>(
       sendWebSocketMessage("start", {
         nextPrice: formatPriceMultiplication(nextPrice),
         currentPrice: formatPriceMultiplication(currentPrice),
+        isBidDisabled : false,
       });
 
       if (kenriUserId) {

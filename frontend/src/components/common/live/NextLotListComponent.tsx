@@ -57,11 +57,11 @@ const NextLotListComponent: React.FC<NextLotListComponentProps> = ({
         }, 2000);
       }
     });
-  }, [nextLotList.length, screenType]);
+  }, [nextLotList?.length, screenType]);
 
   // receivedDataが更新されたときにスクロール
   React.useEffect(() => {
-    if (receivedData?.lot && nextLotList.length > 0) {
+    if (receivedData?.lot && nextLotList?.length > 0) {
       setTimeout(() => {
         scrollToCurrentLot(receivedData.lot);
       }, 100);

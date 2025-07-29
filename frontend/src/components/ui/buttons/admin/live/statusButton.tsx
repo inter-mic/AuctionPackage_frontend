@@ -43,34 +43,32 @@ export function StatusButton({
     buttonText = texts.button.bidRestart;
   }
   const bidComingSoonHaishin = () => {
-    sendWebSocketMessage("bidComingSoon");
+    sendWebSocketMessage("bidComingSoon", {
+      isBidComingSoonMsgFlg : true,
+    });
   };
 
   const rakusatusuProcess = () => {
-    sendWebSocketMessage("rakusatsuProcessing");
+    sendWebSocketMessage("rakusatsuProcessing", {
+      isRakusatsuProcessingMsgFlg : true,
+      isBidDisabled : true,
+    });
   };
 
   // 最新の有効なパドル番号を取得する関数
   const getLatestPaddleNo = () => {
-    // まずonlineBidHistoryから最新のパドル番号を取得
-    if (onlineBidHistory && onlineBidHistory.length > 0 && onlineBidHistory[0].paddleNo) {
-      return onlineBidHistory[0].paddleNo;
-    }
-    
-    // onlineBidHistoryにない場合は、liveBidLogから最新の有効なパドル番号を取得
+    // liveBidLogから最新の有効なパドル番号を取得
     if (liveBidLog && liveBidLog.length > 0) {
-      for (const log of liveBidLog) {
-        if (log.paddleNo && log.paddleNo.trim() !== "") {
-          return log.paddleNo;
-        }
-      }
+      return liveBidLog[0].paddleNo;
     }
-    
     return null;
   };
 
   const bidRestart = () => {
-    sendWebSocketMessage("bidRestart");
+    sendWebSocketMessage("bidRestart", {
+      isRakusatsuProcessingMsgFlg : false,
+      isBidDisabled : false,
+    });
   };
 
   const handleClick = () => {

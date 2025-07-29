@@ -50,14 +50,20 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [bidStatus, setBidStatus] = useState(0);
   const [bidResults, setBidResults] = useState(0);
   const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
-  const [isBidComingSoonMsgFlg, setBidComingSoonMsg] = useState(false);
+  const [isBidComingSoonMsgFlg, setBidComingSoonMsgFlg] = useState(false);
   const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
   const [isPriceUpdated, setIsPriceUpdated] = useState(false);
   const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
-  const [msg, setMsg] = useState<string | null>();
+  const [msg, setMsg] = useState<string | null>("");
+  const msgRef = useRef(msg);
   const [marqueeKey, setMarqueeKey] = useState(0);
   const [showBidEndPopup, setShowBidEndPopup] = useState(false);
   const [bidEndData, setBidEndData] = useState<any>(null);
+
+  // msgが変わるたびにrefも更新
+  useEffect(() => {
+    msgRef.current = msg;
+  }, [msg]);
 
   const ws = useRef<WebSocket | null>(null);
   const { texts } = useLocale();
@@ -110,68 +116,34 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      //↓↓毎回取得
+      //毎配信処理
       setNextLotList(data.nextLotList);
       setBidHistory(data.liveBidLog);
-
-      if (
-        data.type === "set" ||
-        data.type === "start" ||
-        data.type === "updatePrice" ||
-        data.type === "isBidDisabled" ||
-        data.type === "clear"
-      ) {
-        setReceivedData(data);
-        setBidStatus(fetchPaddleNo === data.kenriPaddleNo ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
+      setReceivedData(data);
+      setBidStatus(fetchPaddleNo === data.kenriPaddleNo ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
+      if (data.msg === "" || msgRef.current !== data.msg) {
+        setMsg(data.msg);
+        setMarqueeKey((k) => k + 1);
       }
+      setIsBidDisabled(data.isBidDisabled || fetchPaddleNo === data.kenriPaddleNo);
+      setBidComingSoonMsgFlg(data.isBidComingSoonMsgFlg);
+      setRakusatsuProcessingMsgFlg(data.isRakusatsuProcessingMsgFlg);
+
+      //配信メッセージごと処理
       if (data.type === "set") {
-        setIsBidDisabled(true);
         setShowBidEndPopup(false);
         setBidEndData(null);
       }
-      if (data.type === "start") {
-        setIsBidDisabled(false);
-      }
-      if (data.type === "isBidDisabled") {
-        setIsBidDisabled(true);
-      }
       if (data.type === "updatePrice") {
-        setIsBidDisabled(fetchPaddleNo === data.kenriPaddleNo);
         setIsPriceUpdated(true);
         setTimeout(() => setIsPriceUpdated(false), 1000);
       }
-      if (data.type === "bidComingSoon") {
-        setBidComingSoonMsg(true);
-      } else {
-        if (data.type === "sendMessage") {
-          //メッセージ配信時は「もうすぐ落札」を表示したままにする
-        } else {
-          setBidComingSoonMsg(false);
-        }
-      }
-      if (data.type === "rakusatsuProcessing") {
-        setRakusatsuProcessingMsgFlg(true);
-        setIsBidDisabled(true);
-      } else {
-        setRakusatsuProcessingMsgFlg(false);
-      }
-      if (data.type === "bidRestart") {
-        setIsBidDisabled(fetchPaddleNo === data.kenriPaddleNo);
-      }
       if (data.type === "bidEnd") {
-        setIsBidDisabled(true);
         setBidResults(
           !data.kenriPaddleNo ? 4 : String(fetchPaddleNo) === String(data.kenriPaddleNo) ? 2 : 3
         );
         setShowBidEndPopup(true);
         setBidEndData(data);
-      }
-      if (data.type === "clear") {
-        setIsBidDisabled(true);
-      }
-      if (data.type === "sendMessage") {
-        setMsg(data.message);
-        setMarqueeKey((k) => k + 1);
       }
     };
 
@@ -378,7 +350,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                               isPriceUpdated ? styles.priceUpdated : ""
                             }`}
                           >
-                            {receivedData?.currentPrice != null && (
+                            {receivedData?.currentPrice != null && receivedData?.currentPrice != 0 && (
                               <label>
                                 {new Intl.NumberFormat("ja-JP", {
                                   style: "currency",
@@ -432,7 +404,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                               onClick={bid}
                               disabled={isBidDisabled}
                               text={
-                                receivedData?.nextPrice != null
+                                receivedData?.nextPrice != null && receivedData?.nextPrice != 0
                                   ? new Intl.NumberFormat("ja-JP", {
                                       style: "currency",
                                       currency: "JPY",
