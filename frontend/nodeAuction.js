@@ -9,8 +9,10 @@ const wssApp = new WebSocket.Server({ server, path: "/ws/app" });
 let clientsApp = [];
 wssApp.on("connection", (ws) => {
   clientsApp.push(ws);
+  console.log(`現在の接続数: ${clientsBatch.length}`);
   ws.on("close", () => {
     clientsApp = clientsApp.filter((c) => c !== ws);
+    console.log(`🔴 接続が切断されました。現在の接続数: ${clientsBatch.length}`);
   });
 });
 
@@ -25,6 +27,7 @@ app.post("/auctionDataPush", (req, res) => {
       sentCount++;
     }
   });
+  console.log(`📤 Sent data to ${sentCount} clients.`);
   res.sendStatus(200);
 });
 

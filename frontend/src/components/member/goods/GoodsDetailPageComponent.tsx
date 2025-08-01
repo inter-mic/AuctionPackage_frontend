@@ -7,6 +7,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //コンポーネント
@@ -43,6 +45,10 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
   const [thumImages, setThumImages] = useState<GoodsImageData[]>([]);
   const router = useRouter();
+
+  // タブ複製用の状態
+  const [tabCount, setTabCount] = useState<number>(1);
+
   useEffect(() => {
     if (paramsGoodsId) {
       goodsSearchByGoodsIdAPI(Number(paramsGoodsId), isLogin);
@@ -140,6 +146,14 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
   };
   const handleClose = () => setPopupOpen(false);
 
+  // タブ複製機能
+  const handleDuplicateTabs = () => {
+    const currentUrl = window.location.href;
+    for (let i = 0; i < tabCount; i++) {
+      window.open(currentUrl, "_blank");
+    }
+  };
+
   return (
     <>
       <div className={styles.headerContainer}>
@@ -164,6 +178,31 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
             </div>
           </Link>
         )}
+      </div>
+
+      {/* タブ複製機能 */}
+      <div
+        style={{
+          padding: "10px 20px",
+          backgroundColor: "#f5f5f5",
+          borderBottom: "1px solid #ddd",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+        }}
+      >
+        <TextField
+          type="number"
+          label="タブ数"
+          value={tabCount}
+          onChange={(e) => setTabCount(Math.max(1, parseInt(e.target.value) || 1))}
+          inputProps={{ min: 1, max: 10 }}
+          size="small"
+          style={{ width: "120px" }}
+        />
+        <Button variant="contained" onClick={handleDuplicateTabs} size="small">
+          タブを複製
+        </Button>
       </div>
 
       <div className={`${memberStyles.memberContainer} py-5`}>

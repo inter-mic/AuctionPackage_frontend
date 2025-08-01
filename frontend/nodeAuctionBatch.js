@@ -10,8 +10,11 @@ const wssBatch = new WebSocket.Server({ server, path: "/ws/batch" });
 let clientsBatch = [];
 wssBatch.on("connection", (ws) => {
   clientsBatch.push(ws);
+  console.log(`現在の接続数: ${clientsBatch.length}`);
+
   ws.on("close", () => {
     clientsBatch = clientsBatch.filter((c) => c !== ws);
+    console.log(`🔴 接続が切断されました。現在の接続数: ${clientsBatch.length}`);
   });
 });
 
