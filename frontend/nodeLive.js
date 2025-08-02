@@ -1,6 +1,11 @@
+const express = require("express");
+const http = require("http");
 const WebSocket = require("ws");
 
-const wss = new WebSocket.Server({ port: 3001 });
+const app = express();
+app.use(express.json());
+const server = http.createServer(app);
+const wssApp = new WebSocket.Server({ server, path: "/ws/live" });
 
 let latestData = {}; // 最新のデータを保持
 let connectionCount = 0; // 接続数をトラッキング
@@ -15,7 +20,7 @@ let isBidComingSoonMsgFlg;
 let isRakusatsuProcessingMsgFlg;
 let msg;
 
-wss.on("connection", (ws) => {
+wssApp.on("connection", (ws) => {
   connectionCount++;
   updateMemberConnectionCount();
   if (latestData.type) {
@@ -56,7 +61,7 @@ wss.on("connection", (ws) => {
     latestData = { ...data };
 
     // 接続しているすべてのクライアントにデータを送信
-    wss.clients.forEach((client) => {
+    wssApp.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         if (data.type === "onlineBid") {
           if (client !== ws && client.isAdmin) {
@@ -150,9 +155,12 @@ wss.on("connection", (ws) => {
 });
 
 function updateMemberConnectionCount() {
-  wss.clients.forEach((client) => {
+  wssApp.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN && client.isAdmin) {
       client.send(JSON.stringify({ type: "connectionCount", count: connectionCount }));
     }
   });
 }
+server.listen(3001, () => {
+  console.log("WebSocket relay server running on port 3001");
+});
