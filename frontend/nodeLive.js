@@ -1,4 +1,3 @@
-const { CollectionsBookmark } = require("@mui/icons-material");
 const WebSocket = require("ws");
 
 const wss = new WebSocket.Server({ port: 3001 });
@@ -20,7 +19,7 @@ wss.on("connection", (ws) => {
   connectionCount++;
   updateMemberConnectionCount();
   if (latestData.type) {
-    let payload = {...latestData };
+    let payload = { ...latestData };
     payload = {
       ...payload,
       currentPrice: currntPrice,
@@ -86,14 +85,30 @@ wss.on("connection", (ws) => {
           }
 
           // data内に以下データがあったら保持
-          if(data.currentPrice != undefined){currntPrice = data.currentPrice}
-          if(data.nextPrice != undefined){nextPrice = data.nextPrice}
-          if(data.kenriPaddleNo != undefined){kenriPaddleNo = data.kenriPaddleNo}
-          if(data.isBelowSaiteiPriceFlg != undefined){isBelowSaiteiPriceFlg = data.isBelowSaiteiPriceFlg}
-          if(data.isBidDisabled != undefined){isBidDisabled = data.isBidDisabled}
-          if(data.msg != undefined){msg = data.msg}
-          if(data.isBidComingSoonMsgFlg != undefined){isBidComingSoonMsgFlg = data.isBidComingSoonMsgFlg}
-          if(data.isRakusatsuProcessingMsgFlg != undefined){isRakusatsuProcessingMsgFlg = data.isRakusatsuProcessingMsgFlg}
+          if (data.currentPrice != undefined) {
+            currntPrice = data.currentPrice;
+          }
+          if (data.nextPrice != undefined) {
+            nextPrice = data.nextPrice;
+          }
+          if (data.kenriPaddleNo != undefined) {
+            kenriPaddleNo = data.kenriPaddleNo;
+          }
+          if (data.isBelowSaiteiPriceFlg != undefined) {
+            isBelowSaiteiPriceFlg = data.isBelowSaiteiPriceFlg;
+          }
+          if (data.isBidDisabled != undefined) {
+            isBidDisabled = data.isBidDisabled;
+          }
+          if (data.msg != undefined) {
+            msg = data.msg;
+          }
+          if (data.isBidComingSoonMsgFlg != undefined) {
+            isBidComingSoonMsgFlg = data.isBidComingSoonMsgFlg;
+          }
+          if (data.isRakusatsuProcessingMsgFlg != undefined) {
+            isRakusatsuProcessingMsgFlg = data.isRakusatsuProcessingMsgFlg;
+          }
 
           if (data.type != "bidComingSoon" && data.type != "sendMessage") {
             //もうすぐ落札、メッセージ配信以外の時はもうすぐ落札を非表示
