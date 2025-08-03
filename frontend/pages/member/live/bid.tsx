@@ -29,10 +29,9 @@ import { formatPriceWithCommas } from "@/components/common/PriceUtils";
 import { LiveBidButton } from "@/components/ui/buttons/member/liveBidButton";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
-import styles from "@/styles/member/live/Bid.module.css";
+import styles from "@/styles/member/liveAuction/Bid.module.css";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import test from "node:test";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
