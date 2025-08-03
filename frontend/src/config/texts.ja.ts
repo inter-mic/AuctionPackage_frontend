@@ -477,6 +477,8 @@ export const texts = {
     noLiveAuction2: "です。",
     noLiveAuction3: "開催日当日になると、入札画面が開きます。",
     noLiveAuction4: "パドル登録が完了しておりません。事務局にお問合せください",
+    bidkbn1: "オンライン",
+    bidkbn2: "会場",
   },
   info: {
     naiyo: "お知らせ内容",

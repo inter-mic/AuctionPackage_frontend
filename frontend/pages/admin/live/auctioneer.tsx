@@ -321,7 +321,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       searchLot,
     ]
   );
-  const [liveBidkekkaData, setLiveBidkekkaData] = useState<LiveBidKekkaData>(initialLiveBidKekkaData);
+  const [liveBidkekkaData, setLiveBidkekkaData] =
+    useState<LiveBidKekkaData>(initialLiveBidKekkaData);
   const [onlineBidHistory, setOnlineBidHistory] = useState<TBidHisotry[]>([]);
   const [liveBidLog, setLiveBidLog] = useState<TLiveBidLog[]>([]);
   const [connectionCount, setConnectionCount] = useState<number | null>();
@@ -334,7 +335,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const rakusatsuPaddleNoInputRef = useRef<HTMLInputElement>(null);
   const [isOnlineBidReceive, setIsOnlineBidReceive] = useState(false);
   const ws = useRef<WebSocket | null>(null);
-  
+
   // オンライン入札履歴の最上位行のlatestBid状態を管理
   const [isLatestBidActive, setIsLatestBidActive] = useState(false);
   useEffect(() => {
@@ -420,6 +421,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // WebSocket ping機能（30秒ごと）
+  useEffect(() => {
+    const pingInterval = setInterval(() => {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.send(JSON.stringify({ type: "ping" }));
+      }
+    }, 30000); // 30秒ごと
+
+    return () => clearInterval(pingInterval);
   }, []);
 
   const getCommonData = useCallback(
@@ -559,18 +571,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         if (isRakusatsu) {
           sendWebSocketMessage("bidEnd", {
             kenriPaddleNo: liveBidkekkaData.rakusatsuPaddleNo,
-            isRakusatsuProcessingMsgFlg : false,
-            isBidDisabled : true,
+            isRakusatsuProcessingMsgFlg: false,
+            isBidDisabled: true,
           });
         } else {
-          sendWebSocketMessage("bidEnd", { 
+          sendWebSocketMessage("bidEnd", {
             kenriPaddleNo: null,
-            isRakusatsuProcessingMsgFlg : false,
-            isBidDisabled : true,
+            isRakusatsuProcessingMsgFlg: false,
+            isBidDisabled: true,
           });
         }
         lotSearch;
-
       } else {
         if (result.errorMessage) {
           toast.error(result.errorMessage);
@@ -605,7 +616,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           nextPrice: formatPriceMultiplication(nextPrice),
           kenriUserId: kenriUserId,
           isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
-          isBidDisabled : true,
+          isBidDisabled: true,
         });
       }
       if (spnKbn == "2") {
@@ -914,7 +925,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   {onlineBidHistory.map((bid, index) => (
                     <li
                       key={index}
-                      className={[styles.bidItem, index === 0 && isLatestBidActive ? styles.latestBid : ""].join(" ")}
+                      className={[
+                        styles.bidItem,
+                        index === 0 && isLatestBidActive ? styles.latestBid : "",
+                      ].join(" ")}
                     >
                       <span className={styles.listSpanLeft}>
                         {spnKbn === "1" ? (
@@ -1062,7 +1076,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 <div className={styles.leftButtons}>
                   <div className={styles.msgDiv}>
                     {isBidComingSoonMsgFlg && <span>{texts.button.BidComingSoon}</span>}
-                    {isRakusatsuProcessingMsgFlg && <span>{texts.livemessage.rakusatsuProcessMsg}</span>}
+                    {isRakusatsuProcessingMsgFlg && (
+                      <span>{texts.livemessage.rakusatsuProcessMsg}</span>
+                    )}
                   </div>
                 </div>
                 <div className={styles.rightButtons}>
@@ -1345,11 +1361,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 )}
               </div>
 
-                              <div className={styles.flowingMsgDiv}>
-                  <span key={marqueeKey} className={styles.marquee}>
-                    {typeof msg === 'string' ? msg : ''}
-                  </span>
-                </div>
+              <div className={styles.flowingMsgDiv}>
+                <span key={marqueeKey} className={styles.marquee}>
+                  {typeof msg === "string" ? msg : ""}
+                </span>
+              </div>
             </div>
           </>
         ) : (

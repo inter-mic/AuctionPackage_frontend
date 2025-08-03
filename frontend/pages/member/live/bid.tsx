@@ -32,6 +32,7 @@ import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/live/Bid.module.css";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import test from "node:test";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
@@ -321,9 +322,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                             <span className={styles.bidUserId}>your bid</span>
                           )}
                           {bid.userId !== "" && bid.userId !== PageProps.userId?.toString() && (
-                            <span>オンライン</span>
+                            <span className={styles.otherBid}>{texts.live.bidkbn1}</span>
                           )}
-                          {bid.userId === "" && <span className={styles.kaijoBid}>会場</span>}
+                          {bid.userId === "" && (
+                            <span className={styles.otherBid}>{texts.live.bidkbn2}</span>
+                          )}
                           <span
                             className={
                               bid.userId === PageProps.userId?.toString()
@@ -350,14 +353,15 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                               isPriceUpdated ? styles.priceUpdated : ""
                             }`}
                           >
-                            {receivedData?.currentPrice != null && receivedData?.currentPrice != 0 && (
-                              <label>
-                                {new Intl.NumberFormat("ja-JP", {
-                                  style: "currency",
-                                  currency: "JPY",
-                                }).format(receivedData.currentPrice)}
-                              </label>
-                            )}
+                            {receivedData?.currentPrice != null &&
+                              receivedData?.currentPrice != 0 && (
+                                <label>
+                                  {new Intl.NumberFormat("ja-JP", {
+                                    style: "currency",
+                                    currency: "JPY",
+                                  }).format(receivedData.currentPrice)}
+                                </label>
+                              )}
                           </label>
                         </div>
                         <div
