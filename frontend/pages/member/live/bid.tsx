@@ -156,6 +156,17 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchPaddleNo]);
 
+  // WebSocket ping機能（30秒ごと）
+  useEffect(() => {
+    const pingInterval = setInterval(() => {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.send(JSON.stringify({ type: "ping" }));
+      }
+    }, 30000); // 30秒ごと
+
+    return () => clearInterval(pingInterval);
+  }, []);
+
   const handleViewOnlyCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setViewOnlyChecked(event.target.checked);
   };
