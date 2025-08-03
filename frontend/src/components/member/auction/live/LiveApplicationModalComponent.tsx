@@ -7,7 +7,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useLiveApplicationAPI } from "@/hooks/api/member/live/useLiveApplicationAPI";
 
 //スタイル
-import styles from "@/styles/member/liveAuctionLiveApplication.module.css";
+import styles from "@/styles/member/liveAuctionLive/Application.module.css";
 
 type Props = {
   isOpen: boolean;
