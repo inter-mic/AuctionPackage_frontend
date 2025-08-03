@@ -12,6 +12,7 @@ import withMemberLayout from "@/hocs/withMemberLayout";
 import { useCheckLiveAuctionAPI } from "@/hooks/api/member/live/useCheckLiveAuctionAPI";
 import { useSearchPaddleNoAPI } from "@/hooks/api/member/live/useSearchPaddleNoAPI";
 import { useSystemSearchAPI } from "@/hooks/api/member/useSystemSearchAPI";
+import { useMemberSessionAPI } from "@/hooks/api/member/useMemberSessionAPI";
 //カスタムフック
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/hooks/useLocale";
@@ -59,6 +60,15 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [marqueeKey, setMarqueeKey] = useState(0);
   const [showBidEndPopup, setShowBidEndPopup] = useState(false);
   const [bidEndData, setBidEndData] = useState<any>(null);
+
+  //タイムアウト防止のためセッション延長
+  const { memberSessionAPI } = useMemberSessionAPI();
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      memberSessionAPI();
+    }, 300000);
+    return () => clearInterval(intervalId);
+  }, [memberSessionAPI]);
 
   // msgが変わるたびにrefも更新
   useEffect(() => {
@@ -306,7 +316,18 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                       <label>LOT {receivedData?.lot}</label>
                     </div>
                     <div className={styles.goodsName}>
-                      <label>{receivedData?.goodsName}</label>
+                      <label
+                        style={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "100%",
+                          display: "block",
+                        }}
+                        title={receivedData?.goodsName}
+                      >
+                        {receivedData?.goodsName}
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -440,7 +461,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                       onClick={toggleNextLotModal}
                       style={{
                         padding: "10px 20px",
-                        backgroundColor: "#e5e7eb",
+                        backgroundColor: "#eab308",
                         color: "white",
                         cursor: "pointer",
                         fontSize: "20px",

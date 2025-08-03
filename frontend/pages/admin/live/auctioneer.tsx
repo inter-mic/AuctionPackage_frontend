@@ -21,6 +21,7 @@ import { useLiveBidInfoSearchAPI } from "@/hooks/api/admin/live/bidInfo/useLiveB
 import { useLiveBidUnitSearchAPI } from "@/hooks/api/admin/live/bidunit/useLiveBidUnitSearchAPI";
 import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
 import { useLiveBidKekkaUpdateAPI } from "@/hooks/api/admin/live/useLiveBidKekkaUpdateAPI";
+import { useAdminSessionAPI } from "@/hooks/api/admin/useAdminSessionAPI";
 //型定義
 import { GoodsData, initialGoodsData } from "@/types/admin/goods/register";
 import { LiveBidKekkaData, initialLiveBidKekkaData } from "@/types/admin/live/register";
@@ -81,6 +82,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useKengenRedirect(kengen, 601);
   const { executionPermission } = useExecutionPermission(kengen);
   const { spnKbn } = useRouter().query;
+
+  //タイムアウト防止のためセッション延長
+  const { adminSessionAPI } = useAdminSessionAPI();
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      adminSessionAPI();
+    }, 100000);
+    return () => clearInterval(intervalId);
+  }, [adminSessionAPI]);
 
   const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
 

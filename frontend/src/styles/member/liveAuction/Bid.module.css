@@ -24,6 +24,9 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* 上段セクション */
@@ -65,7 +68,7 @@
 
 .lot,
 .goodsName {
-  font-size: 2rem;
+  font-size: 1.5rem;
   line-height: 40px;
   display: flex;
   justify-content: space-between;
@@ -388,6 +391,10 @@
 
   .currentPrice {
     font-size: 2rem;
+  }
+  lot,
+  .goodsName {
+    font-size: 1.3rem;
   }
 }
 
