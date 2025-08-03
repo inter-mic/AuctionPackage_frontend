@@ -164,3 +164,25 @@ function updateMemberConnectionCount() {
 server.listen(3001, () => {
   console.log("WebSocket relay server running on port 3001");
 });
+
+setInterval(() => {
+  if (latestData && Object.keys(latestData).length > 0) {
+    const payload = {
+      ...latestData,
+      currentPrice: currntPrice,
+      nextPrice: nextPrice,
+      kenriPaddleNo: kenriPaddleNo,
+      isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
+      isBidDisabled: isBidDisabled,
+      msg: msg,
+      isBidComingSoonMsgFlg: isBidComingSoonMsgFlg,
+      isRakusatsuProcessingMsgFlg: isRakusatsuProcessingMsgFlg,
+    };
+
+    wssApp.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ ...payload }));
+      }
+    });
+  }
+}, 30000);
