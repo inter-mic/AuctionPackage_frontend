@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState, useEffect } from "react";
+import { ReactNode, useRef, useEffect } from "react";
 import styles from "@/styles/member/SearchFilter.module.css";
 import { useLocale } from "@/hooks/useLocale";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";

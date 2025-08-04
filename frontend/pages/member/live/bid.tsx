@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { GetServerSideProps } from "next";
 import { useEffect, useState, useRef } from "react";
 import { getTexts } from "@/config/texts";
@@ -80,11 +79,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const { fetchSystemSettingData, systemSearchAPI } = useSystemSearchAPI();
   const { fetchAuction } = useCheckLiveAuctionAPI();
   const [fetchLiveAuctionStatus, setFetchLiveAuctionStatus] = useState<number>(0);
-  const {
-    responseStatus: searchPaddleNoResponseStatus,
-    fetchPaddleNo,
-    searchPaddleNoAPI,
-  } = useSearchPaddleNoAPI();
+  const { fetchPaddleNo, searchPaddleNoAPI } = useSearchPaddleNoAPI();
   useEffect(() => {
     if (fetchAuction?.auctionSeq !== undefined) {
       setFetchLiveAuctionStatus(0);
@@ -122,7 +117,6 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   useEffect(() => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
-    const loginUserId = PageProps.userId;
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
 

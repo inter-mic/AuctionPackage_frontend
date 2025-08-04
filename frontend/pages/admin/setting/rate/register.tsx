@@ -5,13 +5,11 @@ import { texts } from "@/config/texts.ja";
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
 //API
-import { useRateSearchAPI } from "@/hooks/api/admin/rate/useRateSearchAPI";
-import { useCategoryRegistAPI } from "@/hooks/api/admin/category/useCategoryRegistAPI";
+//import { useRateSearchAPI } from "@/hooks/api/admin/rate/useRateSearchAPI";
 //型定義
 import { PageProps } from "@/types/admin/adminPage";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminMailRegist,
@@ -19,8 +17,8 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   };
 });
 
-const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { rate } = useRateSearchAPI();
+const Page: React.FC<PageProps> = () => {
+  //const { rate } = useRateSearchAPI();
 
   return <></>;
 };

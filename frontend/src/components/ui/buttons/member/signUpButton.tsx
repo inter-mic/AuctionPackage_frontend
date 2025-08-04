@@ -1,4 +1,3 @@
-import { getTexts } from "@/config/texts";
 import styles from "@/styles/Button.module.css";
 interface SignupButtonProps {
   onClick?: () => void;

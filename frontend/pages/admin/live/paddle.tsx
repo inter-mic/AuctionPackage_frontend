@@ -42,7 +42,7 @@ import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminPaddleManagement,
@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 353);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -122,7 +122,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setFormErrors(errors);
     }
   }, [errors]);
-  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+  const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: paddleSearchAPI,
     initialSortName: "userId",
     itemsPerPage,
@@ -144,11 +144,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   //更新
-  const {
-    responseStatus: updateResponseStatus,
-    errors: updateResponseErrors,
-    paddleRegistAPI: updatePaddleRegistAPI,
-  } = usePaddleRegistAPI();
+  const { errors: updateResponseErrors, paddleRegistAPI: updatePaddleRegistAPI } =
+    usePaddleRegistAPI();
   const [updateErrors, setUpdateErrors] = useState<{ [key: string]: string }>({});
   const [paddleUpdateRequest, setPaddleUpdateRequest] = useState<TAdminPaddleRegistRequest>();
   const paddleDataUpdate = (row: TAdminPaddleRegistRequest) => {
@@ -177,7 +174,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     onlineBidShoninAPI,
   } = useOnlineBidShoninAPI();
   const [onlineBidShoninErrors, setOnlineBidShoninErrors] = useState<{ [key: string]: string }>({});
-  const [onlineBidShoninRequest, setOnlineBidShoninRequest] = useState<TAdminPaddleShoninRequest>();
+  const [onlineBidShoninRequest] = useState<TAdminPaddleShoninRequest>();
 
   const onlineBidShoninUpdate = (row: TAdminPaddleShoninRequest) => {
     const current = fetchedData.find((item) => item.userId === row.userId);

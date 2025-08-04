@@ -5,7 +5,7 @@ interface BidHistoryButtonProps {
   onClick: () => void;
 }
 
-export function BidHistoryButton({ goodsId, onClick }: BidHistoryButtonProps) {
+export function BidHistoryButton({ onClick }: BidHistoryButtonProps) {
   return (
     <button
       onClick={onClick}

@@ -1,5 +1,4 @@
 //コンフィグ
-import { texts } from "@/config/texts.ja";
 
 interface LotNavigationButtonProps {
   type: "before" | "after";

@@ -31,10 +31,8 @@ import { CancelButton } from "@/components/ui/buttons/cancelButton";
 import { ShiyoshoButton } from "@/components/ui/buttons/admin/shiyoshoButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
-import styles from "@/styles/admin/FormSearch.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminGoodsBulkRegist,
@@ -43,7 +41,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 203);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -54,15 +52,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleZipClear = () => {
-    setSelectedCsvFile(null);
-    setSelectedZipFile(null);
-    setSelectedZipKaisai("");
-    setSelectedRegistKbn("1");
-  };
   const [csvErrors, setCsvErrors] = useState<{ [key: string]: string }>({});
   const [zipErrors, setZipErrors] = useState<{ [key: string]: string }>({});
-  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const [formErrors] = useState<{ [key: string]: string }>({});
 
   //商品情報
   const [csvUpdateData, setCsvUpdateData] = useState<CsvUpdateData>({});

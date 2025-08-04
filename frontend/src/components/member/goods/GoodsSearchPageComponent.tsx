@@ -1,5 +1,4 @@
 import React from "react";
-import { redirect } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import Pagination from "@mui/material/Pagination";
 //カスタムフック
@@ -36,7 +35,7 @@ interface MemberGoodsSearchPageProps extends TPageProps {
 }
 
 const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, loginUserId }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const router = useRouter();
   const { goodsList, goodsSearchAPI } = useGoodsSearchAPI();
   const { goodsCount, goodsCountAPI } = useGoodsCountAPI();

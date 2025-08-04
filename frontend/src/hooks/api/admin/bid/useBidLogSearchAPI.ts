@@ -5,7 +5,7 @@ import { TLogBidAdminSearchRequest, TAdminLogBidSelect } from "@/types/admin/bid
 import { Errors } from "@/types/errors";
 
 export const useBidLogSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [data, setData] = useState<TAdminLogBidSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
   const bidLogSearchAPI = async (searchParams: TLogBidAdminSearchRequest) => {

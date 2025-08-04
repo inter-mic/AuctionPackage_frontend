@@ -22,8 +22,7 @@ import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminAdminRegist,
@@ -32,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 504);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -64,7 +63,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const { address, zipCodeSearch } = useZipCodeSearchAPI();
-  const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleZipCodeChange = () => {
     const zipCode1 = (document.getElementById("zipCode1") as HTMLInputElement).value;
     const zipCode2 = (document.getElementById("zipCode2") as HTMLInputElement).value;
     handleChange({
@@ -98,7 +97,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   }, [admin]);
 
-  const handleTelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTelChange = () => {
     const tel1 = (document.getElementById("tel1") as HTMLInputElement).value;
     const tel2 = (document.getElementById("tel2") as HTMLInputElement).value;
     const tel3 = (document.getElementById("tel3") as HTMLInputElement).value;
@@ -107,7 +106,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  const handleFaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFaxChange = () => {
     const fax1 = (document.getElementById("fax1") as HTMLInputElement).value;
     const fax2 = (document.getElementById("fax2") as HTMLInputElement).value;
     const fax3 = (document.getElementById("fax3") as HTMLInputElement).value;
@@ -116,7 +115,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  const { responseData, errors, adminRegist } = useAdminRegistAPI();
+  const { errors, adminRegist } = useAdminRegistAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const handleSubmit = () => {
     adminRegist(admin);

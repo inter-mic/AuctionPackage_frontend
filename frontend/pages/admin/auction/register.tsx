@@ -32,14 +32,13 @@ import { SpnKbnPullDown } from "@/components/ui/pulldowns/SpnKbnPullDown";
 import { RequiredMark } from "@/components/ui/marks/RequiredMark";
 //ボタン
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
-import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
 import { ResetButton } from "@/components/ui/buttons/admin/resetButton";
 import { ShimeOnButton, ShimeOffButton } from "@/components/ui/buttons/admin/shimeButton";
 //スタイル
 import styles from "@/styles/admin/FormRegister.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminKaisaiRegist,
@@ -72,7 +71,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     setFetchedData((prevFetchedData) => ({ ...prevFetchedData, [name]: value }));
     if (errors?.[name]) {
       setFormErrors((prevErrors) => ({
@@ -83,39 +82,31 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const handleDateChange = (field: keyof auctionData) => (date: Dayjs | null, name: string) => {
+    // Invalid Dateの場合は処理をスキップ
+    if (date && !date.isValid()) {
+      return;
+    }
+
     setFetchedData((prev) => {
       const updatedData = { ...prev, [field]: date };
 
       // displayStartDateが変更された場合
-      if (field === "displayStartDate") {
+      if (field === "displayStartDate" && date && date.isValid()) {
         if (selectedSpnKbn === "1") {
-          // spnKbnが1の場合、onlinebidApplicationStartDateが空なら同じ値を設定
-          if (!prev.onlinebidApplicationStartDate) {
-            updatedData.onlinebidApplicationStartDate = date;
-          }
+          updatedData.onlinebidApplicationStartDate = date;
         } else {
-          // spnKbnが1以外の場合、bidStartDateが空なら同じ値を設定
-          if (!prev.bidStartDate) {
-            updatedData.bidStartDate = date;
-          }
+          updatedData.bidStartDate = date;
         }
       }
 
       // displayEndDateが変更された場合
-      if (field === "displayEndDate") {
+      if (field === "displayEndDate" && date && date.isValid()) {
         if (selectedSpnKbn === "1") {
-          // spnKbnが1の場合、onlinebidApplicationEndDateが空なら同じ値を設定
-          if (!prev.onlinebidApplicationEndDate) {
-            updatedData.onlinebidApplicationEndDate = date;
-          }
+          updatedData.onlinebidApplicationEndDate = date;
         } else {
-          // spnKbnが1以外の場合、bidEndDateが空なら同じ値を設定
-          if (!prev.bidEndDate) {
-            updatedData.bidEndDate = date;
-          }
+          updatedData.bidEndDate = date;
         }
       }
-
       return updatedData;
     });
     if (errors?.[name]) {
@@ -133,30 +124,22 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       // displayStarttimeが変更された場合
       if (field === "displayStarttime") {
         if (selectedSpnKbn === "1") {
-          // spnKbnが1の場合、onlinebidApplicationStarttimeが空なら同じ値を設定
-          if (!prev.onlinebidApplicationStarttime) {
-            updatedData.onlinebidApplicationStarttime = time;
-          }
+          // spnKbnが1の場合、onlinebidApplicationStarttimeを更新
+          updatedData.onlinebidApplicationStarttime = time;
         } else {
-          // spnKbnが1以外の場合、bidStarttimeが空なら同じ値を設定
-          if (!prev.bidStarttime) {
-            updatedData.bidStarttime = time;
-          }
+          // spnKbnが1以外の場合（または空の場合）、bidStarttimeを更新
+          updatedData.bidStarttime = time;
         }
       }
 
       // displayEndtimeが変更された場合
       if (field === "displayEndtime") {
         if (selectedSpnKbn === "1") {
-          // spnKbnが1の場合、onlinebidApplicationEndtimeが空なら同じ値を設定
-          if (!prev.onlinebidApplicationEndtime) {
-            updatedData.onlinebidApplicationEndtime = time;
-          }
+          // spnKbnが1の場合、onlinebidApplicationEndtimeを更新
+          updatedData.onlinebidApplicationEndtime = time;
         } else {
-          // spnKbnが1以外の場合、bidEndtimeが空なら同じ値を設定
-          if (!prev.bidEndtime) {
-            updatedData.bidEndtime = time;
-          }
+          // spnKbnが1以外の場合（または空の場合）、bidEndtimeを更新
+          updatedData.bidEndtime = time;
         }
       }
 
@@ -196,7 +179,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   //開催情報登録
-  const { responseData, errors, auctionRegist } = useAuctionRegistAPI();
+  const { errors, auctionRegist } = useAuctionRegistAPI();
   const handleSubmit = () => {
     const auctionDatetime = CombineDateTime(fetchedData.auctionDate, fetchedData.auctionDatetime);
     const displayStarttime = CombineDateTime(

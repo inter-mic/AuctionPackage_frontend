@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 export const useAdminLogoutAPI = () => {
   const adminLogout = async () => {
     try {

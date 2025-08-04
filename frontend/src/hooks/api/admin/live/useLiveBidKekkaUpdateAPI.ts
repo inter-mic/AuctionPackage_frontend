@@ -1,22 +1,18 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { dataURLtoFile, urlToFile } from "@/components/ui/images/fileUtils";
 //型定義
-import { Errors } from "@/types/errors";
 import { LiveBidKekkaData } from "@/types/admin/live/register";
 import { TLiveBidLog } from "@/types/admin/live/auctioneer";
 
 export const useLiveBidKekkaUpdateAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts, apiRequest } = useCommonSetup();
   const [liveBidKekkaRegistErrors, setLiveBidKekkaRegistErrors] = useState<string | undefined>();
   const [responseData, setResponseData] = useState<LiveBidKekkaData>();
-  const router = useRouter();
   const liveBidKekkaUpdateAPI = async (
     auctionKekkaStatus: number | null,
     liveBidKekka: LiveBidKekkaData,
     liveBidLog: TLiveBidLog[],
-    connectionCount: number | null | undefined,
-    spnKbn: string | string[] | undefined
+    connectionCount: number | null | undefined
   ): Promise<{ success: boolean; errorMessage?: string }> => {
     const sanitizedKekkaData = {
       ...liveBidKekka,

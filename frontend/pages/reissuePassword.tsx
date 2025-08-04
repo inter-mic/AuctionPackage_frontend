@@ -19,10 +19,6 @@ import { PasswordChangeButton } from "@/components/ui/buttons/passwordChangeButt
 import styles from "@/styles/PasswordForm.module.css";
 import { TPageProps } from "@/types/member/memberPage";
 
-interface PageProps {
-  faviconImagePath: string;
-}
-
 export const getServerSideProps: GetServerSideProps = withSystemSetting(
   async (context) => {
     const { locale } = context;
@@ -40,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = withSystemSetting(
 const Page: React.FC<TPageProps> = () => {
   const params = useSearchParams();
   const paramsToken = params ? params.get("token") : null;
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts } = useCommonSetup();
   const {
     newPassword,
     newPasswordConfirm,
@@ -48,7 +44,6 @@ const Page: React.FC<TPageProps> = () => {
     handleNewPasswordConfirmChange,
     handleSubmit,
     errors,
-    responseData,
   } = useReissuePasswordAPI(paramsToken);
   const { formErrors } = useFormErrors(errors);
   const [showNewPassword, setShowNewPassword] = useState(false);

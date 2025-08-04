@@ -5,21 +5,17 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { UserAddinfoItem } from "@/types/public/userAddinfoItem";
 
 export const useUserAddinfoItemAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
   const [userAddinfo, setUserAddInfo] = useState<UserAddinfoItem[]>([]);
   useEffect(() => {
     const userAddinfoItemAPI = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}userAddinfoItem/search`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userAddinfoItem/search`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data: UserAddinfoItem[] = await res.json();
         setUserAddInfo(data);
       } catch (error) {

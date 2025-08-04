@@ -4,7 +4,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { TGoodsAuctionBidAdminSearchRequest } from "@/types/admin/bid/search";
 
 export const useBidLogSearchCountAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [count, setCount] = useState<number | 0>(0);
   const bidLogSearchCountAPI = async (searchParams: TGoodsAuctionBidAdminSearchRequest) => {
     const endPoint = "logBid/count";

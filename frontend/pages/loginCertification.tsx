@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = withSystemSetting(
 const Page: React.FC<TPageProps> = () => {
   const params = useSearchParams();
   const paramsToken = params ? params.get("token") : null;
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts } = useCommonSetup();
   const {
     oldPassword,
     newPassword,
@@ -46,7 +46,6 @@ const Page: React.FC<TPageProps> = () => {
     handleNewPasswordConfirmChange,
     handleSubmit,
     errors,
-    responseData,
   } = useLoginCertificationAPI(paramsToken);
   const { formErrors } = useFormErrors(errors);
   const [showOldPassword, setShowOldPassword] = useState(false);

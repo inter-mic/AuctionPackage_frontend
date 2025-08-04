@@ -1,10 +1,8 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
-import { useSpnKbnSearch} from '@/hooks/api/admin/spnKbn/useSpnKbnSearch';
-
-
+import { useSpnKbnSearch } from "@/hooks/api/admin/spnKbn/useSpnKbnSearch";
 
 type Props = {
   className?: string | null;
@@ -12,8 +10,8 @@ type Props = {
   selectedId?: string | null;
 };
 
-export const SpnKbnPullDown =({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+export const SpnKbnPullDown = ({ className, onChange, selectedId }: Props) => {
+  const { useState, useEffect } = useCommonSetup();
   const { spnKbn } = useSpnKbnSearch();
   const [selectedSpnKbn, setSelectedSpnKbn] = useState<string | null>(null);
   useEffect(() => {
@@ -33,21 +31,21 @@ export const SpnKbnPullDown =({ className, onChange, selectedId }: Props) => {
   };
 
   return (
-    <select 
+    <select
       id="spnKbn"
       name="spnKbn"
-      className={className ?? ''}
+      className={className ?? ""}
       onChange={handleChange}
-      value={selectedSpnKbn ?? ''
-      }>
+      value={selectedSpnKbn ?? ""}
+    >
       <option value="">---</option>
-      {spnKbn.map((item, index) => (
+      {spnKbn.map((item) =>
         Object.entries(item).map(([key, value]) => (
           <option key={key} value={key}>
             {value}
           </option>
         ))
-      ))}
+      )}
     </select>
   );
 };

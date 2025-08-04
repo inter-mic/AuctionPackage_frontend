@@ -50,8 +50,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
     setJizenBidModalOpen(!isJizenBidModalOpen);
   };
 
-  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidDeleteAPI } =
-    useLiveJizenBidDeleteAPI();
+  const { liveJizenBidDeleteAPI } = useLiveJizenBidDeleteAPI();
   const handleJizenBidDelete = (goodsId: number) => {
     liveJizenBidDeleteAPI(goodsId);
   };

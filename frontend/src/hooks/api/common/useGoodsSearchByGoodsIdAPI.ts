@@ -2,11 +2,10 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
 import { TGoodsSelect } from "@/types/common/goods";
-import { Errors } from "@/types/errors";
 
 export const useGoodsSearchByGoodsIdAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
-  const [goodsSearchErrors, setGoodsSearchErrors] = useState<Errors>();
+
   const [fetchGoodsData, setFetchGoodsData] = useState<TGoodsSelect>();
   const goodsSearchByGoodsIdAPI = async (goodsId: number, isLogin: boolean) => {
     const endPointKbn = `${isLogin ? "member" : "public"}`;
@@ -23,5 +22,5 @@ export const useGoodsSearchByGoodsIdAPI = () => {
     }
   };
 
-  return { fetchGoodsData, goodsSearchErrors, goodsSearchByGoodsIdAPI };
+  return { fetchGoodsData, goodsSearchByGoodsIdAPI };
 };

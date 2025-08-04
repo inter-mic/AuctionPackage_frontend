@@ -16,7 +16,7 @@ import { GoodsAddinfoItemRegistButton } from "@/components/ui/buttons/admin/good
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminGoodsAddinfoItemRegist,
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 206);
   const { executionPermission } = useExecutionPermission(kengen);
   const { data, goodsAddinfoItemSearch } = useGoodsAddinfoItemSearchAPI();

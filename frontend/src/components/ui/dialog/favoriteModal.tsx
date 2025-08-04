@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { texts } from "@/config/texts.ja";
 import { useGoodsFavoriteSearchAPI } from "@/hooks/api/admin/goods/useGoodsFavoriteSearchAPI";
 import { TAdminGoodsFavoriteSelect } from "@/types/admin/goods/favoriteSearch";
-import { getFormattedDate } from "@/components/ui/format/FormatDatetime";
 
 interface FavoriteModalProps {
   isOpen: boolean;

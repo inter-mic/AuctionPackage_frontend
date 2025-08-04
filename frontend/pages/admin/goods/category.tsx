@@ -18,7 +18,7 @@ import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import { CategoryUpdateButton } from "@/components/ui/buttons/admin/CategoryUpdateButton";
 import { CategoryDeleteButton } from "@/components/ui/buttons/admin/CategoryDeleteButton";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminCategoryRegist,
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 207);
   const { executionPermission } = useExecutionPermission(kengen);
   const { category } = useCategorySearchAPI();
@@ -45,7 +45,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setNewCategory((prevCategory) => ({ ...prevCategory, [name]: value }));
   };
 
-  const { responseData, errors, categoryRegist } = useCategoryRegistAPI();
+  const { errors, categoryRegist } = useCategoryRegistAPI();
   const handleSubmit = () => {
     categoryRegist(null, newCategory);
   };

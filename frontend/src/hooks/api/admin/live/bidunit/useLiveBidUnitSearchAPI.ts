@@ -1,18 +1,15 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TMtLiveBidUnit } from '@/types/common/bidUnit';
-
-
+import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 
 export const useLiveBidUnitSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, apiRequest } = useCommonSetup();
   const [liveBidUnitList, setliveBidUnitList] = useState<TMtLiveBidUnit[]>([]);
   useEffect(() => {
     const liveBidUnitSearchAPI = async () => {
-
       const endPoint = `liveBidUnit/search`;
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', null, "", true);
+      const { data: responseData } = await apiRequest("admin", endPoint, "POST", null, "", true);
       if (responseData) {
         setliveBidUnitList(responseData);
       }

@@ -1,8 +1,6 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import Link from "next/link";
 import { texts } from "@/config/texts.ja";
-import Image from "next/image";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
@@ -21,7 +19,7 @@ import { useRiyoKiyakuRegistAPI } from "@/hooks/api/admin/system/useRiyoKiyakuRe
 import { useRiyoKiyakuDeleteAPI } from "@/hooks/api/admin/system/useRiyoKiyakuDeleteAPI";
 import { usePrivacyPolicyRegistAPI } from "@/hooks/api/admin/system/usePrivacyPolicyRegistAPI";
 import usePrivacyPolicyDeleteAPI from "@/hooks/api/admin/system/usePrivacyPolicyDeleteAPI";
-import { useZipCodeUploadRegistAPI } from "@/hooks/api/admin/system/useZipCodeUploadRegistAPI";
+//import { useZipCodeUploadRegistAPI } from "@/hooks/api/admin/system/useZipCodeUploadRegistAPI";
 
 //型定義
 import { PageProps } from "@/types/admin/adminPage";
@@ -49,12 +47,10 @@ import {
   PrivacyPolicyRegistButton,
   PrivacyPolicyDeleteButton,
 } from "@/components/ui/buttons/admin/privacyPolicyButton";
-import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminSystemRegist,
@@ -63,7 +59,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 503);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -73,7 +69,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
   const [logoImageFlg, setLogoImageFlg] = useState(false);
   const [riyoKiyakuFlg, setriyoKiyakuFlg] = useState(false);
   const [privacyPolicyFlg, setPrivacyPolicyFlg] = useState(false);
-  const [youtubeIframe, setYoutubeIframe] = useState("");
+
   useEffect(() => {
     systemSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,16 +98,13 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
       if (data.privacyPolicyPath) {
         setPrivacyPolicyFlg(true);
       }
-      if (data.youtubeIframe) {
-        setYoutubeIframe(data.youtubeIframe);
-      }
     }
   }, [data]);
 
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
   const [systemData, setSystemData] = useState<SystemData>(initialSystemData);
-  const { systemResponseData, systemErrors, systemRegist } = useSystemRegistAPI();
+  const { systemRegist } = useSystemRegistAPI();
   const handleSystemSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await systemRegist(systemData);
@@ -136,11 +129,11 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
   };
 
   const handleYouTubeChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     setSystemData((prevSystemData) => ({ ...prevSystemData, [name]: value }));
   };
 
-  const { faviconResponseData, faviconErrors, faviconRegist } = useFaviconImageRegistAPI();
+  const { faviconErrors, faviconRegist } = useFaviconImageRegistAPI();
   useEffect(() => {
     if (faviconErrors) {
       setFormErrors(faviconErrors);
@@ -170,7 +163,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
     [systemData, faviconImageDeleteAPI]
   );
 
-  const { logoResponseData, logoErrors, logoRegist } = useLogoImageRegistAPI();
+  const { logoErrors, logoRegist } = useLogoImageRegistAPI();
   useEffect(() => {
     if (logoErrors) {
       setFormErrors(logoErrors);
@@ -181,6 +174,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
     e.preventDefault();
     await logoRegist(systemData, selectedLogoImage);
   };
+
   const handleLogoImageChange = (logoImage: File | null) => {
     setSelectedLogoImage(logoImage);
     if (logoErrors) {
@@ -200,7 +194,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
     [systemData, logoImageDeleteAPI]
   );
 
-  const { riyoKiyakuResponseData, riyoKiyakuErrors, riyoKiyakuRegist } = useRiyoKiyakuRegistAPI();
+  const { riyoKiyakuErrors, riyoKiyakuRegist } = useRiyoKiyakuRegistAPI();
   useEffect(() => {
     if (riyoKiyakuErrors) {
       setFormErrors(riyoKiyakuErrors);
@@ -231,8 +225,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
     [systemData, riyoKiyakuDeleteAPI]
   );
 
-  const { privacyPolicyResponseData, privacyPolicyErrors, privacyPolicyRegist } =
-    usePrivacyPolicyRegistAPI();
+  const { privacyPolicyErrors, privacyPolicyRegist } = usePrivacyPolicyRegistAPI();
   useEffect(() => {
     if (privacyPolicyErrors) {
       setFormErrors(privacyPolicyErrors);
@@ -262,20 +255,20 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
     [systemData, privacyPolicyDeleteAPI]
   );
 
-  const { zipCodeUploadRegistAPI } = useZipCodeUploadRegistAPI();
-  const [selectedZipCode, setSelectedZipCode] = useState<File | null>(null);
-  const handleZipCodeChange = (selectedZipCode: File | null) => {
-    setSelectedZipCode(selectedZipCode);
-    if (selectedZipCode) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        ["selectedZipCode"]: "",
-      }));
-    }
-  };
-  const handleZipUploadRegist = async () => {
-    await zipCodeUploadRegistAPI(selectedZipCode);
-  };
+  // const { zipCodeUploadRegistAPI } = useZipCodeUploadRegistAPI();
+  // const [selectedZipCode, setSelectedZipCode] = useState<File | null>(null);
+  // const handleZipCodeChange = (selectedZipCode: File | null) => {
+  //   setSelectedZipCode(selectedZipCode);
+  //   if (selectedZipCode) {
+  //     setFormErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       ["selectedZipCode"]: "",
+  //     }));
+  //   }
+  // };
+  // const handleZipUploadRegist = async () => {
+  //   await zipCodeUploadRegistAPI(selectedZipCode);
+  // };
   return (
     <div>
       <div className={breadcrumbStyles.breadcrumb}>

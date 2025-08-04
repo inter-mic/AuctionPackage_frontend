@@ -21,8 +21,7 @@ import { MailShomeiRegistButton } from "@/components/ui/buttons/admin/mailShomei
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminMailRegist,
@@ -31,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 505);
   const { executionPermission } = useExecutionPermission(kengen);

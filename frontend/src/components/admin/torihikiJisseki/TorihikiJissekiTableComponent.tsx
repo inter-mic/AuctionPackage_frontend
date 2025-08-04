@@ -1,5 +1,4 @@
 import React from "react";
-import { texts } from "@/config/texts.ja";
 
 interface TorihikiJissekiTableProps {
   title: string;
@@ -29,7 +28,6 @@ export const TorihikiJissekiTableComponent: React.FC<TorihikiJissekiTableProps> 
   onSelect,
   onRowClick,
   columns,
-  isRakusatsu = false,
 }) => {
   return (
     <div className="min-w-full bg-white">

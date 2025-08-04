@@ -2,7 +2,7 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { TAuction } from "@/types/common/MtAuction";
 export const useCheckLiveAuctionAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, apiRequest } = useCommonSetup();
   const [fetchAuction, setFetchAuction] = useState<TAuction>();
   useEffect(() => {
     const checkLiveAuctionAPI = async () => {

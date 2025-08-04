@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocale } from "@/hooks/useLocale";
-import { DndContext, closestCenter, DragOverEvent } from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -9,7 +9,6 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toast } from "react-toastify";
-import { getTexts } from "@/config/texts";
 import Image from "next/image";
 interface Image {
   imageSeq: string;
@@ -178,7 +177,7 @@ export const ImageTopList: React.FC<ImageSortableListProps> = ({ images, onImage
     id: string,
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     const updatedImages = images.map((image) =>
       image.imageSeq === id ? { ...image, linkUrl: value } : image
     );

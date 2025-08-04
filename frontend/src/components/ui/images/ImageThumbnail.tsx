@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { DndContext, closestCenter, DragOverEvent } from "@dnd-kit/core";
+import React, { useState } from "react";
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -114,7 +114,8 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
     // jpg または png ファイルのみをフィルタリング
     const validFiles = files.filter((file) => {
       const fileType = file.type;
-      return fileType === "image/jpeg" || fileType === "image/png";
+      const isValid = fileType === "image/jpeg" || fileType === "image/png";
+      return isValid;
     });
 
     if (validFiles.length === 0) {
@@ -130,12 +131,22 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
         const reader = new FileReader();
         reader.onloadend = () => {
           const imageUrl = reader.result as string;
-          resolve({
+          const newImage = {
             no: `${maxNo + index + 1}`,
             isNewFlg: true,
             thumbnailImageUrl: imageUrl,
             originalImageUrl: imageUrl,
             squareImageUrl: imageUrl,
+          };
+          resolve(newImage);
+        };
+        reader.onerror = () => {
+          resolve({
+            no: `${maxNo + index + 1}`,
+            isNewFlg: true,
+            thumbnailImageUrl: "",
+            originalImageUrl: "",
+            squareImageUrl: "",
           });
         };
         reader.readAsDataURL(file);
@@ -143,19 +154,35 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
     });
 
     // すべての画像を読み込んでから更新
-    Promise.all(promises).then((newImages) => {
-      onImagesUpdate([...images, ...newImages]);
-    });
+    Promise.all(promises)
+      .then((newImages) => {
+        const updatedImages = [...images, ...newImages];
+        onImagesUpdate(updatedImages);
+      })
+      .catch((error) => {
+        toast.error(error + ":画像の処理中にエラーが発生しました");
+      });
   };
 
   const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
+
+    if (files.length === 0) {
+      return;
+    }
+
     handleFiles(files);
     // ファイル入力をリセット
-    event.target.value = '';
+    event.target.value = "";
   };
   const getMaxNo = (images: Image[]): number => {
-    const maxNo = images.reduce((max, image) => Math.max(max, parseInt(image.no, 10)), 0);
+    if (images.length === 0) {
+      return 0;
+    }
+    const maxNo = images.reduce((max, image) => {
+      const currentNo = parseInt(image.no, 10);
+      return isNaN(currentNo) ? max : Math.max(max, currentNo);
+    }, 0);
     return maxNo;
   };
 
@@ -198,7 +225,14 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => document.getElementById('file-input')?.click()}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const fileInput = document.getElementById("file-input") as HTMLInputElement;
+          if (fileInput) {
+            fileInput.click();
+          }
+        }}
       >
         <input
           id="file-input"
@@ -206,12 +240,16 @@ export const ImageThumbnailList: React.FC<ImageSortableListProps> = ({
           multiple
           accept="image/jpeg,image/png"
           onChange={handleFileInputChange}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           style={{
             position: "absolute",
             opacity: 0,
             width: "100%",
             height: "100%",
             cursor: "pointer",
+            pointerEvents: "none",
           }}
         />
         ドロップエリア（クリックして画像を選択）

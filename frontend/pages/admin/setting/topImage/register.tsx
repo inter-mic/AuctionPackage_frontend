@@ -20,7 +20,7 @@ import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminTopImageRegist,
@@ -74,16 +74,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   //登録
-  const { responseData, errors, topImageRegistAPI } = useTopImageRegistAPI();
-  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const { topImageRegistAPI } = useTopImageRegistAPI();
+
   const TopImageRegist = () => {
     topImageRegistAPI(images);
   };
-  useEffect(() => {
-    if (errors) {
-      setFormErrors(errors);
-    }
-  }, [errors]);
 
   return (
     <div>

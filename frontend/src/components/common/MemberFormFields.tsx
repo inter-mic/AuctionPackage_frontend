@@ -1,8 +1,6 @@
 import React from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
@@ -24,8 +22,8 @@ interface Props {
   setErrors: React.Dispatch<React.SetStateAction<Errors>>;
 }
 
-export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors, setErrors }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors }) => {
+  const { useState, useEffect, texts } = useCommonSetup();
 
   const [selectedTodofukenId, setSelectedTodofukenId] = useState<string | null>(null);
 
@@ -44,7 +42,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
   }, [member]);
 
   const { address, zipCodeSearch } = useZipCodeSearchAPI();
-  const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleZipCodeChange = () => {
     const zipCode1 = (document.getElementById("zipCode1") as HTMLInputElement).value;
     const zipCode2 = (document.getElementById("zipCode2") as HTMLInputElement).value;
     handleChange({
@@ -68,7 +66,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
-  const handleTelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTelChange = () => {
     const tel1 = (document.getElementById("tel1") as HTMLInputElement).value;
     const tel2 = (document.getElementById("tel2") as HTMLInputElement).value;
     const tel3 = (document.getElementById("tel3") as HTMLInputElement).value;
@@ -77,7 +75,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  const handleFaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFaxChange = () => {
     const fax1 = (document.getElementById("fax1") as HTMLInputElement).value;
     const fax2 = (document.getElementById("fax2") as HTMLInputElement).value;
     const fax3 = (document.getElementById("fax3") as HTMLInputElement).value;
@@ -86,7 +84,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMobileChange = () => {
     const mobile1 = (document.getElementById("mobile1") as HTMLInputElement).value;
     const mobile2 = (document.getElementById("mobile2") as HTMLInputElement).value;
     const mobile3 = (document.getElementById("mobile3") as HTMLInputElement).value;
@@ -95,7 +93,6 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     } as React.ChangeEvent<HTMLInputElement>);
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
     handleChange(e);
   };
 

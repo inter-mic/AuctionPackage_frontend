@@ -8,7 +8,7 @@ interface ShimeButtonProps {
   onUpdate: (auctionSeq: number, shimeFlg: boolean) => void;
 }
 
-export const ShimeOnButton: React.FC<ShimeButtonProps> = ({ auctionSeq, onUpdate }) => {
+export const ShimeOnButton: React.FC<ShimeButtonProps> = ({ auctionSeq }) => {
   const { shimeOnOffAPI } = useShimeOnOffAPI();
 
   const handleClick = useCallback(
@@ -29,7 +29,7 @@ export const ShimeOnButton: React.FC<ShimeButtonProps> = ({ auctionSeq, onUpdate
   );
 };
 
-export const ShimeOffButton: React.FC<ShimeButtonProps> = ({ auctionSeq, onUpdate }) => {
+export const ShimeOffButton: React.FC<ShimeButtonProps> = ({ auctionSeq }) => {
   const { shimeOnOffAPI } = useShimeOnOffAPI();
 
   const handleClick = useCallback(

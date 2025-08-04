@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { texts } from "@/config/texts.ja";
 interface RegistButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;

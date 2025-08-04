@@ -1,8 +1,6 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 type Props = {
   className?: string | null;
@@ -11,7 +9,7 @@ type Props = {
 };
 
 export const MemberRegistrationPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const [selectedMemberRegistration, setSelectedMemberRegistration] = useState<string | null>(null);
   useEffect(() => {
     if (selectedId !== null && selectedId !== undefined) {
@@ -30,16 +28,15 @@ export const MemberRegistrationPullDown = ({ className, onChange, selectedId }: 
   };
 
   return (
-    <select 
-        id="memberRegistrationFlg"
-        name="memberRegistrationFlg"
-        className={className ?? ''}
-        onChange={handleChange}
-        value={selectedMemberRegistration ?? ''
-        }>
+    <select
+      id="memberRegistrationFlg"
+      name="memberRegistrationFlg"
+      className={className ?? ""}
+      onChange={handleChange}
+      value={selectedMemberRegistration ?? ""}
+    >
       <option value="0">{texts.system.adminOnly}</option>
       <option value="1">{texts.system.adminAndMember}</option>
-      
     </select>
   );
 };

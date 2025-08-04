@@ -16,7 +16,7 @@ import { PageProps } from "@/types/admin/adminPage";
 //スタイル
 import styles from "@/styles/admin/Screen.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminLiveScreen,

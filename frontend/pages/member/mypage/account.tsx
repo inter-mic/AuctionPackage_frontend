@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<TPageProps> = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const [member, setMember] = useState<TUserMemberRegistRequest>({});
   const { userData, userSearchAPI } = useUserSearchAPI();
   useEffect(() => {

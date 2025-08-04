@@ -1,10 +1,8 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
-import { useKengenGroupSearchAPI } from '@/hooks/api/admin/kengen/useKengenGroupSearchAPI';
-
-
+import { useKengenGroupSearchAPI } from "@/hooks/api/admin/kengen/useKengenGroupSearchAPI";
 
 type Props = {
   className?: string | null;
@@ -13,7 +11,7 @@ type Props = {
 };
 
 export const KengenListPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
   const { kengenGroup } = useKengenGroupSearchAPI();
   const [selectedKengenId, setSelectedKengenId] = useState<string | null>(null);
 
@@ -37,15 +35,15 @@ export const KengenListPullDown = ({ className, onChange, selectedId }: Props) =
   };
 
   return (
-    <select 
-        id="kengenId"
-        name="kengenId"
-        className={className ?? ''}
-        onChange={handleChange}
-        value={selectedKengenId ?? ''
-        }>
+    <select
+      id="kengenId"
+      name="kengenId"
+      className={className ?? ""}
+      onChange={handleChange}
+      value={selectedKengenId ?? ""}
+    >
       <option value="0">---</option>
-      {kengenGroup.map(data => (
+      {kengenGroup.map((data) => (
         <option key={data.kengenId} value={data.kengenId}>
           {data.kengenName}
         </option>

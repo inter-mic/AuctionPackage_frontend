@@ -11,7 +11,7 @@ import styles from "@/styles/admin/Dashboard.module.css";
 //型定義
 import { PageProps } from "@/types/admin/adminPage";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminDashboard,

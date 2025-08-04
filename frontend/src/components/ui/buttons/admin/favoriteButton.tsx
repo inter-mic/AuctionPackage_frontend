@@ -5,7 +5,7 @@ interface FavoriteButtonProps {
   onClick: () => void;
 }
 
-export function FavoriteButton({ goodsId, onClick }: FavoriteButtonProps) {
+export function FavoriteButton({ onClick }: FavoriteButtonProps) {
   return (
     <button
       onClick={onClick}

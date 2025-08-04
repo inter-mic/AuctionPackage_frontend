@@ -5,7 +5,7 @@ import { TAdminPaddleRegistRequest } from "@/types/admin/paddle/management";
 import { Errors } from "@/types/errors";
 
 export const usePaddleRegistAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts, apiRequest } = useCommonSetup();
   const [errors, setErrors] = useState<Errors>();
   const [responseStatus, setResponseStatus] = useState<number>();
   const paddleRegistAPI = async (paddleData: TAdminPaddleRegistRequest, isUpdate: boolean) => {

@@ -1,7 +1,7 @@
 import { texts } from "@/config/texts.ja";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import axios, { AxiosRequestConfig, AxiosProgressEvent } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 export const useApiRequest = () => {
   const router = useRouter();

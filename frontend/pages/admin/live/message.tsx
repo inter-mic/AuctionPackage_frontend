@@ -17,7 +17,7 @@ import { PageProps } from "@/types/admin/adminPage";
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import { MessageDeleteButton } from "@/components/ui/buttons/admin/MessageDeleteButton";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminLiveMessageRegist,
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 353);
   const { executionPermission } = useExecutionPermission(kengen);
   const { message } = useMessageSearchAPI();
@@ -42,7 +42,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setNewmessage((prevmessage) => ({ ...prevmessage, [name]: value }));
   };
 
-  const { responseData, errors, messageRegistAPI } = useMessageRegistAPI();
+  const { errors, messageRegistAPI } = useMessageRegistAPI();
   const handleSubmit = () => {
     messageRegistAPI(null, newmessage);
   };

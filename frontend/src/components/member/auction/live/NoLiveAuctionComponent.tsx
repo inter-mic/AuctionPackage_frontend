@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useLocale } from "@/hooks/useLocale";
 import { useSearchNextLiveAuctionAPI } from "@/hooks/api/member/live/useSearchNextLiveAuctionAPI";
 import { TAuction } from "@/types/common/MtAuction";
 import styles from "@/styles/member/liveAuction/Bid.module.css";

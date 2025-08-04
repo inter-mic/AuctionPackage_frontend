@@ -22,15 +22,9 @@ interface Props {
 export function StatusButton({
   status,
   disabled,
-  liveBidkekkaData,
   liveBidLog,
   onlineBidHistory,
-  connectionCount,
-  kenriUserId,
-  isRakusatsuProcessFlg,
   sendWebSocketMessage,
-  liveBidKekkaUpdateAPI,
-  onNextLot,
   setLiveBidkekkaData,
   onFocus,
 }: Props) {
@@ -44,14 +38,14 @@ export function StatusButton({
   }
   const bidComingSoonHaishin = () => {
     sendWebSocketMessage("bidComingSoon", {
-      isBidComingSoonMsgFlg : true,
+      isBidComingSoonMsgFlg: true,
     });
   };
 
   const rakusatusuProcess = () => {
     sendWebSocketMessage("rakusatsuProcessing", {
-      isRakusatsuProcessingMsgFlg : true,
-      isBidDisabled : true,
+      isRakusatsuProcessingMsgFlg: true,
+      isBidDisabled: true,
     });
   };
 
@@ -66,8 +60,8 @@ export function StatusButton({
 
   const bidRestart = () => {
     sendWebSocketMessage("bidRestart", {
-      isRakusatsuProcessingMsgFlg : false,
-      isBidDisabled : false,
+      isRakusatsuProcessingMsgFlg: false,
+      isBidDisabled: false,
     });
   };
 

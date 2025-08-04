@@ -18,7 +18,7 @@ import { PageProps } from "@/types/admin/adminPage";
 //ボタン
 import { PasswordChangeButton } from "@/components/ui/buttons/passwordChangeButton";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.changePassword,
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts } = useCommonSetup();
   const {
     oldPassword,
     newPassword,
@@ -38,7 +38,6 @@ const Page: React.FC<PageProps> = () => {
     handleSubmit,
     handleInputFocus,
     errors,
-    responseData,
   } = useReissuePasswordAPI();
   const { formErrors } = useFormErrors(errors);
 

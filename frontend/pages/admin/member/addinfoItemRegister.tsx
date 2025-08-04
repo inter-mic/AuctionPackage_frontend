@@ -17,7 +17,7 @@ import { UserAddinfoItemRegistButton } from "@/components/ui/buttons/admin/userA
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminMemberAddinfoItemRegist,

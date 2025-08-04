@@ -1,18 +1,15 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TCategorySearch } from '@/types/common/category/search';
-
-
+import { TCategorySearch } from "@/types/common/category/search";
 
 export const useCategorySearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, apiRequest } = useCommonSetup();
   const [category, setCategory] = useState<TCategorySearch[]>([]);
   useEffect(() => {
     const categorySearch = async () => {
-
       const endPoint = `category/search`;
-      const { status, data: responseData } = await apiRequest( "public", endPoint, 'POST', null, "", true);
+      const { data: responseData } = await apiRequest("public", endPoint, "POST", null, "", true);
       if (responseData) {
         setCategory(responseData);
       }

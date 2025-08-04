@@ -5,7 +5,7 @@ import { LiveBidInfoData, initialLiveBidInfoData } from "@/types/admin/live/bidI
 import { Errors } from "@/types/errors";
 
 export const useLiveBidInfoSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [liveBidInfoSearchErrors, setLiveBidInfoSearchErrors] = useState<Errors>();
   const [fetchLiveBidInfoData, setFetchliveBidInfoData] =
     useState<LiveBidInfoData>(initialLiveBidInfoData);

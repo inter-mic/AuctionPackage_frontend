@@ -1,10 +1,8 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
-import { useCategorySearchAPI } from '@/hooks/api/admin/category/useCategorySearchAPI';
-
-
+import { useCategorySearchAPI } from "@/hooks/api/admin/category/useCategorySearchAPI";
 
 type Props = {
   className?: string | null;
@@ -13,7 +11,7 @@ type Props = {
 };
 
 export const CategoryListPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
   const { category } = useCategorySearchAPI();
   const [selectedCategorySeq, setSelectedCategorySeq] = useState<string | null>(null);
 
@@ -36,15 +34,15 @@ export const CategoryListPullDown = ({ className, onChange, selectedId }: Props)
   };
 
   return (
-    <select 
-        id="categorySeq"
-        name="categorySeq"
-        className={className ?? ''}
-        onChange={handleChange}
-        value={selectedCategorySeq ?? ''
-        }>
+    <select
+      id="categorySeq"
+      name="categorySeq"
+      className={className ?? ""}
+      onChange={handleChange}
+      value={selectedCategorySeq ?? ""}
+    >
       <option value="">---</option>
-      {category.map(data => (
+      {category.map((data) => (
         <option key={data.categorySeq} value={data.categorySeq}>
           {data.categoryName}
         </option>

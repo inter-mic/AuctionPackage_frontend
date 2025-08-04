@@ -50,7 +50,7 @@ export const useApiRequest = () => {
   ) => {
     setIsLoading(true);
     const toastId = showToast ? toast.loading("Loading...") : null;
-    
+
     try {
       const baseUrl = getBaseUrl(endPointKbn);
       const fetchHeaders: Record<string, string> = headers || {};
@@ -125,7 +125,6 @@ export const useApiRequest = () => {
         }
         return { status: res.status, data: responseData.data };
       } else {
-        const errorMessage = await res.text();
         if (showToast) {
           toast.update(toastId!, {
             render: `システムエラーが発生しました`,

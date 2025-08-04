@@ -37,7 +37,7 @@ interface Props extends TPageProps {
 }
 
 const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const params = useSearchParams();
   const paramsGoodsId = params ? params.get("goodsId") : null;
   const { goodsAddInfo } = useGoodsAddinfoItemAPI();

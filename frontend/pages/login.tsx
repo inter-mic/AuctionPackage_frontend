@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
 import { getTexts } from "@/config/texts";
-import { useLocale } from "@/hooks/useLocale";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VisibilityIcon from "@mui/icons-material/Visibility";

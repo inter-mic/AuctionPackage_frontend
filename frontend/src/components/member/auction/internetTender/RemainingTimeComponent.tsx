@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { getTexts } from "@/config/texts";
 
 interface Props {
   initialTime: string;
   onEnd?: () => void; // カウントダウン終了時のコールバック（オプション）
 }
 
-const RemainingTimeComponent: React.FC<Props> = ({ initialTime, onEnd }) => {
+const RemainingTimeComponent: React.FC<Props> = ({ initialTime }) => {
   const [remainingTime, setRemainingTime] = useState(initialTime);
   const [isEndingSoon, setIsEndingSoon] = useState(false);
 

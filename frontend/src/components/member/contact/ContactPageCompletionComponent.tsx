@@ -7,7 +7,7 @@ interface Props extends TPageProps {
   isLogin: boolean;
 }
 
-const ContactPageCompletionComponent: React.FC<Props> = ({ isLogin }) => {
+const ContactPageCompletionComponent: React.FC<Props> = () => {
   const { texts } = useLocale();
   return (
     <>

@@ -4,8 +4,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { Errors } from "@/types/errors";
 
 export const useZipCodeUploadRegistAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+  const { useState, texts, apiRequest } = useCommonSetup();
   const [zipCodeUploadErrors, setErrors] = useState<Errors>();
   const zipCodeUploadRegistAPI = async (file: File | null) => {
     const endPoint = `system/zipCode/upload`;

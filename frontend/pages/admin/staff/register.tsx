@@ -29,8 +29,7 @@ import {
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/CommonRegister.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminStaffRegist,
@@ -39,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 401);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -72,9 +71,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
-  const [selectedKengenId, setSelectedKengenId] = useState<string | null>(null);
   const handleKengenIdChange = (name: string, value: string) => {
-    setSelectedKengenId(value);
     setStaff((prevStaff) => ({ ...prevStaff, [name]: value }));
     if (formErrors?.[name]) {
       setFormErrors((prevErrors) => ({

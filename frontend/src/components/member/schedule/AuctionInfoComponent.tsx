@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +15,6 @@ import { TAuction } from "@/types/common/MtAuction";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import auctionStyles from "@/styles/member/schedule/Calender.module.css";
-import buttonStyles from "@/styles/Button.module.css";
 
 interface Props {
   auctionData: TAuction;

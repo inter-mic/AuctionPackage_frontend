@@ -1,7 +1,4 @@
-// components/PaddleRegistrationFormAccordion.tsx
-
 import React from "react";
-import { getTexts } from "@/config/texts";
 import { useRef } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -26,12 +23,9 @@ import { MemberSearchModal } from "@/components/admin/MemberSearchModalComponent
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 //型定義
 import {
-  TAdminPaddleSelect,
   TAdminPaddleRegistRequest,
   TAdminNextPaddleSearchRequest,
   initialTAdminPaddleRegistRequest,
-  TAdminPaddleShoninRequest,
-  initialTAdminPaddleShoninRequest,
 } from "@/types/admin/paddle/management";
 import { TAdminUserSelect } from "@/types/admin/member/search";
 import { TMtPaddleNumber } from "@/types/public/paddleNumber";
@@ -40,7 +34,7 @@ export interface Props {
   paddleKbnList: TMtPaddleNumber[];
 }
 const PaddleRegistrationFormAccordion: React.FC<Props> = ({ paddleKbnList }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -71,11 +65,8 @@ const PaddleRegistrationFormAccordion: React.FC<Props> = ({ paddleKbnList }) => 
     companyName: registCompanyName,
     userGetInfo,
   } = useUserGetInfoAPI();
-  const handleRegistDataChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    checked?: boolean
-  ) => {
-    const { name, value, type } = e.target;
+  const handleRegistDataChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const { name, value } = e.target;
     setPaddleInsertRequest((prevGoodsData) => ({ ...prevGoodsData, [name]: value }));
     if (name === "userId") {
       setPaddleInsertRequest((prevData) => ({

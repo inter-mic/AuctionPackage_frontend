@@ -32,7 +32,7 @@ interface Props {
   fetchGoodsData: TGoodsSelect | undefined;
 }
 const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUserId }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   const [isBidModalOpen, setBidModalOpen] = useState(false);
   const handleBidToggleModal = () => {
@@ -152,8 +152,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
 
   useAuctionWebSocket(updateGoodsDataApp, updateGoodsDataBatch, isLoaded);
 
-  const { liveJizenBidResponseStatus, liveJizenBidErrors, liveJizenBidDeleteAPI } =
-    useLiveJizenBidDeleteAPI();
+  const { liveJizenBidDeleteAPI } = useLiveJizenBidDeleteAPI();
   const handleJizenBidDelete = (goodsId: number) => {
     liveJizenBidDeleteAPI(goodsId);
   };

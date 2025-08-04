@@ -1,7 +1,6 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 type Props = {
   className?: string | null;
@@ -10,7 +9,7 @@ type Props = {
 };
 
 export const KekkaStatusPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const [selectedKekkaStatus, setSelectedKekkaStatus] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,12 +32,12 @@ export const KekkaStatusPullDown = ({ className, onChange, selectedId }: Props) 
   };
 
   return (
-    <select 
+    <select
       id="kekkaStatus"
       name="kekkaStatus"
-      className={className ?? ''}
+      className={className ?? ""}
       onChange={handleChange}
-      value={selectedKekkaStatus  ?? ''}
+      value={selectedKekkaStatus ?? ""}
     >
       <option value="">---</option>
       <option value="1">{texts.pulldown.furakusatsu}</option>

@@ -1,8 +1,7 @@
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-//カスタムフック
-import { useCommonSetup } from "@/hooks/useCommonSetup";
+
 //コンポーネント
 import styles from "@/styles/admin/LayoutNoLogin.module.css";
 //スタイル
@@ -19,7 +18,6 @@ export const AdminNoLoginLayoutComponent: React.FC<LayoutProps> = ({
   faviconImagePath,
   children,
 }) => {
-  const { texts } = useCommonSetup();
   return (
     <>
       <Head>
@@ -30,10 +28,7 @@ export const AdminNoLoginLayoutComponent: React.FC<LayoutProps> = ({
         <div className={styles.mainContent}>
           <main className={styles.main}>
             {children}
-            <ToastContainer
-              position="top-center"
-              toastClassName={toastStyles.toastCustomWidth}
-            />
+            <ToastContainer position="top-center" toastClassName={toastStyles.toastCustomWidth} />
           </main>
         </div>
       </div>

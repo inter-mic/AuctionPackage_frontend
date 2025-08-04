@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { TAuctionWebSocketData } from "@/types/member/AuctionWebSocket";
 
 export const useAuctionWebSocket = (

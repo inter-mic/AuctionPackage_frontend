@@ -1,7 +1,6 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 type Props = {
   className?: string | null;
@@ -9,8 +8,8 @@ type Props = {
   selectedId?: string | null;
 };
 
-export const KeisaiFlgPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+export const KeisaiFlgPullDown = ({ className, onChange }: Props) => {
+  const { useState, useEffect, texts } = useCommonSetup();
   const [selectedKeisaiFlg, setSelectedKeisaiFlg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,12 +23,12 @@ export const KeisaiFlgPullDown = ({ className, onChange, selectedId }: Props) =>
   };
 
   return (
-    <select 
+    <select
       id="keisaiFlg"
       name="keisaiFlg"
-      className={className ?? ''}
+      className={className ?? ""}
       onChange={handleChange}
-      value={selectedKeisaiFlg  ?? ''}
+      value={selectedKeisaiFlg ?? ""}
     >
       <option value="">---</option>
       <option value="1">{texts.pulldown.keisaiFlgOn}</option>

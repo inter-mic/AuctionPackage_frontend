@@ -1,16 +1,21 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { SearchParams, TAdminUserSelect } from '@/types/admin/member/search';
-
-
+import { SearchParams, TAdminUserSelect } from "@/types/admin/member/search";
 
 export const useUserSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [data, setData] = useState<TAdminUserSelect[]>([]);
   const userSearchAPI = async (searchParams: SearchParams) => {
     const endPoint = `user/search`;
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
+    const { data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      searchParams,
+      "",
+      true
+    );
     if (responseData) {
       setData(responseData);
     }

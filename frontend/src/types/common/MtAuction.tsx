@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 export type TAuction = {
   auctionSeq?: number;
   spnKbn?: string;

@@ -1,4 +1,3 @@
-import { getTexts } from "@/config/texts";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 

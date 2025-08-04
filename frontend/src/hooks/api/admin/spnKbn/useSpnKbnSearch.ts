@@ -1,16 +1,15 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { SpnKbnData } from '@/types/admin/spnKbn/search';
+import { SpnKbnData } from "@/types/admin/spnKbn/search";
 
 export const useSpnKbnSearch = () => {
-  const { useState,useEffect,useCallback ,useRouter,texts,  apiRequest } = useCommonSetup();
+  const { useState, useEffect, apiRequest } = useCommonSetup();
   const [spnKbn, setSpnKbn] = useState<SpnKbnData[]>([]);
   useEffect(() => {
     const SpnKbnSearch = async () => {
-
       const endPoint = `spnKbn/search`;
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', null, "", true);
+      const { data: responseData } = await apiRequest("admin", endPoint, "POST", null, "", true);
       if (responseData) {
         setSpnKbn(responseData);
       }
@@ -19,5 +18,5 @@ export const useSpnKbnSearch = () => {
     SpnKbnSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return { spnKbn};
+  return { spnKbn };
 };

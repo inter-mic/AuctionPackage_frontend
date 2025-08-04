@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = withSystemSetting(
   async (context) => {
     const { locale } = context;
     const texts = getTexts(locale);
-    const otherData = {};
+
     return {
       props: {
         pageTitle: texts.menu.memberSignupCompletion,

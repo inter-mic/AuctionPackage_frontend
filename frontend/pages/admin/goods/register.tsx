@@ -56,7 +56,7 @@ import { FavoriteModal } from "@/components/ui/dialog/favoriteModal";
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/admin/GoodsRegister.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminGoodsRegist,
@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useRouter } = useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
   useKengenRedirect(kengen, 201);
   const { executionPermission } = useExecutionPermission(kengen);
   const [spnKbn, setSpnkbn] = useState<string>("");
@@ -222,6 +222,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setImages(formattedImages);
     }
   }, [fetchImages]);
+
   const handleImagesUpdate = (
     updatedImages: {
       no: string;
@@ -296,7 +297,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [shuppinUserName, shuppinCompanyName]);
 
   const handleKekkaDataChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
 
     // 数値とカンマのみ許可する正規表現
     const numericWithCommaRegex = /^[0-9,]*$/;
@@ -339,7 +340,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }));
     }
   }, [rakusatsuUserName, rakusatsuCompanyName]);
-  const router = useRouter();
+
   const formClear = () => {
     setGoodsData(initialGoodsData);
     setkekkaData(initialGoodsKekkaData);

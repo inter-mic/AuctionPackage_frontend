@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 //カスタムフック
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 

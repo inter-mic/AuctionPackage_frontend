@@ -27,7 +27,7 @@ import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import styles from "@/styles/admin/FormRegister.module.css";
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminKengenRegist,
@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 403);
   const { executionPermission } = useExecutionPermission(kengen);
 
@@ -95,7 +95,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const [formattedData, setFormattedData] = useState<any>(null);
   const handleKengenNameChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     setKengenData((prevKengenData) => {
       const newData = [...prevKengenData];
       newData[0].kengenName = value;
@@ -112,14 +112,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const [kengenIdData, setKengenIdData] = useState<number>();
-  const { responseRegistData, kengenRegistErrors, kengenGroupRegist } = useKengenGroupRegistAPI();
+  const { kengenGroupRegist } = useKengenGroupRegistAPI();
   const handleSubmit = () => {
     if (kengenIdData) {
       kengenGroupRegist(kengenIdData, formattedData);
     }
   };
 
-  const { responseDeleteData, kengenDeleteErrors, kengenGroupDelete } = useKengenGroupDeleteAPI();
+  const { kengenGroupDelete } = useKengenGroupDeleteAPI();
   const handleDeleteSubmit = () => {
     if (kengenIdData) {
       kengenGroupDelete(kengenIdData);

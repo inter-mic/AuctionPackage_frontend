@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<TPageProps> = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts } = useCommonSetup();
   const {
     oldPassword,
     newPassword,
@@ -40,7 +40,6 @@ const Page: React.FC<TPageProps> = () => {
     handleSubmit,
     handleInputFocus,
     errors,
-    responseData,
   } = useChangePasswordAPI();
   const { formErrors } = useFormErrors(errors);
 

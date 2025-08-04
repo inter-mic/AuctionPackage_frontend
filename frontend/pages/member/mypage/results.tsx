@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<TPageProps> = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const { searchParams, formChange, resetForm } = useResultsSearchParams();
   const [selectedKaisai, setSelectedKaisai] = useState<string>("");
   const handleKaisaiChange = (name: string, value: string) => {

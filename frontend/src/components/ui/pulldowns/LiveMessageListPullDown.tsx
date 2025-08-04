@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useCommonSetup } from '@/hooks/useCommonSetup';
 import { useMessageSearchAPI } from '@/hooks/api/admin/live/message/useMessageSearchAPI';
 
 type Props = {

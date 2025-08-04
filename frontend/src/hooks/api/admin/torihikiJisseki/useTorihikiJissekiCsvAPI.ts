@@ -1,5 +1,4 @@
 //コンフィグ
-import { getTexts } from "@/config/texts";
 //API
 import { useCsvApiRequest } from "@/hooks/api/useCsvApiRequest";
 

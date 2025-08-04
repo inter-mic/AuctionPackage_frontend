@@ -18,7 +18,7 @@ import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 //ボタン
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminLiveBidUnitRegist,
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 351);
   const { executionPermission } = useExecutionPermission(kengen);
   const { liveBidUnitList } = useLiveBidUnitSearchAPI();
@@ -42,7 +42,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const handleNewLiveBidUnitChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     const numericWithCommaRegex = /^[0-9,]*$/;
     if (!numericWithCommaRegex.test(value)) {
       return; // 無効な入力は無視

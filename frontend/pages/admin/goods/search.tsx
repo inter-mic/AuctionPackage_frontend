@@ -42,7 +42,7 @@ import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminGoodsList,
@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, apiRequest } = useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
 
   useKengenRedirect(kengen, 202);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -139,7 +139,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [allSelectData]);
 
   //ソート設定
-  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+  const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: goodsSearchAPI,
     itemsPerPage,
     params: goodsParams,
@@ -237,7 +237,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setHoveredBidCount(null);
   };
 
-  const handleBidCountClick = (e: React.MouseEvent<HTMLElement>, goodsId: number, auctionSeq: number) => {
+  const handleBidCountClick = (
+    e: React.MouseEvent<HTMLElement>,
+    goodsId: number,
+    auctionSeq: number
+  ) => {
     e.stopPropagation(); // 行のクリックイベントを止める
     setSelectedBidHistoryGoodsId(goodsId);
     setSelectedBidHistoryAuctionSeq(auctionSeq);
@@ -592,7 +596,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         </>
                       ) : (
                         <>
-                          <td 
+                          <td
                             className={`py-2 px-4 border-b text-right w-24 cursor-pointer ${
                               hoveredFavoriteCount === result.goodsId ? "bg-blue-100" : ""
                             }`}
@@ -640,13 +644,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         <></>
                       ) : (
                         <>
-                          <td 
+                          <td
                             className={`py-2 px-4 border-b text-right w-24 cursor-pointer ${
                               hoveredBidCount === result.goodsId ? "bg-blue-100" : ""
                             }`}
                             onMouseEnter={() => handleMouseEnterBidCount(result.goodsId)}
                             onMouseLeave={handleMouseLeaveBidCount}
-                            onClick={(e) => handleBidCountClick(e, result.goodsId, result.auctionSeq)}
+                            onClick={(e) =>
+                              handleBidCountClick(e, result.goodsId, result.auctionSeq)
+                            }
                           >
                             {result.bidCount}
                           </td>
@@ -682,14 +688,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       ) : (
         <p></p>
       )}
-      
+
       <BidHistoryModal
         isOpen={isBidHistoryModalOpen}
         onClose={handleBidHistoryModalClose}
         goodsId={selectedBidHistoryGoodsId}
         auctionSeq={selectedBidHistoryAuctionSeq}
       />
-      
+
       <FavoriteModal
         isOpen={isFavoriteModalOpen}
         onClose={handleFavoriteModalClose}

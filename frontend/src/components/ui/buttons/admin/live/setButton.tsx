@@ -12,7 +12,6 @@ interface SetButtonProps {
 }
 
 export function SetButton({
-  onClick,
   disabled,
   setAuctioneerFlg,
   isAuctioneerFlg,
@@ -30,9 +29,9 @@ export function SetButton({
       sendWebSocketMessage("set", {
         currentPrice: formatPriceMultiplication(currentPrice),
         bidUnit: formatPriceNum(bidUnit),
-        isBidDisabled : true,
-        nextPrice : "",
-        kenriPaddleNo : "",
+        isBidDisabled: true,
+        nextPrice: "",
+        kenriPaddleNo: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

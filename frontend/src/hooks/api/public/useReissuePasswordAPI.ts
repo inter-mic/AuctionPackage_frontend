@@ -1,12 +1,10 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 export const useReissuePasswordAPI = (registToken: string | null) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [newPassword, setNewPassword] = useState('');
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const { useState, useRouter, texts, apiRequest } = useCommonSetup();
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const [errors, setErrors] = useState<{ newPassword?: string; newPasswordConfirm?: string }>({});
   const [responseData, setResponseData] = useState(null);
   const router = useRouter();
@@ -18,12 +16,18 @@ export const useReissuePasswordAPI = (registToken: string | null) => {
     setNewPasswordConfirm(e.target.value);
   };
 
-
   const handleSubmit = async (e: React.FormEvent, AdminFlg: boolean) => {
     e.preventDefault();
     const endPoint = `reissuePassword/${AdminFlg ? "staff" : "user"}/registPassword`;
     const requestBody = { newPassword, newPasswordConfirm, registToken };
-    const { status, data: responseData } = await apiRequest("public", endPoint, 'POST', requestBody, texts.message.regist, true);
+    const { status, data: responseData } = await apiRequest(
+      "public",
+      endPoint,
+      "POST",
+      requestBody,
+      texts.message.regist,
+      true
+    );
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200) {
@@ -31,9 +35,6 @@ export const useReissuePasswordAPI = (registToken: string | null) => {
       const url = `/${AdminFlg ? "admin" : "member"}/login`;
       router.push(url);
     }
-  };
-  const ReissuePasswordAPI = async (AdminFlg: boolean) => {
-
   };
 
   return {

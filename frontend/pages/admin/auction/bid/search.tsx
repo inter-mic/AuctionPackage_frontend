@@ -34,7 +34,7 @@ import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminBidList,
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 204);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -110,7 +110,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   }, [errors]);
 
-  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+  const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: bidSearchAPI,
     itemsPerPage,
     params: bidParams,

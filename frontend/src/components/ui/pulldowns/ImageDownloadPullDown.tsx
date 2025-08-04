@@ -1,8 +1,6 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 type Props = {
   className?: string | null;
@@ -11,7 +9,7 @@ type Props = {
 };
 
 export const ImageDownloadPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const [selectedImageDownload, setSelectedImageDownload] = useState<string | null>(null);
   useEffect(() => {
     if (selectedId !== null && selectedId !== undefined) {
@@ -30,16 +28,15 @@ export const ImageDownloadPullDown = ({ className, onChange, selectedId }: Props
   };
 
   return (
-    <select 
-        id="imageDownloadFlg"
-        name="imageDownloadFlg"
-        className={className ?? ''}
-        onChange={handleChange}
-        value={selectedImageDownload  ?? ''
-        }>
+    <select
+      id="imageDownloadFlg"
+      name="imageDownloadFlg"
+      className={className ?? ""}
+      onChange={handleChange}
+      value={selectedImageDownload ?? ""}
+    >
       <option value="0">{texts.system.allow}</option>
       <option value="1">{texts.system.deny}</option>
-      
     </select>
   );
 };

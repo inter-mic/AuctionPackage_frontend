@@ -2,7 +2,7 @@
 import { useCommonSetup } from '@/hooks/useCommonSetup';
 
 //型定義
-import { TGoodsSearchRequest, TGoodsSelect } from '@/types/common/goods';
+import { TGoodsSearchRequest } from '@/types/common/goods';
 import { Errors } from '@/types/errors';
 
 

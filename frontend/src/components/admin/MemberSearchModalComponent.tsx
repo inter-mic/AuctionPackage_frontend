@@ -23,7 +23,7 @@ type Props = {
   onSelect: (member: TAdminUserSelect) => void;
 };
 export const MemberSearchModal: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { memberParams, formChange, resetForm } = useUserSearchParams();
 
@@ -50,7 +50,7 @@ export const MemberSearchModal: React.FC<Props> = ({ isOpen, onClose, onSelect }
       setMemberData(data);
     }
   }, [data]);
-  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+  const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: userSearchAPI,
     initialSortName: "userId",
     itemsPerPage,

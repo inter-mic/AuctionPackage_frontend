@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 
 const withAuth = (endPointKbn: string): GetServerSideProps => {

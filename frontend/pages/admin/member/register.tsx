@@ -30,8 +30,7 @@ import {
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/admin/MemberRegist.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminMemberRegist,
@@ -40,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useCallback, texts } = useCommonSetup();
   useKengenRedirect(kengen, 101);
   const { executionPermission } = useExecutionPermission(kengen);
   const { data, userGetInfo } = useUserGetInfoAPI();

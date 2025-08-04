@@ -1,5 +1,4 @@
 //コンフィグ
-import { getTexts } from "@/config/texts";
 //API
 import { usePdfApiRequest } from "@/hooks/api/usePdfApiRequest";
 

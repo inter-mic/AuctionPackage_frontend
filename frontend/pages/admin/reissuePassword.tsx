@@ -1,40 +1,49 @@
-import { GetServerSideProps } from 'next';
-import { useSearchParams } from 'next/navigation';
+import { GetServerSideProps } from "next";
+import { useSearchParams } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
 //ホック
-import { withSystemSetting } from '@/hocs/withSystemSetting';
+import { withSystemSetting } from "@/hocs/withSystemSetting";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useFormErrors } from '@/hooks/useFormErrors';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useFormErrors } from "@/hooks/useFormErrors";
 //API
-import { useReissuePasswordAPI } from '@/hooks/api/public/useReissuePasswordAPI';
+import { useReissuePasswordAPI } from "@/hooks/api/public/useReissuePasswordAPI";
 //コンポーネント
-import { AdminNoLoginLayoutComponent } from '@/components/admin/layout/AdminNoLoginLayoutComponent';
+import { AdminNoLoginLayoutComponent } from "@/components/admin/layout/AdminNoLoginLayoutComponent";
 //ボタン
-import { PasswordChangeButton } from '@/components/ui/buttons/passwordChangeButton';
+import { PasswordChangeButton } from "@/components/ui/buttons/passwordChangeButton";
 //スタイル
-import styles from '@/styles/ForgotPassword.module.css';
-
-
+import styles from "@/styles/ForgotPassword.module.css";
 
 interface PageProps {
   faviconImagePath: string;
 }
 
-export const getServerSideProps: GetServerSideProps = withSystemSetting(async (context) => {
-  return {
-    props: {},
-  };
-}, false, false);
+export const getServerSideProps: GetServerSideProps = withSystemSetting(
+  async () => {
+    return {
+      props: {},
+    };
+  },
+  false,
+  false
+);
 
 const Page: React.FC<PageProps> = ({ faviconImagePath }) => {
   const params = useSearchParams();
-  const paramsToken = params ? params.get('token') : null;
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const { newPassword, newPasswordConfirm, handleNewPasswordChange, handleNewPasswordConfirmChange, handleSubmit, errors, responseData } = useReissuePasswordAPI(paramsToken);
+  const paramsToken = params ? params.get("token") : null;
+  const { useState, texts } = useCommonSetup();
+  const {
+    newPassword,
+    newPasswordConfirm,
+    handleNewPasswordChange,
+    handleNewPasswordConfirmChange,
+    handleSubmit,
+    errors,
+  } = useReissuePasswordAPI(paramsToken);
   const { formErrors } = useFormErrors(errors);
 
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -46,35 +55,42 @@ const Page: React.FC<PageProps> = ({ faviconImagePath }) => {
     setShowNewPasswordConfirm(!showNewPasswordConfirm);
   };
   return (
-    <AdminNoLoginLayoutComponent faviconImagePath={faviconImagePath} pageTitle={texts.menu.reissuePassword}>
+    <AdminNoLoginLayoutComponent
+      faviconImagePath={faviconImagePath}
+      pageTitle={texts.menu.reissuePassword}
+    >
       <div className={styles.page}>
         <div className={styles.container}>
           <form onSubmit={(e) => handleSubmit(e, true)}>
             {formErrors?.token && <p className="error-message">{formErrors.token}</p>}
-            <label htmlFor="newPassord" className="mr-2">{texts.login.newPassword}</label>
+            <label htmlFor="newPassord" className="mr-2">
+              {texts.login.newPassword}
+            </label>
             <div className={styles.passwordWrapper}>
               <input
-                type={showNewPassword ? 'text' : 'password'}
+                type={showNewPassword ? "text" : "password"}
                 placeholder={texts.login.newPassword}
                 value={newPassword}
                 onChange={handleNewPasswordChange}
                 className={`${styles.passwordInput}`}
               />
-              <IconButton
-                onClick={handleToggleNewPassword}
-                className={styles.passwordIconButton}
-              > {showNewPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              <IconButton onClick={handleToggleNewPassword} className={styles.passwordIconButton}>
+                {" "}
+                {showNewPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
             {formErrors?.newPassword && <p className="error-message">{formErrors.newPassword}</p>}
-            <label htmlFor="newPassordConfirm" className="mr-2">{texts.login.newPasswordConfirm}</label><br />
+            <label htmlFor="newPassordConfirm" className="mr-2">
+              {texts.login.newPasswordConfirm}
+            </label>
+            <br />
             <label className="text-gray-500 text-sm">
-                {texts.label.registPassword_note_1}<br />
-              </label>
+              {texts.label.registPassword_note_1}
+              <br />
+            </label>
             <div className={styles.passwordWrapper}>
-             
               <input
-                type={showNewPasswordConfirm ? 'text' : 'password'}
+                type={showNewPasswordConfirm ? "text" : "password"}
                 placeholder={texts.login.newPassword}
                 value={newPasswordConfirm}
                 onChange={handleNewPasswordConfirmChange}
@@ -83,18 +99,19 @@ const Page: React.FC<PageProps> = ({ faviconImagePath }) => {
               <IconButton
                 onClick={handleToggleNewPasswordConfirm}
                 className={styles.passwordIconButton}
-              > {showNewPasswordConfirm ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              >
+                {" "}
+                {showNewPasswordConfirm ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
-            {formErrors?.newPasswordConfirm && <p className="error-message">{formErrors.newPasswordConfirm}</p>}
-
+            {formErrors?.newPasswordConfirm && (
+              <p className="error-message">{formErrors.newPasswordConfirm}</p>
+            )}
 
             <PasswordChangeButton />
           </form>
         </div>
-
       </div>
-
     </AdminNoLoginLayoutComponent>
   );
 };

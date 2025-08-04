@@ -4,7 +4,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import styles from "@/styles/Button.module.css";
 import { useLocale } from "@/hooks/useLocale";
 interface ConfirmDialogProps {
   title: string; // ダイアログのタイトル

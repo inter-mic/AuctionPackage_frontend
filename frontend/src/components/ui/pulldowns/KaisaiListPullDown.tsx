@@ -1,5 +1,5 @@
 import React from "react";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
@@ -26,7 +26,7 @@ export const KaisaiListPullDown = ({
   defaultSetOption,
   spnKbns,
 }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
   const { auction } = useAuctionSearchAPI(kaisaiStatus, spnKbns ?? []);
   const [selectedAuctionSeq, setSelectedAuctionSeq] = useState<string | null>(null);
   useEffect(() => {

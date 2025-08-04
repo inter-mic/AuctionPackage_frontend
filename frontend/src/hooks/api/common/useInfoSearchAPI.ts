@@ -1,18 +1,23 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 //型定義
-import { Info } from '@/types/common/info';
-
-
+import { Info } from "@/types/common/info";
 
 export const useInfoSearchAPI = (isLogin: boolean) => {
-  const { useState, useEffect, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, apiRequest } = useCommonSetup();
   const [info, setInfo] = useState<Info[]>([]);
   useEffect(() => {
     const fetchInfo = async () => {
       const endPointKbn = `${isLogin ? "member" : "public"}`;
-      const { status, data: responseData } = await apiRequest(endPointKbn, "MtInfo/search", 'POST', null, "", true);
+      const { status, data: responseData } = await apiRequest(
+        endPointKbn,
+        "MtInfo/search",
+        "POST",
+        null,
+        "",
+        true
+      );
       if (status === 200) {
         setInfo(responseData);
       }

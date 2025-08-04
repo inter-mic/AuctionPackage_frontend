@@ -21,7 +21,7 @@ import { PageSettingUpdateButton } from "@/components/ui/buttons/admin/PageSetti
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminPageSetting,
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 506);
   const { executionPermission } = useExecutionPermission(kengen);
   const { data, pageSettingSearchAPI } = usePageSettingSearchAPI();
@@ -84,7 +84,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       [seq]: file,
     }));
   };
-  const { responseData, errors, pageSettingRegistAPI } = usePageSettingRegistAPI();
+  const { pageSettingRegistAPI } = usePageSettingRegistAPI();
   const handleSubmit = async (seq: number, data: TTtPageSetting) => {
     const file = selectedFiles[seq] || null;
 
@@ -159,7 +159,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         <PageSettingUpdateButton
                           pageSeq={seq}
                           registData={data}
-                          onSubmit={(e) => handleSubmit(seq, data)}
+                          onSubmit={() => handleSubmit(seq, data)}
                         />
                       ) : (
                         <></>

@@ -9,7 +9,6 @@ import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useSort } from "@/hooks/useSort";
-import { usePagination } from "@/hooks/usePagination";
 import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
@@ -40,7 +39,7 @@ import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import styles from "@/styles/admin/TorihikiJissekiMeisai.module.css";
 import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminTorihikiJissekiMeisai,
@@ -49,14 +48,14 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 105);
   const { executionPermission } = useExecutionPermission(kengen);
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { rakusatsuList, torihikiJissekiMeisaiRakusatsuSearchAPI } =
     useTorihikiJissekiMeisaiRakusatsuSearchAPI();
-  const { count, torihikiJissekiMeisaiRakusatsuSearchCountAPI } =
+  const { torihikiJissekiMeisaiRakusatsuSearchCountAPI } =
     useTorihikiJissekiMeisaiRakusatsuSearchCountAPI();
   const { shuppinList, torihikiJissekiMeisaiShuppinSearchAPI } =
     useTorihikiJissekiMeisaiShuppinSearchAPI();
@@ -99,7 +98,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   }, [allSelectData]);
 
   //ソート設定
-  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+  const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
     itemsPerPage,
     params: {
@@ -109,16 +108,16 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
       pageSize: itemsPerPage,
     },
   });
-  const { currentPage, handlePageChange } = usePagination({
-    itemsPerPage,
-    searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
-    searchParams: {
-      auctionSeq: Number(paramsAuctionSeq),
-      userId: paramsUserId,
-      pageNumber: 1,
-      pageSize: itemsPerPage,
-    },
-  });
+  // const { currentPage, handlePageChange } = usePagination({
+  //   itemsPerPage,
+  //   searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
+  //   searchParams: {
+  //     auctionSeq: Number(paramsAuctionSeq),
+  //     userId: paramsUserId,
+  //     pageNumber: 1,
+  //     pageSize: itemsPerPage,
+  //   },
+  // });
   //チェックボックス
   const {
     selectAll: rakusatsuSelectAll,
@@ -245,10 +244,6 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   const handleSortShuppin = (sortName: string) => {
     setShuppinSortName(sortName);
     setShuppinSortFlg(shuppinSortFlg === "asc" ? "desc" : "asc");
-  };
-
-  const handleSortRakusatsu = (sortName: string) => {
-    // この関数は出品リストでは使用しないため、空の実装
   };
 
   // 出品リストのソート処理
@@ -442,11 +437,36 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               { key: "sku", label: texts.goods.sku, width: "w-48" },
               { key: "lot", label: texts.goods.lot, width: "w-24" },
               { key: "goodsName", label: texts.goods.goodsName },
-              { key: "rakusatsuPrice", label: texts.torihikiJisseki.rakusatsuPrice, width: "w-48", align: "right" },
-              { key: "rakusatsuTesuryoPrice", label: texts.torihikiJisseki.rakusatsuTesuryoPrice, width: "w-48", align: "right" },
-              { key: "rakusatsuTotalPrice", label: texts.torihikiJisseki.rakusatsuTotalPrice, width: "w-48", align: "right" },
-              { key: "rakusatsuKessaibi", label: texts.torihikiJisseki.nyukinbi, width: "w-32", align: "center" },
-              { key: "rakusatsuHassobi", label: texts.torihikiJisseki.hassobi, width: "w-32", align: "center" },
+              {
+                key: "rakusatsuPrice",
+                label: texts.torihikiJisseki.rakusatsuPrice,
+                width: "w-48",
+                align: "right",
+              },
+              {
+                key: "rakusatsuTesuryoPrice",
+                label: texts.torihikiJisseki.rakusatsuTesuryoPrice,
+                width: "w-48",
+                align: "right",
+              },
+              {
+                key: "rakusatsuTotalPrice",
+                label: texts.torihikiJisseki.rakusatsuTotalPrice,
+                width: "w-48",
+                align: "right",
+              },
+              {
+                key: "rakusatsuKessaibi",
+                label: texts.torihikiJisseki.nyukinbi,
+                width: "w-32",
+                align: "center",
+              },
+              {
+                key: "rakusatsuHassobi",
+                label: texts.torihikiJisseki.hassobi,
+                width: "w-32",
+                align: "center",
+              },
             ]}
             isRakusatsu={true}
           />
@@ -523,13 +543,56 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
             onSelect={shuppinHandleSelect}
             onRowClick={handleRowClick}
             columns={[
-              { key: "sku", label: texts.goods.sku, width: "w-48", sortable: true, onSort: () => handleSortShuppin("sku") },
-              { key: "lot", label: texts.goods.lot, width: "w-24", sortable: true, onSort: () => handleSortShuppin("lot") },
-              { key: "goodsName", label: texts.goods.goodsName, sortable: true, onSort: () => handleSortShuppin("goodsName") },
-              { key: "shuppinPrice", label: texts.torihikiJisseki.shuppinPrice, width: "w-48", align: "right", sortable: true, onSort: () => handleSortShuppin("shuppinPrice") },
-              { key: "shuppinTesuryoPrice", label: texts.torihikiJisseki.shuppinTesuryoPrice, width: "w-48", align: "right", sortable: true, onSort: () => handleSortShuppin("shuppinTesuryoPrice") },
-              { key: "shuppinTotalPrice", label: texts.torihikiJisseki.shuppinTotalPrice, width: "w-48", align: "right", sortable: true, onSort: () => handleSortShuppin("shuppinTotalPrice") },
-              { key: "shuppinKessaibi", label: texts.torihikiJisseki.shiharaibi, width: "w-32", align: "center" },
+              {
+                key: "sku",
+                label: texts.goods.sku,
+                width: "w-48",
+                sortable: true,
+                onSort: () => handleSortShuppin("sku"),
+              },
+              {
+                key: "lot",
+                label: texts.goods.lot,
+                width: "w-24",
+                sortable: true,
+                onSort: () => handleSortShuppin("lot"),
+              },
+              {
+                key: "goodsName",
+                label: texts.goods.goodsName,
+                sortable: true,
+                onSort: () => handleSortShuppin("goodsName"),
+              },
+              {
+                key: "shuppinPrice",
+                label: texts.torihikiJisseki.shuppinPrice,
+                width: "w-48",
+                align: "right",
+                sortable: true,
+                onSort: () => handleSortShuppin("shuppinPrice"),
+              },
+              {
+                key: "shuppinTesuryoPrice",
+                label: texts.torihikiJisseki.shuppinTesuryoPrice,
+                width: "w-48",
+                align: "right",
+                sortable: true,
+                onSort: () => handleSortShuppin("shuppinTesuryoPrice"),
+              },
+              {
+                key: "shuppinTotalPrice",
+                label: texts.torihikiJisseki.shuppinTotalPrice,
+                width: "w-48",
+                align: "right",
+                sortable: true,
+                onSort: () => handleSortShuppin("shuppinTotalPrice"),
+              },
+              {
+                key: "shuppinKessaibi",
+                label: texts.torihikiJisseki.shiharaibi,
+                width: "w-32",
+                align: "center",
+              },
             ]}
             isRakusatsu={false}
           />

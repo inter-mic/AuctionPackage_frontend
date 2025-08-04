@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { texts } from "@/config/texts.ja";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
@@ -31,7 +31,7 @@ import { ResetButton } from "@/components/ui/buttons/admin/resetButton";
 //スタイル
 import styles from "@/styles/admin/FormRegister.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminInfoRegist,
@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   useKengenRedirect(kengen, 501);
   const { executionPermission } = useExecutionPermission(kengen);
 
@@ -102,7 +102,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   //お知らせ情報登録
-  const { responseData, errors, infoRegist } = useInfoRegistAPI();
+  const { errors, infoRegist } = useInfoRegistAPI();
   const handleSubmit = () => {
     const displayStarttime = CombineDateTime(
       fetchedData.displayStartDate,

@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = withSystemSetting(
 );
 
 const Page: React.FC<TPageProps> = ({ kiyakuPath, privacyPolicyPath }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const [member, setMember] = useState<TUserMemberRegistRequest>({
     privacyPolicyAgreed: !privacyPolicyPath, // 非表示なら true
     kiyakuAgreed: !kiyakuPath, // 非表示なら true

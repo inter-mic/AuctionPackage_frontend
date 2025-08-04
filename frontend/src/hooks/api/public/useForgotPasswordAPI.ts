@@ -2,12 +2,10 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 export const useForgotPasswordAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+  const { useState, texts, apiRequest } = useCommonSetup();
   const [mail, setMail] = useState("");
   const [errors, setErrors] = useState<{ mail?: string }>({});
   const [responseData, setResponseData] = useState(null);
-  const router = useRouter();
   const handleMailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMail(e.target.value);
   };
@@ -28,6 +26,8 @@ export const useForgotPasswordAPI = () => {
     );
     if (status == 400) {
       setErrors(responseData);
+    } else {
+      setResponseData(responseData);
     }
   };
 

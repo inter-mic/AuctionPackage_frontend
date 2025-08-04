@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -23,9 +23,8 @@ interface HeaderProps {
 }
 
 export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps) {
-  const [isMemberMenuOpen, setMemberMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const toggleMemberMenu = () => setMemberMenuOpen(!isMemberMenuOpen);
+
   const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 
   const [isSubMenusOpen, setIsSubMenusOpen] = useState<{ [key: string]: boolean }>({});

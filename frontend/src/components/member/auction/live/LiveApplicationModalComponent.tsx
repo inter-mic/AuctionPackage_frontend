@@ -23,7 +23,7 @@ export const LiveApplicationModalComponent: React.FC<Props> = ({
   auctionName,
 }) => {
   const { texts } = useCommonSetup();
-  const { fetchPaddleNo, liveApplicationAPI } = useLiveApplicationAPI();
+  const { liveApplicationAPI } = useLiveApplicationAPI();
 
   const handleSubmit = async () => {
     await liveApplicationAPI(auctionSeq);

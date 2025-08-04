@@ -30,8 +30,7 @@ export const getServerSideProps: GetServerSideProps = withSystemSetting(
 );
 
 const Page: React.FC<TPageProps> = () => {
-  const { mail, handleMailChange, handleSubmit, handleInputFocus, errors, responseData } =
-    useForgotPasswordAPI();
+  const { mail, handleMailChange, handleSubmit, handleInputFocus, errors } = useForgotPasswordAPI();
   const { formErrors } = useFormErrors(errors);
   const { texts } = useLocale();
   return (

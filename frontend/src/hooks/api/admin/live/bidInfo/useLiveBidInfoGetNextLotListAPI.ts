@@ -5,7 +5,7 @@ import { TAdminGoodsSelect } from "@/types/admin/goods/search";
 import { Errors } from "@/types/errors";
 
 export const useLiveBidInfoGetNextLotListAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [liveBidInfoGetNextLotListErrors, setLiveBidInfoGetNextLotListErrors] = useState<Errors>();
   const [fetchLiveBidNextLotListData, setFetchLiveBidNextLotListData] = useState<
     TAdminGoodsSelect[]
@@ -14,8 +14,7 @@ export const useLiveBidInfoGetNextLotListAPI = () => {
   const liveBidInfoGetNextLotListAPI = async (
     flg: boolean,
     goodsId: number,
-    auctionSeq: string,
-    lotFrom: string
+    auctionSeq: string
   ) => {
     let endPoint = "";
     let requestBody = {};

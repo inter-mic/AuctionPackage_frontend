@@ -8,7 +8,7 @@ import {
 import { Errors } from "@/types/errors";
 
 export const useGoodsFavoriteSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [data, setData] = useState<TAdminGoodsFavoriteSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
   const goodsFavoriteSearchAPI = async (searchParams: TAdminGoodsFavoriteSearchRequest) => {

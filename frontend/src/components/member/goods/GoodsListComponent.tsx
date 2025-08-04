@@ -1,17 +1,17 @@
-import React from 'react';
-import { toast } from 'react-toastify';
+import React from "react";
+import { toast } from "react-toastify";
 //型定義
-import { TGoodsSelect } from '@/types/common/goods';
+import { TGoodsSelect } from "@/types/common/goods";
 
 //コンポーネント
-import MemberGoodsCard  from '@/components/member/goods/GoodsCardComponent';
+import MemberGoodsCard from "@/components/member/goods/GoodsCardComponent";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useAuctionWebSocket } from '@/hooks/useAuctionWebSocket';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useAuctionWebSocket } from "@/hooks/useAuctionWebSocket";
 //型定義
-import { TAuctionWebSocketData } from '@/types/member/AuctionWebSocket';
+import { TAuctionWebSocketData } from "@/types/member/AuctionWebSocket";
 //スタイル
-import memberStyles from '@/styles/member/MemberCommon.module.css';
+import memberStyles from "@/styles/member/MemberCommon.module.css";
 
 interface Props {
   list: TGoodsSelect[];
@@ -19,16 +19,16 @@ interface Props {
   loginUserId: number;
 }
 const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
     const handleLoad = () => setIsLoaded(true);
-    if (document.readyState === 'complete') {
+    if (document.readyState === "complete") {
       handleLoad();
     } else {
-      window.addEventListener('load', handleLoad);
-      return () => window.removeEventListener('load', handleLoad);
+      window.addEventListener("load", handleLoad);
+      return () => window.removeEventListener("load", handleLoad);
     }
   }, []);
 
@@ -41,26 +41,39 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
       setGoodsData((prevGoods) =>
         prevGoods.map((goods) => {
           if (goods.goodsId === data.goodsId) {
-            
-            if (document.visibilityState === "visible" && data.auctionBidFlg && data.bidUserId === loginUserId) {
-            
+            if (
+              document.visibilityState === "visible" &&
+              data.auctionBidFlg &&
+              data.bidUserId === loginUserId
+            ) {
               if (data.currentKenriUserId == loginUserId) {
                 toast.success(texts.message.highestBid);
               } else {
                 toast.warning(texts.message.noHighestBid);
               }
             }
-            if (document.visibilityState === "visible" && !data.auctionBidFlg && !data.deleteFlg  && data.bidUserId === loginUserId) {
+            if (
+              document.visibilityState === "visible" &&
+              !data.auctionBidFlg &&
+              !data.deleteFlg &&
+              data.bidUserId === loginUserId
+            ) {
               toast.success(texts.message.registBid);
             }
-            if (document.visibilityState === "visible" && !data.auctionBidFlg && data.deleteFlg  && data.bidUserId === loginUserId) {
+            if (
+              document.visibilityState === "visible" &&
+              !data.auctionBidFlg &&
+              data.deleteFlg &&
+              data.bidUserId === loginUserId
+            ) {
               toast.success(texts.message.delete);
             }
 
             const isPriceUpdated =
-            data.auctionBidFlg === false ? false : data.startCurrentPrice !== goods.startCurrentPrice;
+              data.auctionBidFlg === false
+                ? false
+                : data.startCurrentPrice !== goods.startCurrentPrice;
 
-           
             return {
               ...goods,
               ...data,
@@ -76,8 +89,10 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
                       const currentPrice = Number(data.startCurrentPrice.replace(/,/g, ""));
                       const bidPrice = Number(goods.bidPrice.replace(/,/g, "") || 0);
                       const bidUnit = Number(goods.bidUnit.replace(/,/g, "") || 0);
-            
-                      return (currentPrice > bidPrice ? currentPrice + bidUnit : bidPrice + bidUnit).toLocaleString();
+
+                      return (
+                        currentPrice > bidPrice ? currentPrice + bidUnit : bidPrice + bidUnit
+                      ).toLocaleString();
                     })(),
                   }),
             };
@@ -93,11 +108,10 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
         );
       }, 1000);
     },
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setGoodsData]
   );
-  
-  
+
   const updateGoodsDataBatch = useCallback(
     (data: TAuctionWebSocketData) => {
       setGoodsData((prevGoods) =>
@@ -116,25 +130,20 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
   );
 
   useAuctionWebSocket(updateGoodsDataApp, updateGoodsDataBatch, isLoaded);
- 
 
- 
   return (
     <>
-     
       <div className={memberStyles.memberContainer}>
         {goodsData.map((data) => (
-           <MemberGoodsCard 
-           key={data.goodsId} 
-           data={data} 
-           isLogin={isLogin} 
-           loginUserId={loginUserId} 
-           texts={texts}
-         />
+          <MemberGoodsCard
+            key={data.goodsId}
+            data={data}
+            isLogin={isLogin}
+            loginUserId={loginUserId}
+            texts={texts}
+          />
         ))}
-       
       </div>
-     
     </>
   );
 };

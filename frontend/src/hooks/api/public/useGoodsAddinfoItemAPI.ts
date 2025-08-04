@@ -5,21 +5,17 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { GoodsAddinfoItem } from "@/types/public/goodsAddinfoItem";
 
 export const useGoodsAddinfoItemAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } =
-    useCommonSetup();
+  const { useState, useEffect } = useCommonSetup();
   const [goodsAddInfo, setGoodsAddInfo] = useState<GoodsAddinfoItem[]>([]);
   useEffect(() => {
     const goodsAddinfoItemAPI = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}goodsAddinfoItem/search`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}goodsAddinfoItem/search`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data: GoodsAddinfoItem[] = await res.json();
         setGoodsAddInfo(data);
       } catch (error) {

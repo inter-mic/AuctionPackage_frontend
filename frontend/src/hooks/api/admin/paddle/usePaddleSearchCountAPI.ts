@@ -1,14 +1,21 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TAdminPaddleSearchRequest } from '@/types/admin/paddle/management';
+import { TAdminPaddleSearchRequest } from "@/types/admin/paddle/management";
 
 export const usePaddleSearchCountAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [count, setCount] = useState<number | 0>(0);
   const paddleSearchCountAPI = async (searchParams: TAdminPaddleSearchRequest) => {
     const endPoint = `paddle/count`;
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
+    const { data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      searchParams,
+      "",
+      true
+    );
     if (responseData) {
       setCount(responseData);
     }

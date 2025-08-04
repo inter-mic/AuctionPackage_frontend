@@ -1,6 +1,5 @@
 import React from 'react';
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
 
 //型定義
 import { TMtPaddleNumber } from '@/types/public/paddleNumber';

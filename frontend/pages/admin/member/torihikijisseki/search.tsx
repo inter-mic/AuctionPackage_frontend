@@ -36,7 +36,7 @@ import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import adminStyles from "@/styles/admin/AdminCommon.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminTorihikiJisseki,
@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 104);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -113,15 +113,14 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   }, [allSelectData]);
 
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
-    useCheckboxSelection(
-      torihikiList.map((torihiki) => torihiki.userId),
-      allData.map((torihiki) => torihiki.userId),
-      fetchAllIds
-    );
+  const { selectAll, selectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
+    torihikiList.map((torihiki) => torihiki.userId),
+    allData.map((torihiki) => torihiki.userId),
+    fetchAllIds
+  );
 
   //ソート設定
-  const { sortName, sortFlg, handleSortNameChange, handleSortFlgChange } = useSort({
+  const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
     searchAPI: torihikiJissekiSearchAPI,
     initialSortName: "userId",
     itemsPerPage,

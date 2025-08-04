@@ -1,15 +1,21 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import {  TAuction } from '@/types/common/MtAuction';
-
+import { TAuction } from "@/types/common/MtAuction";
 
 export const useSearchNextLiveAuctionAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [ nextAuction, setNextAuction] = useState<TAuction>();
+  const { useState, useEffect, apiRequest } = useCommonSetup();
+  const [nextAuction, setNextAuction] = useState<TAuction>();
   useEffect(() => {
     const searchNextLiveAuctionAPI = async () => {
-      const { data: responseData } = await apiRequest( "member", `live/search/nextLiveAuction`, 'POST', null, "", true);
+      const { data: responseData } = await apiRequest(
+        "member",
+        `live/search/nextLiveAuction`,
+        "POST",
+        null,
+        "",
+        true
+      );
       if (responseData) {
         setNextAuction(responseData);
       }

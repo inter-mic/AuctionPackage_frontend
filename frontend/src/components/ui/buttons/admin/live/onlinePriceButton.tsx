@@ -1,5 +1,4 @@
 //コンフィグ
-import { texts } from "@/config/texts.ja";
 import { useLocale } from "@/hooks/useLocale";
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas } from "@/components/common/PriceUtils";

@@ -13,7 +13,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
 //スタイル
 import styles from "@/styles/member/auction/internetTender/BidModal.module.css";
-import { getTexts } from "@/config/texts";
 
 interface Props {
   isOpen: boolean;

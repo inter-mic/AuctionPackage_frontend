@@ -2,7 +2,7 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { texts } from "@/config/texts.ja";
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -56,7 +56,7 @@ import { MessageButton } from "@/components/ui/buttons/admin/live/messageButton"
 //スタイル
 import styles from "@/styles/admin/Auctioneer.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
       pageTitle: texts.menu.adminAuctionner,
@@ -120,11 +120,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     useGoodsSearchByGoodsIdAPI();
   const {
     fetchLiveBidNextLotListData,
-    liveBidInfoGetNextLotListErrors,
+
     liveBidInfoGetNextLotListAPI,
   } = useLiveBidInfoGetNextLotListAPI();
-  const { fetchLiveBidInfoData, liveBidInfoSearchErrors, liveBidInfoSearchAPI } =
-    useLiveBidInfoSearchAPI();
+  const { fetchLiveBidInfoData, liveBidInfoSearchAPI } = useLiveBidInfoSearchAPI();
   const [inputSeatchErrors, setInputSeatchErrors] = useState<Errors>();
 
   const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
@@ -148,7 +147,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         goodsId: fetchGoodsData.goodsId,
       }));
 
-      liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai, searchLot);
+      liveBidInfoGetNextLotListAPI(false, 0, searchSelectedKaisai);
       liveBidInfoSearchAPI(false, 0, searchSelectedKaisai, searchLot, searchLot);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -320,8 +319,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         : beforeAfterGoodsId?.afterGoodsId;
       await goodsSearchByGoodsIdAPI(true, Number(goodsId), "", "");
       await liveBidInfoSearchAPI(true, Number(goodsId), searchSelectedKaisai, "", "");
-      await liveBidInfoGetNextLotListAPI(true, Number(goodsId), searchSelectedKaisai, searchLot);
+      await liveBidInfoGetNextLotListAPI(true, Number(goodsId), searchSelectedKaisai);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       beforeAfterGoodsId,
       goodsSearchByGoodsIdAPI,
@@ -343,7 +343,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const lotInputRef = useRef<HTMLInputElement>(null);
   const currentPriceInputRef = useRef<HTMLInputElement>(null);
   const rakusatsuPaddleNoInputRef = useRef<HTMLInputElement>(null);
-  const [isOnlineBidReceive, setIsOnlineBidReceive] = useState(false);
+
   const ws = useRef<WebSocket | null>(null);
 
   // オンライン入札履歴の最上位行のlatestBid状態を管理
@@ -371,7 +371,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         return;
       }
 
-      setIsOnlineBidReceive(false);
       setBidComingSoonMsgFlg(data.isBidComingSoonMsgFlg);
       setRakusatsuProcessingMsgFlg(data.isRakusatsuProcessingMsgFlg);
 
@@ -391,7 +390,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           { userId: data.userId, paddleNo: data.paddleNo, bidPrice: data.bidPrice },
           ...prevHistory, // 最新のデータを上部に追加
         ]);
-        setIsOnlineBidReceive(true);
+
         setIsLatestBidActive(true);
       }
       if (data.type === "rakusatsuProcessing") {
@@ -507,7 +506,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     });
   };
 
-  const { liveBidKekkaUpdateAPI, liveBidKekkaRegistErrors } = useLiveBidKekkaUpdateAPI();
+  const { liveBidKekkaUpdateAPI } = useLiveBidKekkaUpdateAPI();
 
   const bidLiveAuctionEnd = useCallback(async () => {
     sendWebSocketMessage("bidEnd", { kenriUserId: kenriUserId });
@@ -515,8 +514,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       liveBidkekkaData.auctionKekkaStatus,
       liveBidkekkaData,
       liveBidLog,
-      connectionCount,
-      spnKbn
+      connectionCount
     );
     if (result.success) {
       const nextLot = (Number(searchLot) + 1).toString();
@@ -528,6 +526,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setRakusatsuProcessingMsgFlg(true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     sendWebSocketMessage,
     kenriUserId,
@@ -561,8 +560,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         isRakusatsu ? 2 : 1,
         liveBidkekkaData,
         liveBidLog,
-        connectionCount,
-        spnKbn
+        connectionCount
       );
       if (result.success) {
         lotBeforeAffterSearch(false);
@@ -589,6 +587,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       liveBidkekkaData,
       setIsRakusatsuPaddleNoError,

@@ -13,10 +13,7 @@ import { useTorihikiJissekiSearchAPI } from "@/hooks/api/member/mypage/useTorihi
 import { useTorihikiJissekiSearchCountAPI } from "@/hooks/api/member/mypage/useTorihikiJissekiSearchCountAPI";
 import { useInvoicePdfAPI } from "@/hooks/api/member/mypage/useInvoicePdfAPI";
 //型定義
-import {
-  TAdminTorihikiJissekiRequest,
-  TVTorihikiJisseki,
-} from "@/types/admin/torihikiJisseki/search";
+import { TAdminTorihikiJissekiRequest } from "@/types/admin/torihikiJisseki/search";
 import { TPageProps } from "@/types/member/memberPage";
 
 //ボタン
@@ -36,9 +33,9 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<TPageProps> = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
-  const [searchParams, setSearchParams] = useState<TAdminTorihikiJissekiRequest>({
+  const [searchParams] = useState<TAdminTorihikiJissekiRequest>({
     auctionSeq: 0,
     pageNumber: 1,
     pageSize: itemsPerPage,

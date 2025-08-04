@@ -1,6 +1,4 @@
-import React from 'react';
-//カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import React from "react";
 
 type Props = {
   className?: string | null;
@@ -10,8 +8,6 @@ type Props = {
 };
 
 export const BidKbnPullDown = ({ className, onChange, selectedId, spnKbn }: Props) => {
-  const { texts } = useCommonSetup();
-  
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onChange(event.target.value);
   };
@@ -20,12 +16,12 @@ export const BidKbnPullDown = ({ className, onChange, selectedId, spnKbn }: Prop
     if (spnKbn === "1") {
       return [
         { value: "10", label: "会場" },
-        { value: "11", label: "オンライン" }
+        { value: "11", label: "オンライン" },
       ];
     } else if (spnKbn === "2") {
       return [
         { value: "1", label: "事前入札" },
-        { value: "2", label: "ライブオークション入札" }
+        { value: "2", label: "ライブオークション入札" },
       ];
     }
     return [];
@@ -34,19 +30,19 @@ export const BidKbnPullDown = ({ className, onChange, selectedId, spnKbn }: Prop
   const options = getBidKbnOptions();
 
   return (
-    <select 
+    <select
       id="bidKbn"
       name="bidKbn"
-      className={className ?? ''}
+      className={className ?? ""}
       onChange={handleChange}
-      value={selectedId ?? ''}
+      value={selectedId ?? ""}
     >
       <option value="">---</option>
-      {options.map(option => (
+      {options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>
       ))}
     </select>
   );
-}; 
+};
