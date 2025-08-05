@@ -36,12 +36,12 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    
+    window.addEventListener("resize", checkIsMobile);
+
     return () => {
-      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener("resize", checkIsMobile);
     };
   }, []);
 
@@ -176,7 +176,14 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
         {/* ズームコントロール */}
         {!isMobile && (
           <div
-            style={{ position: "absolute", top: 8, left: 8, zIndex: 2, display: "flex", gap: "8px" }}
+            style={{
+              position: "absolute",
+              top: 8,
+              left: 8,
+              zIndex: 2,
+              display: "flex",
+              gap: "8px",
+            }}
           >
             <IconButton
               onClick={handleZoomOut}
@@ -249,69 +256,69 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
               gap: "4px",
             }}
           >
-          {/* 上段 */}
-          <div style={{ gridColumn: "2", gridRow: "1" }}>
-            <IconButton
-              onClick={handleMoveUp}
-              style={{
-                color: "black",
-                backgroundColor: "#f5f5f5",
-                width: "40px",
-                height: "40px",
-              }}
-              aria-label="move up"
-            >
-              <KeyboardArrowUpIcon fontSize="large" />
-            </IconButton>
-          </div>
+            {/* 上段 */}
+            <div style={{ gridColumn: "2", gridRow: "1" }}>
+              <IconButton
+                onClick={handleMoveUp}
+                style={{
+                  color: "black",
+                  backgroundColor: "#f5f5f5",
+                  width: "40px",
+                  height: "40px",
+                }}
+                aria-label="move up"
+              >
+                <KeyboardArrowUpIcon fontSize="large" />
+              </IconButton>
+            </div>
 
-          {/* 中段 */}
-          <div style={{ gridColumn: "1", gridRow: "2" }}>
-            <IconButton
-              onClick={handleMoveLeft}
-              style={{
-                color: "black",
-                backgroundColor: "#f5f5f5",
-                width: "40px",
-                height: "40px",
-              }}
-              aria-label="move left"
-            >
-              <KeyboardArrowLeftIcon fontSize="large" />
-            </IconButton>
-          </div>
-          <div style={{ gridColumn: "2", gridRow: "2" }}>{/* 中央は空 */}</div>
-          <div style={{ gridColumn: "3", gridRow: "2" }}>
-            <IconButton
-              onClick={handleMoveRight}
-              style={{
-                color: "black",
-                backgroundColor: "#f5f5f5",
-                width: "40px",
-                height: "40px",
-              }}
-              aria-label="move right"
-            >
-              <KeyboardArrowRightIcon fontSize="large" />
-            </IconButton>
-          </div>
+            {/* 中段 */}
+            <div style={{ gridColumn: "1", gridRow: "2" }}>
+              <IconButton
+                onClick={handleMoveLeft}
+                style={{
+                  color: "black",
+                  backgroundColor: "#f5f5f5",
+                  width: "40px",
+                  height: "40px",
+                }}
+                aria-label="move left"
+              >
+                <KeyboardArrowLeftIcon fontSize="large" />
+              </IconButton>
+            </div>
+            <div style={{ gridColumn: "2", gridRow: "2" }}>{/* 中央は空 */}</div>
+            <div style={{ gridColumn: "3", gridRow: "2" }}>
+              <IconButton
+                onClick={handleMoveRight}
+                style={{
+                  color: "black",
+                  backgroundColor: "#f5f5f5",
+                  width: "40px",
+                  height: "40px",
+                }}
+                aria-label="move right"
+              >
+                <KeyboardArrowRightIcon fontSize="large" />
+              </IconButton>
+            </div>
 
-          {/* 下段 */}
-          <div style={{ gridColumn: "2", gridRow: "3" }}>
-            <IconButton
-              onClick={handleMoveDown}
-              style={{
-                color: "black",
-                backgroundColor: "#f5f5f5",
-                width: "40px",
-                height: "40px",
-              }}
-              aria-label="move down"
-            >
-              <KeyboardArrowDownIcon fontSize="large" />
-            </IconButton>
+            {/* 下段 */}
+            <div style={{ gridColumn: "2", gridRow: "3" }}>
+              <IconButton
+                onClick={handleMoveDown}
+                style={{
+                  color: "black",
+                  backgroundColor: "#f5f5f5",
+                  width: "40px",
+                  height: "40px",
+                }}
+                aria-label="move down"
+              >
+                <KeyboardArrowDownIcon fontSize="large" />
+              </IconButton>
+            </div>
           </div>
-        </div>
         )}
 
         <img
