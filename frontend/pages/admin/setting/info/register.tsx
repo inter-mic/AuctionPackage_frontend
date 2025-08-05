@@ -252,7 +252,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   description={texts.label.delete_note_1}
                   buttonTitle={texts.button.delete}
                   className="bg-red-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40"
-                  dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 rounded-lg w-40"
+                  dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40"
                   dialogCancelClassName="lg:ml-2.5 mt-2 lg:mt-0 bg-white border border-solid border-red-500 text-red-500 font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
                   onSubmit={handleDeleteSubmit}
                   buttonText={texts.button.delete}

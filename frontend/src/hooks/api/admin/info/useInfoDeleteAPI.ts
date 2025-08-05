@@ -14,7 +14,7 @@ export const useInfoDeleteAPI = () => {
       false
     );
     if (status == 200) {
-      //window.location.reload();
+      window.location.reload();
     }
   };
 

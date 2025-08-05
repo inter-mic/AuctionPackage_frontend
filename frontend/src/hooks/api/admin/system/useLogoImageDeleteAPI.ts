@@ -9,7 +9,7 @@ export const useLogoImageDeleteAPI = () => {
       endPoint,
       "POST",
       null,
-      texts.message.regist,
+      texts.message.delete,
       false
     );
     if (status == 200) {
