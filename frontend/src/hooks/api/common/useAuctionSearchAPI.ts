@@ -26,7 +26,7 @@ export const useAuctionSearchAPI = (kaisaiStatus: number, isLogin: boolean) => {
       }
     };
 
-    auctionSearch(0);
+    auctionSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kaisaiStatus]);
 
