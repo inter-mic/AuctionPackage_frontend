@@ -4,9 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import Dialog from "@mui/material/Dialog";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 //カスタムフック
@@ -14,13 +11,13 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 //コンポーネント
 import FavoriteToggle from "@/components/member/goods/FavoriteToggleComponent";
 import BidModuleComponent from "@/components/member/auction/BidModuleComponent";
+import ImagePopupComponent from "@/components/member/goods/ImagePopupComponent";
 //API
 import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/common/useGoodsSearchByGoodsIdAPI";
 import { useGoodsSearchImageAPI } from "@/hooks/api/common/useGoodsSearchImageAPI";
 import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
 import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAPI";
 import { useMemberSessionAPI } from "@/hooks/api/member/useMemberSessionAPI";
-
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
 import { GoodsImageData } from "@/types/admin/goods/register";
@@ -131,8 +128,13 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
 
   // メイン画像クリック時
   const handleMainImageClick = () => {
-    // mainImageSrcがthumImages内にあればそのインデックス、なければ0
-    const idx = thumImages.findIndex((img) => mainImageSrc.includes(img.squareImageUrl || ""));
+    // selectedImageがある場合はそのインデックス、なければmainImageSrcで検索
+    let idx = 0;
+    if (selectedImage) {
+      idx = thumImages.findIndex((img) => selectedImage === img.thumbnailImageUrl);
+    } else {
+      idx = thumImages.findIndex((img) => mainImageSrc.includes(img.squareImageUrl || ""));
+    }
     setPopupIndex(idx >= 0 ? idx : 0);
     setPopupOpen(true);
   };
@@ -144,7 +146,9 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
   const handleNext = () => {
     setPopupIndex((prev) => (prev + 1) % thumImages.length);
   };
-  const handleClose = () => setPopupOpen(false);
+  const handleClose = () => {
+    setPopupOpen(false);
+  };
 
   // タブ複製機能
   const handleDuplicateTabs = () => {
@@ -354,50 +358,14 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
       </div>
 
       {popupOpen && thumImages.length > 0 && (
-        <Dialog open={popupOpen} onClose={handleClose} maxWidth="md" fullWidth>
-          <div style={{ position: "relative", background: "#000", textAlign: "center" }}>
-            <IconButton
-              onClick={handleClose}
-              style={{ position: "absolute", top: 8, right: 8, color: "#fff", zIndex: 2 }}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <IconButton
-              onClick={handlePrev}
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: 8,
-                color: "#fff",
-                zIndex: 2,
-                transform: "translateY(-50%)",
-              }}
-              aria-label="prev"
-            >
-              <KeyboardArrowLeftIcon fontSize="large" />
-            </IconButton>
-            <img
-              src={thumImages[popupIndex].squareImageUrl || ""}
-              alt=""
-              style={{ maxHeight: "80vh", maxWidth: "100%", margin: "0 auto", display: "block" }}
-            />
-            <IconButton
-              onClick={handleNext}
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: 8,
-                color: "#fff",
-                zIndex: 2,
-                transform: "translateY(-50%)",
-              }}
-              aria-label="next"
-            >
-              <KeyboardArrowRightIcon fontSize="large" />
-            </IconButton>
-          </div>
-        </Dialog>
+        <ImagePopupComponent
+          open={popupOpen}
+          onClose={handleClose}
+          images={thumImages}
+          currentIndex={popupIndex}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
       )}
     </>
   );
