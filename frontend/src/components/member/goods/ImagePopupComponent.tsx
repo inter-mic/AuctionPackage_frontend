@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,6 +29,21 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  // SP判定
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   const handleClose = () => {
     setZoomLevel(1);
@@ -122,10 +137,10 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
       fullWidth
       PaperProps={{
         style: {
-          maxWidth: "95vw",
-          maxHeight: "95vh",
-          width: "95vw",
-          height: "95vh",
+          maxWidth: isMobile ? "90vw" : "95vw",
+          maxHeight: isMobile ? "80vh" : "95vh",
+          width: isMobile ? "90vw" : "95vw",
+          height: isMobile ? "80vh" : "95vh",
           margin: 0,
           overflow: "hidden",
         },
@@ -136,7 +151,7 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
           position: "relative",
           background: "#000",
           textAlign: "center",
-          minHeight: "80vh",
+          minHeight: isMobile ? "70vh" : "80vh",
           height: "100%",
           overflow: "hidden",
         }}
@@ -159,46 +174,48 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
         </IconButton>
 
         {/* ズームコントロール */}
-        <div
-          style={{ position: "absolute", top: 8, left: 8, zIndex: 2, display: "flex", gap: "8px" }}
-        >
-          <IconButton
-            onClick={handleZoomOut}
-            style={{
-              color: "black",
-              backgroundColor: "#f5f5f5",
-              width: "40px",
-              height: "40px",
-            }}
-            aria-label="zoom out"
+        {!isMobile && (
+          <div
+            style={{ position: "absolute", top: 8, left: 8, zIndex: 2, display: "flex", gap: "8px" }}
           >
-            <span style={{ fontSize: "20px", fontWeight: "bold" }}>-</span>
-          </IconButton>
-          <IconButton
-            onClick={handleResetZoom}
-            style={{
-              color: "black",
-              backgroundColor: "#f5f5f5",
-              width: "100px",
-              height: "40px",
-            }}
-            aria-label="reset zoom"
-          >
-            <span style={{ fontSize: "16px" }}>リセット</span>
-          </IconButton>
-          <IconButton
-            onClick={handleZoomIn}
-            style={{
-              color: "black",
-              backgroundColor: "#f5f5f5",
-              width: "40px",
-              height: "40px",
-            }}
-            aria-label="zoom in"
-          >
-            <span style={{ fontSize: "20px", fontWeight: "bold" }}>+</span>
-          </IconButton>
-        </div>
+            <IconButton
+              onClick={handleZoomOut}
+              style={{
+                color: "black",
+                backgroundColor: "#f5f5f5",
+                width: "40px",
+                height: "40px",
+              }}
+              aria-label="zoom out"
+            >
+              <span style={{ fontSize: "20px", fontWeight: "bold" }}>-</span>
+            </IconButton>
+            <IconButton
+              onClick={handleResetZoom}
+              style={{
+                color: "black",
+                backgroundColor: "#f5f5f5",
+                width: "100px",
+                height: "40px",
+              }}
+              aria-label="reset zoom"
+            >
+              <span style={{ fontSize: "16px" }}>リセット</span>
+            </IconButton>
+            <IconButton
+              onClick={handleZoomIn}
+              style={{
+                color: "black",
+                backgroundColor: "#f5f5f5",
+                width: "40px",
+                height: "40px",
+              }}
+              aria-label="zoom in"
+            >
+              <span style={{ fontSize: "20px", fontWeight: "bold" }}>+</span>
+            </IconButton>
+          </div>
+        )}
 
         <IconButton
           onClick={handlePrev}
@@ -219,18 +236,19 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
         </IconButton>
 
         {/* 画像移動ボタン */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 16,
-            right: 16,
-            zIndex: 2,
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 40px)",
-            gridTemplateRows: "repeat(3, 40px)",
-            gap: "4px",
-          }}
-        >
+        {zoomLevel > 1 && !isMobile && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 16,
+              right: 16,
+              zIndex: 2,
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 40px)",
+              gridTemplateRows: "repeat(3, 40px)",
+              gap: "4px",
+            }}
+          >
           {/* 上段 */}
           <div style={{ gridColumn: "2", gridRow: "1" }}>
             <IconButton
@@ -294,6 +312,7 @@ const ImagePopupComponent: React.FC<ImagePopupComponentProps> = ({
             </IconButton>
           </div>
         </div>
+        )}
 
         <img
           src={images[currentIndex]?.originalImageUrl || ""}
