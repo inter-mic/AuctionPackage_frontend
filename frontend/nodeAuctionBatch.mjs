@@ -1,20 +1,22 @@
-const express = require("express");
-const http = require("http");
-const WebSocket = require("ws");
+
+import logger from "./logger.mjs";
+import express from "express";
+import http from "http";
+import { WebSocketServer } from "ws";
 
 const app = express();
 app.use(express.json());
 const server = http.createServer(app);
-const wssBatch = new WebSocket.Server({ server, path: "/ws/batch" });
+const wssBatch = new WebSocketServer({ server, path:  "/ws/batch" });
 
 let clientsBatch = [];
 wssBatch.on("connection", (ws) => {
   clientsBatch.push(ws);
-  console.log(`現在の接続数: ${clientsBatch.length}`);
+  logger.info(`現在の接続数: ${clientsBatch.length}`);
 
   ws.on("close", () => {
     clientsBatch = clientsBatch.filter((c) => c !== ws);
-    console.log(`🔴 接続が切断されました。現在の接続数: ${clientsBatch.length}`);
+    logger.info(`🔴 接続が切断されました。現在の接続数: ${clientsBatch.length}`);
   });
 });
 
@@ -28,10 +30,10 @@ app.post("/auctionDataPush", (req, res) => {
       sentCount++;
     }
   });
-  console.log(`📤 Sent data to ${sentCount} clients.`);
+  logger.info(`📤 Sent data to ${sentCount} clients.`);
   res.sendStatus(200);
 });
 
 server.listen(3101, () => {
-  console.log("WebSocket relay server running on port 3101");
+  logger.info("WebSocket relay server running on port 3101");
 });

@@ -9,14 +9,13 @@
   "plugins": [
     "@typescript-eslint",
     "json",
-    "unused-imports" // ✅ 追加
+    "unused-imports" 
   ],
   "rules": {
     "no-console": "error",
     "@next/next/no-img-element": "off",
     "@typescript-eslint/no-explicit-any": "off",
 
-    // ✅ unused-imports ルール追加
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
       "warn",

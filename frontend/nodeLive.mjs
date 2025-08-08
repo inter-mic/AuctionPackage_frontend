@@ -1,16 +1,17 @@
-const express = require("express");
-const http = require("http");
-const WebSocket = require("ws");
+import logger from "./logger.mjs";
+import express from "express";
+import http from "http";
+import { WebSocketServer } from "ws";
 
 const app = express();
 app.use(express.json());
 const server = http.createServer(app);
-const wssApp = new WebSocket.Server({ server, path: "/ws/live" });
+const wssApp = new WebSocketServer({ server, path: "/ws/live" });
 
 let latestData = {}; // 最新のデータを保持
 let connectionCount = 0; // 接続数をトラッキング
 
-//　nodeLive.js内で以下データ保持（毎接続時に送信させる用）
+//nodeLive.js内で以下データ保持（毎接続時に送信させる用）
 let currntPrice;
 let nextPrice;
 let kenriPaddleNo;
@@ -162,7 +163,7 @@ function updateMemberConnectionCount() {
   });
 }
 server.listen(3001, () => {
-  console.log("WebSocket relay server running on port 3001");
+  logger.info("WebSocket relay server running on port 3001");
 });
 
 setInterval(() => {
