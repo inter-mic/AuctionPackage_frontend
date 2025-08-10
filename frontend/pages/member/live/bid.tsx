@@ -65,9 +65,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       memberSessionAPI();
-    }, 300000);
+      //30分ごと
+    }, 1800000);
     return () => clearInterval(intervalId);
-  }, [memberSessionAPI]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // msgが変わるたびにrefも更新
   useEffect(() => {

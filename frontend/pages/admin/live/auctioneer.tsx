@@ -88,9 +88,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       adminSessionAPI();
-    }, 100000);
+    //30分ごと
+    }, 1800000);
     return () => clearInterval(intervalId);
-  }, [adminSessionAPI]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
 

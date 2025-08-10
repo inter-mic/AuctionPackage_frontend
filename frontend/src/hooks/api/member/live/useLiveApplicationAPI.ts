@@ -2,7 +2,7 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 export const useLiveApplicationAPI = () => {
-  const { useState, apiRequest } = useCommonSetup();
+  const { useState,  texts,apiRequest } = useCommonSetup();
   const [fetchPaddleNo, setFetchPaddleNo] = useState<string>("");
   const liveApplicationAPI = async (auctionSeq: number) => {
     const { data: responseData } = await apiRequest(
@@ -10,7 +10,7 @@ export const useLiveApplicationAPI = () => {
       `liveApplication/insert/${auctionSeq}`,
       "POST",
       null,
-      "",
+       texts.message.lveApplicationRegist,
       true
     );
     if (responseData) {

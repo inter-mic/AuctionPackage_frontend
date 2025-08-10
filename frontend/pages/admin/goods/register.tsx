@@ -124,6 +124,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setFormErrors({});
     setGoodsData(initialGoodsData);
     setkekkaData(initialGoodsKekkaData);
+    setImages([]);
     setSelectedKaisai("");
     setSelectedCategory("");
     setShimeFlg(false);
@@ -494,7 +495,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <div className="w-1/2 md:w-auto">
                     <SearchButton onClick={formSearch} />
                   </div>
-                  <div className="w-1/2 md:w-auto ml-1 ">
+                  <div className="w-1/2 md:w-auto ml-1 -mt-2 lg:-mt-0 ">
                     <ClearButton onClick={formClear} />
                   </div>
                 </div>

@@ -122,7 +122,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         <div className="flex flex-col items-center justify-center my-3 bg-gray-100">
           <div className="w-full space-y-3 bg-white shadow-md md:max-w-full md:rounded">
             <div className="p-4">
-              <table className="w-full sm:w-1/2 bg-white">
+              <table className="w-full bg-white">
                 <thead>
                   <tr>
                     <th className="py-2 px-4 w-3/5 border-b">{texts.livemessage.message}</th>
@@ -140,7 +140,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           type="text"
                           value={messageItems[`message_${result.messageSeq}`] || ""}
                           onChange={handleChange(result.messageSeq)}
-                          className={`w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                          className={`w-full px-3 py-2 mt-1 border rounded-md focus:outline-none`}
                         />
                         {formUpdateErrors?.[result.messageSeq]?.messageName && (
                           <p className="error-message">

@@ -139,7 +139,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           type="text"
                           value={categoryItems[`category_${result.categorySeq}`] || ""}
                           onChange={handleChange(result.categorySeq)}
-                          className={`w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                          className={`w-full px-3 py-2 mt-1 border rounded-md`}
                         />
                         {formUpdateErrors?.[result.categorySeq]?.categoryName && (
                           <p className="error-message">

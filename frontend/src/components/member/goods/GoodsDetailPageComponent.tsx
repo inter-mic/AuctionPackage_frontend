@@ -118,9 +118,11 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
       if (isLogin) {
         memberSessionAPI();
       }
-    }, 300000);
+    //30分ごと
+    }, 1800000);
     return () => clearInterval(intervalId);
-  }, [isLogin, memberSessionAPI]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ポップアップ用の状態
   const [popupOpen, setPopupOpen] = useState(false);

@@ -137,7 +137,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 items-end">
               <div className="w-full md:flex-1">
                 <KengenListPullDown
-                  className={`w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                  className={`w-full px-3 py-2 mt-1 border rounded-md`}
                   onChange={(value) => handleKengenIdChange("kengenId", value)}
                   selectedId={selectedKengenId !== null ? String(selectedKengenId) : ""}
                 />

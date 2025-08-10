@@ -63,7 +63,7 @@ const ImageThumbnail: React.FC<SortableItemProps> = ({ id, children, onDelete })
   };
 
   return (
-    <div style={{ width: "15%", padding: "5px", boxSizing: "border-box" }}>
+    <div style={{ width: "20%", padding: "5px", boxSizing: "border-box" }}>
       <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
         {children}
       </div>

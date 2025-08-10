@@ -182,9 +182,11 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       if (isLogin) {
         memberSessionAPI();
       }
-    }, 300000);
+        //30分ごと
+    }, 1800000);
     return () => clearInterval(intervalId);
-  }, [isLogin, memberSessionAPI]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

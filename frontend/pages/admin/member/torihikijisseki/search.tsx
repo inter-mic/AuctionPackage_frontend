@@ -193,7 +193,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
             />
           </div>
         </div>
-        <div className="text-right">
+        <div className="text-right  mt-2">
           <SearchButton onClick={formSearch} />
         </div>
       </div>

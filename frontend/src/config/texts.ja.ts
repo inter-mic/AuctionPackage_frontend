@@ -107,7 +107,7 @@ export const texts = {
     bidConfirmed: "入札確定",
     jizenBidToggle: "事前入札する",
     deleteJizenBidToggle: "事前入札を削除する",
-    onlineBidshoninOn: "オンライン入札承認",
+    onlineBidshoninOn: "オンライン承認",
     call: "呼び出し",
     beforeLot: "前LOT(←)",
     affterLot: "次LOT(→)",
@@ -595,6 +595,7 @@ export const texts = {
     highestBid: "落札権利を取得しました。",
     noHighestBid: "入札しましたが、落札権利を取得できませんでした。",
     isNextPriceBelow: "次価格が現在価格以下でセットされています。",
+    lveApplicationRegist: "ライブ参加申込が完了しました。",
   },
   pulldown: {
     keisaiFlgOn: "掲載",

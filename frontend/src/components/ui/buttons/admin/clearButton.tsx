@@ -8,7 +8,7 @@ interface ClearButtonProps {
 export function ClearButton({ onClick }: ClearButtonProps) {
   return (
     <button
-      className=" bg-white border border-solid border-yellow-500 text-yellow-500 font-bold py-2 px-4 rounded-lg  ml-1 w-full sm:w-40"
+      className=" bg-white border border-solid border-yellow-500 text-yellow-500 font-bold py-2 px-4 rounded-lg  ml-0 sm:ml-1 mt-2 lg:mt-0  w-full sm:w-40"
       onClick={onClick}
     >
       <span>{texts.button.clear}</span>

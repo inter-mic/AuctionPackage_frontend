@@ -158,7 +158,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   {executionPermission(203, 2) && (
                     <>
                       <KaisaiDefaultListPullDown
-                        className={`px-3 py-2 mt-1 w-1/6 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                        className={`px-3 py-2 mt-1 w-1/6 border rounded-md`}
                         onChange={(value) => handleCsvKaisaiChange("auctionSeq", value)}
                         selectedId={selectedCsvKaisai !== null ? String(selectedCsvKaisai) : ""}
                         kaisaiStatus={3}
@@ -226,13 +226,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <Box className="space-x-4" display="flex" alignItems="center">
                         <label>{texts.goods.registFolderName}</label>
                         <RegistKbnPullDown
-                          className={`px-3 py-2 mt-1 w-1/6 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                          className={`px-3 py-2 mt-1 w-1/6 border rounded-md`}
                           onChange={(value) => handleRegistKbnChange("registKbn", value)}
                           selectedId={selectedRegistKbn !== null ? String(selectedRegistKbn) : ""}
                         />
                         {selectedRegistKbn === "2" && (
                           <KaisaiDefaultListPullDown
-                            className={`px-3 py-2 mt-1 w-1/6 border rounded-md focus:outline-none focus:ring focus:border-blue-300`}
+                            className={`px-3 py-2 mt-1 w-1/6 border rounded-md`}
                             onChange={(value) => handleZipKaisaiChange("auctionSeq", value)}
                             selectedId={selectedZipKaisai !== null ? String(selectedZipKaisai) : ""}
                             kaisaiStatus={3}
