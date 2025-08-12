@@ -117,11 +117,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   }, [fetchLiveAuctionStatus]);
 
   // WebSocket接続関数
-  const connectWebSocket = () => {
-    if (ws.current) {
-      ws.current.close();
-    }
-
+  useEffect(() => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onopen = () => {
@@ -130,6 +126,15 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
+      // ping/pong処理
+      if (data.type === "ping") {
+        ws.current?.send(JSON.stringify({ type: "pong" }));
+        return;
+      }
+      if (data.type === "pong") {
+        return;
+      }
 
       //毎配信処理
       setNextLotList(data.nextLotList);
@@ -162,18 +167,8 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
     };
 
-    ws.current.onclose = () => {
-      // WebSocket切断、再接続
-      setTimeout(() => {
-        connectWebSocket();
-      }, 100);
-    };
-  };
-
-  useEffect(() => {
-    connectWebSocket();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchPaddleNo]);
 
   const handleViewOnlyCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setViewOnlyChecked(event.target.checked);

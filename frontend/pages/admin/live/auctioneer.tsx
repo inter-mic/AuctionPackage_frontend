@@ -352,10 +352,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [isLatestBidActive, setIsLatestBidActive] = useState(false);
 
   // WebSocket接続関数
-  const connectWebSocket = useCallback(() => {
-    if (ws.current) {
-      ws.current.close();
-    }
+  useEffect(() => {
+    // WebSocketの初期化
 
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
@@ -372,6 +370,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
+      // ping/pong処理
+      if (data.type === "ping") {
+        ws.current?.send(JSON.stringify({ type: "pong" }));
+        return;
+      }
+      if (data.type === "pong") {
+        return;
+      }
 
       if (data.type === "connectionCount") {
         setConnectionCount(data.count);
@@ -430,20 +437,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setMarqueeKey((k) => k + 1);
       }
     };
-
-    ws.current.onclose = () => {
-      // WebSocket切断、3秒後に再接続
-      setTimeout(() => {
-        connectWebSocket();
-      }, 3000);
-    };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    connectWebSocket();
-
     return () => {
       if (ws.current) {
         ws.current.close();

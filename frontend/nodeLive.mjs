@@ -40,6 +40,34 @@ liveServer.onWebSocketConnection((ws) => {
   connectionCount++;
   updateMemberConnectionCount();
 
+  // ping/pong用のタイマーを設定
+  let pingInterval;
+  let pongTimeout;
+
+  const startPingPong = () => {
+    // 30秒ごとにpingを送信
+    pingInterval = setInterval(() => {
+      if (ws.readyState === 1) { // WebSocket.OPEN
+        ws.send(JSON.stringify({ type: "ping" }));
+        
+        // pongが5秒以内に返ってこない場合は接続を切断
+        pongTimeout = setTimeout(() => {
+          logger.warn("Pong timeout, closing connection");
+          ws.close();
+        }, 5000);
+      }
+    }, 30000);
+  };
+
+  const stopPingPong = () => {
+    if (pingInterval) {
+      clearInterval(pingInterval);
+    }
+    if (pongTimeout) {
+      clearTimeout(pongTimeout);
+    }
+  };
+
   if (latestData.type) {
     let payload = { ...latestData };
     payload = {
@@ -60,6 +88,18 @@ liveServer.onWebSocketConnection((ws) => {
   ws.isAdmin = false;
   ws.on("message", (message) => {
     const data = JSON.parse(message);
+
+    // ping/pong処理
+    if (data.type === "ping") {
+      ws.send(JSON.stringify({ type: "pong" }));
+      return;
+    }
+    if (data.type === "pong") {
+      if (pongTimeout) {
+        clearTimeout(pongTimeout);
+      }
+      return;
+    }
 
     // 管理者の認証
     if (data.type === "admin") {
@@ -86,12 +126,16 @@ liveServer.onWebSocketConnection((ws) => {
   });
 
   ws.on("close", () => {
+    stopPingPong();
     if (!ws.isAdmin) {
       connectionCount--; // 非管理者の切断を反映
       updateMemberConnectionCount();
     }
     updateMemberConnectionCount();
   });
+
+  // ping/pongを開始
+  startPingPong();
 });
 
   // ライブオークション固有のブロードキャスト処理
