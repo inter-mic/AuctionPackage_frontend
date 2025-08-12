@@ -12,9 +12,9 @@ module.exports = {
       },
     },
     {
-      name: "nodeAuction",
+      name: "nodeApp",
       cwd: "/home/nextjs/frontend",
-      script: "./nodeAuction.js",
+      script: "./nodeApp.mjs",
       interpreter_args: "--max-old-space-size=1024",
       interpreter: "/usr/bin/node",
       env: {
@@ -22,9 +22,9 @@ module.exports = {
       },
     },
     {
-      name: "nodeAuctionBatch",
+      name: "nodeBatch",
       cwd: "/home/nextjs/frontend",
-      script: "./nodeAuctionBatch.js",
+      script: "./nodeBatch.mjs",
       interpreter_args: "--max-old-space-size=2048",
       interpreter: "/usr/bin/node",
       env: {
@@ -34,7 +34,7 @@ module.exports = {
     {
       name: "nodeLive",
       cwd: "/home/nextjs/frontend",
-      script: "./nodeLive.js",
+      script: "./nodeLive.mjs",
       interpreter_args: "--max-old-space-size=1024",
       interpreter: "/usr/bin/node",
       env: {

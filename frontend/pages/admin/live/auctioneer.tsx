@@ -88,7 +88,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       adminSessionAPI();
-    //30分ごと
+      //30分ごと
     }, 1800000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,8 +350,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   // オンライン入札履歴の最上位行のlatestBid状態を管理
   const [isLatestBidActive, setIsLatestBidActive] = useState(false);
-  useEffect(() => {
-    // WebSocketの初期化
+
+  // WebSocket接続関数
+  const connectWebSocket = useCallback(() => {
+    if (ws.current) {
+      ws.current.close();
+    }
+
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onopen = () => {
@@ -425,12 +430,25 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         setMarqueeKey((k) => k + 1);
       }
     };
+
+    ws.current.onclose = () => {
+      // WebSocket切断、3秒後に再接続
+      setTimeout(() => {
+        connectWebSocket();
+      }, 3000);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    connectWebSocket();
+
     return () => {
       if (ws.current) {
         ws.current.close();
       }
     };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
