@@ -120,19 +120,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   useEffect(() => {
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
-    ws.current.onopen = () => {
-      // WebSocket接続成功
-    };
-
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      // ping/pong処理
+      // ping処理（サーバーからのpingは無視）
       if (data.type === "ping") {
-        ws.current?.send(JSON.stringify({ type: "pong" }));
-        return;
-      }
-      if (data.type === "pong") {
         return;
       }
 

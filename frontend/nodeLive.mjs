@@ -40,31 +40,22 @@ liveServer.onWebSocketConnection((ws) => {
   connectionCount++;
   updateMemberConnectionCount();
 
-  // ping/pong用のタイマーを設定
+  // ping用のタイマーを設定
   let pingInterval;
-  let pongTimeout;
 
-  const startPingPong = () => {
+  const startPing = () => {
     // 30秒ごとにpingを送信
     pingInterval = setInterval(() => {
-      if (ws.readyState === 1) { // WebSocket.OPEN
+      if (ws.readyState === 1) {
+        // WebSocket.OPEN
         ws.send(JSON.stringify({ type: "ping" }));
-        
-        // pongが5秒以内に返ってこない場合は接続を切断
-        pongTimeout = setTimeout(() => {
-          logger.warn("Pong timeout, closing connection");
-          ws.close();
-        }, 5000);
       }
     }, 30000);
   };
 
-  const stopPingPong = () => {
+  const stopPing = () => {
     if (pingInterval) {
       clearInterval(pingInterval);
-    }
-    if (pongTimeout) {
-      clearTimeout(pongTimeout);
     }
   };
 
@@ -89,15 +80,8 @@ liveServer.onWebSocketConnection((ws) => {
   ws.on("message", (message) => {
     const data = JSON.parse(message);
 
-    // ping/pong処理
+    // ping処理（クライアントからのpingは無視）
     if (data.type === "ping") {
-      ws.send(JSON.stringify({ type: "pong" }));
-      return;
-    }
-    if (data.type === "pong") {
-      if (pongTimeout) {
-        clearTimeout(pongTimeout);
-      }
       return;
     }
 
@@ -126,7 +110,7 @@ liveServer.onWebSocketConnection((ws) => {
   });
 
   ws.on("close", () => {
-    stopPingPong();
+    stopPing();
     if (!ws.isAdmin) {
       connectionCount--; // 非管理者の切断を反映
       updateMemberConnectionCount();
@@ -134,14 +118,15 @@ liveServer.onWebSocketConnection((ws) => {
     updateMemberConnectionCount();
   });
 
-  // ping/pongを開始
-  startPingPong();
+  // pingを開始
+  startPing();
 });
 
-  // ライブオークション固有のブロードキャスト処理
-  function broadcastToClients(data, commonData) {
-    liveServer.getWebSocketClients().forEach((client) => {
-      if (client.readyState === 1) { // WebSocket.OPEN
+// ライブオークション固有のブロードキャスト処理
+function broadcastToClients(data, commonData) {
+  liveServer.getWebSocketClients().forEach((client) => {
+    if (client.readyState === 1) {
+      // WebSocket.OPEN
       if (data.type === "onlineBid") {
         if (client.isAdmin) {
           client.send(
@@ -216,14 +201,14 @@ liveServer.onWebSocketConnection((ws) => {
   });
 }
 
-  function updateMemberConnectionCount() {
-    liveServer.getWebSocketClients().forEach((client) => {
-      if (client.readyState === 1 && client.isAdmin) { // WebSocket.OPEN
-        client.send(JSON.stringify({ type: "connectionCount", count: connectionCount }));
-      }
-    });
-  }
-
+function updateMemberConnectionCount() {
+  liveServer.getWebSocketClients().forEach((client) => {
+    if (client.readyState === 1 && client.isAdmin) {
+      // WebSocket.OPEN
+      client.send(JSON.stringify({ type: "connectionCount", count: connectionCount }));
+    }
+  });
+}
 
 // サーバーを開始
 liveServer.start();

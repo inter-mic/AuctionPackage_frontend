@@ -113,6 +113,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   }, [liveBidUnitList]);
 
+  const [isCallDisabled, setIsCallDisabled] = useState(false);
   const [isCallButtonClicked, setIsCallButtonClicked] = useState(false);
   const [isSetButtonClicked, setIsSetButtonClicked] = useState(false);
   const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
@@ -371,12 +372,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      // ping/pong処理
+      // ping処理（サーバーからのpingは無視）
       if (data.type === "ping") {
-        ws.current?.send(JSON.stringify({ type: "pong" }));
-        return;
-      }
-      if (data.type === "pong") {
         return;
       }
 
@@ -389,6 +386,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setRakusatsuProcessingMsgFlg(data.isRakusatsuProcessingMsgFlg);
 
       if (data.type === "set") {
+        setIsCallDisabled(true);
         setIsCallButtonClicked(false);
         setIsSetButtonClicked(true);
         setBidUnit(data.bidUnit ? formatPriceWithCommas(Number(data.bidUnit)) : "");
@@ -677,6 +675,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     setGoodsData(initialGoodsData);
     setSearchLot("");
     setMsg("");
+    setIsCallDisabled(false);
     setIsCallButtonClicked(false);
     setIsStartButtonClicked(false);
     setIsSetButtonClicked(false);
@@ -739,6 +738,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         }
       }
       if (event.key === "F2") {
+        if (!isCallDisabled) return;
         event.preventDefault();
         lotSearch();
         return;
@@ -802,6 +802,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       bidLiveAuctionEnd,
       setFuRakusatsuConfirmOpen,
       lotSearch,
+      setIsCallDisabled,
       isCallButtonClicked,
       set,
       isSetButtonClicked,
@@ -1036,7 +1037,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     ${inputSeatchErrors?.lot ? "bg-red-300" : ""}`}
                   />
 
-                  <CallButton onClick={lotSearch} />
+                  <CallButton onClick={lotSearch} disabled={isCallDisabled} />
                   <LotBeforeAffterButton
                     onClick={() => lotBeforeAffterSearch(true)}
                     isBefore={true}
