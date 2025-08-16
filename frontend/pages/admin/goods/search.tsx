@@ -87,8 +87,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { count, goodsSearchCountAPI } = useGoodsSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
-    setSelectAll(false);
-    setSelectedIds([]);
+    // 検索時にチェックボックス選択をリセット
+    resetSelection();
     setGoodsData([]);
     setCurrentPage(1);
     const params = {
@@ -150,7 +150,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: goodsParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
     useCheckboxSelection(
       goodsData.map((goods) => goods.goodsId),
       allGoodsData.map((goods) => goods.goodsId),

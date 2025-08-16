@@ -17,6 +17,7 @@ let latestData = {}; // 最新のデータを保持
 let currntPrice;
 let nextPrice;
 let kenriPaddleNo;
+let kenriUserId;
 let isBelowSaiteiPriceFlg;
 let isBidDisabled;
 let isBidComingSoonMsgFlg;
@@ -66,6 +67,7 @@ liveServer.onWebSocketConnection((ws) => {
       currentPrice: currntPrice,
       nextPrice: nextPrice,
       kenriPaddleNo: kenriPaddleNo,
+      kenriUserId: kenriUserId,
       isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
       isBidDisabled: isBidDisabled,
       msg: msg,
@@ -80,7 +82,7 @@ liveServer.onWebSocketConnection((ws) => {
   ws.on("message", (message) => {
     const data = JSON.parse(message);
 
-    // ping処理（クライアントからのpingは無視）
+    // ping処理
     if (data.type === "ping") {
       return;
     }
@@ -146,6 +148,7 @@ function broadcastToClients(data, commonData) {
           currntPrice = "";
           nextPrice = "";
           kenriPaddleNo = "";
+          kenriUserId = "";
           isBelowSaiteiPriceFlg = "";
           isBidDisabled = true;
           msg = "";
@@ -162,6 +165,9 @@ function broadcastToClients(data, commonData) {
         }
         if (data.kenriPaddleNo != undefined) {
           kenriPaddleNo = data.kenriPaddleNo;
+        }
+        if (data.kenriUserId != undefined) {
+          kenriUserId = data.kenriUserId;
         }
         if (data.isBelowSaiteiPriceFlg != undefined) {
           isBelowSaiteiPriceFlg = data.isBelowSaiteiPriceFlg;
@@ -189,6 +195,7 @@ function broadcastToClients(data, commonData) {
           currentPrice: currntPrice,
           nextPrice: nextPrice,
           kenriPaddleNo: kenriPaddleNo,
+          kenriUserId: kenriUserId,
           isBelowSaiteiPriceFlg: isBelowSaiteiPriceFlg,
           isBidDisabled: isBidDisabled,
           msg: msg,

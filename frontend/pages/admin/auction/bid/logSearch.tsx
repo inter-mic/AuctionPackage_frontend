@@ -93,8 +93,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { count, bidLogSearchCountAPI } = useBidLogSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
-    setSelectAll(false);
-    setSelectedIds([]);
+    // 検索時にチェックボックス選択をリセット
+    resetSelection();
     setBidList([]);
     setCurrentPage(1);
     setSearchSpnKbn(spnKbn);
@@ -156,7 +156,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: bidLogParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
     useCheckboxSelection(
       bidList.map((bid) => bid.seq),
       allGoodsData.map((bid) => bid.seq),
@@ -407,7 +407,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     )}
                     <td
                       className="py-2 px-4 border-b text-left hover:bg-blue-100 hover:cursor-pointer" // ホバー時に色とカーソル変更
-                      onClick={(e) => handleRowUserClick(e, result.userId)} // 新しいクリックイベント
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRowUserClick(e, result.userId);
+                      }} // 新しいクリックイベント
                     >
                       {result.userName}
                     </td>

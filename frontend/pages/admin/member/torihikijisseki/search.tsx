@@ -81,6 +81,9 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   const { count, torihikiJissekiSearchCountAPI } = useTorihikiJissekiSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
+    // 検索時にチェックボックス選択をリセット
+    resetSelection();
+
     const params = {
       ...searchParams,
       pageNumber: 1,
@@ -113,11 +116,12 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   }, [allSelectData]);
 
   //チェックボックス
-  const { selectAll, selectedIds, handleSelectAll, handleSelect } = useCheckboxSelection(
-    torihikiList.map((torihiki) => torihiki.userId),
-    allData.map((torihiki) => torihiki.userId),
-    fetchAllIds
-  );
+  const { selectAll, selectedIds, handleSelectAll, handleSelect, resetSelection } =
+    useCheckboxSelection(
+      torihikiList.map((torihiki) => torihiki.userId),
+      allData.map((torihiki) => torihiki.userId),
+      fetchAllIds
+    );
 
   //ソート設定
   const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
@@ -190,6 +194,17 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               maxLength={9}
               value={searchParams.userId}
               onChange={(e) => handleInputChange("userId", e.target.value)}
+            />
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="userName">
+              {texts.member.userName}/{texts.member.companyName}
+            </label>
+            <input
+              id="userName"
+              name="userName"
+              value={searchParams.userName}
+              onChange={(e) => handleInputChange("userName", e.target.value)}
             />
           </div>
         </div>

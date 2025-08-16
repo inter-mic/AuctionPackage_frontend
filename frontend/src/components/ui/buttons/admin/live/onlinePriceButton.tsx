@@ -1,7 +1,11 @@
 //コンフィグ
 import { useLocale } from "@/hooks/useLocale";
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
-import { formatPriceDivision, formatPriceMultiplication, formatPriceWithCommas } from "@/components/common/PriceUtils";
+import {
+  formatPriceDivision,
+  formatPriceMultiplication,
+  formatPriceWithCommas,
+} from "@/components/common/PriceUtils";
 import { TBidHisotry, TLiveBidLog } from "@/types/admin/live/auctioneer";
 import { LiveBidKekkaData } from "@/types/admin/live/register";
 import { getBidUnit } from "@/components/admin/live/getBidUnit";
@@ -34,6 +38,7 @@ interface OnlinePriceButtonProps {
   fetchBidUnitList: TMtLiveBidUnit[];
   nextPrice: string;
   onButtonClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePriceButtonProps>(
@@ -61,6 +66,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       fetchBidUnitList,
       nextPrice,
       onButtonClick,
+      style,
     },
     ref
   ) => {
@@ -72,13 +78,12 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       nextPrice: string;
       currentPrice: string;
       isBelowSaiteiPriceFlg: boolean;
-      isBidDisabled : boolean;
+      isBidDisabled: boolean;
     } | null>(null);
     const { texts } = useLocale();
     const handleClick = () => {
       // ボタンクリック時のコールバックを実行
       onButtonClick?.();
-      
       // ── 1. onlineBidHistory[0] が必ず存在することをチェック ──
       if (onlineBidHistory.length === 0) {
         return;
@@ -156,7 +161,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
         nextPrice: nextPriceCalc,
         currentPrice: onlineBidPrice,
         isBelowSaiteiPriceFlg: isBelowFlg,
-        isBidDisabled : false,
+        isBidDisabled: false,
       });
 
       // ── 11. sendWSフラグTrue ──
@@ -181,6 +186,7 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       <button
         onClick={handleClick}
         disabled={disabled}
+        style={style}
         className={`bg-yellow-500 hover:bg-yellow-700 py-2 px-4 rounded-full w-80 h-20 text-2xl text-white ${
           disabled ? "opacity-50 cursor-not-allowed" : ""
         }`}

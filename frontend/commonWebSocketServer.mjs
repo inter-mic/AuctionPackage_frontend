@@ -187,7 +187,9 @@ export class CommonWebSocketServer {
     };
 
     const promises = peers.map(async (peer) => {
-      const url = `http://${peer}:${this.config.internalPort || this.config.port}/instance/broadcast`;
+      const url = `http://${peer}:${
+        this.config.internalPort || this.config.port
+      }/instance/broadcast`;
       try {
         await axios.post(url, body, { timeout: 5000, headers });
         this.instanceHealthCheck.set(peer, Date.now());

@@ -69,8 +69,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { count, bidSearchCountAPI } = useBidSearchCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const formSearch = async () => {
-    setSelectAll(false);
-    setSelectedIds([]);
+    // 検索時にチェックボックス選択をリセット
+    resetSelection();
     setBidList([]);
     setCurrentPage(1);
     const params = {
@@ -121,7 +121,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: bidParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
     useCheckboxSelection(
       bidList.map((bid) => `${bid.goodsId}-${bid.userId}`),
       allGoodsData.map((bid) => `${bid.goodsId}-${bid.userId}`),
@@ -132,6 +132,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { toGoodsRegist } = useToGoodsRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
     toGoodsRegist(e, goodsId);
+  };
+  //会員登録画面に遷移
+  const handleRowUserClick = (e: React.MouseEvent<HTMLElement>, userId: string) => {
+    if (e.target instanceof HTMLInputElement) return;
+    const hasClickKengen = kengen.some(
+      (k) => k.screenId === 101 && (k.kengenKbn === 1 || k.kengenKbn === 2)
+    );
+    if (hasClickKengen) {
+      window.open(`/admin/member/register?userId=${userId}`, "_blank");
+    }
   };
   const formClear = () => {
     resetForm();
@@ -316,7 +326,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
                     <td className="py-2 px-4 border-b text-right w-44">{result.bidPrice}</td>
                     <td className="py-2 px-4 border-b text-right w-52">{result.bidTime}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.userName}</td>
+                    <td
+                      className="py-2 px-4 border-b text-left hover:bg-blue-100 hover:cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRowUserClick(e, result.userId);
+                      }}
+                    >
+                      {result.userName}
+                    </td>
                   </tr>
                 ))}
             </tbody>

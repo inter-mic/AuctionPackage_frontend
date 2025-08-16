@@ -84,8 +84,12 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const { fetchPaddleNo, searchPaddleNoAPI } = useSearchPaddleNoAPI();
   useEffect(() => {
     if (fetchAuction?.auctionSeq !== undefined) {
-      setFetchLiveAuctionStatus(0);
-      searchPaddleNoAPI(fetchAuction.auctionSeq);
+      if (fetchAuction?.spnKbn === "1") {
+        setFetchLiveAuctionStatus(0);
+        searchPaddleNoAPI(fetchAuction.auctionSeq);
+      } else {
+        setFetchLiveAuctionStatus(3);
+      }
     } else {
       setFetchLiveAuctionStatus(1);
     }
@@ -118,6 +122,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
 
   // WebSocket接続関数
   useEffect(() => {
+    // 既存の接続があれば閉じる
+    if (ws.current) {
+      ws.current.close();
+    }
+
     ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
 
     ws.current.onmessage = (event) => {
@@ -132,12 +141,21 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       setNextLotList(data.nextLotList);
       setBidHistory(data.liveBidLog);
       setReceivedData(data);
-      setBidStatus(fetchPaddleNo === data.kenriPaddleNo ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
+      if (fetchAuction?.spnKbn === "1") {
+        setBidStatus(fetchPaddleNo === data.kenriPaddleNo ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
+        setIsBidDisabled(data.isBidDisabled || fetchPaddleNo === data.kenriPaddleNo);
+      } else {
+        setBidStatus(
+          PageProps.userId === data.kenriUserId ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0
+        );
+        setIsBidDisabled(data.isBidDisabled || PageProps.userId === data.kenriUserId);
+      }
+
       if (data.msg === "" || msgRef.current !== data.msg) {
         setMsg(data.msg);
         setMarqueeKey((k) => k + 1);
       }
-      setIsBidDisabled(data.isBidDisabled || fetchPaddleNo === data.kenriPaddleNo);
+
       setBidComingSoonMsgFlg(data.isBidComingSoonMsgFlg);
       setRakusatsuProcessingMsgFlg(data.isRakusatsuProcessingMsgFlg);
 
@@ -159,8 +177,14 @@ const Page: React.FC<TPageProps> = (PageProps) => {
       }
     };
 
+    // クリーンアップ関数
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchPaddleNo]);
+  }, [fetchPaddleNo, fetchAuction]);
 
   const handleViewOnlyCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setViewOnlyChecked(event.target.checked);

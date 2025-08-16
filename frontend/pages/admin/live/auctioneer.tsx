@@ -282,7 +282,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       }
 
       //セリ幅セット
-
       if (fetchBitUnit) {
         setBidUnit(formatPriceWithCommas(Number(fetchBitUnit)));
       }
@@ -736,9 +735,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         } else {
           setFuRakusatsuConfirmOpen(true);
         }
+        return;
       }
-      if (event.key === "F2") {
-        if (!isCallDisabled) return;
+      if (event.key === "F2" && !isCallDisabled) {
         event.preventDefault();
         lotSearch();
         return;
@@ -795,6 +794,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         return;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       furakusatsuConfirmOpen,
       spnKbn,
@@ -802,7 +802,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       bidLiveAuctionEnd,
       setFuRakusatsuConfirmOpen,
       lotSearch,
-      setIsCallDisabled,
+      isCallDisabled,
       isCallButtonClicked,
       set,
       isSetButtonClicked,
@@ -1192,51 +1192,49 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   />
                 </div>
                 <div className={styles.rightButtons}>
-                  {spnKbn == "1" && (
-                    <>
-                      <OnlinePriceButton
-                        ref={onlinePriceButtonRef}
-                        disabled={!isStartButtonClicked}
-                        onlineBidHistory={onlineBidHistory}
-                        fetchGoodsData={fetchGoodsData}
-                        firstPreBidPrice={firstPreBidPrice}
-                        firstPreBidUserId={firstPreBidUserId}
-                        kenriUpdatePrice={kenriUpdatePrice}
-                        kenriUserId={kenriUserId}
-                        saiteiRakusatsuPrice={saiteiRakusatsuPrice}
-                        sendWebSocketMessage={sendWebSocketMessage}
-                        setCurrentPrice={setCurrentPrice}
-                        setDisplayCurrentPrice={setDisplayCurrentPrice}
-                        setNextPrice={setNextPrice}
-                        setKenriUserId={setKenriUserId}
-                        setKenriPaddleNo={setKenriPaddleNo}
-                        setLiveBidkekkaData={setLiveBidkekkaData}
-                        liveBidLog={liveBidLog}
-                        setLiveBidLog={setLiveBidLog}
-                        setIsBelowSaiteiPriceFlg={setIsBelowSaiteiPriceFlg}
-                        spnKbn={spnKbn}
-                        fetchBidUnitList={fetchBidUnitList}
-                        nextPrice={nextPrice}
-                        onButtonClick={() => setIsLatestBidActive(false)}
-                      />
+                  <OnlinePriceButton
+                    ref={onlinePriceButtonRef}
+                    disabled={!isStartButtonClicked}
+                    onlineBidHistory={onlineBidHistory}
+                    fetchGoodsData={fetchGoodsData}
+                    firstPreBidPrice={firstPreBidPrice}
+                    firstPreBidUserId={firstPreBidUserId}
+                    kenriUpdatePrice={kenriUpdatePrice}
+                    kenriUserId={kenriUserId}
+                    saiteiRakusatsuPrice={saiteiRakusatsuPrice}
+                    sendWebSocketMessage={sendWebSocketMessage}
+                    setCurrentPrice={setCurrentPrice}
+                    setDisplayCurrentPrice={setDisplayCurrentPrice}
+                    setNextPrice={setNextPrice}
+                    setKenriUserId={setKenriUserId}
+                    setKenriPaddleNo={setKenriPaddleNo}
+                    setLiveBidkekkaData={setLiveBidkekkaData}
+                    liveBidLog={liveBidLog}
+                    setLiveBidLog={setLiveBidLog}
+                    setIsBelowSaiteiPriceFlg={setIsBelowSaiteiPriceFlg}
+                    spnKbn={spnKbn}
+                    fetchBidUnitList={fetchBidUnitList}
+                    nextPrice={nextPrice}
+                    onButtonClick={() => setIsLatestBidActive(false)}
+                    style={{ display: spnKbn === "2" ? "none" : "block" }}
+                  />
 
-                      <CurrentPriceButton
-                        ref={priceButtonRef}
-                        disabled={!isStartButtonClicked}
-                        setKenriUserId={setKenriUserId}
-                        setKenriPaddleNo={setKenriPaddleNo}
-                        currentPrice={currentPrice}
-                        nextPrice={nextPrice}
-                        sendWebSocketMessage={sendWebSocketMessage}
-                        setDisplayCurrentPrice={setDisplayCurrentPrice}
-                        liveBidLog={liveBidLog}
-                        setLiveBidLog={setLiveBidLog}
-                        setIsNextPriceBelow={setIsNextPriceBelow}
-                        setLiveBidkekkaData={setLiveBidkekkaData}
-                        onButtonClick={() => setIsLatestBidActive(false)}
-                      />
-                    </>
-                  )}
+                  <CurrentPriceButton
+                    ref={priceButtonRef}
+                    disabled={!isStartButtonClicked}
+                    setKenriUserId={setKenriUserId}
+                    setKenriPaddleNo={setKenriPaddleNo}
+                    currentPrice={currentPrice}
+                    nextPrice={nextPrice}
+                    sendWebSocketMessage={sendWebSocketMessage}
+                    setDisplayCurrentPrice={setDisplayCurrentPrice}
+                    liveBidLog={liveBidLog}
+                    setLiveBidLog={setLiveBidLog}
+                    setIsNextPriceBelow={setIsNextPriceBelow}
+                    setLiveBidkekkaData={setLiveBidkekkaData}
+                    onButtonClick={() => setIsLatestBidActive(false)}
+                    style={{ display: spnKbn === "2" ? "none" : "block" }}
+                  />
                 </div>
               </div>
               <div className={styles.liveMessageDiv}>

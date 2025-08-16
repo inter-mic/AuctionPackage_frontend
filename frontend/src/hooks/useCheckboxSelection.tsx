@@ -43,6 +43,12 @@ export function useCheckboxSelection<T>(initialItems: T[], allSelectData: T[],fe
     );
   }, []);
 
+  const resetSelection = useCallback(() => {
+    setSelectAll(false);
+    setSelectedIds([]);
+    setAllGoodsData([]);
+  }, []);
+
   return {
     selectAll,
     setSelectAll,
@@ -50,5 +56,6 @@ export function useCheckboxSelection<T>(initialItems: T[], allSelectData: T[],fe
     setSelectedIds,
     handleSelectAll,
     handleSelect,
+    resetSelection,
   };
 }

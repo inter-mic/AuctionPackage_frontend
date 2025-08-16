@@ -6,7 +6,7 @@ export function getBidUnit(
   price: string | null
 ): string | null {
   if (spnKbn === "2") {
-    return goodsBidUnit;
+    return goodsBidUnit?.replace(/,/g, "") || null;
   }
   const numericPrice = Number(price?.replace(/,/g, ""));
 

@@ -187,7 +187,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <CancelButton />
                       <ShiyoshoButton
                         fileUrl="/tesuryo_regist_csv.xlsx"
-                        fileName="落札手数料一括取込仕様書.xlsx"
+                        fileName="手数料一括取込仕様書.xlsx"
                       />
                     </Box>
                   )}

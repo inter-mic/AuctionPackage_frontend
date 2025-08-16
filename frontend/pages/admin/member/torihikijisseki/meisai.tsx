@@ -13,19 +13,13 @@ import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 import { useToGoodsRegist } from "@/hooks/moveScreen/useToGoodsRegist";
-
 //API
 import { useTorihikiJissekiMeisaiShuppinSearchAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiShuppinSearchAPI";
 import { useTorihikiJissekiMeisaiRakusatsuSearchAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchAPI";
-import { useTorihikiJissekiMeisaiRakusatsuSearchCountAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiRakusatsuSearchCountAPI";
 import { useTorihikiJissekiMeisaiDateUpdateAPI } from "@/hooks/api/admin/torihikiJisseki/useTorihikiJissekiMeisaiDateUpdateAPI";
 import { useInvoicePdfAPI } from "@/hooks/api/admin/pdf/useInvoicePdfAPI";
 //型定義
-import {
-  TAdminTorihikiJissekiRequest,
-  TTorihikiJissekiMeisaiRakusatsuSelect,
-  TTorihikiJissekiMeisaiShuppinSelect,
-} from "@/types/admin/torihikiJisseki/search";
+import { TAdminTorihikiJissekiRequest } from "@/types/admin/torihikiJisseki/search";
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { CustomDatePicker } from "@/components/ui/dateTime/CustomDatePicker";
@@ -33,6 +27,7 @@ import { TorihikiJissekiTableComponent } from "@/components/admin/torihikiJissek
 //ボタン
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
 import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
+import { MemberRegisterButton } from "@/components/ui/buttons/admin/memberRegisterButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
@@ -55,13 +50,16 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const { rakusatsuList, torihikiJissekiMeisaiRakusatsuSearchAPI } =
     useTorihikiJissekiMeisaiRakusatsuSearchAPI();
-  const { torihikiJissekiMeisaiRakusatsuSearchCountAPI } =
-    useTorihikiJissekiMeisaiRakusatsuSearchCountAPI();
   const { shuppinList, torihikiJissekiMeisaiShuppinSearchAPI } =
     useTorihikiJissekiMeisaiShuppinSearchAPI();
   const params = useSearchParams();
   const paramsAuctionSeq = params ? params.get("auctionSeq") : null;
   const paramsUserId = params ? params.get("userId") : null;
+
+  // 表示用の状態管理
+  const [displayRakusatsuList, setDisplayRakusatsuList] = useState<any[]>([]);
+  const [displayShuppinList, setDisplayShuppinList] = useState<any[]>([]);
+
   useEffect(() => {
     if (paramsAuctionSeq && paramsUserId) {
       const requestParams: TAdminTorihikiJissekiRequest = {
@@ -71,31 +69,23 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
         pageSize: itemsPerPage,
       };
       torihikiJissekiMeisaiRakusatsuSearchAPI(requestParams);
-      torihikiJissekiMeisaiRakusatsuSearchCountAPI(requestParams);
       torihikiJissekiMeisaiShuppinSearchAPI(requestParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsAuctionSeq, paramsUserId]);
 
-  const {
-    rakusatsuList: allSelectData,
-    torihikiJissekiMeisaiRakusatsuSearchAPI: allSelectSearchAPI,
-  } = useTorihikiJissekiMeisaiRakusatsuSearchAPI();
-  const [allData, setAllData] = useState<TTorihikiJissekiMeisaiRakusatsuSelect[]>([]);
-  const fetchAllIds = async () => {
-    const requestParams: TAdminTorihikiJissekiRequest = {
-      auctionSeq: Number(paramsAuctionSeq),
-      userId: paramsUserId ?? undefined,
-      pageNumber: 1,
-      pageSize: itemsPerPage,
-    };
-    await allSelectSearchAPI(requestParams);
-  };
+  // APIレスポンスを表示用状態に反映
   useEffect(() => {
-    if (allSelectData) {
-      setAllData(allSelectData);
+    if (rakusatsuList) {
+      setDisplayRakusatsuList(rakusatsuList);
     }
-  }, [allSelectData]);
+  }, [rakusatsuList]);
+
+  useEffect(() => {
+    if (shuppinList) {
+      setDisplayShuppinList(shuppinList);
+    }
+  }, [shuppinList]);
 
   //ソート設定
   const { sortName, handleSortNameChange, handleSortFlgChange } = useSort({
@@ -104,20 +94,23 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
     params: {
       auctionSeq: Number(paramsAuctionSeq),
       userId: paramsUserId,
-      pageNumber: 1,
-      pageSize: itemsPerPage,
     },
   });
-  // const { currentPage, handlePageChange } = usePagination({
-  //   itemsPerPage,
-  //   searchAPI: torihikiJissekiMeisaiRakusatsuSearchAPI,
-  //   searchParams: {
-  //     auctionSeq: Number(paramsAuctionSeq),
-  //     userId: paramsUserId,
-  //     pageNumber: 1,
-  //     pageSize: itemsPerPage,
-  //   },
-  // });
+
+  // 出品明細専用のソート設定
+  const {
+    sortName: shuppinSortName,
+    handleSortNameChange: handleShuppinSortNameChange,
+    handleSortFlgChange: handleShuppinSortFlgChange,
+  } = useSort({
+    searchAPI: torihikiJissekiMeisaiShuppinSearchAPI,
+    itemsPerPage,
+    params: {
+      auctionSeq: Number(paramsAuctionSeq),
+      userId: paramsUserId,
+    },
+  });
+
   //チェックボックス
   const {
     selectAll: rakusatsuSelectAll,
@@ -127,9 +120,9 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
     handleSelectAll: rakusatsuHandleSelectAll,
     handleSelect: rakusatsuHandleSelect,
   } = useCheckboxSelection(
-    rakusatsuList.map((goods) => goods.goodsId),
-    allData.map((goods) => goods.goodsId),
-    fetchAllIds
+    displayRakusatsuList.map((goods) => goods.goodsId),
+    displayRakusatsuList.map((goods) => goods.goodsId),
+    () => Promise.resolve()
   );
 
   //商品登録画面に遷移
@@ -164,9 +157,8 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
       setParamsShuppinDate(localDate); // ローカルタイムで表示
     }
   };
-  const { torihikiJissekiMeisaiDateUpdateAPI, errors, rakusatsuResponseData, shuppinResponseData } =
+  const { torihikiJissekiMeisaiDateUpdateAPI, rakusatsuResponseData, shuppinResponseData } =
     useTorihikiJissekiMeisaiDateUpdateAPI();
-  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const handleDateUpdate = (isRakusatsu: boolean) => {
     if (isRakusatsu) {
       if (rakusatsuSelectedIds.length === 0) {
@@ -194,15 +186,13 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
       );
     }
   };
-  useEffect(() => {
-    if (errors) {
-      setFormErrors(errors);
-    }
-  }, [errors]);
+
   useEffect(() => {
     if (rakusatsuResponseData) {
       rakusatsuSetSelectAll(false);
       rakusatsuSetSelectedIds([]);
+      // 日付更新後のデータを表示用状態に反映
+      setDisplayRakusatsuList(rakusatsuResponseData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rakusatsuResponseData]);
@@ -210,6 +200,8 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
     if (shuppinResponseData) {
       shuppinSetSelectAll(false);
       shuppinSetSelectedIds([]);
+      // 日付更新後のデータを表示用状態に反映
+      setDisplayShuppinList(shuppinResponseData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shuppinResponseData]);
@@ -229,70 +221,10 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
     handleSelectAll: shuppinHandleSelectAll,
     handleSelect: shuppinHandleSelect,
   } = useCheckboxSelection(
-    shuppinList.map((goods) => goods.goodsId),
-    shuppinList.map((goods) => goods.goodsId),
+    displayShuppinList.map((goods) => goods.goodsId),
+    displayShuppinList.map((goods) => goods.goodsId),
     () => Promise.resolve()
   );
-
-  // 出品リスト用のソート機能
-  const [shuppinSortName, setShuppinSortName] = useState<string>("");
-  const [shuppinSortFlg, setShuppinSortFlg] = useState<string>("asc");
-  const [shuppinSortedData, setShuppinSortedData] = useState<TTorihikiJissekiMeisaiShuppinSelect[]>(
-    []
-  );
-
-  const handleSortShuppin = (sortName: string) => {
-    setShuppinSortName(sortName);
-    setShuppinSortFlg(shuppinSortFlg === "asc" ? "desc" : "asc");
-  };
-
-  // 出品リストのソート処理
-  useEffect(() => {
-    if (shuppinList && shuppinList.length > 0) {
-      const sorted = [...shuppinList].sort((a, b) => {
-        let aValue: any;
-        let bValue: any;
-
-        switch (shuppinSortName) {
-          case "sku":
-            aValue = a.sku || "";
-            bValue = b.sku || "";
-            break;
-          case "lot":
-            aValue = parseInt(a.lot) || 0;
-            bValue = parseInt(b.lot) || 0;
-            break;
-          case "goodsName":
-            aValue = a.goodsName || "";
-            bValue = b.goodsName || "";
-            break;
-          case "shuppinPrice":
-            aValue = parseFloat(a.shuppinPrice.replace(/,/g, "")) || 0;
-            bValue = parseFloat(b.shuppinPrice.replace(/,/g, "")) || 0;
-            break;
-          case "shuppinTesuryoPrice":
-            aValue = parseFloat(a.shuppinTesuryoPrice.replace(/,/g, "")) || 0;
-            bValue = parseFloat(b.shuppinTesuryoPrice.replace(/,/g, "")) || 0;
-            break;
-          case "shuppinTotalPrice":
-            aValue = parseFloat(a.shuppinTotalPrice.replace(/,/g, "")) || 0;
-            bValue = parseFloat(b.shuppinTotalPrice.replace(/,/g, "")) || 0;
-            break;
-          default:
-            return 0;
-        }
-
-        if (shuppinSortFlg === "asc") {
-          return aValue > bValue ? 1 : -1;
-        } else {
-          return aValue < bValue ? 1 : -1;
-        }
-      });
-      setShuppinSortedData(sorted);
-    } else {
-      setShuppinSortedData([]);
-    }
-  }, [shuppinList, shuppinSortName, shuppinSortFlg]);
 
   return (
     <div>
@@ -305,45 +237,46 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="auction">{texts.goods.auctionName}</label>
-            {rakusatsuList && rakusatsuList.length > 0
-              ? rakusatsuList[0].auctionName
-              : shuppinList && shuppinList.length > 0
-              ? shuppinList[0].auctionName
+            {displayRakusatsuList && displayRakusatsuList.length > 0
+              ? displayRakusatsuList[0].auctionName
+              : displayShuppinList && displayShuppinList.length > 0
+              ? displayShuppinList[0].auctionName
               : ""}
           </div>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="userId">{texts.member.userId}</label>
-            {rakusatsuList && rakusatsuList.length > 0
-              ? rakusatsuList[0].userId
-              : shuppinList && shuppinList.length > 0
-              ? shuppinList[0].userId
+            {displayRakusatsuList && displayRakusatsuList.length > 0
+              ? displayRakusatsuList[0].userId
+              : displayShuppinList && displayShuppinList.length > 0
+              ? displayShuppinList[0].userId
               : ""}
           </div>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="userName">{texts.member.userName}</label>
-            {rakusatsuList && rakusatsuList.length > 0
-              ? rakusatsuList[0].userName
-              : shuppinList && shuppinList.length > 0
-              ? shuppinList[0].userName
+            {displayRakusatsuList && displayRakusatsuList.length > 0
+              ? displayRakusatsuList[0].userName
+              : displayShuppinList && displayShuppinList.length > 0
+              ? displayShuppinList[0].userName
               : ""}
           </div>
           <div className={formSearchStyles.formItem}>
             <label htmlFor="companyName">{texts.member.companyName}</label>
-            {rakusatsuList && rakusatsuList.length > 0
-              ? rakusatsuList[0].companyName
-              : shuppinList && shuppinList.length > 0
-              ? shuppinList[0].companyName
+            {displayRakusatsuList && displayRakusatsuList.length > 0
+              ? displayRakusatsuList[0].companyName
+              : displayShuppinList && displayShuppinList.length > 0
+              ? displayShuppinList[0].companyName
               : ""}
           </div>
         </div>
-        <div className="text-right">
+        <div className="text-right flex gap-2 justify-end">
+          {paramsUserId && <MemberRegisterButton userId={paramsUserId} />}
           {optionInvoice && (
             <OutPutButton onClick={() => handleInvoice()} text={texts.button.invoicePdf} />
           )}
         </div>
       </div>
 
-      {rakusatsuList && rakusatsuList.length > 0 ? (
+      {displayRakusatsuList && displayRakusatsuList.length > 0 ? (
         <div className={styles.container}>
           <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
             <div className="text-left">
@@ -374,14 +307,15 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               <label className="sm:ml-4 flex items-center">
                 {texts.torihikiJisseki.rakusatsusu}:
                 <span className="text-xl font-bold mx-1">
-                  {rakusatsuList.length}
+                  {displayRakusatsuList.length}
                   {texts.label.resultCount}
                 </span>
               </label>
               <label className="sm:ml-2 flex items-center">
                 {texts.torihikiJisseki.rakusatsuTotalPrice}:
                 <span className="text-xl font-bold mx-1">
-                  {rakusatsuList
+                  ¥
+                  {displayRakusatsuList
                     .reduce((acc, result) => {
                       const price = parseFloat(result.rakusatsuTotalPrice.replace(/,/g, "")) || 0;
                       return acc + price;
@@ -397,7 +331,6 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               <>
                 <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
                   <label className="sm:items-center ">{texts.torihikiJisseki.updateDate}</label>
-                  {formErrors?.updateKbn && <p className="error-message">{formErrors.updateKbn}</p>}
                   <div className="flex items-center mb-2 sm:mb-0">
                     <select
                       id="updateKbn"
@@ -426,8 +359,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
           </div>
 
           <TorihikiJissekiTableComponent
-            title={texts.torihikiJisseki.rakusatsuMeisai}
-            data={rakusatsuList}
+            data={displayRakusatsuList}
             selectedIds={rakusatsuSelectedIds}
             selectAll={rakusatsuSelectAll}
             onSelectAll={rakusatsuHandleSelectAll}
@@ -474,31 +406,56 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
       ) : (
         <p></p>
       )}
-      {shuppinList && shuppinList.length > 0 ? (
+      {displayShuppinList && displayShuppinList.length > 0 ? (
         <div className={styles.container}>
           <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
             <div className="text-left">
               <label className={styles.title}>{texts.torihikiJisseki.shuppinMeisai}</label>
+              <div className={adminStyles.resultContainer}>
+                <div className={adminStyles.resultRow}>
+                  <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
+                  <select
+                    id="sortName"
+                    className={adminStyles.sort}
+                    value={shuppinSortName}
+                    onChange={handleShuppinSortNameChange}
+                  >
+                    <option value="lot">{texts.goods.lot}</option>
+                    <option value="sku">{texts.goods.sku}</option>
+                    <option value="rakusatsuPrice">{texts.torihikiJisseki.shuppinPrice}</option>
+                    <option value="shuppinKessaibi">{texts.torihikiJisseki.shiharaibi}</option>
+                  </select>
+                  <select
+                    id="sortFlg"
+                    className={adminStyles.sort}
+                    onChange={handleShuppinSortFlgChange}
+                  >
+                    <option value="asc">{texts.label.asc}</option>
+                    <option value="desc">{texts.label.desc}</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <div className="text-right flex flex-col sm:flex-row">
               <label className="sm:ml-4 flex items-center">
                 {texts.torihikiJisseki.shuppinsu}:
                 <span className="text-xl font-bold mx-1">
-                  {shuppinList.length}
+                  {displayShuppinList.length}
                   {texts.label.resultCount}
                 </span>
               </label>
               <label className="sm:ml-4 flex items-center">
                 {texts.torihikiJisseki.rakusatsusu}:
                 <span className="text-xl font-bold mx-1">
-                  {shuppinList.filter((result) => result.rakusatsuUserId !== "").length}
+                  {displayShuppinList.filter((result) => result.rakusatsuUserId !== "").length}
                   {texts.label.resultCount}
                 </span>
               </label>
               <label className="sm:ml-2 flex items-center">
                 {texts.torihikiJisseki.shuppinTotalPrice}:
                 <span className="text-xl font-bold mx-1">
-                  {shuppinList
+                  ¥
+                  {displayShuppinList
                     .reduce((acc, result) => {
                       const price = parseFloat(result.shuppinTotalPrice.replace(/,/g, "")) || 0;
                       return acc + price;
@@ -535,8 +492,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
           </div>
 
           <TorihikiJissekiTableComponent
-            title={texts.torihikiJisseki.shuppinMeisai}
-            data={shuppinSortedData}
+            data={displayShuppinList}
             selectedIds={shuppinSelectedIds}
             selectAll={shuppinSelectAll}
             onSelectAll={shuppinHandleSelectAll}
@@ -547,45 +503,33 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
                 key: "sku",
                 label: texts.goods.sku,
                 width: "w-48",
-                sortable: true,
-                onSort: () => handleSortShuppin("sku"),
               },
               {
                 key: "lot",
                 label: texts.goods.lot,
                 width: "w-24",
-                sortable: true,
-                onSort: () => handleSortShuppin("lot"),
               },
               {
                 key: "goodsName",
                 label: texts.goods.goodsName,
-                sortable: true,
-                onSort: () => handleSortShuppin("goodsName"),
               },
               {
                 key: "shuppinPrice",
                 label: texts.torihikiJisseki.shuppinPrice,
                 width: "w-48",
                 align: "right",
-                sortable: true,
-                onSort: () => handleSortShuppin("shuppinPrice"),
               },
               {
                 key: "shuppinTesuryoPrice",
                 label: texts.torihikiJisseki.shuppinTesuryoPrice,
                 width: "w-48",
                 align: "right",
-                sortable: true,
-                onSort: () => handleSortShuppin("shuppinTesuryoPrice"),
               },
               {
                 key: "shuppinTotalPrice",
                 label: texts.torihikiJisseki.shuppinTotalPrice,
                 width: "w-48",
                 align: "right",
-                sortable: true,
-                onSort: () => handleSortShuppin("shuppinTotalPrice"),
               },
               {
                 key: "shuppinKessaibi",

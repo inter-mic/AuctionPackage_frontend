@@ -23,6 +23,7 @@ interface PriceButtonProps {
   setIsNextPriceBelow: (flg: boolean) => void;
   setLiveBidkekkaData: React.Dispatch<React.SetStateAction<LiveBidKekkaData>>;
   onButtonClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps>(
@@ -40,6 +41,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
       setIsNextPriceBelow,
       setLiveBidkekkaData,
       onButtonClick,
+      style,
     },
     ref
   ) => {
@@ -116,6 +118,7 @@ export const CurrentPriceButton = forwardRef<PriceButtonHandle, PriceButtonProps
         }`}
         onClick={handleClick}
         disabled={disabled}
+        style={style}
       >
         <span>{texts.button.currentPrice}</span>
       </button>

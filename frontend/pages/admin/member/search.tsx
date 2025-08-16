@@ -62,8 +62,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [memberData, setMemberData] = useState<TAdminUserSelect[]>([]);
 
   const formSearch = async () => {
-    setSelectAll(false);
-    setSelectedIds([]);
+    // 検索時にチェックボックス選択をリセット
+    resetSelection();
     setMemberData([]);
     setCurrentPage(1);
     const params = {
@@ -122,7 +122,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: memberParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect } =
+  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
     useCheckboxSelection(
       memberData.map((member) => member.userId),
       allData.map((member) => member.userId),

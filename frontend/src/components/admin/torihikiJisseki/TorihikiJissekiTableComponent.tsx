@@ -1,7 +1,6 @@
 import React from "react";
 
 interface TorihikiJissekiTableProps {
-  title: string;
   data: any[];
   selectedIds: number[];
   selectAll: boolean;
@@ -13,14 +12,11 @@ interface TorihikiJissekiTableProps {
     label: string;
     width?: string;
     align?: "left" | "center" | "right";
-    sortable?: boolean;
-    onSort?: () => void;
   }[];
   isRakusatsu?: boolean;
 }
 
 export const TorihikiJissekiTableComponent: React.FC<TorihikiJissekiTableProps> = ({
-  title,
   data,
   selectedIds,
   selectAll,
@@ -31,12 +27,6 @@ export const TorihikiJissekiTableComponent: React.FC<TorihikiJissekiTableProps> 
 }) => {
   return (
     <div className="min-w-full bg-white">
-      <div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center p-1">
-        <div className="text-left">
-          <label className="text-lg font-semibold">{title}</label>
-        </div>
-      </div>
-
       <table className="min-w-full bg-white">
         <thead>
           <tr>
@@ -44,13 +34,7 @@ export const TorihikiJissekiTableComponent: React.FC<TorihikiJissekiTableProps> 
               <input type="checkbox" checked={selectAll} onChange={onSelectAll} />
             </th>
             {columns.map((column) => (
-              <th
-                key={column.key}
-                className={`py-2 px-4 border-b ${column.width || ""} ${
-                  column.sortable ? "cursor-pointer hover:bg-gray-50" : ""
-                }`}
-                onClick={column.onSort}
-              >
+              <th key={column.key} className={`py-2 px-4 border-b ${column.width || ""} `}>
                 {column.label}
               </th>
             ))}
