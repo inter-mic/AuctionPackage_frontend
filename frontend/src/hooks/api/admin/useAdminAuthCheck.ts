@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext } from "next";
 
 export const useAdminAuthCheck = async (context: GetServerSidePropsContext) => {
-  const jsessionid = context.req.cookies["JSESSIONID"];
+  const cookieHeader = context.req.headers['cookie'] ?? '';
   const response = await fetch(`${process.env.NEXT_PUBLIC_ADMIN_API_URL}authCheck`, {
     method: "GET",
     headers: {
-      Cookie: `JSESSIONID=${jsessionid}`,
+      Cookie: cookieHeader,
     },
   });
   if (!response.ok) {

@@ -539,7 +539,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
                 backgroundColor: "white",
                 borderRadius: "10px",
                 padding: "20px",
-                maxWidth: "90%",
+                width: "90%",
                 height: "80%",
                 overflow: "auto",
                 position: "relative",

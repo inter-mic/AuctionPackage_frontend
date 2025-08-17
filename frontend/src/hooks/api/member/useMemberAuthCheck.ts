@@ -1,18 +1,18 @@
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext } from "next";
 
 export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => {
-  const jsessionid = context.req.cookies['JSESSIONID'];
+  const cookieHeader = context.req.headers["cookie"] ?? "";
   const response = await fetch(`${process.env.NEXT_PUBLIC_MEMBER_API_URL}authCheck`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Cookie': `JSESSIONID=${jsessionid}`
-    }
+      Cookie: cookieHeader,
+    },
   });
   if (!response.ok) {
     return {
       redirect: {
-        destination: '/login',
+        destination: "/login",
         permanent: false,
       },
     };
@@ -31,10 +31,10 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
       kiyakuPath: data.kiyakuPath,
       privacyPolicyPath: data.privacyPolicyPath,
       optionMemInvoice: data.optionMemInvoice,
-      livebit: data.livebit ,
-      auction: data.auction ,
-      liveauction: data.liveauction ,
-      tender: data.tender ,
+      livebit: data.livebit,
+      auction: data.auction,
+      liveauction: data.liveauction,
+      tender: data.tender,
       companyName: data.companyName,
       zipCode: data.zipCode,
       todofukenName: data.todofukenName,
@@ -47,7 +47,6 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
       kobutsuBango: data.kobutsuBango,
       copyRight: data.copyRight,
       pageSettingList: data.pageSettingList || [],
-    }
+    },
   };
 };
-
