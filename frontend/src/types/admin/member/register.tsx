@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-export type UserData = {
+export type TAdminUserRegistRequest = {
   userId?: number;
   loginId?: string;
   userName?: string;
@@ -26,6 +26,7 @@ export type UserData = {
   adminBiko?: string;
   shoninFlg?: boolean;
   teishiFlg?: boolean;
+  bidFlg?: boolean;
   loginTime?: Dayjs | null;
   updateTime?: Dayjs | null;
   createTime?: Dayjs | null;

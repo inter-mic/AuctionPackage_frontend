@@ -19,7 +19,7 @@ const MemberTeishiOnButton: React.FC<MemberTeishiButtonProps> = ({ userId, onUpd
   return (
     <button
       onClick={handleClick}
-      className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
+      className="bg-red-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
     >
       <span>{texts.button.teishiOn}</span>
     </button>
@@ -39,7 +39,7 @@ const MemberTeishiOffButton: React.FC<MemberTeishiButtonProps> = ({ userId, onUp
   return (
     <button
       onClick={handleClick}
-      className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
+      className="bg-yellow-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
     >
       <span>{texts.button.teishiOff}</span>
     </button>

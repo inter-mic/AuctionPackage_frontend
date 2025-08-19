@@ -8,7 +8,7 @@ interface ShoninButtonProps {
   onUpdate: (userId: number, shoninFlg: boolean) => void;
 }
 
-export const ShoninOnButton: React.FC<ShoninButtonProps> = ({ userId, onUpdate }) => {
+const MemberShoninOnButton: React.FC<ShoninButtonProps> = ({ userId, onUpdate }) => {
   const { shoninOnOffAPI } = useShoninOnOffAPI();
 
   const handleClick = useCallback(
@@ -32,7 +32,7 @@ export const ShoninOnButton: React.FC<ShoninButtonProps> = ({ userId, onUpdate }
   );
 };
 
-export const ShoninOffButton: React.FC<ShoninButtonProps> = ({ userId, onUpdate }) => {
+const MemberShoninOffButton: React.FC<ShoninButtonProps> = ({ userId, onUpdate }) => {
   const { shoninOnOffAPI } = useShoninOnOffAPI();
 
   const handleClick = useCallback(
@@ -49,9 +49,11 @@ export const ShoninOffButton: React.FC<ShoninButtonProps> = ({ userId, onUpdate 
   return (
     <button
       onClick={handleClick}
-      className="bg-gray-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
+      className="bg-red-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
     >
       <span>{texts.button.shoninOff}</span>
     </button>
   );
 };
+
+export { MemberShoninOnButton, MemberShoninOffButton };

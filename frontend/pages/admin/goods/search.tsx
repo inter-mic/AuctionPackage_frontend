@@ -150,12 +150,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: goodsParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
-    useCheckboxSelection(
-      goodsData.map((goods) => goods.goodsId),
-      allGoodsData.map((goods) => goods.goodsId),
-      fetchAllIds
-    );
+  const {
+    selectAll,
+    setSelectAll,
+    selectedIds,
+    setSelectedIds,
+    handleSelectAll,
+    handleSelect,
+    resetSelection,
+  } = useCheckboxSelection(
+    goodsData.map((goods) => goods.goodsId),
+    allGoodsData.map((goods) => goods.goodsId),
+    fetchAllIds
+  );
   //商品登録画面に遷移
   const { toGoodsRegist } = useToGoodsRegist(kengen);
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => {
@@ -411,6 +418,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               value={goodsParams.rakusatsuUserName}
               onChange={formChange}
             />
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="teishiFlg">{texts.label.image}</label>
+            <select
+              id="imageFlg"
+              name="imageFlg"
+              value={goodsParams.imageFlg}
+              onChange={formChange}
+            >
+              <option value="">---</option>
+              <option value="1">{texts.label.torokuzumi}</option>
+              <option value="0">{texts.label.mitoroku}</option>
+            </select>
           </div>
         </div>
         <div className="text-right  mt-2">

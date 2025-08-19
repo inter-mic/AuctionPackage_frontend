@@ -14,18 +14,25 @@ import { useUserGetInfoAPI } from "@/hooks/api/admin/user/useUserGetInfoAPI";
 import { useUserRegistAPI } from "@/hooks/api/admin/user/useUserRegistAPI";
 import { useUserDeleteAPI } from "@/hooks/api/admin/user/useUserDeleteAPI";
 //型定義
-import { UserData } from "@/types/admin/member/register";
+import { TAdminUserRegistRequest } from "@/types/admin/member/register";
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { MemberFormFields } from "@/components/common/MemberFormFields";
 import ConfirmDialog from "@/components/ui/dialog/confirmDialog";
 //ボタン
 import { RegistButton } from "@/components/ui/buttons/admin/registButton";
-import { ShoninOnButton, ShoninOffButton } from "@/components/ui/buttons/admin/shoninButton";
+import {
+  MemberShoninOnButton,
+  MemberShoninOffButton,
+} from "@/components/ui/buttons/admin/memberShoninButton";
 import {
   MemberTeishiOnButton,
   MemberTeishiOffButton,
 } from "@/components/ui/buttons/admin/memberTeishiButton";
+import {
+  MemberBidFlgOnButton,
+  MemberBidFlgOffButton,
+} from "@/components/ui/buttons/admin/memberBidFlgButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import styles from "@/styles/admin/MemberRegist.module.css";
@@ -53,7 +60,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsUserId]);
-  const [member, setMember] = useState<UserData>({});
+  const [member, setMember] = useState<TAdminUserRegistRequest>({});
   useEffect(() => {
     if (data) {
       setMember(data[0]);
@@ -94,6 +101,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const updateShoninFlg = useCallback((userId: number, newFlg: boolean) => {
     setMember((prevMember) => {
       return { ...prevMember, shoninFlg: newFlg };
+    });
+  }, []);
+
+  //入札可否処理
+  const updateBidFlg = useCallback((userId: number, newFlg: boolean) => {
+    setMember((prevMember) => {
+      return { ...prevMember, bidFlg: newFlg };
     });
   }, []);
 
@@ -190,9 +204,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 </label>
                 {member.userId !== undefined &&
                   (member.shoninFlg ? (
-                    <ShoninOffButton userId={member.userId} onUpdate={updateShoninFlg} />
+                    <MemberShoninOffButton userId={member.userId} onUpdate={updateShoninFlg} />
                   ) : (
-                    <ShoninOnButton userId={member.userId} onUpdate={updateShoninFlg} />
+                    <MemberShoninOnButton userId={member.userId} onUpdate={updateShoninFlg} />
+                  ))}
+              </div>
+              <div className="divide-y border-gray-500"></div>
+              <h1 className={styles.heading}> {texts.label.bidFlg}</h1>
+              <div className="sm:flex sm:justify-between sm:items-center">
+                <label className="noteLabel">{texts.label.bidFlg_note_1}</label>
+                {member.userId !== undefined &&
+                  (!member.bidFlg ? (
+                    <MemberBidFlgOnButton userId={member.userId} onUpdate={updateBidFlg} />
+                  ) : (
+                    <MemberBidFlgOffButton userId={member.userId} onUpdate={updateBidFlg} />
                   ))}
               </div>
               <div className="divide-y border-gray-500"></div>
@@ -217,9 +242,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   title={texts.message.confirmDelete}
                   description={texts.label.delete_note_1}
                   buttonTitle={texts.button.delete}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-40"
+                  className="bg-red-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-40"
                   dialogCancelClassName="lg:ml-2.5 mt-2 lg:mt-0 bg-white border border-solid border-red-500 text-red-500 font-bold py-2 px-4 rounded-lg  w-full sm:w-40"
-                  dialogClassName="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg w-40"
+                  dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-lg w-40"
                   onSubmit={handleDeleteSubmit}
                   buttonText={texts.button.delete}
                 />

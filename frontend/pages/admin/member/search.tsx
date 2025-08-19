@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { texts } from "@/config/texts.ja";
 import {
@@ -35,7 +36,10 @@ import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
 import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
 import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 import { AddressCopyButton } from "@/components/ui/buttons/admin/addressCopyButton";
-import { ShoninOnButton, ShoninOffButton } from "@/components/ui/buttons/admin/shoninButton";
+import {
+  MemberShoninOnButton,
+  MemberShoninOffButton,
+} from "@/components/ui/buttons/admin/memberShoninButton";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
@@ -51,6 +55,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async () => {
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect, useCallback, texts } = useCommonSetup();
+  const router = useRouter();
 
   useKengenRedirect(kengen, 102);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -60,31 +65,88 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { data, userSearchAPI } = useUserSearchAPI();
   const { count, userSearchCountAPI } = useUserSearchCountAPI();
   const [memberData, setMemberData] = useState<TAdminUserSelect[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const formSearch = async () => {
+  const formSearch = useCallback(async () => {
     // 検索時にチェックボックス選択をリセット
     resetSelection();
-    setMemberData([]);
+    setMemberData([]); // useState の setter は安定参照なので依存に不要
     setCurrentPage(1);
+
     const params = {
       ...memberParams,
       pageNumber: 1,
       pageSize: itemsPerPage,
     };
+
     await userSearchAPI(params);
     await userSearchCountAPI(params);
-  };
-  const formClear = () => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memberParams, itemsPerPage]);
+
+  const formClear = async () => {
     setSelectAll(false);
     setSelectedIds([]);
     setMemberData([]);
+    await resetForm();
     resetForm();
   };
+
+  // URLパラメータから検索条件をセットして自動検索
+  useEffect(() => {
+    if (!isInitialized && router.isReady) {
+      const { shoninFlg, teishiFlg } = router.query;
+
+      if (shoninFlg || teishiFlg) {
+        // URLパラメータがある場合、検索条件をセット
+        if (shoninFlg) {
+          formChange({
+            target: {
+              name: "shoninFlg",
+              value: shoninFlg as string,
+            },
+          } as React.ChangeEvent<HTMLSelectElement>);
+        }
+        if (teishiFlg) {
+          formChange({
+            target: {
+              name: "teishiFlg",
+              value: teishiFlg as string,
+            },
+          } as React.ChangeEvent<HTMLSelectElement>);
+        }
+
+        // URLパラメータがある場合のみ自動検索を実行
+        setTimeout(() => {
+          // 直接パラメータを指定して検索を実行
+          const params = {
+            ...memberParams,
+            shoninFlg: (shoninFlg as string) || "",
+            teishiFlg: (teishiFlg as string) || "",
+            pageNumber: 1,
+            pageSize: itemsPerPage,
+          };
+
+          resetSelection();
+          setMemberData([]);
+          setCurrentPage(1);
+
+          userSearchAPI(params);
+          userSearchCountAPI(params);
+        }, 1000);
+      }
+
+      setIsInitialized(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query, isInitialized, formChange, formSearch]);
+
   useEffect(() => {
     if (data) {
       setMemberData(data);
     }
   }, [data]);
+
   //承認処理
   const updateShoninFlg = useCallback((userId: number, newFlg: boolean) => {
     setMemberData((prevData) =>
@@ -122,12 +184,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: memberParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
-    useCheckboxSelection(
-      memberData.map((member) => member.userId),
-      allData.map((member) => member.userId),
-      fetchAllIds
-    );
+  const {
+    selectAll,
+    setSelectAll,
+    selectedIds,
+    setSelectedIds,
+    handleSelectAll,
+    handleSelect,
+    resetSelection,
+  } = useCheckboxSelection(
+    memberData.map((member) => member.userId),
+    allData.map((member) => member.userId),
+    fetchAllIds
+  );
 
   //会員登録画面に遷移
   const { toMemberRegist } = useToMemberRegist(kengen);
@@ -234,6 +303,27 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             </select>
           </div>
           <div className={formSearchStyles.formItem}>
+            <label htmlFor="bidFlg">{texts.label.bidFlg}</label>
+            <select id="bidFlg" name="bidFlg" value={memberParams.bidFlg} onChange={formChange}>
+              <option value="">---</option>
+              <option value="0">{texts.member.bidFlgOff}</option>
+              <option value="1">{texts.member.bidFlgOn}</option>
+            </select>
+          </div>
+          <div className={formSearchStyles.formItem}>
+            <label htmlFor="teishiFlg">{texts.label.teishi}</label>
+            <select
+              id="teishiFlg"
+              name="teishiFlg"
+              value={memberParams.teishiFlg}
+              onChange={formChange}
+            >
+              <option value="">---</option>
+              <option value="0">{texts.member.teishiOff}</option>
+              <option value="1">{texts.member.teishiOn}</option>
+            </select>
+          </div>
+          <div className={formSearchStyles.formItem}>
             <label htmlFor="auctionMailJushinFlg">{texts.member.auctionMailJushinFlg}</label>
             <select
               id="auctionMailJushinFlg"
@@ -317,7 +407,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 {memberData.map((result) => (
                   <tr
                     key={result.userId}
-                    className="cursor-pointer hover:bg-gray-100"
+                    className={`cursor-pointer hover:bg-gray-100 ${
+                      result.teishiFlg ? "bg-gray-300" : ""
+                    }`}
                     onClick={(e) => handleRowClick(e, result.userId)}
                   >
                     <td
@@ -346,9 +438,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     <td className="py-1 px-4 border-b text-center">
                       {executionPermission(102, 2) ? (
                         result.shoninFlg ? (
-                          <ShoninOffButton userId={result.userId} onUpdate={updateShoninFlg} />
+                          <MemberShoninOffButton
+                            userId={result.userId}
+                            onUpdate={updateShoninFlg}
+                          />
                         ) : (
-                          <ShoninOnButton userId={result.userId} onUpdate={updateShoninFlg} />
+                          <MemberShoninOnButton userId={result.userId} onUpdate={updateShoninFlg} />
                         )
                       ) : (
                         <span></span>

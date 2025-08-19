@@ -532,13 +532,13 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           name="kozaType"
           value={member.kozaType || ""}
           onChange={handleSelectChange}
-          className={`${styles.commonInput} ${styles.input50}`}
+          className={`${styles.commonInput} ${styles.input25}`}
         >
           <option value="">---</option>
           <option value="1">{texts.member.kozaType1}</option>
           <option value="2">{texts.member.kozaType2}</option>
         </select>
-        {errors?.kozaType && <p className={`error-message ${styles.input50}`}>{errors.kozaType}</p>}
+        {errors?.kozaType && <p className={`error-message ${styles.input25}`}>{errors.kozaType}</p>}
       </div>
       <div>
         <div className="flex items-center">
