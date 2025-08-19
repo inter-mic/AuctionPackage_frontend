@@ -22,10 +22,11 @@ interface Props {
   data: TGoodsSelect;
   isLogin: boolean;
   loginUserId: number;
+  canBid: boolean;
   texts: any;
 }
 
-const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts }) => {
+const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBid, texts }) => {
   const [goodsInfo, setGoodsInfo] = useState(data);
   useEffect(() => {
     setGoodsInfo(data);
@@ -69,7 +70,10 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
             className={styles.goodsImage}
           />
           {goodsInfo.chumokuFlg && (
-            <div className={styles.chumokuBadge}>{texts.goods.chumokuFlg}</div>
+            <div className={`${styles.badge} ${styles.chumokuBadge}`}>{texts.goods.chumokuFlg}</div>
+          )}
+          {loginUserId === Number(goodsInfo.shuppinUserId) && (
+            <div className={`${styles.badge} ${styles.mySpnBadge}`}>{texts.label.mySpn}</div>
           )}
           <AuctionStatusComponent
             auctionTimeStatus={goodsInfo.auctionTimeStatus}
@@ -157,36 +161,40 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, texts
         )}
       </div>
 
-      {isLogin && goodsInfo.auctionTimeStatus === 2 && goodsInfo.spnKbn !== "1" && (
-        <>
-          <button
-            onClick={goodsInfo.spnKbn === "2" ? handleJizenToggleModal : handleBidToggleModal}
-            className={ButtonStyles.bidButton}
-          >
-            <GavelIcon className="text-white" />
-            {
-              texts.button[
-                goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2"
-                  ? "jizenBidToggle"
-                  : "bidToggle"
-              ]
-            }
-          </button>
+      {isLogin &&
+        canBid &&
+        loginUserId !== Number(goodsInfo.shuppinUserId) &&
+        goodsInfo.auctionTimeStatus === 2 &&
+        goodsInfo.spnKbn !== "1" && (
+          <>
+            <button
+              onClick={goodsInfo.spnKbn === "2" ? handleJizenToggleModal : handleBidToggleModal}
+              className={ButtonStyles.bidButton}
+            >
+              <GavelIcon className="text-white" />
+              {
+                texts.button[
+                  goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2"
+                    ? "jizenBidToggle"
+                    : "bidToggle"
+                ]
+              }
+            </button>
 
-          {goodsInfo.bidPrice != "" && (goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2") && (
-            <ConfirmDialog
-              title={texts.message.confirmDelete}
-              description=""
-              buttonTitle={texts.button.delete}
-              className={ButtonStyles.jizenBidDeleteButton}
-              dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
-              dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
-              onSubmit={() => handleJizenBidDelete(goodsInfo.goodsId)}
-              buttonText={texts.button.deleteJizenBidToggle}
-            />
-          )}
-        </>
-      )}
+            {goodsInfo.bidPrice != "" && (goodsInfo.spnKbn === "1" || goodsInfo.spnKbn === "2") && (
+              <ConfirmDialog
+                title={texts.message.confirmDelete}
+                description=""
+                buttonTitle={texts.button.delete}
+                className={ButtonStyles.jizenBidDeleteButton}
+                dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
+                dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
+                onSubmit={() => handleJizenBidDelete(goodsInfo.goodsId)}
+                buttonText={texts.button.deleteJizenBidToggle}
+              />
+            )}
+          </>
+        )}
 
       <BidModal
         isOpen={isBidModalOpen}

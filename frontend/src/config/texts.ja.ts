@@ -586,6 +586,7 @@ export const texts = {
     image: "画像",
     torokuzumi: "登録済み",
     mitoroku: "未登録",
+    mySpn: "マイ出品",
   },
   message: {
     redirect: "ログイン画面に遷移します。",

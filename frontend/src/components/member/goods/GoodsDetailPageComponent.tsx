@@ -30,10 +30,11 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 interface Props extends TPageProps {
   isLogin: boolean;
+  canBid: boolean;
   loginUserId: number;
 }
 
-const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId }) => {
+const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid }) => {
   const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const params = useSearchParams();
   const paramsGoodsId = params ? params.get("goodsId") : null;
@@ -118,7 +119,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
       if (isLogin) {
         memberSessionAPI();
       }
-    //30分ごと
+      //30分ごと
     }, 1800000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -307,6 +308,12 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
             </div>
             {isLogin && (
               <div className={styles.favoriteRight}>
+                {fetchGoodsData?.chumokuFlg && (
+                  <div className={styles.badge}>{texts.goods.chumokuFlg}</div>
+                )}
+                {loginUserId === Number(fetchGoodsData?.shuppinUserId) && (
+                  <div className={styles.badge}>{texts.label.mySpn}</div>
+                )}
                 <FavoriteToggle
                   goodsId={Number(paramsGoodsId)}
                   initialFavoriteState={fetchGoodsData?.myFavoriteFlg ?? false}
@@ -320,6 +327,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId 
             <BidModuleComponent
               fetchGoodsData={fetchGoodsData}
               isLogin={isLogin}
+              canBid={canBid}
               loginUserId={loginUserId}
             />
           )}

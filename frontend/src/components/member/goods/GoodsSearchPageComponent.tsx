@@ -32,9 +32,14 @@ import styles from "@/styles/member/goods/GoodsList.module.css";
 interface MemberGoodsSearchPageProps extends TPageProps {
   isLogin: boolean;
   loginUserId: number;
+  canBid: boolean;
 }
 
-const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, loginUserId }) => {
+const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
+  isLogin,
+  loginUserId,
+  canBid,
+}) => {
   const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const router = useRouter();
   const { goodsList, goodsSearchAPI } = useGoodsSearchAPI();
@@ -182,7 +187,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       if (isLogin) {
         memberSessionAPI();
       }
-        //30分ごと
+      //30分ごと
     }, 1800000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -358,7 +363,12 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
               </div>
             </div>
           </div>
-          <GoodsList list={fetchGoodsList} isLogin={isLogin} loginUserId={loginUserId} />
+          <GoodsList
+            list={fetchGoodsList}
+            isLogin={isLogin}
+            loginUserId={loginUserId}
+            canBid={canBid}
+          />
 
           <div className={memberStyles.paginationContainer}>
             <Pagination

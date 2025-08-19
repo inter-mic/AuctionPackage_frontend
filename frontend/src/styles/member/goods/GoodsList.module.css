@@ -39,8 +39,15 @@
 }
 
 .chumokuBadge {
-  position: absolute;
   top: 8px;
+}
+
+.mySpnBadge {
+  top: 40px;
+}
+
+.badge {
+  position: absolute;
   right: 8px;
   background-color: #ffffff;
   color: #ffa5009e;

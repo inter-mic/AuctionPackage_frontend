@@ -28,10 +28,11 @@ import styles from "@/styles/member/auction/internetTender/Bid.module.css";
 
 interface Props {
   isLogin: boolean;
+  canBid: boolean;
   loginUserId: number;
   fetchGoodsData: TGoodsSelect | undefined;
 }
-const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUserId }) => {
+const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUserId, canBid }) => {
   const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   const [isBidModalOpen, setBidModalOpen] = useState(false);
@@ -208,86 +209,91 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
           </>
         ) : (
           <>
-            {fetchGoodsData?.spnKbn == "1" || fetchGoodsData?.spnKbn == "2" ? (
-              <span></span>
-            ) : (
-              <span className="md:h-14">
-                <AuctionStatusComponent
-                  auctionTimeStatus={bidState.auctionTimeStatus ?? ""}
-                  currentKenriUserId={
-                    bidState.currentKenriUserId !== undefined ? bidState.currentKenriUserId : 0
-                  }
-                  loginUserId={loginUserId}
-                  texts={texts.goods}
-                  bidPrice={bidState.bidPrice ?? ""}
-                  saiteiRakusatsuPriceOverFlg={bidState.saiteiRakusatsuPriceOverFlg ?? false}
-                  isDetail={true}
+            {canBid &&
+            loginUserId === Number(fetchGoodsData?.shuppinUserId) && (
+              <>
+                {fetchGoodsData?.spnKbn == "1" || fetchGoodsData?.spnKbn == "2" ? (
+                  <span></span>
+                ) : (
+                  <span className="md:h-14">
+                    <AuctionStatusComponent
+                      auctionTimeStatus={bidState.auctionTimeStatus ?? ""}
+                      currentKenriUserId={
+                        bidState.currentKenriUserId !== undefined ? bidState.currentKenriUserId : 0
+                      }
+                      loginUserId={loginUserId}
+                      texts={texts.goods}
+                      bidPrice={bidState.bidPrice ?? ""}
+                      saiteiRakusatsuPriceOverFlg={bidState.saiteiRakusatsuPriceOverFlg ?? false}
+                      isDetail={true}
+                    />
+                  </span>
+                )}
+
+                {fetchGoodsData?.spnKbn != "1" && bidState.auctionTimeStatus === 2 && (
+                  <div>
+                    <button
+                      onClick={
+                        fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2"
+                          ? handleJizenToggleModal
+                          : handleBidToggleModal
+                      }
+                      className={`${ButtonStyles.bidButton} ${ButtonStyles.bidDetailButton}`}
+                    >
+                      <GavelIcon className="text-white" />
+                      {
+                        texts.button[
+                          fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2"
+                            ? "jizenBidToggle"
+                            : "bidToggle"
+                        ]
+                      }
+                    </button>
+                  </div>
+                )}
+
+                {fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2" ? (
+                  bidState.bidPrice !== "" && (
+                    <div>
+                      <ConfirmDialog
+                        title={texts.message.confirmDelete}
+                        description=""
+                        buttonTitle={texts.button.delete}
+                        className={`${ButtonStyles.jizenBidDeleteButton} ${ButtonStyles.jizenBidDeleteDetailButton}`}
+                        dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
+                        dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
+                        onSubmit={() => handleJizenBidDelete(fetchGoodsData?.goodsId)}
+                        buttonText={texts.button.deleteJizenBidToggle}
+                      />
+                    </div>
+                  )
+                ) : (
+                  <span></span>
+                )}
+
+                <BidModalComponent
+                  isOpen={isBidModalOpen}
+                  toggleFilter={handleBidToggleModal}
+                  lot={fetchGoodsData?.lot || ""}
+                  goodsName={fetchGoodsData?.goodsName || ""}
+                  bidSpnkbn={fetchGoodsData?.spnKbn || ""}
+                  bidGoodsId={fetchGoodsData?.goodsId || 0}
+                  bidPrice={bidState.nextBidPrice || fetchGoodsData?.startCurrentPrice || ""}
+                  bidUnit={fetchGoodsData?.bidUnit || ""}
                 />
-              </span>
+
+                <LiveJizenBidModalComponent
+                  isOpen={isJizenBidModalOpen}
+                  toggleFilter={handleJizenToggleModal}
+                  lot={fetchGoodsData?.lot || ""}
+                  goodsName={fetchGoodsData?.goodsName || ""}
+                  bidGoodsId={fetchGoodsData?.goodsId || 0}
+                  bidPrice={bidState.bidPrice || fetchGoodsData?.startCurrentPrice || ""}
+                  startPrice={fetchGoodsData?.startPrice || ""}
+                  bidUnit={fetchGoodsData?.bidUnit || ""}
+                />
+              </>
             )}
-
-            {fetchGoodsData?.spnKbn != "1" && bidState.auctionTimeStatus === 2 && (
-              <div>
-                <button
-                  onClick={
-                    fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2"
-                      ? handleJizenToggleModal
-                      : handleBidToggleModal
-                  }
-                  className={`${ButtonStyles.bidButton} ${ButtonStyles.bidDetailButton}`}
-                >
-                  <GavelIcon className="text-white" />
-                  {
-                    texts.button[
-                      fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2"
-                        ? "jizenBidToggle"
-                        : "bidToggle"
-                    ]
-                  }
-                </button>
-              </div>
-            )}
-
-            {fetchGoodsData?.spnKbn === "1" || fetchGoodsData?.spnKbn === "2" ? (
-              bidState.bidPrice !== "" && (
-                <div>
-                  <ConfirmDialog
-                    title={texts.message.confirmDelete}
-                    description=""
-                    buttonTitle={texts.button.delete}
-                    className={`${ButtonStyles.jizenBidDeleteButton} ${ButtonStyles.jizenBidDeleteDetailButton}`}
-                    dialogClassName="bg-red-500 hover:bg-opacity-50 text-white font-bold py-4 px-4 w-40"
-                    dialogCancelClassName="bg-white hover:bg-opacity-50 border border-solid border-red-500 text-red-500 py-4 px-4 w-40 float-left"
-                    onSubmit={() => handleJizenBidDelete(fetchGoodsData?.goodsId)}
-                    buttonText={texts.button.deleteJizenBidToggle}
-                  />
-                </div>
-              )
-            ) : (
-              <span></span>
-            )}
-
-            <BidModalComponent
-              isOpen={isBidModalOpen}
-              toggleFilter={handleBidToggleModal}
-              lot={fetchGoodsData?.lot || ""}
-              goodsName={fetchGoodsData?.goodsName || ""}
-              bidSpnkbn={fetchGoodsData?.spnKbn || ""}
-              bidGoodsId={fetchGoodsData?.goodsId || 0}
-              bidPrice={bidState.nextBidPrice || fetchGoodsData?.startCurrentPrice || ""}
-              bidUnit={fetchGoodsData?.bidUnit || ""}
-            />
-
-            <LiveJizenBidModalComponent
-              isOpen={isJizenBidModalOpen}
-              toggleFilter={handleJizenToggleModal}
-              lot={fetchGoodsData?.lot || ""}
-              goodsName={fetchGoodsData?.goodsName || ""}
-              bidGoodsId={fetchGoodsData?.goodsId || 0}
-              bidPrice={bidState.bidPrice || fetchGoodsData?.startCurrentPrice || ""}
-              startPrice={fetchGoodsData?.startPrice || ""}
-              bidUnit={fetchGoodsData?.bidUnit || ""}
-            />
           </>
         )}
 

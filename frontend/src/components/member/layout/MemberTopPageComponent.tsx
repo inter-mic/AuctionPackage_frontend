@@ -24,8 +24,9 @@ import styles from "@/styles/member/Top.module.css";
 interface Props extends TPageProps {
   isLogin: boolean;
   loginUserId: number;
+  canBid: boolean;
 }
-const MemberTopPageComponent: React.FC<Props> = ({ isLogin, loginUserId }) => {
+const MemberTopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid }) => {
   const { useEffect, texts } = useCommonSetup();
   //TOP画像
   const { topImageList } = useTopImageSearchAPI(isLogin);
@@ -101,7 +102,12 @@ const MemberTopPageComponent: React.FC<Props> = ({ isLogin, loginUserId }) => {
               <span>{texts.top.hotGoods}</span>
             </h1>
             <div className={`${memberStyles.memberContainer} p-2`}>
-              <GoodsList list={goodsList} isLogin={isLogin} loginUserId={loginUserId} />
+              <GoodsList
+                list={goodsList}
+                isLogin={isLogin}
+                loginUserId={loginUserId}
+                canBid={canBid}
+              />
             </div>
           </>
         ) : (

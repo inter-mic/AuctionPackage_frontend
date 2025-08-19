@@ -16,9 +16,10 @@ import memberStyles from "@/styles/member/MemberCommon.module.css";
 interface Props {
   list: TGoodsSelect[];
   isLogin: boolean;
+  canBid: boolean;
   loginUserId: number;
 }
-const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => {
+const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId, canBid }) => {
   const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -140,6 +141,7 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId }) => 
             data={data}
             isLogin={isLogin}
             loginUserId={loginUserId}
+            canBid={canBid}
             texts={texts}
           />
         ))}

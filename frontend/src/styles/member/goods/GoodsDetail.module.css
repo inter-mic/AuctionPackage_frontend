@@ -59,6 +59,9 @@
 
 .favoriteRight {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .goodsName {
@@ -182,6 +185,16 @@
 }
 .clickableIcon {
   cursor: pointer; /* アイコンをクリック可能に */
+}
+
+.badge {
+  background-color: #ffa5009e;
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 .priceUpdated {
