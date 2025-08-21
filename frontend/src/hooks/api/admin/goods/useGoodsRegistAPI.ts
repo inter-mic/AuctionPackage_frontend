@@ -4,9 +4,9 @@ import { dataURLtoFile } from "@/components/ui/images/fileUtils";
 //型定義
 import { Errors } from "@/types/errors";
 import {
-  GoodsData,
+  TGoodsData,
   initialGoodsData,
-  GoodsKekkaData,
+  TGoodsKekkaData,
   initialGoodsKekkaData,
 } from "@/types/admin/goods/register";
 
@@ -20,11 +20,11 @@ interface Image {
 export const useGoodsRegistAPI = () => {
   const { useState, texts, apiRequest } = useCommonSetup();
   const [goodsRegistErrors, setGoodsRegistErrors] = useState<Errors>();
-  const [responseGoodsData, setResponseGoodsData] = useState<GoodsData>(initialGoodsData);
+  const [responseGoodsData, setResponseGoodsData] = useState<TGoodsData>(initialGoodsData);
   const [responseGoodsKekkaData, setResponseGoodsKekkaData] =
-    useState<GoodsKekkaData>(initialGoodsKekkaData);
+    useState<TGoodsKekkaData>(initialGoodsKekkaData);
 
-  const goodsRegistAPI = async (goodsData: GoodsData, images: Image[] | null) => {
+  const goodsRegistAPI = async (goodsData: TGoodsData, images: Image[] | null) => {
     const formData = new FormData();
     const sanitizedGoodsData = {
       ...goodsData,

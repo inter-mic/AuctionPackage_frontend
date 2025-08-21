@@ -1,4 +1,4 @@
-export type GoodsData = {
+export type TGoodsData = {
   goodsId: number | null;
   sku: string | null;
   goodsName: string | null;
@@ -46,7 +46,7 @@ export type GoodsData = {
   updateTimeTtGoodsAuction: string | null;
   updateTimeTtGoodsAddinfo: string | null;
 };
-export const initialGoodsData: GoodsData = {
+export const initialGoodsData: TGoodsData = {
   goodsId: null,
   sku: null,
   goodsName: null,
@@ -95,7 +95,7 @@ export const initialGoodsData: GoodsData = {
   updateTimeTtGoodsAddinfo: null,
 };
 
-export type GoodsKekkaData = {
+export type TGoodsKekkaData = {
   goodsId: number | null;
   rakusatsuPrice: string | null;
   rakusatsuTesuryoPrice: string | null;
@@ -107,7 +107,7 @@ export type GoodsKekkaData = {
   updateTimeTtGoodsAuction: string | null;
 };
 
-export const initialGoodsKekkaData: GoodsKekkaData = {
+export const initialGoodsKekkaData: TGoodsKekkaData = {
   goodsId: null,
   rakusatsuPrice: null,
   rakusatsuTesuryoPrice: null,
@@ -119,7 +119,7 @@ export const initialGoodsKekkaData: GoodsKekkaData = {
   updateTimeTtGoodsAuction: null,
 };
 
-export type GoodsImageData = {
+export type TGoodsImageData = {
   goodsId: number | null;
   goodsImagesNo: number | null;
   sortNumber: number | null;
@@ -128,7 +128,7 @@ export type GoodsImageData = {
   squareImageUrl: string | null;
 };
 
-export const initialGoodsImageData: GoodsImageData = {
+export const initialGoodsImageData: TGoodsImageData = {
   goodsId: null,
   goodsImagesNo: null,
   sortNumber: null,

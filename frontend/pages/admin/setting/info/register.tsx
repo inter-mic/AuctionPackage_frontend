@@ -15,7 +15,7 @@ import { useInfoRegistAPI } from "@/hooks/api/admin/info/useInfoRegistAPI";
 import { useInfoDeleteAPI } from "@/hooks/api/admin/info/useInfoDeleteAPI";
 
 //型定義
-import { infoData, initialInfoData, formatInfoData } from "@/types/admin/info/register";
+import { TMtInfoRegistRequest, initialInfoData, formatInfoData } from "@/types/admin/info/register";
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { CustomDatePicker } from "@/components/ui/dateTime/CustomDatePicker";
@@ -54,7 +54,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   //データセット
-  const [fetchedData, setFetchedData] = useState<infoData>(initialInfoData);
+  const [fetchedData, setFetchedData] = useState<TMtInfoRegistRequest>(initialInfoData);
   useEffect(() => {
     if (data) {
       setFetchedData(formatInfoData(data));
@@ -72,19 +72,20 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
-  const handleDateChange = (field: keyof infoData) => (date: Dayjs | null, name: string) => {
-    setFetchedData((prev) => ({
-      ...prev,
-      [field]: date,
-    }));
-    if (errors?.[name]) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
+  const handleDateChange =
+    (field: keyof TMtInfoRegistRequest) => (date: Dayjs | null, name: string) => {
+      setFetchedData((prev) => ({
+        ...prev,
+        [field]: date,
       }));
-    }
-  };
-  const handleTimeChange = (field: keyof infoData) => (time: string | null, name: string) => {
+      if (errors?.[name]) {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: "",
+        }));
+      }
+    };
+  const handleTimeChange = (field: keyof TMtInfoRegistRequest) => (time: string | null, name: string) => {
     setFetchedData((prev) => ({
       ...prev,
       [field]: time,

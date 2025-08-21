@@ -161,7 +161,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
     goodsSearchAPI(params, isLogin);
   };
 
-  const itemsPerPage = 50;
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
     const params = {

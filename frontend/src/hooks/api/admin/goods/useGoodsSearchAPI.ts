@@ -3,9 +3,9 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
 import { TAdminGoodsSearchRequest, TAdminGoodsSelect } from "@/types/admin/goods/search";
 import {
-  GoodsData,
+  TGoodsData,
   initialGoodsData,
-  GoodsKekkaData,
+  TGoodsKekkaData,
   initialGoodsKekkaData,
 } from "@/types/admin/goods/register";
 import { Errors } from "@/types/errors";
@@ -14,9 +14,9 @@ export const useGoodsSearchAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
   const [data, setData] = useState<TAdminGoodsSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const [fetchGoodsData, setFetchGoodsData] = useState<GoodsData>(initialGoodsData);
+  const [fetchGoodsData, setFetchGoodsData] = useState<TGoodsData>(initialGoodsData);
   const [fetchGoodsKekkaData, setFetchGoodsKekkaData] =
-    useState<GoodsKekkaData>(initialGoodsKekkaData);
+    useState<TGoodsKekkaData>(initialGoodsKekkaData);
   const goodsSearchAPI = async (searchParams: TAdminGoodsSearchRequest) => {
     const endPoint = "goods/search";
     const { status, data: responseData } = await apiRequest(

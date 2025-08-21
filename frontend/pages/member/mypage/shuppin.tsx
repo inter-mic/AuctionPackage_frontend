@@ -9,14 +9,15 @@ import withMemberLayout from "@/hocs/withMemberLayout";
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { usePageChange } from "@/hooks/usePageChange";
 //API
-import { useResultsSearchAPI } from "@/hooks/api/member/mypage/useResultsSearchAPI";
-import { useResultsCountAPI } from "@/hooks/api/member/mypage/useResultsCountAPI";
-import { useResultsSearchParams } from "@/hooks/searchParams/member/useResultsSearchParams";
+import { useSpnSearchAPI } from "@/hooks/api/member/mypage/useSpnSearchAPI";
+import { useSpnCountAPI } from "@/hooks/api/member/mypage/useSpnCountAPI";
+import { useShuppinSearchParams } from "@/hooks/searchParams/member/useShuppinSearchParams";
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
-import { TResultsSelect } from "@/types/member/results";
+import { TSpnSelect } from "@/types/member/spn";
 //コンポーネント
 import { KaisaiListPullDown } from "@/components/ui/pulldowns/MemberKaisaiListPullDown";
+import { KekkaStatusPullDown } from "@/components/ui/pulldowns/KekkaStatusPullDown";
 import { RequiredMark } from "@/components/ui/marks/RequiredMark";
 //ボタン
 import { SearchButton } from "@/components/ui/buttons/member/searchButton";
@@ -34,14 +35,14 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   const texts = getTexts(locale);
   return {
     props: {
-      pageTitle: texts.menu.memberRakusatsu,
+      pageTitle: texts.menu.memberShuppin,
     },
   };
 });
 
 const Page: React.FC<TPageProps> = () => {
   const { useState, useEffect, texts } = useCommonSetup();
-  const { searchParams, formChange, resetForm } = useResultsSearchParams();
+  const { searchParams, formChange, resetForm } = useShuppinSearchParams();
   const [selectedKaisai, setSelectedKaisai] = useState<string>("");
   const handleKaisaiChange = (name: string, value: string) => {
     setSelectedKaisai(value);
@@ -53,26 +54,34 @@ const Page: React.FC<TPageProps> = () => {
       }));
     }
   };
-  const [fetchResultList, setFetchResultList] = useState<TResultsSelect[]>([]);
-  const { resultsList, errors, resultsSearchAPI } = useResultsSearchAPI();
-  const { resultsCount, resultsCountAPI } = useResultsCountAPI();
+  const [selectedKekkaStatus, setSelectedKekkaStatus] = useState<string | null>(null);
+  const handleKekkaStatusChange = (name: string, value: string) => {
+    setSelectedKekkaStatus(value);
+    formChange({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
+  };
+  const [fetchResultList, setFetchResultList] = useState<TSpnSelect[]>([]);
+  const { resultsList, errors, spnSearchAPI } = useSpnSearchAPI();
+  const { spnCount, spnCountAPI } = useSpnCountAPI();
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
+  const { currentPage, setCurrentPage, handlePageChange } = usePageChange({
+    searchAPI: spnSearchAPI,
+    searchParams,
+    itemsPerPage,
+  });
+
   const formSearch = async () => {
     setCurrentPage(1);
+
     const params = {
       ...searchParams,
       pageNumber: 1,
       pageSize: itemsPerPage,
     };
-    await resultsSearchAPI(searchParams);
-    await resultsCountAPI(params);
+    await spnSearchAPI(params);
+    await spnCountAPI(params);
   };
-  const { currentPage, setCurrentPage, handlePageChange } = usePageChange({
-    searchAPI: resultsCountAPI,
-    searchParams,
-    itemsPerPage,
-  });
   const formClear = () => {
     resetForm();
     setSelectedKaisai("");
@@ -91,10 +100,10 @@ const Page: React.FC<TPageProps> = () => {
 
   return (
     <>
-      <MyPageHeader title={texts.menu.memberRakusatsu} />
+      <MyPageHeader title={texts.menu.memberShuppin} />
       <MyPageContainer
         currentPage={currentPage}
-        totalCount={resultsCount}
+        totalCount={spnCount}
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
       >
@@ -127,6 +136,13 @@ const Page: React.FC<TPageProps> = () => {
                 onChange={formChange}
               />
             </div>
+            <div className={formSearchStyles.formItem}>
+              <label htmlFor="kekkaStatus">{texts.goods.kekkaStatus}</label>
+              <KekkaStatusPullDown
+                onChange={(value) => handleKekkaStatusChange("kekkaStatus", value)}
+                selectedId={selectedKekkaStatus !== null ? String(selectedKekkaStatus) : ""}
+              />
+            </div>
           </div>
           <div className="text-center lg:text-right">
             <SearchButton onClick={formSearch} />
@@ -135,17 +151,7 @@ const Page: React.FC<TPageProps> = () => {
         </div>
         {fetchResultList && fetchResultList.length > 0 ? (
           <>
-            <MyPageResultCount
-              count={resultsCount}
-              resultCountText={texts.label.resultCount}
-              totalPrice={resultsList
-                .reduce((acc, result) => {
-                  const price = parseFloat(result.rakusatsuPrice.replace(/,/g, "")) || 0;
-                  return acc + price;
-                }, 0)
-                .toLocaleString()}
-              totalPriceLabel={texts.mypageResult.rakusatsuTotalPrice}
-            />
+            <MyPageResultCount count={spnCount} resultCountText={texts.label.resultCount} />
             <div className="w-full">
               <table className="w-full bg-white">
                 <thead>

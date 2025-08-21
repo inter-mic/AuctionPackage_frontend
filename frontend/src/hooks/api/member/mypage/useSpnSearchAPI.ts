@@ -1,30 +1,29 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
+
 //型定義
-import { TLogBidAdminSearchRequest, TAdminLogBidSelect } from "@/types/admin/goods/bid/logSearch";
+import { TSpnSearchRequest, TSpnSelect } from "@/types/member/spn";
 import { Errors } from "@/types/errors";
 
-export const useBidLogSearchAPI = () => {
+export const useSpnSearchAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
-  const [data, setData] = useState<TAdminLogBidSelect[]>([]);
+  const [resultsList, setResultsList] = useState<TSpnSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const bidLogSearchAPI = async (searchParams: TLogBidAdminSearchRequest) => {
-    const endPoint = "logBid/search";
+  const spnSearchAPI = async (searchParams: TSpnSearchRequest) => {
     const { status, data: responseData } = await apiRequest(
-      "admin",
-      endPoint,
+      "member",
+      "spn/search",
       "POST",
       searchParams,
       "",
       true
     );
-
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200 && responseData) {
-      setData(responseData);
+      setResultsList(responseData);
     }
   };
 
-  return { data, errors, bidLogSearchAPI };
+  return { resultsList, errors, spnSearchAPI };
 };

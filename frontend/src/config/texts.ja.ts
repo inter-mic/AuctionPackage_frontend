@@ -51,6 +51,7 @@ export const texts = {
     memberAuction: "スケジュール",
     memberJoinLive: "ライブに参加する",
     memberMyPage: "マイページ",
+    memberShuppin: "出品一覧",
     memberRakusatsu: "落札一覧",
     memberInvoice: "請求一覧",
     memberAccount: "会員登録情報",

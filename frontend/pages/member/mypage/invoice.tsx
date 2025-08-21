@@ -1,13 +1,12 @@
 import { GetServerSideProps } from "next";
 import { getTexts } from "@/config/texts";
-import Pagination from "@mui/material/Pagination";
 import React from "react";
 //ホック
 import { withAuth } from "@/hocs/withMemberAuth";
 import withMemberLayout from "@/hocs/withMemberLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { usePagination } from "@/hooks/usePagination";
+import { usePageChange } from "@/hooks/usePageChange";
 //API
 import { useTorihikiJissekiSearchAPI } from "@/hooks/api/member/mypage/useTorihikiJissekiSearchAPI";
 import { useTorihikiJissekiSearchCountAPI } from "@/hooks/api/member/mypage/useTorihikiJissekiSearchCountAPI";
@@ -19,8 +18,9 @@ import { TPageProps } from "@/types/member/memberPage";
 //ボタン
 import { OutPutButton } from "@/components/ui/buttons/member/outputButton";
 
-//スタイル
-import memberStyles from "@/styles/member/MemberCommon.module.css";
+//共通コンポーネント
+import { MyPageHeader } from "@/components/member/common/MyPageHeaderComponent";
+import { MyPageContainer } from "@/components/member/common/MyPageContainerComponent";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
@@ -43,7 +43,9 @@ const Page: React.FC<TPageProps> = () => {
 
   const { torihikiList, torihikiJissekiSearchAPI } = useTorihikiJissekiSearchAPI();
   const { count, torihikiJissekiSearchCountAPI } = useTorihikiJissekiSearchCountAPI();
+
   useEffect(() => {
+    setCurrentPage(1);
     const params = {
       pageNumber: 1,
       pageSize: itemsPerPage,
@@ -53,10 +55,10 @@ const Page: React.FC<TPageProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { currentPage, handlePageChange } = usePagination({
-    itemsPerPage,
+  const { currentPage, setCurrentPage, handlePageChange } = usePageChange({
     searchAPI: torihikiJissekiSearchAPI,
-    searchParams: searchParams,
+    searchParams,
+    itemsPerPage,
   });
 
   const { invoicePdfAPI } = useInvoicePdfAPI();
@@ -66,61 +68,52 @@ const Page: React.FC<TPageProps> = () => {
 
   return (
     <>
-      <div className={memberStyles.mainTitleContainer}>
-        <span className={memberStyles.mainTitle}>{texts.menu.memberInvoice}</span>
-      </div>
-      <div className={memberStyles.memberContainer}>
+      <MyPageHeader title={texts.menu.memberInvoice} />
+      <MyPageContainer
+        currentPage={currentPage}
+        totalCount={count}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+      >
         {torihikiList && torihikiList.length > 0 ? (
-          <>
-            <div className="w-full mt-4">
-              <table className="w-full sm:w-3/4 bg-white mx-auto">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-4 border-b">{texts.auction.auctionName}</th>
-                    <th className="py-2 px-4 border-b w-24">{texts.torihikiJisseki.rakusatsusu}</th>
-                    <th className="py-2 px-4 border-b w-56">
-                      {texts.torihikiJisseki.rakusatsuTotalPrice}
-                    </th>
-                    <th className="py-2 px-4 border-b w-56"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {torihikiList.length > 0 &&
-                    torihikiList.map((result) => (
-                      <React.Fragment key={result.auctionSeq}>
-                        <tr>
-                          <td className="py-2 px-4 border-b text-left">{result.auctionName}</td>
-                          <td className="py-2 px-4 border-b text-right w-24">
-                            {result.rakusatsusu}
-                          </td>
-                          <td className="py-2 px-4 border-b text-right w-56">
-                            {result.rakusatsuTotalPrice}
-                          </td>
-                          <td className="py-2 px-4 border-b text-center w-56">
-                            <OutPutButton
-                              onClick={() => handleInvoice(result.auctionSeq)}
-                              text={texts.button.invoice}
-                            />
-                          </td>
-                        </tr>
-                      </React.Fragment>
-                    ))}
-                </tbody>
-              </table>
-              <div>
-                <Pagination
-                  className={memberStyles.paginationContainer}
-                  count={Math.max(1, Math.ceil(count / itemsPerPage))}
-                  page={currentPage}
-                  onChange={handlePageChange}
-                />
-              </div>
-            </div>
-          </>
+          <div className="w-full mt-4">
+            <table className="w-full sm:w-3/4 bg-white mx-auto">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">{texts.auction.auctionName}</th>
+                  <th className="py-2 px-4 border-b w-24">{texts.torihikiJisseki.rakusatsusu}</th>
+                  <th className="py-2 px-4 border-b w-56">
+                    {texts.torihikiJisseki.rakusatsuTotalPrice}
+                  </th>
+                  <th className="py-2 px-4 border-b w-56"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {torihikiList.length > 0 &&
+                  torihikiList.map((result) => (
+                    <React.Fragment key={result.auctionSeq}>
+                      <tr>
+                        <td className="py-2 px-4 border-b text-left">{result.auctionName}</td>
+                        <td className="py-2 px-4 border-b text-right w-24">{result.rakusatsusu}</td>
+                        <td className="py-2 px-4 border-b text-right w-56">
+                          {result.rakusatsuTotalPrice}
+                        </td>
+                        <td className="py-2 px-4 border-b text-center w-56">
+                          <OutPutButton
+                            onClick={() => handleInvoice(result.auctionSeq)}
+                            text={texts.button.invoice}
+                          />
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p></p>
         )}
-      </div>
+      </MyPageContainer>
     </>
   );
 };

@@ -2,7 +2,6 @@ import { GetServerSideProps } from "next";
 import { toast } from "react-toastify";
 
 import { texts } from "@/config/texts.ja";
-import Pagination from "@mui/material/Pagination";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
@@ -20,7 +19,7 @@ import { useBidSearchCountAPI } from "@/hooks/api/admin/bid/useBidSearchCountAPI
 import { useBidCsvAPI } from "@/hooks/api/admin/bid/useBidCsvAPI";
 import { useBidSearchParams } from "@/hooks/searchParams/admin/useBidSearchParams";
 //型定義
-import { TAdminGoodsAuctionBidSelect } from "@/types/admin/bid/search";
+import { TAdminGoodsAuctionBidSelect } from "@/types/admin/goods/bid/search";
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown";
@@ -30,9 +29,12 @@ import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
 import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
 import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 //スタイル
-import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
-import adminStyles from "@/styles/admin/AdminCommon.module.css";
+
+//共通コンポーネント
+import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
+import { AdminPagination } from "@/components/admin/common/AdminPagination";
+import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
@@ -121,12 +123,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     searchParams: bidParams,
   });
   //チェックボックス
-  const { selectAll, setSelectAll, selectedIds, setSelectedIds, handleSelectAll, handleSelect, resetSelection } =
-    useCheckboxSelection(
-      bidList.map((bid) => `${bid.goodsId}-${bid.userId}`),
-      allGoodsData.map((bid) => `${bid.goodsId}-${bid.userId}`),
-      fetchAllIds
-    );
+  const {
+    selectAll,
+    setSelectAll,
+    selectedIds,
+    setSelectedIds,
+    handleSelectAll,
+    handleSelect,
+    resetSelection,
+  } = useCheckboxSelection(
+    bidList.map((bid) => `${bid.goodsId}-${bid.userId}`),
+    allGoodsData.map((bid) => `${bid.goodsId}-${bid.userId}`),
+    fetchAllIds
+  );
 
   //商品登録画面に遷移
   const { toGoodsRegist } = useToGoodsRegist(kengen);
@@ -163,9 +172,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   return (
     <div>
-      <div className={breadcrumbStyles.breadcrumb}>
-        <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminBidList}</span>
-      </div>
+      <AdminPageHeader title={texts.menu.adminBidList} />
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
@@ -248,41 +255,22 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       </div>
       {bidList && bidList.length > 0 ? (
         <div>
-          <div className="flex justify-between items-center p-4">
-            <div className="text-left">
-              <div className={adminStyles.resultContainer}>
-                <div className={adminStyles.resultRow}>
-                  <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
-                  <span>
-                    {count} {texts.label.resultCount}
-                  </span>
-                </div>
-                <div className={adminStyles.resultRow}>
-                  <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                  <select
-                    id="sortName"
-                    className={adminStyles.sort}
-                    value={sortName}
-                    onChange={handleSortNameChange}
-                  >
-                    <option value="lot">{texts.goods.lot}</option>
-                    <option value="userId">{texts.member.userName}</option>
-                    <option value="bidPrice">{texts.bid.bidPrice}</option>
-                    <option value="bidTime">{texts.bid.bidTime}</option>
-                  </select>
-                  <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
-                    <option value="asc">{texts.label.asc}</option>
-                    <option value="desc">{texts.label.desc}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            {executionPermission(204, 2) && (
-              <div className="text-right">
-                <OutPutButton onClick={handleCsvExport} />
-              </div>
-            )}
-          </div>
+          <AdminResultHeader
+            count={count}
+            sortName={sortName}
+            onSortNameChange={handleSortNameChange}
+            onSortFlgChange={handleSortFlgChange}
+            sortOptions={[
+              { value: "lot", label: texts.goods.lot },
+              { value: "userId", label: texts.member.userName },
+              { value: "bidPrice", label: texts.bid.bidPrice },
+              { value: "bidTime", label: texts.bid.bidTime },
+            ]}
+            ascText={texts.label.asc}
+            descText={texts.label.desc}
+          >
+            {executionPermission(204, 2) && <OutPutButton onClick={handleCsvExport} />}
+          </AdminResultHeader>
           <table className="min-w-full bg-white">
             <thead>
               <tr>
@@ -339,14 +327,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 ))}
             </tbody>
           </table>
-          <div>
-            <Pagination
-              className={adminStyles.paginationContainer}
-              count={Math.max(1, Math.ceil(count / itemsPerPage))}
-              page={currentPage}
-              onChange={handlePageChange}
-            />
-          </div>
+          <AdminPagination
+            count={count}
+            page={currentPage}
+            onChange={handlePageChange}
+            itemsPerPage={itemsPerPage}
+          />
         </div>
       ) : (
         <p></p>

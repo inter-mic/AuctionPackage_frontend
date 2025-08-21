@@ -6,12 +6,12 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { GoodsImageData } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/admin/goods/register";
 
 interface ImagePopupComponentProps {
   open: boolean;
   onClose: () => void;
-  images: GoodsImageData[];
+  images: TGoodsImageData[];
   currentIndex: number;
   onPrev: () => void;
   onNext: () => void;

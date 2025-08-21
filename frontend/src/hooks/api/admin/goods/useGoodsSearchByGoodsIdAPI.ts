@@ -2,9 +2,9 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
 import {
-  GoodsData,
+  TGoodsData,
   initialGoodsData,
-  GoodsKekkaData,
+  TGoodsKekkaData,
   initialGoodsKekkaData,
 } from "@/types/admin/goods/register";
 import { Errors } from "@/types/errors";
@@ -12,9 +12,9 @@ import { Errors } from "@/types/errors";
 export const useGoodsSearchByGoodsIdAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
   const [goodsSearchErrors, setGoodsSearchErrors] = useState<Errors>();
-  const [fetchGoodsData, setFetchGoodsData] = useState<GoodsData>(initialGoodsData);
+  const [fetchGoodsData, setFetchGoodsData] = useState<TGoodsData>(initialGoodsData);
   const [fetchGoodsKekkaData, setFetchGoodsKekkaData] =
-    useState<GoodsKekkaData>(initialGoodsKekkaData);
+    useState<TGoodsKekkaData>(initialGoodsKekkaData);
   const goodsSearchByGoodsIdAPI = async (
     flg: boolean,
     goodsId: number,

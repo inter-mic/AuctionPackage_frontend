@@ -23,7 +23,7 @@ import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSear
 import { useLiveBidKekkaUpdateAPI } from "@/hooks/api/admin/live/useLiveBidKekkaUpdateAPI";
 import { useAdminSessionAPI } from "@/hooks/api/admin/useAdminSessionAPI";
 //型定義
-import { GoodsData, initialGoodsData } from "@/types/admin/goods/register";
+import { TGoodsData, initialGoodsData } from "@/types/admin/goods/register";
 import { LiveBidKekkaData, initialLiveBidKekkaData } from "@/types/admin/live/register";
 import { TBidHisotry, TLiveBidLog } from "@/types/admin/live/auctioneer";
 import { NextLotList } from "@/types/common/nextLotList";
@@ -94,7 +94,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
+  const [goodsData, setGoodsData] = useState<TGoodsData>(initialGoodsData);
 
   const [searchSelectedKaisai, setSearchSelectedKaisai] = useState<string>("");
   const [searchLot, setSearchLot] = useState<string>("");

@@ -20,7 +20,7 @@ import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAP
 import { useMemberSessionAPI } from "@/hooks/api/member/useMemberSessionAPI";
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
-import { GoodsImageData } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/admin/goods/register";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/goods/GoodsDetail.module.css";
@@ -41,7 +41,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
   const { goodsAddInfo } = useGoodsAddinfoItemAPI();
   const { fetchGoodsData, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
-  const [thumImages, setThumImages] = useState<GoodsImageData[]>([]);
+  const [thumImages, setThumImages] = useState<TGoodsImageData[]>([]);
   const router = useRouter();
 
   // タブ複製用の状態

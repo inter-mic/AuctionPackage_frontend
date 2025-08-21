@@ -2,13 +2,13 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
 import { Errors } from "@/types/errors";
-import { GoodsKekkaData } from "@/types/admin/goods/register";
+import { TGoodsKekkaData } from "@/types/admin/goods/register";
 
 export const useGoodsKekkaUpdateAPI = () => {
   const { useState, texts, apiRequest } = useCommonSetup();
   const [goodsKekkaRegistErrors, setGoodsKekkaRegistErrors] = useState<Errors>();
 
-  const goodsKekkaUpdateAPI = async (goodsKekka: GoodsKekkaData) => {
+  const goodsKekkaUpdateAPI = async (goodsKekka: TGoodsKekkaData) => {
     const sanitizedKekkaData = {
       ...goodsKekka,
       rakusatsuPrice: goodsKekka.rakusatsuPrice

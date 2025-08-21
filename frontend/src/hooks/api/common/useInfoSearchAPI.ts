@@ -2,11 +2,11 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 //型定義
-import { Info } from "@/types/common/info";
+import { TInfo } from "@/types/common/info";
 
 export const useInfoSearchAPI = (isLogin: boolean) => {
   const { useState, useEffect, apiRequest } = useCommonSetup();
-  const [info, setInfo] = useState<Info[]>([]);
+  const [info, setInfo] = useState<TInfo[]>([]);
   useEffect(() => {
     const fetchInfo = async () => {
       const endPointKbn = `${isLogin ? "member" : "public"}`;

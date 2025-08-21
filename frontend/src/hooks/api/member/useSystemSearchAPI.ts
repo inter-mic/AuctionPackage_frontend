@@ -1,11 +1,11 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { Result } from "@/types/common/systemsetting/search";
+import { TSystemSettingSelect } from "@/types/common/systemsetting/search";
 
 export const useSystemSearchAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
-  const [fetchSystemSettingData, setFetchSystemSettingData] = useState<Result>();
+  const [fetchSystemSettingData, setFetchSystemSettingData] = useState<TSystemSettingSelect>();
   const systemSearchAPI = async () => {
     const endPoint = "system/search";
     const { status, data: responseData } = await apiRequest(

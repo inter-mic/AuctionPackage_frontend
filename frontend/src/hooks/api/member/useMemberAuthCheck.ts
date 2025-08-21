@@ -32,6 +32,7 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
       kiyakuPath: data.kiyakuPath || "",
       privacyPolicyPath: data.privacyPolicyPath || "",
       optionMemInvoice: data.optionMemInvoice || false,
+      optionMemShuppinList: data.optionMemShuppinList || false,
       livebit: data.livebit || false,
       auction: data.auction || false,
       liveauction: data.liveauction || false,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { texts } from "@/config/texts.ja";
 import { useBidLogSearchAPI } from "@/hooks/api/admin/bid/useBidLogSearchAPI";
-import { TAdminLogBidSelect } from "@/types/admin/bid/logSearch";
+import { TAdminLogBidSelect } from "@/types/admin/goods/bid/logSearch";
 interface BidHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;

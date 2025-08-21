@@ -2,14 +2,14 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
 import { Errors } from "@/types/errors";
-import { auctionData } from "@/types/admin/auction/register";
+import { TAdminAuctionRegistRequest } from "@/types/admin/auction/register";
 
 export const useAuctionRegistAPI = () => {
   const { useState, texts, apiRequest } = useCommonSetup();
   const [errors, setErrors] = useState<Errors>();
 
   const auctionRegist = async (
-    auctionData: auctionData,
+    auctionData: TAdminAuctionRegistRequest,
     imageFile: File | null,
     listFile: File | null
   ) => {

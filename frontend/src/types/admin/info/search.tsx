@@ -1,4 +1,4 @@
-export interface InfoSearch {
-    infoSeq: number;
-    naiyo: string;
+export interface TMtInfo {
+  infoSeq: number;
+  naiyo: string;
 }

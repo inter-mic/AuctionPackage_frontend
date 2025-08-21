@@ -3,7 +3,6 @@ import React from "react";
 import { toast } from "react-toastify";
 import { texts } from "@/config/texts.ja";
 import Image from "next/image";
-import Pagination from "@mui/material/Pagination";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
@@ -38,9 +37,12 @@ import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
 import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
 import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 //スタイル
-import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
-import adminStyles from "@/styles/admin/AdminCommon.module.css";
+
+//共通コンポーネント
+import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
+import { AdminPagination } from "@/components/admin/common/AdminPagination";
+import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
@@ -279,9 +281,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   return (
     <div>
-      <div className={breadcrumbStyles.breadcrumb}>
-        <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminGoodsList}</span>
-      </div>
+      <AdminPageHeader title={texts.menu.adminGoodsList} />
       <div className={formSearchStyles.formContainer}>
         <div className={formSearchStyles.formGrid}>
           <div className={formSearchStyles.formItem}>
@@ -440,41 +440,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       </div>
       {goodsData && goodsData.length > 0 ? (
         <div>
-          <div className="block sm:flex flex-col sm:flex-row justify-between items-center p-4 ">
-            <div className="text-left">
-              <div className={adminStyles.resultContainer}>
-                <div className={adminStyles.resultRow}>
-                  <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
-                  <span>
-                    {count} {texts.label.resultCount}
-                  </span>
-                </div>
-                <div className={adminStyles.resultRow}>
-                  <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                  <select
-                    id="sortName"
-                    className={adminStyles.sort}
-                    value={sortName}
-                    onChange={handleSortNameChange}
-                  >
-                    <option value="lot">{texts.goods.lot}</option>
-                    <option value="sku">{texts.goods.sku}</option>
-                    <option value="startPrice">{texts.goods.startPrice}</option>
-                    <option value="currentPrice">{texts.goods.currentPrice}</option>
-                    <option value="favoriteCount">{texts.goods.favoriteCount}</option>
-                    <option value="bidCount">{texts.goods.bidCount}</option>
-                    <option value="shuppinUserId">{texts.goods.shuppinUserName}</option>
-                    <option value="rakusatsuUserId">{texts.goods.rakusatsuUserName}</option>
-                  </select>
-                  <select id="sortFlg" className={adminStyles.sort} onChange={handleSortFlgChange}>
-                    <option value="asc">{texts.label.asc}</option>
-                    <option value="desc">{texts.label.desc}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+          <AdminResultHeader
+            count={count}
+            sortName={sortName}
+            onSortNameChange={handleSortNameChange}
+            onSortFlgChange={handleSortFlgChange}
+            sortOptions={[
+              { value: "lot", label: texts.goods.lot },
+              { value: "sku", label: texts.goods.sku },
+              { value: "startPrice", label: texts.goods.startPrice },
+              { value: "currentPrice", label: texts.goods.currentPrice },
+              { value: "favoriteCount", label: texts.goods.favoriteCount },
+              { value: "bidCount", label: texts.goods.bidCount },
+              { value: "shuppinUserId", label: texts.goods.shuppinUserName },
+              { value: "rakusatsuUserId", label: texts.goods.rakusatsuUserName },
+            ]}
+            ascText={texts.label.asc}
+            descText={texts.label.desc}
+          >
             {executionPermission(202, 2) && (
-              <div className="text-right">
+              <>
                 <div>
                   <OutPutButton onClick={handleCsvExport} />
                   <OutPutButton
@@ -504,9 +489,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     </span>
                   </div>
                 </div>
-              </div>
+              </>
             )}
-          </div>
+          </AdminResultHeader>
           <table className="min-w-full bg-white">
             <thead>
               <tr>
@@ -696,14 +681,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 ))}
             </tbody>
           </table>
-          <div>
-            <Pagination
-              className={adminStyles.paginationContainer}
-              count={Math.max(1, Math.ceil(count / itemsPerPage))}
-              page={currentPage}
-              onChange={handlePageChange}
-            />
-          </div>
+          <AdminPagination
+            count={count}
+            page={currentPage}
+            onChange={handlePageChange}
+            itemsPerPage={itemsPerPage}
+          />
         </div>
       ) : (
         <p></p>

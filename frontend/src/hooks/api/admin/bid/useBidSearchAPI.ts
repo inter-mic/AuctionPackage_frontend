@@ -4,7 +4,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import {
   TGoodsAuctionBidAdminSearchRequest,
   TAdminGoodsAuctionBidSelect,
-} from "@/types/admin/bid/search";
+} from "@/types/admin/goods/bid/search";
 import { Errors } from "@/types/errors";
 
 export const useBidSearchAPI = () => {

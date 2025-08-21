@@ -28,6 +28,7 @@ export function HeaderComponent({
   memberRegistrationFlg,
   pageSettingList,
   optionMemInvoice,
+  optionMemShuppinList,
   liveauction,
   livebit,
 }: HeaderProps) {
@@ -159,6 +160,11 @@ export function HeaderComponent({
 
         {isMemberMenuOpen && (
           <ul className={styles.dropdown}>
+            {optionMemShuppinList && (
+              <li>
+                <Link href="/member/mypage/shuppin">{texts.menu.memberShuppin}</Link>
+              </li>
+            )}
             <li>
               <Link href="/member/mypage/results">{texts.menu.memberRakusatsu}</Link>
             </li>

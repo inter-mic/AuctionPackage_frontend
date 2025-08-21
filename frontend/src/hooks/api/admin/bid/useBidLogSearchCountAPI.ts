@@ -1,7 +1,7 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TGoodsAuctionBidAdminSearchRequest } from "@/types/admin/bid/search";
+import { TGoodsAuctionBidAdminSearchRequest } from "@/types/admin/goods/bid/search";
 
 export const useBidLogSearchCountAPI = () => {
   const { useState, apiRequest } = useCommonSetup();

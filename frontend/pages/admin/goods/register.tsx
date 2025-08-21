@@ -26,11 +26,11 @@ import { useAuctionGetInfoAPI } from "@/hooks/api/admin/auction/useAuctionGetInf
 import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
 //型定義
 import {
-  GoodsData,
+  TGoodsData,
   initialGoodsData,
-  GoodsKekkaData,
+  TGoodsKekkaData,
   initialGoodsKekkaData,
-  GoodsImageData,
+  TGoodsImageData,
 } from "@/types/admin/goods/register";
 import { PageProps } from "@/types/admin/adminPage";
 import { Errors } from "@/types/errors";
@@ -69,8 +69,8 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useKengenRedirect(kengen, 201);
   const { executionPermission } = useExecutionPermission(kengen);
   const [spnKbn, setSpnkbn] = useState<string>("");
-  const [goodsData, setGoodsData] = useState<GoodsData>(initialGoodsData);
-  const [kekkaData, setkekkaData] = useState<GoodsKekkaData>(initialGoodsKekkaData);
+  const [goodsData, setGoodsData] = useState<TGoodsData>(initialGoodsData);
+  const [kekkaData, setkekkaData] = useState<TGoodsKekkaData>(initialGoodsKekkaData);
   const [images, setImages] = useState<
     {
       no: string;
@@ -213,7 +213,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   }, [fetchGoodsData]);
   useEffect(() => {
     if (fetchImages) {
-      const formattedImages = fetchImages.map((image: GoodsImageData) => ({
+      const formattedImages = fetchImages.map((image: TGoodsImageData) => ({
         no: String(image.goodsImagesNo),
         isNewFlg: false,
         thumbnailImageUrl: image.thumbnailImageUrl || "",

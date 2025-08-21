@@ -1,6 +1,6 @@
 import { useState } from "react";
 //型定義
-import { TLogInternetBidAdminSearchRequest } from "@/types/admin/bid/logSearch";
+import { TLogInternetBidAdminSearchRequest } from "@/types/admin/goods/bid/logSearch";
 
 export const useBidLogSearchParams = () => {
   const [bidLogParams, setBidParams] = useState<TLogInternetBidAdminSearchRequest>({

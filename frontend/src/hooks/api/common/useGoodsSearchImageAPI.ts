@@ -1,11 +1,11 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 
-import { GoodsImageData } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/admin/goods/register";
 
 export const useGoodsSearchImageAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
-  const [fetchImages, setFetchImages] = useState<GoodsImageData[]>([]);
+  const [fetchImages, setFetchImages] = useState<TGoodsImageData[]>([]);
   const goodsSearchImage = async (goodsId: number, isLogin: boolean) => {
     const endPoint = `goods/searchImage/${goodsId}`;
     const endPointKbn = `${isLogin ? "member" : "public"}`;

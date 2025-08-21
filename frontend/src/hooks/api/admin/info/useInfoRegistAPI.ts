@@ -2,13 +2,13 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
 import { Errors } from "@/types/errors";
-import { infoData } from "@/types/admin/info/register";
+import { TMtInfoRegistRequest } from "@/types/admin/info/register";
 
 export const useInfoRegistAPI = () => {
   const { useState, texts, apiRequest } = useCommonSetup();
   const [errors, setErrors] = useState<Errors>();
 
-  const infoRegist = async (infoData: infoData) => {
+  const infoRegist = async (infoData: TMtInfoRegistRequest) => {
     const endPoint = infoData.infoSeq ? `MtInfo/update/${infoData.infoSeq}` : "MtInfo/insert";
     const { status, data: responseData } = await apiRequest(
       "admin",

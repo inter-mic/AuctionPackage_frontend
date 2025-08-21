@@ -27,6 +27,7 @@ export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId
   , kobutsuBango
   , copyRight
   , optionMemInvoice
+  , optionMemShuppinList
   , liveauction
   , livebit
  }) => {
@@ -44,6 +45,7 @@ export const MemberLayoutComponent: React.FC<TPageProps> = ({ userId
         memberRegistrationFlg={memberRegistrationFlg}
         pageSettingList={pageSettingList} 
         optionMemInvoice={optionMemInvoice}
+        optionMemShuppinList={optionMemShuppinList}
         liveauction={liveauction}
         livebit={livebit}
        />

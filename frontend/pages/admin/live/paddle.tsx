@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
 import { texts } from "@/config/texts.ja";
-import Pagination from "@mui/material/Pagination";
 
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
@@ -37,6 +36,8 @@ import { KaisaiListPullDown } from "@/components/ui/pulldowns/KaisaiListPullDown
 import { PaddleKbnPullDown } from "@/components/ui/pulldowns/PaddleKbnPullDown";
 import ConfirmDialog from "@/components/ui/dialog/confirmDialog";
 import PaddleRegistrationFormAccordion from "@/components/admin/paddle/PaddleRegistrationFormAccordion";
+import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
+import { AdminPagination } from "@/components/admin/common/AdminPagination";
 //スタイル
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
@@ -290,47 +291,26 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
       {fetchedData && fetchedData.length > 0 ? (
         <>
-          <div>
-            <div className="flex flex-col sm:flex-row justify-between items-center p-4">
-              <div className="text-left">
-                <div className={adminStyles.resultContainer}>
-                  <div className={adminStyles.resultRow}>
-                    <span className={adminStyles.resultLabel}>{texts.label.resultKekka}</span>
-                    <span>
-                      {count} {texts.label.resultCount}
-                    </span>
-                  </div>
-                  <div className={adminStyles.resultRow}>
-                    <label className={adminStyles.resultLabel}>{texts.label.sort}</label>
-                    <select
-                      id="sortName"
-                      className={adminStyles.sort}
-                      value={sortName}
-                      onChange={handleSortNameChange}
-                    >
-                      <option value="userId">{texts.member.userId}</option>
-                      <option value="paddleKbn">{texts.paddle.paddleKbn}</option>
-                      <option value="paddleNo">{texts.paddle.paddleNo}</option>
-                    </select>
-                    <select
-                      id="sortFlg"
-                      className={adminStyles.sort}
-                      onChange={handleSortFlgChange}
-                    >
-                      <option value="asc">{texts.label.asc}</option>
-                      <option value="desc">{texts.label.desc}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div>
-                  <span className="text-sm">
-                    {texts.paddle.onlineBidshonin}:{texts.paddle.onlineBidshonin_note_1}
-                  </span>
-                </div>
-              </div>
+          <AdminResultHeader
+            count={count}
+            sortName={sortName}
+            onSortNameChange={handleSortNameChange}
+            onSortFlgChange={handleSortFlgChange}
+            sortOptions={[
+              { value: "userId", label: texts.member.userId },
+              { value: "paddleKbn", label: texts.paddle.paddleKbn },
+              { value: "paddleNo", label: texts.paddle.paddleNo },
+            ]}
+            ascText={texts.label.asc}
+            descText={texts.label.desc}
+          >
+            <div>
+              <span className="text-sm">
+                {texts.paddle.onlineBidshonin}:{texts.paddle.onlineBidshonin_note_1}
+              </span>
             </div>
+          </AdminResultHeader>
+          <div>
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
@@ -418,14 +398,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </tbody>
             </table>
           </div>
-          <div>
-            <Pagination
-              className={adminStyles.paginationContainer}
-              count={Math.max(1, Math.ceil(count / itemsPerPage))}
-              page={currentPage}
-              onChange={handlePageChange}
-            />
-          </div>
+          <AdminPagination
+            count={count}
+            page={currentPage}
+            onChange={handlePageChange}
+            itemsPerPage={itemsPerPage}
+          />
         </>
       ) : (
         <p></p>
