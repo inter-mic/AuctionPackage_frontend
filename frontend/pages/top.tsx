@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { getTexts } from "@/config/texts";
 import { withSystemSetting } from "@/hocs/withSystemSetting";
-import MemberTopPage from "@/components/member/layout/MemberTopPageComponent";
+import TopPageComponent from "@/components/member/top/TopPageComponent";
 import withMemberisLoginLayout from "@/hocs/withMemberisLoginLayout";
 
 export const getServerSideProps: GetServerSideProps = withSystemSetting(
@@ -19,4 +19,4 @@ export const getServerSideProps: GetServerSideProps = withSystemSetting(
   true
 );
 
-export default withMemberisLoginLayout(MemberTopPage, false);
+export default withMemberisLoginLayout(TopPageComponent, false);

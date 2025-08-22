@@ -25,9 +25,9 @@ import { ClearButton } from "@/components/ui/buttons/member/clearButton";
 import formSearchStyles from "@/styles/member/FormSearch.module.css";
 
 //共通コンポーネント
-import { MyPageHeader } from "@/components/member/common/MyPageHeaderComponent";
-import { MyPageContainer } from "@/components/member/common/MyPageContainerComponent";
-import { MyPageResultCount } from "@/components/member/common/MyPageResultCountComponent";
+import { PageTitle } from "@/components/member/layout/MemberPageTitleComponent";
+import { Container } from "@/components/member/layout/MemberContainerComponent";
+import { MyPageResultCount } from "@/components/member/layout/MyPageResultCountComponent";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
@@ -60,16 +60,17 @@ const Page: React.FC<TPageProps> = () => {
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const formSearch = async () => {
     setCurrentPage(1);
+    setFetchResultList([]);
     const params = {
       ...searchParams,
       pageNumber: 1,
       pageSize: itemsPerPage,
     };
-    await resultsSearchAPI(searchParams);
+    await resultsSearchAPI(params);
     await resultsCountAPI(params);
   };
   const { currentPage, setCurrentPage, handlePageChange } = usePageChange({
-    searchAPI: resultsCountAPI,
+    searchAPI: resultsSearchAPI,
     searchParams,
     itemsPerPage,
   });
@@ -91,8 +92,8 @@ const Page: React.FC<TPageProps> = () => {
 
   return (
     <>
-      <MyPageHeader title={texts.menu.memberRakusatsu} />
-      <MyPageContainer
+      <PageTitle title={texts.menu.memberRakusatsu} />
+      <Container
         currentPage={currentPage}
         totalCount={resultsCount}
         itemsPerPage={itemsPerPage}
@@ -137,8 +138,7 @@ const Page: React.FC<TPageProps> = () => {
           <>
             <MyPageResultCount
               count={resultsCount}
-              resultCountText={texts.label.resultCount}
-              totalPrice={resultsList
+              totalPrice={fetchResultList
                 .reduce((acc, result) => {
                   const price = parseFloat(result.rakusatsuPrice.replace(/,/g, "")) || 0;
                   return acc + price;
@@ -147,7 +147,7 @@ const Page: React.FC<TPageProps> = () => {
               totalPriceLabel={texts.mypageResult.rakusatsuTotalPrice}
             />
             <div className="w-full">
-              <table className="w-full bg-white">
+              <table className="w-full sm:w-3/5 mx-auto bg-white">
                 <thead>
                   <tr>
                     <th className="py-2 px-4 border-b">{texts.goods.thumbnailImageUrl}</th>
@@ -157,11 +157,11 @@ const Page: React.FC<TPageProps> = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {resultsList.length > 0 &&
-                    resultsList.map((result) => (
+                  {fetchResultList.length > 0 &&
+                    fetchResultList.map((result) => (
                       <React.Fragment key={result.goodsId}>
                         <tr>
-                          <td className="py-2 px-4  border-b text-right">
+                          <td className="py-2 px-4  border-b">
                             <Image
                               src={
                                 result.thumbnailImageUrl && result.thumbnailImageUrl.trim() !== ""
@@ -169,12 +169,12 @@ const Page: React.FC<TPageProps> = () => {
                                   : "/no_image.png"
                               }
                               alt=""
-                              width={100}
-                              height={100}
+                              width={50}
+                              height={50}
                             />
                           </td>
-                          <td className="py-2 px-4 border-b text-right">{result.lot}</td>
-                          <td className="py-2 px-4 border-b text-right">{result.goodsName}</td>
+                          <td className="py-2 px-4 border-b  text-left">{result.lot}</td>
+                          <td className="py-2 px-4 border-b  text-left">{result.goodsName}</td>
                           <td className="py-2 px-4 border-b text-right">{result.rakusatsuPrice}</td>
                         </tr>
                       </React.Fragment>
@@ -186,7 +186,7 @@ const Page: React.FC<TPageProps> = () => {
         ) : (
           <p></p>
         )}
-      </MyPageContainer>
+      </Container>
     </>
   );
 };

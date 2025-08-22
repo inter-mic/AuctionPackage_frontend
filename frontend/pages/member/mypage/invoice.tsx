@@ -14,13 +14,11 @@ import { useInvoicePdfAPI } from "@/hooks/api/member/mypage/useInvoicePdfAPI";
 //型定義
 import { TAdminTorihikiJissekiRequest } from "@/types/admin/torihikiJisseki/search";
 import { TPageProps } from "@/types/member/memberPage";
-
 //ボタン
 import { OutPutButton } from "@/components/ui/buttons/member/outputButton";
-
-//共通コンポーネント
-import { MyPageHeader } from "@/components/member/common/MyPageHeaderComponent";
-import { MyPageContainer } from "@/components/member/common/MyPageContainerComponent";
+//コンポーネント
+import { PageTitle } from "@/components/member/layout/MemberPageTitleComponent";
+import { Container } from "@/components/member/layout/MemberContainerComponent";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
@@ -68,8 +66,8 @@ const Page: React.FC<TPageProps> = () => {
 
   return (
     <>
-      <MyPageHeader title={texts.menu.memberInvoice} />
-      <MyPageContainer
+      <PageTitle title={texts.menu.memberInvoice} />
+      <Container
         currentPage={currentPage}
         totalCount={count}
         itemsPerPage={itemsPerPage}
@@ -113,7 +111,7 @@ const Page: React.FC<TPageProps> = () => {
         ) : (
           <p></p>
         )}
-      </MyPageContainer>
+      </Container>
     </>
   );
 };

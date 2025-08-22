@@ -56,6 +56,7 @@ export const texts = {
     memberInvoice: "請求一覧",
     memberAccount: "会員登録情報",
     memberLive: "ライブ入札",
+    memberMarket: "相場表",
     loginCertification: "本登録",
   },
   button: {
@@ -299,6 +300,10 @@ export const texts = {
     sort_lot_desc: "LOT降順",
     sort_price_asc: "現在価格が安い順",
     sort_price_desc: "現在価格が高い順",
+    sort_kaisaibi_asc: "開催日昇順",
+    sort_kaisaibi_desc: "開催日降順",
+    sort_rakusatsu_price_asc: "落札価格が安い順",
+    sort_rakusatsu_price_desc: "落札価格が高い順",
     estimate: "エスティメイト",
     farst_jizen_nyusatsu: "最高事前入札者",
     second_jizen_nyusatsu: "2番目事前入札者",

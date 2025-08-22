@@ -19,6 +19,7 @@ import { useLiveJizenBidDeleteAPI } from "@/hooks/api/member/goods/useLiveJizenB
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GavelIcon from "@mui/icons-material/Gavel";
 import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
+import Favorite from "@mui/icons-material/Favorite";
 //型定義
 import { TGoodsSelect } from "@/types/common/goods";
 import { TAuctionWebSocketData } from "@/types/member/AuctionWebSocket";
@@ -63,6 +64,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
     currentKenriUserId: fetchGoodsData?.currentKenriUserId ?? 0,
     auctionTimeStatus: fetchGoodsData?.auctionTimeStatus ?? 0,
     bidCount: fetchGoodsData?.bidCount ?? "",
+    favoriteCount: fetchGoodsData?.favoriteCount ?? "",
     bidPrice: fetchGoodsData?.bidPrice ?? "",
     nextBidPrice: fetchGoodsData?.nextBidPrice ?? "",
     saiteiRakusatsuPriceOverFlg: fetchGoodsData?.saiteiRakusatsuPriceOverFlg ?? false,
@@ -165,7 +167,10 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
           {fetchGoodsData?.spnKbn != "3" ? (
             <p className={styles.priceRow}>
               <span className={styles.priceLabel}>{texts.goods.startPrice}</span>
-              <span className={styles.currentPrice}>¥{fetchGoodsData?.startPrice}</span>
+              <span className={styles.currentPrice}>
+                <CurrencyYenIcon />
+                {fetchGoodsData?.startPrice}
+              </span>
             </p>
           ) : (
             <p className={styles.priceRow}>
@@ -209,8 +214,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
           </>
         ) : (
           <>
-            {canBid &&
-            loginUserId === Number(fetchGoodsData?.shuppinUserId) && (
+            {canBid && loginUserId === Number(fetchGoodsData?.shuppinUserId) && (
               <>
                 {fetchGoodsData?.spnKbn == "1" || fetchGoodsData?.spnKbn == "2" ? (
                   <span></span>
@@ -297,32 +301,42 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
           </>
         )}
 
-        {(fetchGoodsData?.spnKbn === "3" || fetchGoodsData?.spnKbn === "4") && (
-          <div className={styles.goodsRowInfo}>
-            <div className="flex items-center gap-1">
-              {fetchGoodsData?.spnKbn == "4" ? (
-                <div></div>
-              ) : (
+        <div className={styles.goodsRowInfo}>
+          <div className="flex items-center gap-1">
+            <>
+              <Favorite className="text-gray-500" />
+              <span className={`${styles.bidCount}`}>
+                {bidState.favoriteCount} {texts.label.resultCount}
+              </span>
+            </>
+          </div>
+          {(fetchGoodsData?.spnKbn === "3" || fetchGoodsData?.spnKbn === "4") && (
+            <>
+              <div className="flex items-center gap-1">
+                {fetchGoodsData?.spnKbn == "4" ? (
+                  <div></div>
+                ) : (
+                  <>
+                    <GavelIcon className="text-gray-500" />
+                    <span
+                      className={`${styles.bidCount} ${isPriceUpdated ? styles.priceUpdated : ""}`}
+                    >
+                      {bidState.bidCount} {texts.label.resultCount}
+                    </span>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
                 <>
-                  <GavelIcon className="text-gray-500" />
-                  <span
-                    className={`${styles.bidCount} ${isPriceUpdated ? styles.priceUpdated : ""}`}
-                  >
-                    {bidState.bidCount} {texts.label.resultCount}
+                  <AccessTimeIcon className="text-gray-500" />
+                  <span className={styles.remainingTime}>
+                    <RemainingTimeComponent initialTime={bidState.remainingTime || ""} />
                   </span>
                 </>
-              )}
-            </div>
-            <div className="flex items-center gap-1">
-              <>
-                <AccessTimeIcon className="text-gray-500" />
-                <span className={styles.remainingTime}>
-                  <RemainingTimeComponent initialTime={bidState.remainingTime || ""} />
-                </span>
-              </>
-            </div>
-          </div>
-        )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

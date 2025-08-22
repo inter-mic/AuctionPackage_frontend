@@ -1,7 +1,7 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 
-import { TGoodsImageData } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/common/goodsImage";
 
 export const useGoodsSearchImageAPI = () => {
   const { useState, apiRequest } = useCommonSetup();

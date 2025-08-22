@@ -6,7 +6,7 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { TGoodsImageData } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/common/goodsImage";
 
 interface ImagePopupComponentProps {
   open: boolean;

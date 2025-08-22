@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { getTexts } from "@/config/texts";
 import { withAuth } from "@/hocs/withMemberAuth";
-import MemberTopPageComponent from "@/components/member/layout/MemberTopPageComponent";
+import TopPageComponent from "@/components/member/top/TopPageComponent";
 import withMemberisLoginLayout from "@/hocs/withMemberisLoginLayout";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
@@ -14,4 +14,4 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
   };
 });
 
-export default withMemberisLoginLayout(MemberTopPageComponent, true);
+export default withMemberisLoginLayout(TopPageComponent, true);

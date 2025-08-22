@@ -1,22 +1,22 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TCategorySearch } from "@/types/common/category/search";
+import { TYearMonthSelect } from "@/types/public/yearMonth";
 
-export const useCategorySearchAPI = () => {
+export const useYearMonthSearchAPI = () => {
   const { useState, useEffect, apiRequest } = useCommonSetup();
-  const [category, setCategory] = useState<TCategorySearch[]>([]);
+  const [yearMonth, setYearMonth] = useState<TYearMonthSelect[]>([]);
   useEffect(() => {
-    const categorySearchAPI = async () => {
-      const endPoint = `category/search`;
+    const yearMonthSearchAPI = async () => {
+      const endPoint = `yearMonth/search`;
       const { data: responseData } = await apiRequest("public", endPoint, "POST", null, "", true);
       if (responseData) {
-        setCategory(responseData);
+        setYearMonth(responseData);
       }
     };
 
-    categorySearchAPI();
+    yearMonthSearchAPI();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return { category };
+  return { yearMonth };
 };

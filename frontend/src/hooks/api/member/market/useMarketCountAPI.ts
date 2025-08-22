@@ -1,29 +1,31 @@
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-
 //型定義
-import { TSpnSearchRequest } from "@/types/member/shuppin";
+import { TMarketSearchRequest } from "@/types/member/market";
 import { Errors } from "@/types/errors";
 
-export const useSpnCountAPI = () => {
+export const useMarketCountAPI = () => {
   const { useState, apiRequest } = useCommonSetup();
-  const [spnCount, setSpnCount] = useState<number | 0>(0);
+  const [marketCount, setMarketCount] = useState<number | 0>(0);
   const [errors, setErrors] = useState<Errors>();
-  const spnCountAPI = async (searchParams: TSpnSearchRequest) => {
+  const marketCountAPI = async (searchParams: TMarketSearchRequest) => {
     const { status, data: responseData } = await apiRequest(
       "member",
-      "spn/count",
+      "goods/count",
       "POST",
       searchParams,
       "",
-      true
+      true,
+      {},
+      false
     );
+
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200 && responseData) {
-      setSpnCount(responseData);
+      setMarketCount(responseData);
     }
   };
 
-  return { spnCount, errors, spnCountAPI };
+  return { marketCount, errors, marketCountAPI };
 };

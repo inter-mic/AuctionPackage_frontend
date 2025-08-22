@@ -209,6 +209,11 @@ export function HeaderComponent({
                     </div>
                     {isMobileSubMenusOpen["mypage"] && (
                       <ul className={styles.subMenu}>
+                        {optionMemShuppinList && (
+                          <li>
+                            <Link href="/member/mypage/shuppin">{texts.menu.memberShuppin}</Link>
+                          </li>
+                        )}
                         <li>
                           <Link href="/member/mypage/results">{texts.menu.memberRakusatsu}</Link>
                         </li>

@@ -11,10 +11,10 @@ import withMemberLayout from "@/hocs/withMemberLayout";
 import { useCheckLiveAuctionAPI } from "@/hooks/api/member/live/useCheckLiveAuctionAPI";
 import { useSearchPaddleNoAPI } from "@/hooks/api/member/live/useSearchPaddleNoAPI";
 import { useSystemSearchAPI } from "@/hooks/api/member/useSystemSearchAPI";
-import { useMemberSessionAPI } from "@/hooks/api/member/useMemberSessionAPI";
 //カスタムフック
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/hooks/useLocale";
+import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
 //型定義
 import { TBidHisotry } from "@/types/member/live";
 import { TPageProps } from "@/types/member/memberPage";
@@ -61,15 +61,7 @@ const Page: React.FC<TPageProps> = (PageProps) => {
   const [bidEndData, setBidEndData] = useState<any>(null);
 
   //タイムアウト防止のためセッション延長
-  const { memberSessionAPI } = useMemberSessionAPI();
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      memberSessionAPI();
-      //30分ごと
-    }, 1800000);
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useSessionExtension({ isLogin: true });
 
   // msgが変わるたびにrefも更新
   useEffect(() => {

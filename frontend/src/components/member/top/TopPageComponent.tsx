@@ -26,7 +26,7 @@ interface Props extends TPageProps {
   loginUserId: number;
   canBid: boolean;
 }
-const MemberTopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid }) => {
+const TopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid }) => {
   const { useEffect, texts } = useCommonSetup();
   //TOP画像
   const { topImageList } = useTopImageSearchAPI(isLogin);
@@ -118,4 +118,4 @@ const MemberTopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid 
   );
 };
 
-export default MemberTopPageComponent;
+export default TopPageComponent;

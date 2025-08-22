@@ -5,7 +5,7 @@ type Props = {
   title: string;
 };
 
-export const MyPageHeader: React.FC<Props> = ({ title }) => {
+export const PageTitle: React.FC<Props> = ({ title }) => {
   return (
     <div className={memberStyles.mainTitleContainer}>
       <span className={memberStyles.mainTitle}>{title}</span>

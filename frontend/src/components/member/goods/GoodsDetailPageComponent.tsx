@@ -1,26 +1,28 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
+import { useImageClickHandler } from "@/hooks/useImageClickHandler";
+import { usePopupNavigation } from "@/hooks/usePopupNavigation";
 //コンポーネント
 import FavoriteToggle from "@/components/member/goods/FavoriteToggleComponent";
 import BidModuleComponent from "@/components/member/auction/BidModuleComponent";
 import ImagePopupComponent from "@/components/member/goods/ImagePopupComponent";
+import { ImageWrapperComponent } from "@/components/member/goods/ImageWrapperComponent";
 //API
 import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/common/useGoodsSearchByGoodsIdAPI";
 import { useGoodsSearchImageAPI } from "@/hooks/api/common/useGoodsSearchImageAPI";
 import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
 import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAPI";
-import { useMemberSessionAPI } from "@/hooks/api/member/useMemberSessionAPI";
+
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
-import { TGoodsImageData } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/common/goodsImage";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/goods/GoodsDetail.module.css";
@@ -42,6 +44,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
   const { fetchGoodsData, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
   const [thumImages, setThumImages] = useState<TGoodsImageData[]>([]);
+  const [localGoodsData, setLocalGoodsData] = useState(fetchGoodsData);
   const router = useRouter();
 
   // タブ複製用の状態
@@ -57,22 +60,25 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
   }, [paramsGoodsId]);
   const [mainImageSrc, setMainImageSrc] = useState("/no_image.png");
   useEffect(() => {
-    if (fetchGoodsData && fetchGoodsData.squareImageUrl) {
-      setMainImageSrc(fetchGoodsData.squareImageUrl);
-      goodsSearchImage(Number(paramsGoodsId), isLogin);
-    } else {
-      setMainImageSrc("/no_image.png");
-      setThumImages([]);
+    if (fetchGoodsData) {
+      setLocalGoodsData(fetchGoodsData);
+      if (fetchGoodsData.squareImageUrl) {
+        setMainImageSrc(fetchGoodsData.squareImageUrl);
+        goodsSearchImage(Number(paramsGoodsId), isLogin);
+      } else {
+        setMainImageSrc("/no_image.png");
+        setThumImages([]);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchGoodsData]);
   useEffect(() => {
-    if (fetchGoodsData) {
-      const { lot, goodsName } = fetchGoodsData;
+    if (localGoodsData) {
+      const { lot, goodsName } = localGoodsData;
       document.title = `${texts.menu.memberGoodsDetail} | LOT: ${lot} ${goodsName}`;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchGoodsData]);
+  }, [localGoodsData]);
 
   useEffect(() => {
     if (fetchImages.length > 0) {
@@ -86,13 +92,13 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
   //LOT前後
   const { beforeAfterGoodsId, goodsSearchBeforeAfterLotAPI } = useGoodsSearchBeforeAfterLotAPI();
   useEffect(() => {
-    const auctionSeq = fetchGoodsData?.auctionSeq ?? 0;
-    const lot = fetchGoodsData?.lot ?? "";
+    const auctionSeq = localGoodsData?.auctionSeq ?? 0;
+    const lot = localGoodsData?.lot ?? "";
     if (auctionSeq != 0 && lot != "") {
       goodsSearchBeforeAfterLotAPI(auctionSeq, lot, isLogin);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchGoodsData?.auctionSeq, fetchGoodsData?.lot]);
+  }, [localGoodsData?.auctionSeq, localGoodsData?.lot]);
 
   const [beforeGoodsId, setBeforeGoodsId] = useState<number | undefined>(undefined);
   const [afterGoodsId, setAfterGoodsId] = useState<number | undefined>(undefined);
@@ -103,55 +109,38 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
     }
   }, [beforeAfterGoodsId]);
 
-  //サムネイル画像クリック
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const handleImageClick = (thumbnailUrl: string) => {
-    const newImageUrl = thumbnailUrl.replace("thumb", "square");
-    setMainImageSrc(newImageUrl);
-    setSelectedImage(thumbnailUrl);
-    // ポップアップは開かない
-  };
-
   //タイムアウト防止のためセッション延長
-  const { memberSessionAPI } = useMemberSessionAPI();
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (isLogin) {
-        memberSessionAPI();
-      }
-      //30分ごと
-    }, 1800000);
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useSessionExtension({ isLogin });
 
-  // ポップアップ用の状態
-  const [popupOpen, setPopupOpen] = useState(false);
-  const [popupIndex, setPopupIndex] = useState(0);
+  const {
+    popupOpen,
+    popupIndex,
+    handlePopupOpen,
+    handlePrev,
+    handleNext,
+    handleClose,
+  } = usePopupNavigation({ thumImages });
 
-  // メイン画像クリック時
-  const handleMainImageClick = () => {
-    // selectedImageがある場合はそのインデックス、なければmainImageSrcで検索
-    let idx = 0;
-    if (selectedImage) {
-      idx = thumImages.findIndex((img) => selectedImage === img.thumbnailImageUrl);
-    } else {
-      idx = thumImages.findIndex((img) => mainImageSrc.includes(img.squareImageUrl || ""));
-    }
-    setPopupIndex(idx >= 0 ? idx : 0);
-    setPopupOpen(true);
+  const { selectedImage, handleImageClick, handleMainImageClick } = useImageClickHandler({
+    thumImages,
+    mainImageSrc,
+    setMainImageSrc,
+    enablePopup: true,
+    onPopupOpen: handlePopupOpen,
+  });
+
+  // お気に入りトグル時の処理
+  const handleFavoriteToggle = (isFavorite: boolean) => {
+    setLocalGoodsData((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        favoriteCount: isFavorite ? prev.favoriteCount + 1 : prev.favoriteCount - 1,
+      };
+    });
   };
 
-  // ポップアップ内の左右移動
-  const handlePrev = () => {
-    setPopupIndex((prev) => (prev - 1 + thumImages.length) % thumImages.length);
-  };
-  const handleNext = () => {
-    setPopupIndex((prev) => (prev + 1) % thumImages.length);
-  };
-  const handleClose = () => {
-    setPopupOpen(false);
-  };
+
 
   // タブ複製機能
   const handleDuplicateTabs = () => {
@@ -167,21 +156,21 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
         {isLogin ? (
           <Link
             href={`/member/goods/search?auctionSeq=${encodeURIComponent(
-              fetchGoodsData?.auctionSeq ?? 0
+              localGoodsData?.auctionSeq ?? 0
             )}`}
           >
             <div className={styles.link}>
               <KeyboardArrowLeftIcon />
-              <span className={styles.auctionName}>{fetchGoodsData?.auctionName}</span>
+              <span className={styles.auctionName}>{localGoodsData?.auctionName}</span>
             </div>
           </Link>
         ) : (
           <Link
-            href={`/goods/search?auctionSeq=${encodeURIComponent(fetchGoodsData?.auctionSeq ?? 0)}`}
+            href={`/goods/search?auctionSeq=${encodeURIComponent(localGoodsData?.auctionSeq ?? 0)}`}
           >
             <div className={styles.link}>
               <KeyboardArrowLeftIcon />
-              <span className={styles.auctionName}>{fetchGoodsData?.auctionName}</span>
+              <span className={styles.auctionName}>{localGoodsData?.auctionName}</span>
             </div>
           </Link>
         )}
@@ -213,62 +202,13 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
       </div>
 
       <div className={`${memberStyles.memberContainer} py-5`}>
-        <div className={styles.imageWrapper}>
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              paddingBottom: "56.25%",
-              marginBottom: "20px",
-            }}
-          >
-            <Image
-              src={mainImageSrc}
-              alt=""
-              fill
-              quality={100}
-              loading="lazy"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              style={{ objectFit: "contain", cursor: "pointer" }}
-              onClick={handleMainImageClick}
-            />
-          </div>
-
-          <ImageList
-            sx={{
-              width: "100%",
-              height: "auto",
-              overflow: "visible",
-            }}
-            cols={7}
-          >
-            {thumImages.length > 0 ? (
-              thumImages.map((data) => (
-                <ImageListItem
-                  key={data.goodsImagesNo}
-                  sx={{
-                    border: selectedImage === data.thumbnailImageUrl ? "1px solid black" : "none",
-                  }}
-                >
-                  <Image
-                    src={`${data.thumbnailImageUrl}`}
-                    alt=""
-                    width={100}
-                    height={100}
-                    quality={50}
-                    loading="lazy"
-                    onClick={() =>
-                      data.thumbnailImageUrl && handleImageClick(data.thumbnailImageUrl)
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                </ImageListItem>
-              ))
-            ) : (
-              <p></p>
-            )}
-          </ImageList>
-        </div>
+        <ImageWrapperComponent
+          mainImageSrc={mainImageSrc}
+          thumImages={thumImages}
+          selectedImage={selectedImage}
+          onMainImageClick={handleMainImageClick}
+          onThumbnailClick={handleImageClick}
+        />
         <div className={styles.details}>
           <h2 className={`${styles.lotContainer}`}>
             <div className={styles.lotLeft}>
@@ -280,7 +220,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
                     </Link>
                   )}
                   <span className={styles.lotLabel}>
-                    {texts.goods.lot} {fetchGoodsData?.lot}
+                    {texts.goods.lot} {localGoodsData?.lot}
                   </span>
                   {afterGoodsId !== 0 && (
                     <Link href={`/member/goods/detail?goodsId=${afterGoodsId}`} passHref>
@@ -296,7 +236,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
                     </Link>
                   )}
                   <span className={styles.lotLabel}>
-                    {texts.goods.lot} {fetchGoodsData?.lot}
+                    {texts.goods.lot} {localGoodsData?.lot}
                   </span>
                   {afterGoodsId !== 0 && (
                     <Link href={`/goods/detail?goodsId=${afterGoodsId}`} passHref>
@@ -308,24 +248,25 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
             </div>
             {isLogin && (
               <div className={styles.favoriteRight}>
-                {fetchGoodsData?.chumokuFlg && (
+                {localGoodsData?.chumokuFlg && (
                   <div className={styles.badge}>{texts.goods.chumokuFlg}</div>
                 )}
-                {loginUserId === Number(fetchGoodsData?.shuppinUserId) && (
+                {loginUserId === Number(localGoodsData?.shuppinUserId) && (
                   <div className={styles.badge}>{texts.label.mySpn}</div>
                 )}
                 <FavoriteToggle
                   goodsId={Number(paramsGoodsId)}
-                  initialFavoriteState={fetchGoodsData?.myFavoriteFlg ?? false}
+                  initialFavoriteState={localGoodsData?.myFavoriteFlg ?? false}
+                  onFavoriteToggle={handleFavoriteToggle}
                 />
               </div>
             )}
           </h2>
-          <h2 className={styles.goodsName}>{fetchGoodsData?.goodsName}</h2>
+          <h2 className={styles.goodsName}>{localGoodsData?.goodsName}</h2>
 
-          {fetchGoodsData !== undefined && (
+          {localGoodsData !== undefined && (
             <BidModuleComponent
-              fetchGoodsData={fetchGoodsData}
+              fetchGoodsData={localGoodsData}
               isLogin={isLogin}
               canBid={canBid}
               loginUserId={loginUserId}
@@ -335,7 +276,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
           <div>
             {goodsAddInfo.map((data) => {
               if (!data || typeof data.seq === "undefined") return null;
-              const value = fetchGoodsData ? fetchGoodsData[`addInfo${data.seq}`] || "" : "";
+              const value = localGoodsData ? localGoodsData[`addInfo${data.seq}`] || "" : "";
 
               return (
                 data.goodsAddinfo &&
@@ -352,13 +293,13 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
               );
             })}
           </div>
-          {fetchGoodsData && fetchGoodsData.biko && (
+          {localGoodsData && localGoodsData.biko && (
             <div className={styles.detailContainer}>
               <div className={styles.detailContent}>
                 <p
                   className={styles.biko}
                   dangerouslySetInnerHTML={{
-                    __html: fetchGoodsData.biko.replace(/\r?\n|\r/g, "<br />"),
+                    __html: localGoodsData.biko.replace(/\r?\n|\r/g, "<br />"),
                   }}
                 ></p>
               </div>

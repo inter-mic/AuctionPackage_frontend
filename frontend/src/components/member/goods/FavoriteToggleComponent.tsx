@@ -7,10 +7,11 @@ import { useFavoriteOnOffAPI } from "@/hooks/api/member/goods/useFavoriteOnOffAP
 interface Props {
   goodsId: number;
   initialFavoriteState: boolean;
+  onFavoriteToggle?: (isFavorite: boolean) => void;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const FavoriteToggleComponent: React.FC<Props> = ({ goodsId, initialFavoriteState }) => {
+const FavoriteToggleComponent: React.FC<Props> = ({ goodsId, initialFavoriteState, onFavoriteToggle }) => {
   const { favoriteOnOffAPI } = useFavoriteOnOffAPI();
   const [isFavorite, setIsFavorite] = useState<boolean>(initialFavoriteState);
   useEffect(() => {
@@ -21,9 +22,14 @@ const FavoriteToggleComponent: React.FC<Props> = ({ goodsId, initialFavoriteStat
       const newFavoriteState = checked;
       setIsFavorite(newFavoriteState);
       await favoriteOnOffAPI(goodsId, newFavoriteState);
+      
+      // Call the callback to update favorite count in parent component
+      if (onFavoriteToggle) {
+        onFavoriteToggle(newFavoriteState);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isFavorite, goodsId, favoriteOnOffAPI]
+    [isFavorite, goodsId, favoriteOnOffAPI, onFavoriteToggle]
   );
 
   const handleFavoriteClick = (event: React.MouseEvent<HTMLButtonElement>) => {

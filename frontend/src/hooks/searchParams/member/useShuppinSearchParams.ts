@@ -1,6 +1,6 @@
 import { useState } from "react";
 //型定義
-import { TSpnSearchRequest } from "@/types/member/spn";
+import { TSpnSearchRequest } from "@/types/member/shuppin";
 
 export const useShuppinSearchParams = () => {
   const [searchParams, setSearchParams] = useState<TSpnSearchRequest>({

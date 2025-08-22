@@ -3,8 +3,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Head from 'next/head';
 
 //コンポーネント
-import { HeaderComponent } from '@/components/member/layout/HeaderComponent';
-import { FooterComponent } from '@/components/member/layout/FooterComponent';
+import { HeaderComponent } from '@/components/member/layout/MemberHeaderComponent';
+import { FooterComponent } from '@/components/member/layout/MemberFooterComponent';
 import styles from '@/styles/member/Layout.module.css';
 //スタイル
 import toastStyles from '@/styles/toast.module.css';

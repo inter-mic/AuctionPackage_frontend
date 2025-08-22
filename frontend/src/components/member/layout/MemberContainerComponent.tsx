@@ -11,7 +11,7 @@ type Props = {
   showPagination?: boolean;
 };
 
-export const MyPageContainer: React.FC<Props> = ({
+export const Container: React.FC<Props> = ({
   children,
   currentPage,
   totalCount,

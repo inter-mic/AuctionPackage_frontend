@@ -14,7 +14,7 @@ import { useSpnCountAPI } from "@/hooks/api/member/mypage/useSpnCountAPI";
 import { useShuppinSearchParams } from "@/hooks/searchParams/member/useShuppinSearchParams";
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
-import { TSpnSelect } from "@/types/member/spn";
+import { TSpnSelect } from "@/types/member/shuppin";
 //コンポーネント
 import { KaisaiListPullDown } from "@/components/ui/pulldowns/MemberKaisaiListPullDown";
 import { KekkaStatusPullDown } from "@/components/ui/pulldowns/KekkaStatusPullDown";
@@ -26,9 +26,9 @@ import { ClearButton } from "@/components/ui/buttons/member/clearButton";
 import formSearchStyles from "@/styles/member/FormSearch.module.css";
 
 //共通コンポーネント
-import { MyPageHeader } from "@/components/member/common/MyPageHeaderComponent";
-import { MyPageContainer } from "@/components/member/common/MyPageContainerComponent";
-import { MyPageResultCount } from "@/components/member/common/MyPageResultCountComponent";
+import { PageTitle } from "@/components/member/layout/MemberPageTitleComponent";
+import { Container } from "@/components/member/layout/MemberContainerComponent";
+import { MyPageResultCount } from "@/components/member/layout/MyPageResultCountComponent";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
@@ -73,7 +73,7 @@ const Page: React.FC<TPageProps> = () => {
 
   const formSearch = async () => {
     setCurrentPage(1);
-
+    setFetchResultList([]);
     const params = {
       ...searchParams,
       pageNumber: 1,
@@ -100,8 +100,8 @@ const Page: React.FC<TPageProps> = () => {
 
   return (
     <>
-      <MyPageHeader title={texts.menu.memberShuppin} />
-      <MyPageContainer
+      <PageTitle title={texts.menu.memberShuppin} />
+      <Container
         currentPage={currentPage}
         totalCount={spnCount}
         itemsPerPage={itemsPerPage}
@@ -151,7 +151,7 @@ const Page: React.FC<TPageProps> = () => {
         </div>
         {fetchResultList && fetchResultList.length > 0 ? (
           <>
-            <MyPageResultCount count={spnCount} resultCountText={texts.label.resultCount} />
+            <MyPageResultCount count={spnCount} />
             <div className="w-full">
               <table className="w-full bg-white">
                 <thead>
@@ -159,6 +159,16 @@ const Page: React.FC<TPageProps> = () => {
                     <th className="py-2 px-4 border-b">{texts.goods.thumbnailImageUrl}</th>
                     <th className="py-2 px-4 border-b">{texts.goods.lot}</th>
                     <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
+                    <th className="py-2 px-4 border-b">{texts.goods.startPrice}</th>
+                    {resultsList[0].spnKbn === "3" ? (
+                      <>
+                        <th className="py-2 px-4 border-b">{texts.goods.currentPrice}</th>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+
+                    <th className="py-2 px-4 border-b">{texts.goods.kekkaStatus}</th>
                     <th className="py-2 px-4 border-b">{texts.goods.rakusatsuPrice}</th>
                   </tr>
                 </thead>
@@ -167,7 +177,7 @@ const Page: React.FC<TPageProps> = () => {
                     resultsList.map((result) => (
                       <React.Fragment key={result.goodsId}>
                         <tr>
-                          <td className="py-2 px-4  border-b text-right">
+                          <td className="py-2 px-4  border-b">
                             <Image
                               src={
                                 result.thumbnailImageUrl && result.thumbnailImageUrl.trim() !== ""
@@ -175,12 +185,25 @@ const Page: React.FC<TPageProps> = () => {
                                   : "/no_image.png"
                               }
                               alt=""
-                              width={100}
-                              height={100}
+                              width={50}
+                              height={50}
                             />
                           </td>
-                          <td className="py-2 px-4 border-b text-right">{result.lot}</td>
-                          <td className="py-2 px-4 border-b text-right">{result.goodsName}</td>
+                          <td className="py-2 px-4 border-b text-left">{result.lot}</td>
+                          <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
+                          <td className="py-2 px-4 border-b text-right">{result.startPrice}</td>
+                          {resultsList[0].spnKbn === "3" ? (
+                            <>
+                              <td className="py-2 px-4 border-b text-right">
+                                {result.currentPrice}
+                              </td>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                          <td className="py-2 px-4 border-b text-right">
+                            {result.auctionKekkaStatusName}
+                          </td>
                           <td className="py-2 px-4 border-b text-right">{result.rakusatsuPrice}</td>
                         </tr>
                       </React.Fragment>
@@ -192,7 +215,7 @@ const Page: React.FC<TPageProps> = () => {
         ) : (
           <p></p>
         )}
-      </MyPageContainer>
+      </Container>
     </>
   );
 };

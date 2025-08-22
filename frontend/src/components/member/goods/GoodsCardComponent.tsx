@@ -4,6 +4,7 @@ import Image from "next/image";
 import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Favorite from "@mui/icons-material/Favorite";
 //コンポーネント
 import AuctionStatusComponent from "@/components/member/auction/internetTender/AuctionStatusComponent";
 import FavoriteToggleComponent from "@/components/member/goods/FavoriteToggleComponent";
@@ -55,6 +56,13 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
   const handleJizenBidDelete = (goodsId: number) => {
     liveJizenBidDeleteAPI(goodsId);
   };
+
+  const handleFavoriteToggle = (isFavorite: boolean) => {
+    setGoodsInfo(prev => ({
+      ...prev,
+      favoriteCount: isFavorite ? prev.favoriteCount + 1 : prev.favoriteCount - 1
+    }));
+  };
   return (
     <div
       className={`${styles.goodsCard} ${goodsInfo.spnKbn === "1" ? styles.cardHeightSmall : ""}`}
@@ -91,6 +99,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
             <FavoriteToggleComponent
               goodsId={goodsInfo.goodsId}
               initialFavoriteState={goodsInfo.myFavoriteFlg}
+              onFavoriteToggle={handleFavoriteToggle}
               onClick={(event) => event.stopPropagation()}
             />
           )}
@@ -136,6 +145,10 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
         {(goodsInfo.spnKbn === "3" || goodsInfo.spnKbn === "4") && (
           <div className={styles.goodsRowInfo}>
             <div className="flex items-center gap-1">
+              <Favorite className="text-gray-500" />
+              <span className={`${styles.bidCount}`}>{goodsInfo.favoriteCount}</span>
+            </div>
+            <div className="flex items-center gap-1">
               {goodsInfo.spnKbn === "3" && goodsInfo.bidCount && (
                 <>
                   <GavelIcon className="text-gray-500" />
@@ -144,7 +157,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
                       data.isPriceUpdated ? styles.priceUpdated : ""
                     }`}
                   >
-                    {goodsInfo.bidCount} {texts.label.resultCount}
+                    {goodsInfo.bidCount}
                   </span>
                 </>
               )}

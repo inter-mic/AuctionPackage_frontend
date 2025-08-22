@@ -2,7 +2,7 @@
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 //型定義
-import { TSpnSearchRequest, TSpnSelect } from "@/types/member/spn";
+import { TSpnSearchRequest, TSpnSelect } from "@/types/member/shuppin";
 import { Errors } from "@/types/errors";
 
 export const useSpnSearchAPI = () => {

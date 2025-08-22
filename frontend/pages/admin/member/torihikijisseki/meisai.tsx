@@ -3,6 +3,7 @@ import { texts } from "@/config/texts.ja";
 import { useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import dayjs, { Dayjs } from "dayjs";
+import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
@@ -314,7 +315,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               <label className="sm:ml-2 flex items-center">
                 {texts.torihikiJisseki.rakusatsuTotalPrice}:
                 <span className="text-xl font-bold mx-1">
-                  ¥
+                  <CurrencyYenIcon />
                   {displayRakusatsuList
                     .reduce((acc, result) => {
                       const price = parseFloat(result.rakusatsuTotalPrice.replace(/,/g, "")) || 0;
@@ -454,7 +455,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionInvoice }) => {
               <label className="sm:ml-2 flex items-center">
                 {texts.torihikiJisseki.shuppinTotalPrice}:
                 <span className="text-xl font-bold mx-1">
-                  ¥
+                  <CurrencyYenIcon />
                   {displayShuppinList
                     .reduce((acc, result) => {
                       const price = parseFloat(result.shuppinTotalPrice.replace(/,/g, "")) || 0;
