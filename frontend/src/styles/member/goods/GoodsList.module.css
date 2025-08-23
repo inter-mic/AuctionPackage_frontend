@@ -7,6 +7,9 @@
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.marketCard {
+  height: 600px !important;
+}
 .cardHeightSmall {
   height: 550px !important;
 }
@@ -94,6 +97,7 @@
 }
 
 .currentPrice,
+.rakusatsuPrice,
 .bidPrice {
   color: #cb5201;
   font-size: 1.8rem;
@@ -105,6 +109,10 @@
 }
 .bidPrice {
   color: #808080;
+}
+
+.auctionInfo {
+  font-size: 1.1rem;
 }
 
 .remainingTime,

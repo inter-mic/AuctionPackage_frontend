@@ -18,12 +18,12 @@ const MarketCardComponent: React.FC<Props> = ({ data, texts }) => {
   }, [data]);
 
   const handleClick = (goodsId: number) => {
-    const goodsUrl = `/member/goods/detail?goodsId=${goodsId}`;
+    const goodsUrl = `/member/market/detail?goodsId=${goodsId}`;
     window.open(goodsUrl, "_blank");
   };
 
   return (
-    <div className={`${styles.goodsCard}`}>
+    <div className={`${styles.goodsCard} ${styles.marketCard}`}>
       <div className={styles.GoodsPointer} onClick={() => handleClick(goodsInfo.goodsId)}>
         <div className={styles.imageWrapper}>
           <Image
@@ -43,19 +43,19 @@ const MarketCardComponent: React.FC<Props> = ({ data, texts }) => {
         <p className={styles.goodsSetsumei}>{goodsInfo.goodsSetsumei}</p>
 
         <p className={styles.goodsRowInfo}>
-          <span>{texts.goods.rakusattsuPrice}</span>
-          <span className={`${styles.currentPrice}`}>
+          <span>{texts.goods.rakusatsuPrice}</span>
+          <span className={`${styles.rakusatsuPrice}`}>
             <CurrencyYenIcon />
-            {goodsInfo.rakusatsuPricePrice}
+            {goodsInfo.rakusatsuPrice}
           </span>
         </p>
         <p className={styles.goodsRowInfo}>
-          <span>{texts.auction.auctionData}</span>
-          <span className={`${styles.currentPrice}`}>{goodsInfo.auctionDatetime}</span>
+          <span>{texts.auction.auctionName}</span>
+          <span className={`${styles.auctionInfo}`}>{goodsInfo.auctionName}</span>
         </p>
         <p className={styles.goodsRowInfo}>
-          <span>{texts.auction.auctionName}</span>
-          <span className={`${styles.currentPrice}`}>{goodsInfo.auctionName}</span>
+          <span>{texts.auction.auctionData}</span>
+          <span className={`${styles.auctionInfo}`}>{goodsInfo.auctionDatetime}</span>
         </p>
       </div>
     </div>

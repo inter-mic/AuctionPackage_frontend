@@ -11,7 +11,7 @@ export const useMarketCountAPI = () => {
   const marketCountAPI = async (searchParams: TMarketSearchRequest) => {
     const { status, data: responseData } = await apiRequest(
       "member",
-      "goods/count",
+      "market/count",
       "POST",
       searchParams,
       "",
