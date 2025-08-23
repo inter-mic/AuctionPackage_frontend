@@ -4,7 +4,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { UserData } from "@/types/admin/member/register";
+import { TAdminUserRegistRequest } from "@/types/admin/member/register";
 import { Errors } from "@/types/errors";
 //コンポーネント
 import { TodofukenPullDown } from "@/components/ui/pulldowns/TodofukenPullDown";
@@ -16,7 +16,7 @@ import { useZipCodeSearchAPI } from "@/hooks/api/public/useZipCodeSearchAPI";
 import styles from "@/styles/CommonRegister.module.css";
 
 interface Props {
-  member: UserData;
+  member: TAdminUserRegistRequest;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errors?: Errors;
   setErrors: React.Dispatch<React.SetStateAction<Errors>>;

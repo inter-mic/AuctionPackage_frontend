@@ -19,7 +19,11 @@ import { useAuctionGetInfoAPI } from "@/hooks/api/admin/auction/useAuctionGetInf
 import { useAuctionRegistAPI } from "@/hooks/api/admin/auction/useAuctionRegistAPI";
 import { useAuctionDeleteAPI } from "@/hooks/api/admin/auction/useAuctionDeleteAPI";
 //型定義
-import { auctionData, initialAuctionData, formatAuctionData } from "@/types/admin/auction/register";
+import {
+  TAdminAuctionRegistRequest,
+  initialAuctionData,
+  formatAuctionData,
+} from "@/types/admin/auction/register";
 import { PageProps } from "@/types/admin/adminPage";
 //コンポーネント
 import { CustomDatePicker } from "@/components/ui/dateTime/CustomDatePicker";
@@ -60,7 +64,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   //データセット
-  const [fetchedData, setFetchedData] = useState<auctionData>(initialAuctionData);
+  const [fetchedData, setFetchedData] = useState<TAdminAuctionRegistRequest>(initialAuctionData);
   useEffect(() => {
     if (data) {
       setFetchedData(formatAuctionData(data));
@@ -81,36 +85,38 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
-  const handleDateChange = (field: keyof auctionData) => (date: Dayjs | null, name: string) => {
-    // Invalid Dateの場合は処理をスキップ
-    if (date && !date.isValid()) {
-      return;
-    }
+  const handleDateChange =
+    (field: keyof TAdminAuctionRegistRequest) => (date: Dayjs | null, name: string) => {
+      // Invalid Dateの場合は処理をスキップ
+      if (date && !date.isValid()) {
+        return;
+      }
 
-    setFetchedData((prev) => {
-      const updatedData = { ...prev, [field]: date };
-      return updatedData;
-    });
-    if (errors?.[name]) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
-      }));
-    }
-  };
+      setFetchedData((prev) => {
+        const updatedData = { ...prev, [field]: date };
+        return updatedData;
+      });
+      if (errors?.[name]) {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: "",
+        }));
+      }
+    };
 
-  const handleTimeChange = (field: keyof auctionData) => (time: string | null, name: string) => {
-    setFetchedData((prev) => {
-      const updatedData = { ...prev, [field]: time };
-      return updatedData;
-    });
-    if (errors?.[name]) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
-      }));
-    }
-  };
+  const handleTimeChange =
+    (field: keyof TAdminAuctionRegistRequest) => (time: string | null, name: string) => {
+      setFetchedData((prev) => {
+        const updatedData = { ...prev, [field]: time };
+        return updatedData;
+      });
+      if (errors?.[name]) {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: "",
+        }));
+      }
+    };
 
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const handleImageFileChange = (file: File | null) => {

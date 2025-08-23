@@ -30,8 +30,8 @@ import {
   initialGoodsData,
   TGoodsKekkaData,
   initialGoodsKekkaData,
-  TGoodsImageData,
 } from "@/types/admin/goods/register";
+import { TGoodsImageData } from "@/types/common/goodsImage";
 import { PageProps } from "@/types/admin/adminPage";
 import { Errors } from "@/types/errors";
 //コンポーネント
