@@ -1,21 +1,20 @@
-import * as React from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import styles from '@/styles/Button.module.css';
-import { texts } from '@/config/texts';
-
+import * as React from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { useLocale } from "@/hooks/useLocale";
 interface ConfirmDialogProps {
-  title: string;                         // ダイアログのタイトル
-  description: string;                   // ダイアログの内容
-  buttonTitle: string;                   // ボタンタイトル
-  className: string;                     // クラス
-  dialogCancelClassName: string;               // クラス
-  dialogClassName: string;               // クラス
-  onSubmit: () => void;                  // 実行する関数（API呼び出し）
-  buttonText?: string;                   // ボタンのテキスト（省略可能）
+  title: string; // ダイアログのタイトル
+  description: string; // ダイアログの内容
+  buttonTitle: string; // ボタンタイトル
+  className: string; // クラス
+  dialogCancelClassName: string; // クラス
+  dialogClassName: string; // クラス
+  onSubmit: () => void; // 実行する関数（API呼び出し）
+  buttonText?: string; // ボタンのテキスト（省略可能）
+  onKeyDown?: (e: React.KeyboardEvent) => void; // ショートカットハンドラ（省略可能）
 }
 
 export default function ConfirmDialogProps({
@@ -26,10 +25,11 @@ export default function ConfirmDialogProps({
   dialogCancelClassName,
   dialogClassName,
   onSubmit,
-  buttonText = 'Delete',
+  buttonText = "Delete",
+  onKeyDown,
 }: ConfirmDialogProps) {
   const [open, setOpen] = React.useState(false);
-
+  const { texts } = useLocale();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -39,13 +39,13 @@ export default function ConfirmDialogProps({
   };
 
   const handleSubmit = () => {
-    onSubmit();  // ページごとのAPI呼び出しを実行
+    onSubmit(); // ページごとのAPI呼び出しを実行
     handleClose(); // ダイアログを閉じる
   };
 
   return (
     <React.Fragment>
-       <button onClick={handleClickOpen} className={className}>
+      <button onClick={handleClickOpen} className={className}>
         {buttonText}
       </button>
       <Dialog
@@ -53,22 +53,21 @@ export default function ConfirmDialogProps({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        onKeyDown={onKeyDown}
       >
-        <DialogTitle id="alert-dialog-title">
-          {title}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description" style={{ whiteSpace: "pre-line" }}>
             {description}
           </DialogContentText>
         </DialogContent>
         <DialogActions className="justify-between">
-        <button  onClick={handleClose} className={dialogCancelClassName}>
-            <span >{ texts.button.cancel }</span>
-         </button>
-         <button  onClick={handleSubmit}  className={dialogClassName}>
-            <span > {buttonTitle}</span>
-         </button>
+          <button onClick={handleClose} className={dialogCancelClassName}>
+            <span>{texts.button.cancel}</span>
+          </button>
+          <button onClick={handleSubmit} className={dialogClassName}>
+            <span> {buttonTitle}</span>
+          </button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

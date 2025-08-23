@@ -1,17 +1,14 @@
 //コンフィグ
-import { texts } from '@/config/texts';
 //API
-import { usePdfApiRequest } from '@/hooks/api/usePdfApiRequest';
+import { usePdfApiRequest } from "@/hooks/api/usePdfApiRequest";
 
-
-
-export const useInvoicePdfAPI = () => {  
+export const useInvoicePdfAPI = () => {
   const { pdfApiRequest } = usePdfApiRequest();
-  const invoicePdfAPI  = async (auctionSeq: number)=>{
-    const baseEndpoint = 'outputPdf/invoice';
+  const invoicePdfAPI = async (auctionSeq: number) => {
+    const baseEndpoint = "outputPdf/invoice";
     const endPoint = `${baseEndpoint}/${auctionSeq}`;
-    await pdfApiRequest("member", endPoint, 'POST');
+    await pdfApiRequest("member", endPoint, "POST");
   };
-  
+
   return { invoicePdfAPI };
 };

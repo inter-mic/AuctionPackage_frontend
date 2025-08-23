@@ -1,0 +1,41 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# プロジェクト構造ガイド
+
+## プロジェクト概要
+このプロジェクトはNext.js 14を使用したオークションシステムのフロントエンドです。
+
+## ディレクトリ構造
+- `frontend/pages/` - Next.js Pages Routerのページコンポーネント
+- `frontend/src/` - メインのソースコード
+  - `src/components/` - Reactコンポーネント
+    - `src/components/admin/` - 管理者用コンポーネント
+    - `src/components/member/` - 会員用コンポーネント
+    - `src/components/common/` - 共通コンポーネント
+    - `src/components/ui/` - UIコンポーネント
+  - `src/hooks/` - カスタムフック
+    - `src/hooks/api/` - API関連フック
+    - `src/hooks/searchParams/` - 検索パラメータ関連フック
+  - `src/types/` - TypeScript型定義
+  - `src/config/` - 設定ファイル
+  - `src/styles/` - CSSモジュール
+  - `src/hocs/` - Higher-Order Components
+
+## 主要ファイル
+- [package.json](mdc:frontend/package.json) - 依存関係とスクリプト
+- [tsconfig.json](mdc:frontend/tsconfig.json) - TypeScript設定
+- [eslint.config.mjs](mdc:frontend/eslint.config.mjs) - ESLint設定
+- [next.config.mjs](mdc:frontend/next.config.mjs) - Next.js設定
+
+## 技術スタック
+- Next.js 14 (Pages Router)
+- TypeScript
+- Tailwind CSS
+- Material-UI (MUI)
+- React Hook Form
+- Axios
+- React Toastify
+

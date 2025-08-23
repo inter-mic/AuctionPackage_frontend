@@ -1,10 +1,9 @@
-
 .formContainer {
   background-color: #f5f5f5;
   padding: 1.5rem;
   border-radius: 0.5rem;
   width: 100%;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .formGrid {
@@ -12,8 +11,6 @@
   gap: 1rem;
   grid-template-columns: repeat(4, 1fr);
 }
-
-
 
 .formItem {
   display: flex;
@@ -27,15 +24,11 @@
 
 .formItem input,
 .formItem select,
-.formItemHalfWidth input {
+.formItemHalfWidth input,
+.formItemHalfWidth select {
   border: 1px solid #c7c7c7;
   padding: 0.5rem;
-  width: 100%;  
-}
-
-.formItem input,
-.formItem select,
-.formItemHalfWidth input {
+  width: 100%;
   height: 2.5rem;
 }
 
@@ -43,12 +36,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 2.5rem; 
-  margin-top: auto; 
+  height: 2.5rem;
+  margin-top: auto;
 }
 
 .formItemHalfWidth {
- flex: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -56,6 +49,20 @@
   display: flex;
   gap: 1rem;
   align-items: flex-start;
+}
+
+.formRowHalf {
+  display: grid;
+  gap: 1rem;
+  align-items: flex-start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.blockColumn {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
 }
 
 .leftColumn {
@@ -68,9 +75,9 @@
 .rightColumn {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem; 
+  gap: 1rem;
   padding-left: 50px;
-  align-items: center; 
+  align-items: center;
 }
 
 @media (max-width: 1024px) {
@@ -79,7 +86,7 @@
   }
 }
 
-@media  (max-width: 767px) {
+@media (max-width: 767px) {
   .formGrid {
     grid-template-columns: 1fr;
   }
@@ -92,14 +99,14 @@
 
   .categoryGrid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(2, 1fr);
   }
   .formRow {
     flex-direction: column;
   }
 
   .leftColumn {
-    flex-direction: row; 
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
@@ -118,6 +125,4 @@
     grid-template-columns: 1fr;
     padding-left: 0;
   }
-  
 }
-

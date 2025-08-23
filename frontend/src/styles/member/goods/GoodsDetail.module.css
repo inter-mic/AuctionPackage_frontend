@@ -8,30 +8,29 @@
   background-color: #f5f5f5;
 }
 
-.auctionName{
+.auctionName {
   font-size: 1.3rem;
   font-weight: 200;
-  margin-left: 5px; 
-  transition: text-decoration 0.3s ease; 
+  margin-left: 5px;
+  transition: text-decoration 0.3s ease;
 }
 .link {
   display: flex;
   align-items: center;
 }
 .link:hover .auctionName {
-  text-decoration: underline; 
+  text-decoration: underline;
 }
-
 
 .imageWrapper {
   flex: 0 0 50%;
-  max-width: 50%; 
+  max-width: 50%;
 }
 
 .details {
   flex: 1;
   margin: 0px 5px;
-  min-width: 0; 
+  min-width: 0;
 }
 
 .lotContainer {
@@ -39,13 +38,12 @@
   justify-content: space-between;
   align-items: center;
   font-size: 1.8rem;
-
 }
 
 .lotLeft {
   display: flex;
   align-items: center;
-  gap: 10px; 
+  gap: 10px;
 }
 .lotLabel {
   padding-top: 10px;
@@ -53,14 +51,17 @@
 .lotLink {
   display: inline-flex;
   align-items: center;
-  text-decoration: none; 
+  text-decoration: none;
 }
 .lotLink:hover {
-  text-decoration: underline; 
+  text-decoration: underline;
 }
 
 .favoriteRight {
-  margin-left: auto; 
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .goodsName {
@@ -71,15 +72,15 @@
 .detailContainer {
   padding: 5px 0;
   margin: 10px 0;
-  color:#666;
+  color: #666;
   overflow-wrap: break-word;
-  word-break: break-word; 
+  word-break: break-word;
   white-space: normal;
 }
 
 .detailTitle {
   font-size: 1rem;
-  margin-bottom: 8px;  
+  margin-bottom: 8px;
 }
 
 .goodsSetsumei {
@@ -90,15 +91,12 @@
   word-wrap: break-word; /* 長い単語を適切に折り返し */
 }
 
-
-
 .divider {
-  margin: 0 auto; 
-  border: none; 
-  border-top: 1px solid #ddd; 
+  margin: 0 auto;
+  border: none;
+  border-top: 1px solid #ddd;
   margin-top: 8px;
   margin-bottom: 8px;
-
 }
 
 .goodsRowInfo {
@@ -117,9 +115,9 @@
 
 .detailsTable {
   display: grid;
-  grid-template-columns: 1fr 3fr; 
-  gap: 10px 0px; 
-  width: 100%; 
+  grid-template-columns: 1fr 3fr;
+  gap: 10px 0px;
+  width: 100%;
 
   border-collapse: collapse;
 }
@@ -128,15 +126,15 @@
   margin: 30px 0;
   color: #333;
   overflow-wrap: break-word;
-  word-break: break-word; 
+  word-break: break-word;
   white-space: normal;
 }
 
-.addInfoLabel{
+.addInfoLabel {
   font-size: 1.4rem;
   margin: 0 0 8px 0;
-  width:100%;
-  border-bottom: 1px solid #E0E0E0;
+  width: 100%;
+  border-bottom: 1px solid #e0e0e0;
   display: grid;
 }
 
@@ -150,7 +148,7 @@
 .tableValue {
   text-align: left;
   padding: 10px 5px;
-  border-bottom: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
 }
 
 .loginContainer {
@@ -162,9 +160,9 @@
   transition: max-width 0.5s ease;
 }
 
-.sectionTitle{
+.sectionTitle {
   margin-bottom: 1rem;
-  padding-bottom: .625rem;
+  padding-bottom: 0.625rem;
   border-bottom: 1px solid #c7c7c7;
   font-size: 2.4rem;
   font-weight: 500;
@@ -184,10 +182,19 @@
   pointer-events: none;
   transform: translate(-50%, -50%);
   background-repeat: no-repeat;
-   
 }
 .clickableIcon {
   cursor: pointer; /* アイコンをクリック可能に */
+}
+
+.badge {
+  background-color: #ffa5009e;
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 .priceUpdated {
@@ -195,13 +202,24 @@
 }
 
 @keyframes priceChange {
-  0% { color: red; transform: scale(1.1); }
-  50% { color: orange; transform: scale(1.2); }
-  100% { color: black; transform: scale(1); }
+  0% {
+    color: red;
+    transform: scale(1.1);
+  }
+  50% {
+    color: orange;
+    transform: scale(1.2);
+  }
+  100% {
+    color: black;
+    transform: scale(1);
+  }
 }
 
-
 @media (max-width: 768px) {
+  .auctionName {
+    font-size: 1rem;
+  }
   .container {
     flex-direction: column;
   }
@@ -212,5 +230,4 @@
     flex: 0 0 100%;
     max-width: 100%;
   }
-
 }

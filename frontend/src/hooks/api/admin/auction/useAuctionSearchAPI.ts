@@ -1,9 +1,8 @@
-import  dayjs,{ Dayjs } from 'dayjs';
+import dayjs from "dayjs";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TMtAuction } from '@/types/admin/auction/search';
-
+import { TMtAuction } from "@/types/admin/auction/search";
 
 /*kaisaiStatus
 0, null：全開催回
@@ -11,27 +10,36 @@ import { TMtAuction } from '@/types/admin/auction/search';
 2：掲載中開催回
 3：締め前開催回
 4：締め済み開催回
+5：出品区分指定
 */
 
-export const useAuctionSearchAPI = (kaisaiStatus: number) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+export const useAuctionSearchAPI = (kaisaiStatus: number, spnKbns?: string[]) => {
+  const { useState, useEffect, apiRequest } = useCommonSetup();
   const [auction, setAuction] = useState<TMtAuction[]>([]);
   useEffect(() => {
     const auctionSearch = async (auctionSeq: number) => {
-
-      var endPoint = "" ;
-      if (kaisaiStatus == 1){
+      let endPoint = "";
+      if (kaisaiStatus == 1) {
         endPoint = `auction/search/${auctionSeq}`;
-      } else if (kaisaiStatus == 2){
+      } else if (kaisaiStatus == 2) {
         endPoint = `auction/searchKeisai`;
-      } else if (kaisaiStatus == 3){
+      } else if (kaisaiStatus == 3) {
         endPoint = `auction/searchShimemae`;
-      } else if (kaisaiStatus == 4){
+      } else if (kaisaiStatus == 4) {
         endPoint = `auction/searchShimezumi`;
-      } else{
+      } else if (kaisaiStatus == 5) {
+        endPoint = `auction/searchBySpnKbn`;
+      } else {
         endPoint = `auction/search`;
       }
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', null, "", true);
+      const { data: responseData } = await apiRequest(
+        "admin",
+        endPoint,
+        "POST",
+        spnKbns || null,
+        "",
+        true
+      );
       if (responseData) {
         const transformedData = responseData.map((data: any) => ({
           ...data,

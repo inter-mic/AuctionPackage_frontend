@@ -1,22 +1,33 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { TAdminGoodsSearchRequest, TAdminGoodsSelect } from '@/types/admin/goods/search';
-import { GoodsData, initialGoodsData, GoodsKekkaData, initialGoodsKekkaData } from '@/types/admin/goods/register';
-import { Errors } from '@/types/errors';
-
-
+import { TAdminGoodsSearchRequest, TAdminGoodsSelect } from "@/types/admin/goods/search";
+import {
+  TGoodsData,
+  initialGoodsData,
+  TGoodsKekkaData,
+  initialGoodsKekkaData,
+} from "@/types/admin/goods/register";
+import { Errors } from "@/types/errors";
 
 export const useGoodsSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, apiRequest } = useCommonSetup();
   const [data, setData] = useState<TAdminGoodsSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const [fetchGoodsData, setFetchGoodsData] = useState<GoodsData>(initialGoodsData);
-  const [fetchGoodsKekkaData, setFetchGoodsKekkaData] = useState<GoodsKekkaData>(initialGoodsKekkaData);
+  const [fetchGoodsData, setFetchGoodsData] = useState<TGoodsData>(initialGoodsData);
+  const [fetchGoodsKekkaData, setFetchGoodsKekkaData] =
+    useState<TGoodsKekkaData>(initialGoodsKekkaData);
   const goodsSearchAPI = async (searchParams: TAdminGoodsSearchRequest) => {
-    const endPoint = 'goods/search';
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
-    
+    const endPoint = "goods/search";
+    const { status, data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      searchParams,
+      "",
+      true
+    );
+
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200 && responseData) {
@@ -26,5 +37,5 @@ export const useGoodsSearchAPI = () => {
     }
   };
 
-  return { data, fetchGoodsData, fetchGoodsKekkaData, errors, goodsSearchAPI }
+  return { data, fetchGoodsData, fetchGoodsKekkaData, errors, goodsSearchAPI };
 };

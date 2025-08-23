@@ -84,6 +84,11 @@
   background-color: rgba(218, 86, 9, 0.6);
 }
 
+.bidStatus4,
+.bidStatus5 {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 @media (max-width: 768px) {
   .auctionStatusDetailContainer{
     width:90%;

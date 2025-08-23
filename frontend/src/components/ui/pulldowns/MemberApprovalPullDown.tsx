@@ -1,8 +1,6 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 type Props = {
   className?: string | null;
@@ -11,7 +9,7 @@ type Props = {
 };
 
 export const MemberApprovalPullDown = ({ className, onChange, selectedId }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
   const [selectedMemberApproval, setSelectedMemberApproval] = useState<string | null>(null);
   useEffect(() => {
     if (selectedId !== null && selectedId !== undefined) {
@@ -30,16 +28,15 @@ export const MemberApprovalPullDown = ({ className, onChange, selectedId }: Prop
   };
 
   return (
-    <select 
-        id="memberApprovalFlg"
-        name="memberApprovalFlg"
-        className={className ?? ''}
-        onChange={handleChange}
-        value={selectedMemberApproval  ?? ''
-        }>
+    <select
+      id="memberApprovalFlg"
+      name="memberApprovalFlg"
+      className={className ?? ""}
+      onChange={handleChange}
+      value={selectedMemberApproval ?? ""}
+    >
       <option value="0">{texts.system.approve}</option>
       <option value="1">{texts.system.reject}</option>
-      
     </select>
   );
 };

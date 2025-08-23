@@ -1,5 +1,5 @@
 import React from 'react';
-import { AdminNoHeaderLayoutComponent } from '@/components/admin/AdminNoHeaderLayoutComponent';
+import { AdminNoHeaderLayoutComponent } from '@/components/admin/layout/AdminNoHeaderLayoutComponent';
 import { PageProps } from '@/types/admin/adminPage';
 const withAdminNoHeaderLayout = <P extends PageProps>(Component: React.FC<P>) => {
   const WrappedComponent = (props: P) => {

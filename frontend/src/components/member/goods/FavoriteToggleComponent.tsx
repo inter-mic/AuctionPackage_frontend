@@ -1,41 +1,49 @@
-import React, { useState, useCallback,useEffect } from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
-import Favorite from '@mui/icons-material/Favorite';
-import { useFavoriteOnOffAPI } from '@/hooks/api/member/goods/useFavoriteOnOffAPI';
+import React, { useState, useCallback, useEffect } from "react";
+import Checkbox from "@mui/material/Checkbox";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
+import { useFavoriteOnOffAPI } from "@/hooks/api/member/goods/useFavoriteOnOffAPI";
 
 interface Props {
   goodsId: number;
   initialFavoriteState: boolean;
-  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void; 
+  onFavoriteToggle?: (isFavorite: boolean) => void;
+  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const FavoriteToggleComponent: React.FC<Props> = ({ goodsId, initialFavoriteState, onClick }) => {
-  const { favoriteOnOffAPI } = useFavoriteOnOffAPI(); 
+const FavoriteToggleComponent: React.FC<Props> = ({ goodsId, initialFavoriteState, onFavoriteToggle }) => {
+  const { favoriteOnOffAPI } = useFavoriteOnOffAPI();
   const [isFavorite, setIsFavorite] = useState<boolean>(initialFavoriteState);
   useEffect(() => {
     setIsFavorite(initialFavoriteState);
   }, [initialFavoriteState]);
-  const toggleFavorite = useCallback(async (event: React.ChangeEvent<HTMLDivElement>, checked: boolean) => {
-    const newFavoriteState = checked;
-    setIsFavorite(newFavoriteState);
-    await favoriteOnOffAPI(goodsId, newFavoriteState); 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFavorite, goodsId, favoriteOnOffAPI]);
+  const toggleFavorite = useCallback(
+    async (event: React.ChangeEvent<HTMLDivElement>, checked: boolean) => {
+      const newFavoriteState = checked;
+      setIsFavorite(newFavoriteState);
+      await favoriteOnOffAPI(goodsId, newFavoriteState);
+      
+      // Call the callback to update favorite count in parent component
+      if (onFavoriteToggle) {
+        onFavoriteToggle(newFavoriteState);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isFavorite, goodsId, favoriteOnOffAPI, onFavoriteToggle]
+  );
 
   const handleFavoriteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation(); 
-   
+    event.stopPropagation();
   };
 
   return (
     <Checkbox
       icon={<FavoriteBorder />}
-      checkedIcon={<Favorite sx={{ color: 'red' }} />}
+      checkedIcon={<Favorite sx={{ color: "red" }} />}
       checked={isFavorite}
-      onChange={(event, checked) => toggleFavorite(event, checked)} 
-      sx={{ color: 'gray' }}
-      onClick={handleFavoriteClick as React.MouseEventHandler<HTMLButtonElement>} 
+      onChange={(event, checked) => toggleFavorite(event, checked)}
+      sx={{ color: "gray" }}
+      onClick={handleFavoriteClick as React.MouseEventHandler<HTMLButtonElement>}
     />
   );
 };

@@ -1,11 +1,11 @@
-.kaisaiStatusLabel{
+.kaisaiStatusLabel {
   font-size: 1.3rem;
   padding: 30px 0px;
 }
 
 .auctionContainer {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   gap: 40px;
   margin: 20px 0px;
 }
@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  width:50%;
+  width: 50%;
 }
 .imagePlaceholder {
   width: 100%;
@@ -33,38 +33,36 @@
   height: 100%;
 }
 .auctionBlock {
-  padding:10px;
-  background-color: #EAEAEA;
+  padding: 10px;
+  background-color: #eaeaea;
 }
 
-.auctionName{
+.auctionName {
   font-size: 2rem;
   margin: 12px 0px;
 }
 
-
 .textContainer {
-  flex: 1; 
-  position: relative; 
+  flex: 1;
+  position: relative;
 }
 
 .toggleButton,
 .auctionGaiyo {
-  margin-top: 16px; 
+  margin-top: 16px;
   width: 50%;
   text-align: left;
   margin-left: 10px;
 }
 
 .auctionGaiyo {
-  max-height: 0; 
-  overflow: hidden; 
-  transition: max-height 0.3s ease; 
-
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
 .auctionGaiyoExpanded {
-  max-height: 10000px; 
+  max-height: 10000px;
   width: 100%;
 }
 .statusContainer {
@@ -86,7 +84,7 @@
   text-align: center;
 }
 .statusBefore {
-  background-color: #f6ccad; 
+  background-color: #f6ccad;
 }
 
 .statusDuring {
@@ -94,22 +92,37 @@
 }
 
 .statusAfter {
-  background-color: #bebfc1; 
+  background-color: #bebfc1;
 }
 
-.kikan{
+.kikan {
   font-size: 1.2rem;
 }
 
-.goodsList{
+.goodsList {
   font-size: 1.2rem;
   margin: 12px 0px;
+}
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.liveApplication {
+  background-color: #61656f;
+  color: #ffffff;
+  border: 1px solid #d1d5db;
+  padding: 1rem;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  margin: 10px 0px;
+  width: 15rem;
 }
 
 @media (max-width: 1024px) {
   .imageContainer {
     position: relative;
-    width: 100%;  
+    width: 100%;
   }
   .textContainer {
     text-align: center;
@@ -120,9 +133,8 @@
   }
   .auctionGaiyo {
     text-align: left;
-    padding: 0px 5px ;
+    padding: 0px 5px;
   }
-
 }
 
 @media (max-width: 768px) {
@@ -132,13 +144,13 @@
 
   .auctionGaiyo {
     text-align: left;
-    padding: 0px 5px ;
+    padding: 0px 5px;
   }
-  .toggleButton{
+  .toggleButton {
     font-size: 1rem;
     text-align: center;
   }
-  .kikan{
+  .kikan {
     font-size: 13px;
   }
   .statusContainer {
@@ -156,7 +168,14 @@
 
   .toggleButton,
   .auctionGaiyo {
-  margin-left: 0px;
-}
+    margin-left: 0px;
+  }
+  .buttonContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
+  .liveApplication {
+    margin: 10px auto;
+  }
 }

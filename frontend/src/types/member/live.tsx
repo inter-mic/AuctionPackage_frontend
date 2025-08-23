@@ -1,4 +1,4 @@
 export type TBidHisotry = {
-    userId: number;
+    userId: string;
     bidPrice: string;
 }

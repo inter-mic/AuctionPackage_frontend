@@ -1,30 +1,26 @@
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 //コンフィグ
-import { texts } from '@/config/texts';
+import { useLocale } from "@/hooks/useLocale";
 //スタイル
-import buttonStyles from '@/styles/Button.module.css';
+import buttonStyles from "@/styles/Button.module.css";
 interface ToGoodsListButtonProps {
-    auctionSeq?: number;
-    isLogin:boolean;
+  auctionSeq?: number;
+  isLogin: boolean;
 }
 
-
-export function ToGoodsListButton({ auctionSeq,isLogin }: ToGoodsListButtonProps) {
-
-    const router = useRouter();
-    const handleClick = () => {
-        if(isLogin){
-            router.push(`/member/goods/search?auctionSeq=${auctionSeq}`);
-        }else{
-            router.push(`/goods/search?auctionSeq=${auctionSeq}`);
-        }
-        
-    };
-    return (
-        <button
-            onClick={handleClick}
-            className={buttonStyles.toGoodsListButton}>
-            <span >{texts.button.toGoodsList}</span>
-        </button>
-    );
+export function ToGoodsListButton({ auctionSeq, isLogin }: ToGoodsListButtonProps) {
+  const router = useRouter();
+  const { texts } = useLocale();
+  const handleClick = () => {
+    if (isLogin) {
+      router.push(`/member/goods/search?auctionSeq=${auctionSeq}`);
+    } else {
+      router.push(`/goods/search?auctionSeq=${auctionSeq}`);
+    }
+  };
+  return (
+    <button onClick={handleClick} className={buttonStyles.calendarButton}>
+      <span>{texts.button.toGoodsList}</span>
+    </button>
+  );
 }

@@ -2,28 +2,33 @@
   width: 24%;
   padding: 5px;
   text-align: left;
-  border: 1px solid #D2D2D2;
+  border: 1px solid #d2d2d2;
   height: 660px;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.marketCard {
+  height: 600px !important;
+}
+.cardHeightSmall {
+  height: 550px !important;
 }
 .goodsCard:hover {
   transform: scale(1.05);
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 }
 .GoodsPointer:hover {
-  cursor: pointer; 
+  cursor: pointer;
 }
-
 
 .imageWrapper {
   position: relative;
-  width: 100%; 
+  width: 100%;
   height: 300px;
-  transition: background-color 0.3s ease; 
+  transition: background-color 0.3s ease;
 }
 .imageWrapper:hover {
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .goodsImage {
@@ -31,15 +36,21 @@
   height: auto;
   object-fit: cover;
   border-radius: 8px;
-  
 }
 .imageWrapper:hover .goodsImage {
   opacity: 0.8; /* 画像を少し暗くする */
 }
 
 .chumokuBadge {
-  position: absolute;
   top: 8px;
+}
+
+.mySpnBadge {
+  top: 40px;
+}
+
+.badge {
+  position: absolute;
   right: 8px;
   background-color: #ffffff;
   color: #ffa5009e;
@@ -53,8 +64,8 @@
 .lotContainer {
   display: flex;
   justify-content: space-between;
-  align-items: center;  
-  margin-top: 8px;  
+  align-items: center;
+  margin-top: 8px;
 }
 
 .lot {
@@ -66,7 +77,7 @@
 .goodsName {
   font-size: 1.1rem;
   text-align: left;
-  height:50px;
+  height: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -82,14 +93,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 25px;
+  height: 23px;
 }
 
-
-
-
-.currentPrice
-,.bidPrice {
+.currentPrice,
+.rakusatsuPrice,
+.bidPrice {
   color: #cb5201;
   font-size: 1.8rem;
   font-weight: 600;
@@ -97,10 +106,13 @@
 }
 .bidPrice {
   color: #cb5201;
-
 }
 .bidPrice {
   color: #808080;
+}
+
+.auctionInfo {
+  font-size: 1.1rem;
 }
 
 .remainingTime,
@@ -122,7 +134,6 @@
   word-wrap: break-word; /* 長い単語を適切に折り返し */
 }
 
-
 .auctionStatus {
   position: absolute;
   bottom: 0;
@@ -137,22 +148,22 @@
   border-bottom-right-radius: 8px;
 }
 
-.bidButton{
+.bidButton {
   height: 2.5rem;
-  width: 100%; 
+  width: 100%;
 }
 
 .headerContainer {
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
-  width: 100%; 
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   padding: 0px 5px;
 }
 
 .sortContainer {
   display: flex;
-  gap: 8px; 
+  gap: 8px;
   align-items: center;
 }
 
@@ -161,20 +172,29 @@
 }
 
 @keyframes priceChange {
-  0% { color: red; transform: scale(1.1); }
-  50% { color: orange; transform: scale(1.5); }
-  100% { color: #cb5201; transform: scale(1); }
+  0% {
+    color: red;
+    transform: scale(1.1);
+  }
+  50% {
+    color: orange;
+    transform: scale(1.5);
+  }
+  100% {
+    color: #cb5201;
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 1024px) {
   .goodsCard {
-    flex: 1 1 calc(50% - 16px); 
+    flex: 1 1 calc(50% - 16px);
   }
 }
 
 @media (max-width: 768px) {
   .goodsCard {
-    flex: 1 1 100%; 
+    flex: 1 1 100%;
     margin-top: 20px;
     margin: 20px;
   }
@@ -182,5 +202,10 @@
   .goodsCard:hover {
     transform: none;
     box-shadow: none;
+  }
+  .ToLiveApplicationButton {
+    position: static;
+    width: 90%;
+    margin: auto 5%;
   }
 }

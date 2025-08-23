@@ -1,14 +1,17 @@
 //コンフィグ
-import { texts } from '@/config/texts';
+import { texts } from "@/config/texts.ja";
 
 interface ClearButtonProps {
-    onClick?: () => void; 
-  }
+  onClick?: () => void;
+}
 
-  export function ClearButton({ onClick }: ClearButtonProps) {
-    return (
-        <button className="lg:ml-2.5 mt-2 lg:mt-0 bg-white border border-solid border-yellow-500 text-yellow-500 font-bold py-2 px-4 rounded-lg  w-full sm:w-40" onClick={onClick} >
-            <span >{texts.button.clear}</span>
-        </button>
-    );
+export function ClearButton({ onClick }: ClearButtonProps) {
+  return (
+    <button
+      className=" bg-white border border-solid border-yellow-500 text-yellow-500 font-bold py-2 px-4 rounded-lg  ml-0 sm:ml-1 mt-2 lg:mt-0  w-full sm:w-40"
+      onClick={onClick}
+    >
+      <span>{texts.button.clear}</span>
+    </button>
+  );
 }

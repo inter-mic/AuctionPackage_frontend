@@ -1,20 +1,22 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { Errors } from '@/types/errors';
-
-
+import { Errors } from "@/types/errors";
 
 export const useUserRegistAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts, apiRequest } = useCommonSetup();
   const [errors, setErrors] = useState<Errors>();
   const [responseData, setResponseData] = useState(null);
   const userRegist = async (UserData: any) => {
-    const userId = UserData.userId || '';
-    const endPoint = UserData.userId
-      ? `user/update/${UserData.userId}`
-      : 'user/insert';
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', UserData, texts.message.regist, true);
+    const endPoint = UserData.userId ? `user/update/${UserData.userId}` : "user/insert";
+    const { status, data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      UserData,
+      texts.message.regist,
+      true
+    );
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200) {

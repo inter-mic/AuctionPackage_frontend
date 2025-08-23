@@ -1,20 +1,18 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
-import { useInfoSearchAPI } from '@/hooks/api/admin/info/useInfoSearchAPI';
-
-
+import { useInfoSearchAPI } from "@/hooks/api/admin/info/useInfoSearchAPI";
 
 type Props = {
   className?: string | null;
   onChange: (selectedId: string) => void;
   selectedId?: string | null;
-  disabled?: boolean;  
+  disabled?: boolean;
 };
 
-export const AllInfoListPullDown = ({ className, onChange, selectedId,disabled  }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+export const AllInfoListPullDown = ({ className, onChange, selectedId, disabled }: Props) => {
+  const { useState, useEffect } = useCommonSetup();
   const { info } = useInfoSearchAPI();
   const [selectedInfoSeq, setSelectedInfoSeq] = useState<string | null>(null);
   useEffect(() => {
@@ -34,15 +32,16 @@ export const AllInfoListPullDown = ({ className, onChange, selectedId,disabled  
   };
 
   return (
-    <select 
-        id="infoSeq"
-        name="naiyo"
-        className={className ?? ''}
-        onChange={handleChange}
-        value={selectedInfoSeq  ?? ''}
-        disabled={disabled} >
+    <select
+      id="infoSeq"
+      name="naiyo"
+      className={className ?? ""}
+      onChange={handleChange}
+      value={selectedInfoSeq ?? ""}
+      disabled={disabled}
+    >
       <option value="">---</option>
-      {info.map(data => (
+      {info.map((data) => (
         <option key={data.infoSeq} value={data.infoSeq}>
           {data.naiyo}
         </option>

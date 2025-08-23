@@ -1,42 +1,48 @@
-import React from 'react';
-import { useSearchParams } from 'next/navigation';
-import Pagination from '@mui/material/Pagination';
+import React from "react";
+import { useSearchParams } from "next/navigation";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useSortHandler } from "@/hooks/useSortHandler";
+import { usePageChange } from "@/hooks/usePageChange";
 //コンポーネント
-import GoodsList from '@/components/member/goods/GoodsListComponent';
-import SearchFilter from '@/components/member/common/SearchFilterComponent';
-import AuctionInfo from '@/components/member/schedule/AuctionInfoComponent';
+import GoodsList from "@/components/member/goods/GoodsListComponent";
+import SearchFilter from "@/components/member/common/SearchFilterComponent";
+import AuctionInfo from "@/components/member/schedule/AuctionInfoComponent";
+import { CategorySearchComponent } from "@/components/member/common/CategorySearchComponent";
+import { ResultHeaderComponent } from "@/components/member/common/GoodsResultHeaderComponent";
+import { Container } from "@/components/member/layout/MemberContainerComponent";
 //API
-import { useGoodsSearchAPI } from '@/hooks/api/common/useGoodsSearchAPI';
-import { useGoodsCountAPI } from '@/hooks/api/common/useGoodsCountAPI';
-import { useGoodsSearchParams } from '@/hooks/searchParams/common/useGoodsSearchParams';
-import { useAuctionKeisaiChuSearchAPI } from '@/hooks/api/common/useAuctionKeisaiChuSearchAPI';
-import { useCategorySearchAPI } from '@/hooks/api/public/useCategorySearchAPI';
-import { useMemberSessionAPI } from '@/hooks/api/member/useMemberSessionAPI';
+import { useGoodsSearchAPI } from "@/hooks/api/common/useGoodsSearchAPI";
+import { useGoodsCountAPI } from "@/hooks/api/common/useGoodsCountAPI";
+import { useGoodsSearchParams } from "@/hooks/searchParams/common/useGoodsSearchParams";
+import { useAuctionKeisaiChuSearchAPI } from "@/hooks/api/common/useAuctionKeisaiChuSearchAPI";
+
+import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
 //型定義
-import { TPageProps } from '@/types/member/memberPage';
-import { TGoodsSelect } from '@/types/common/goods';
-import { TAuction } from '@/types/common/MtAuction';
+import { TPageProps } from "@/types/member/memberPage";
+import { TGoodsSelect } from "@/types/common/goods";
+import { TAuction } from "@/types/common/MtAuction";
 //ボタン
-import { SearchButton } from '@/components/ui/buttons/member/searchButton';
-import { ClearButton } from '@/components/ui/buttons/member/clearButton';
+import { SearchButton } from "@/components/ui/buttons/member/searchButton";
+import { ClearButton } from "@/components/ui/buttons/member/clearButton";
 //スタイル
-import formSearchStyles from '@/styles/member/FormSearch.module.css';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import memberStyles from '@/styles/member/MemberCommon.module.css';
-import styles from '@/styles/member/goods/GoodsList.module.css';
+import formSearchStyles from "@/styles/member/FormSearch.module.css";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 interface MemberGoodsSearchPageProps extends TPageProps {
   isLogin: boolean;
   loginUserId: number;
+  canBid: boolean;
 }
 
-
-const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, loginUserId }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
+  isLogin,
+  loginUserId,
+  canBid,
+}) => {
+  const { useState, useEffect, useRouter, texts } = useCommonSetup();
+  const router = useRouter();
   const { goodsList, goodsSearchAPI } = useGoodsSearchAPI();
   const { goodsCount, goodsCountAPI } = useGoodsCountAPI();
   const [fetchGoodsList, setFetchGoodsList] = useState<TGoodsSelect[]>([]);
@@ -44,23 +50,25 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const toggleFilter = () => setIsFilterOpen((prev) => !prev);
   const params = useSearchParams();
-  const paramsAuctionSeq = params ? params.get('auctionSeq') : null;
+  const paramsAuctionSeq = params ? params.get("auctionSeq") : null;
   const { auctionKeisaiChuList, auctionKeisaiChuSearchAPI } = useAuctionKeisaiChuSearchAPI();
   const [fetchAuctionData, setFetchAuctionData] = useState<TAuction>();
-  const { category } = useCategorySearchAPI();
   useEffect(() => {
     if (paramsAuctionSeq) {
-      const auctionSeqValue = paramsAuctionSeq !== null ? paramsAuctionSeq : '';
+      const auctionSeqValue = paramsAuctionSeq !== null ? paramsAuctionSeq : "";
       formChange({
-        target: { name: 'auctionSeq', value: auctionSeqValue },
+        target: { name: "auctionSeq", value: auctionSeqValue },
       });
       auctionKeisaiChuSearchAPI(Number(paramsAuctionSeq), isLogin);
+    } else {
+      // paramsAuctionSeqがnullの場合は/loginにリダイレクト
+      router.push("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsAuctionSeq]);
 
   useEffect(() => {
-    if (auctionKeisaiChuList != null && goodsParams.auctionSeq != '') {
+    if (auctionKeisaiChuList != null && goodsParams.auctionSeq != "") {
       goodsSearchAPI(goodsParams, isLogin);
       goodsCountAPI(goodsParams, isLogin);
       setFetchAuctionData(auctionKeisaiChuList[0]);
@@ -74,10 +82,15 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
   }, [goodsList]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const [checkboxStates, setCheckboxStates] = useState({ myBidCheck: false, myfavoriteCheck: false, chumokuCheck: false, nofinishCheck: false });
+  const [checkboxStates, setCheckboxStates] = useState({
+    myBidCheck: false,
+    myfavoriteCheck: false,
+    chumokuCheck: false,
+    nofinishCheck: false,
+  });
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
-    setCheckboxStates(prevState => ({
+    setCheckboxStates((prevState) => ({
       ...prevState,
       [name]: checked,
     }));
@@ -87,17 +100,17 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
       prev.includes(id) ? prev.filter((categoryId) => categoryId !== id) : [...prev, id]
     );
   };
-  const [currentPage, setCurrentPage] = useState(1);
+
   const formSearch = async () => {
     const params = {
       ...goodsParams,
-      categorySeq: selectedCategories.join(','),
+      categorySeq: selectedCategories.join(","),
       myBidCheck: checkboxStates.myBidCheck,
       myfavoriteCheck: checkboxStates.myfavoriteCheck,
       chumokuCheck: checkboxStates.chumokuCheck,
       nofinishCheck: checkboxStates.nofinishCheck,
     };
-    setCurrentPage(1); 
+    setCurrentPage(1);
     goodsSearchAPI(params, isLogin);
     goodsCountAPI(params, isLogin);
     setIsFilterOpen(false);
@@ -105,89 +118,62 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
   const formClear = () => {
     resetForm();
     setSelectedCategories([]);
-    setCheckboxStates({ myBidCheck: false, myfavoriteCheck: false, chumokuCheck: false, nofinishCheck: false });
+    setCheckboxStates({
+      myBidCheck: false,
+      myfavoriteCheck: false,
+      chumokuCheck: false,
+      nofinishCheck: false,
+    });
   };
 
-  const [sortOption, setSortOption] = useState<string>('LotAsc');
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const option = e.target.value;
-    setSortOption(option);
-    let sortKey = 'Lot';
-    let sortFlg = true;
-
-    switch (option) {
-      case 'LotDesc':
-        sortKey = 'lot';
-        sortFlg = false;
-        break;
-      case 'priceAsc':
-        sortKey = 'price';
-        sortFlg = true;
-        break;
-      case 'priceDesc':
-        sortKey = 'price';
-        sortFlg = false;
-        break;
-     
-    }
-
-    const params = {
-      ...goodsParams,
-      categorySeq: selectedCategories.join(','),
-      myBidCheck: checkboxStates.myBidCheck,
-      myfavoriteCheck: checkboxStates.myfavoriteCheck,
-      chumokuCheck: checkboxStates.chumokuCheck,
-      nofinishCheck: checkboxStates.nofinishCheck,
-      sortKey,
-      sortFlg,
-    };
-    goodsSearchAPI(params, isLogin);
+  const sortConfig = {
+    LotAsc: { sortKey: "lot", sortFlg: true },
+    LotDesc: { sortKey: "lot", sortFlg: false },
+    priceAsc: { sortKey: "price", sortFlg: true },
+    priceDesc: { sortKey: "price", sortFlg: false },
   };
 
-  
-  const itemsPerPage = 50;
-  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page);
-    const params = {
-      ...goodsParams,
-      categorySeq: selectedCategories.join(','),
-      myBidCheck: checkboxStates.myBidCheck,
-      myfavoriteCheck: checkboxStates.myfavoriteCheck,
-      chumokuCheck: checkboxStates.chumokuCheck,
-      nofinishCheck: checkboxStates.nofinishCheck,
-      pageNumber: page,
-      pageSize: itemsPerPage,
-    };
-    goodsSearchAPI(params, isLogin);
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 1000); 
+  const additionalParams = {
+    categorySeq: selectedCategories.join(","),
+    myBidCheck: checkboxStates.myBidCheck,
+    myfavoriteCheck: checkboxStates.myfavoriteCheck,
+    chumokuCheck: checkboxStates.chumokuCheck,
+    nofinishCheck: checkboxStates.nofinishCheck,
   };
 
+  const { sortOption, handleSortChange } = useSortHandler({
+    initialSortOption: "LotAsc",
+    sortConfig,
+    searchParams: goodsParams,
+    searchAPI: (params) => goodsSearchAPI(params, isLogin),
+    additionalParams,
+  });
+
+  const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
+  const { currentPage, setCurrentPage, handlePageChange } = usePageChange({
+    searchAPI: (params) => goodsSearchAPI(params, isLogin),
+    searchParams: params,
+    itemsPerPage,
+  });
 
   //タイムアウト防止のためセッション延長
-  const { memberSessionAPI } = useMemberSessionAPI();
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (isLogin) {
-        memberSessionAPI();
-      }
-    }, 100000);
-    return () => clearInterval(intervalId);
-  }, [isLogin, memberSessionAPI]);
+  useSessionExtension({ isLogin });
 
   return (
     <>
       {fetchAuctionData != null ? (
-        <AuctionInfo auctionData={fetchAuctionData} isToGoodsList={false} isLogin={isLogin} />
+        <>
+          <AuctionInfo auctionData={fetchAuctionData} isToGoodsList={false} isLogin={isLogin} />
+        </>
       ) : (
         <div></div>
       )}
+
       <SearchFilter isOpen={isFilterOpen} toggleFilter={toggleFilter}>
         <div className={formSearchStyles.formContainer}>
           <div className={formSearchStyles.formGrid}>
             <div className={formSearchStyles.formItem}>
-              <label htmlFor="goodsName" >{texts.goods.goodsName}</label>
+              <label htmlFor="goodsName">{texts.goods.goodsName}</label>
               <input
                 id="goodsName"
                 name="goodsName"
@@ -196,7 +182,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
               />
             </div>
             <div className={formSearchStyles.formItem}>
-              <label htmlFor="freeWord" >{texts.common.freeWord}</label>
+              <label htmlFor="freeWord">{texts.common.freeWord}</label>
               <input
                 id="freeWord"
                 name="freeWord"
@@ -205,39 +191,19 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
               />
             </div>
             <div className={formSearchStyles.formItem}>
-              <label htmlFor="lot" >{texts.goods.lot}</label>
-              <input
-                id="lot"
-                name="lot"
-                value={goodsParams.lot}
-                onChange={formChange}
-              />
+              <label htmlFor="lot">{texts.goods.lot}</label>
+              <input id="lot" name="lot" value={goodsParams.lot} onChange={formChange} />
             </div>
           </div>
-          <div className={formSearchStyles.formItem}>
-            <label className="mt-5" htmlFor="category">{texts.goods.category}</label>
-            <div className={formSearchStyles.categoryGrid}>
-              {category.map((data) => (
-                <FormControlLabel
-                  key={data.categorySeq}
-                  control={
-                    <Checkbox
-                      checked={selectedCategories.includes(data.categorySeq)}
-                      onChange={() => handleCategoryChange(data.categorySeq)}
-                      sx={{ color: '#c7c7c7', '&.Mui-checked': { color: 'gray' } }}
-                    />
-                  }
-                  label={data.categoryName}
-                />
-              ))}
-            </div>
-          </div>
+          <CategorySearchComponent
+            selectedCategories={selectedCategories}
+            onCategoryChange={handleCategoryChange}
+            categoryLabel={texts.goods.category}
+          />
           <label>{texts.goods.currentPrice}</label>
           <div className={formSearchStyles.formRow}>
-
             <div className={formSearchStyles.leftColumn}>
               <div className={formSearchStyles.formItemHalfWidth}>
-
                 <input
                   id="startCurrentPriceFrom"
                   name="startCurrentPriceFrom"
@@ -264,7 +230,10 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
                     name="chumokuCheck"
                     checked={checkboxStates.chumokuCheck}
                     onChange={handleCheckboxChange}
-                    sx={{ color: '#c7c7c7', '&.Mui-checked': { color: 'gray' } }}
+                    sx={{
+                      color: "#c7c7c7",
+                      "&.Mui-checked": { color: "gray" },
+                    }}
                   />
                 }
                 label={texts.goods.goods_search_3}
@@ -275,7 +244,10 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
                     name="nofinishCheck"
                     checked={checkboxStates.nofinishCheck}
                     onChange={handleCheckboxChange}
-                    sx={{ color: '#c7c7c7', '&.Mui-checked': { color: 'gray' } }}
+                    sx={{
+                      color: "#c7c7c7",
+                      "&.Mui-checked": { color: "gray" },
+                    }}
                   />
                 }
                 label={texts.goods.goods_search_4}
@@ -288,7 +260,10 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
                         name="myBidCheck"
                         checked={checkboxStates.myBidCheck}
                         onChange={handleCheckboxChange}
-                        sx={{ color: '#c7c7c7', '&.Mui-checked': { color: 'gray' } }}
+                        sx={{
+                          color: "#c7c7c7",
+                          "&.Mui-checked": { color: "gray" },
+                        }}
                       />
                     }
                     label={texts.goods.goods_search_1}
@@ -299,57 +274,54 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({ isLogin, 
                         name="myfavoriteCheck"
                         checked={checkboxStates.myfavoriteCheck}
                         onChange={handleCheckboxChange}
-                        sx={{ color: '#c7c7c7', '&.Mui-checked': { color: 'gray' } }}
+                        sx={{
+                          color: "#c7c7c7",
+                          "&.Mui-checked": { color: "gray" },
+                        }}
                       />
                     }
                     label={texts.goods.goods_search_2}
                   />
                 </>
               )}
-
             </div>
-
           </div>
           <div className="text-center lg:text-right my-5">
             <SearchButton onClick={formSearch} />
             <ClearButton onClear={formClear} />
           </div>
         </div>
-
       </SearchFilter>
-
-
-      {fetchGoodsList && fetchGoodsList.length > 0 ? (
-        <>
-          <div className={`${memberStyles.memberContainer} py-5`}>
-            <div className={styles.headerContainer}>
-              <span>{goodsCount} {texts.label.resultCount}</span>
-              <div className={styles.sortContainer}>
-                <label htmlFor="sort">{texts.label.sort}</label>
-                <select id="sort" value={sortOption} onChange={handleSortChange}>
-                  <option value="LotAsc">{texts.goods.sort_lot_asc}</option>
-                  <option value="LotDesc">{texts.goods.sort_lot_desc}</option>
-                  <option value="priceAsc">{texts.goods.sort_price_asc}</option>
-                  <option value="priceDesc">{texts.goods.sort_price_desc}</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <GoodsList list={fetchGoodsList} isLogin={isLogin} loginUserId={loginUserId} />
-
-          <div className={memberStyles.paginationContainer}>
-            <Pagination
-              count={Math.ceil(goodsCount / itemsPerPage)} // 総ページ数
-              page={currentPage} // 現在のページ
-              onChange={handlePageChange} // ページ変更イベント
-
+      <Container
+        currentPage={currentPage}
+        totalCount={goodsCount}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+      >
+        {fetchGoodsList && fetchGoodsList.length > 0 ? (
+          <>
+            <ResultHeaderComponent
+              count={goodsCount}
+              sortOption={sortOption}
+              onSortChange={handleSortChange}
+              sortOptions={[
+                { value: "LotAsc", label: texts.goods.sort_lot_asc },
+                { value: "LotDesc", label: texts.goods.sort_lot_desc },
+                { value: "priceAsc", label: texts.goods.sort_price_asc },
+                { value: "priceDesc", label: texts.goods.sort_price_desc },
+              ]}
             />
-          </div>
-        </>
-      ) : (
-        <div></div>
-      )}
-
+            <GoodsList
+              list={fetchGoodsList}
+              isLogin={isLogin}
+              loginUserId={loginUserId}
+              canBid={canBid}
+            />
+          </>
+        ) : (
+          <div></div>
+        )}
+      </Container>
     </>
   );
 };

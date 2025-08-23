@@ -1,9 +1,5 @@
-export interface SearchParams {
-
-}
-
-export interface Result {
-    seq: number | null;
-    goodsAddinfo: string | null;
-    [key: string]: any; 
+export interface TTtGoodsAddinfoItem {
+  seq: number | null;
+  goodsAddinfo: string | null;
+  [key: string]: any;
 }

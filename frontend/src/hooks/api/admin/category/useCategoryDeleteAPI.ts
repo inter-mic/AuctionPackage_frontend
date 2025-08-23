@@ -1,21 +1,19 @@
-import {useCommonSetup} from '@/hooks/useCommonSetup';
-//型定義
-import { Errors } from '@/types/errors';
-
-
-
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 
 export const useCategoryDeleteAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [errors, setErrors] = useState<Errors>();
-  const categoryDelete = async (categorySeq: any)=>{
+  const { texts, apiRequest } = useCommonSetup();
+
+  const categoryDelete = async (categorySeq: any) => {
     const endPoint = `category/delete/${categorySeq}`;
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', null, texts.message.delete, false);
-    if (status == 400) {
-      setErrors(responseData);
-    }else if (status == 500) {
-      setErrors(responseData);
-    }else if (status == 200){
+    const { status } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      null,
+      texts.message.delete,
+      false
+    );
+    if (status == 200) {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -23,5 +21,5 @@ export const useCategoryDeleteAPI = () => {
   };
   return { categoryDelete };
 };
-  
+
 export default useCategoryDeleteAPI;

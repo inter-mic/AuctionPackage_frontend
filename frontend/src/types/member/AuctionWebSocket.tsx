@@ -10,5 +10,6 @@ export type TAuctionWebSocketData ={
     bidUserId: number;
     bidCount: number;
     auctionBidFlg: boolean;
+    deleteFlg: boolean;
     saiteiRakusatsuPriceOverFlg: boolean;
 }

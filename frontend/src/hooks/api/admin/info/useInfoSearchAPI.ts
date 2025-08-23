@@ -1,18 +1,15 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { InfoSearch } from '@/types/admin/info/search';
-
-
+import { TMtInfo } from "@/types/admin/info/search";
 
 export const useInfoSearchAPI = () => {
-  const { useState,useEffect,useCallback ,useRouter,texts,  apiRequest } = useCommonSetup();
-  const [info, setInfo] = useState<InfoSearch[]>([]);
+  const { useState, useEffect, apiRequest } = useCommonSetup();
+  const [info, setInfo] = useState<TMtInfo[]>([]);
   useEffect(() => {
     const infoSearch = async (infoSeq: number) => {
-
       const endPoint = `MtInfo/search/${infoSeq}`;
-      const { status, data: responseData } = await apiRequest( "admin", endPoint, 'POST', null, "", true);
+      const { data: responseData } = await apiRequest("admin", endPoint, "POST", null, "", true);
       if (responseData) {
         setInfo(responseData);
       }

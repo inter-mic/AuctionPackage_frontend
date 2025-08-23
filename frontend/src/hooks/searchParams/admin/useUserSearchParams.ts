@@ -1,44 +1,43 @@
-import { useState } from 'react';
+import { useState } from "react";
 //型定義
-import { SearchParams } from '@/types/admin/member/search'; 
-
-
+import { TAdminUserSearchRequest } from "@/types/admin/member/search";
 
 export const useUserSearchParams = () => {
-  const [memberParams, setMemberParams] = useState<SearchParams>({
-      userId: '',
-      userName: '',
-      companyName: '',
-      address: '',
-      shoninFlg: '',
-      auctionMailJushinFlg: '',
-      freeWord: '',
-      pageNumber:1,
-      pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
-    });
+  const [memberParams, setMemberParams] = useState<TAdminUserSearchRequest>({
+    userId: "",
+    userName: "",
+    companyName: "",
+    address: "",
+    shoninFlg: "",
+    teishiFlg: "",
+    auctionMailJushinFlg: "",
+    freeWord: "",
+    pageNumber: 1,
+    pageSize: Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`),
+  });
 
   const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setMemberParams(prevParams => ({
+    setMemberParams((prevParams) => ({
       ...prevParams,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const resetForm = () => {
     setMemberParams({
-      userId: '',
-      userName: '',
-      companyName: '',
-      address: '',
-      shoninFlg: '',
-      auctionMailJushinFlg: '',
-      freeWord: '',
-      pageNumber:1,
-       pageSize:Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`)
+      userId: "",
+      userName: "",
+      companyName: "",
+      address: "",
+      shoninFlg: "",
+      teishiFlg: "",
+      auctionMailJushinFlg: "",
+      freeWord: "",
+      pageNumber: 1,
+      pageSize: Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`),
     });
   };
-  
-  return { memberParams, formChange,resetForm };
+
+  return { memberParams, formChange, resetForm };
 };
-  

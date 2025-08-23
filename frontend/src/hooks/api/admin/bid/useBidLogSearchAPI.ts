@@ -1,19 +1,24 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { LogInternetBidAdminSearchRequest, TAdminLogInternetBidSelect } from '@/types/admin/bid/logSearch';
-import { Errors } from '@/types/errors';
-
-
+import { TLogBidAdminSearchRequest, TAdminLogBidSelect } from "@/types/admin/goods/bid/logSearch";
+import { Errors } from "@/types/errors";
 
 export const useBidLogSearchAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const [data, setData] = useState<TAdminLogInternetBidSelect[]>([]);
+  const { useState, apiRequest } = useCommonSetup();
+  const [data, setData] = useState<TAdminLogBidSelect[]>([]);
   const [errors, setErrors] = useState<Errors>();
-  const bidLogSearchAPI = async (searchParams: LogInternetBidAdminSearchRequest) => {
-    const endPoint = 'logInternetBid/search';
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', searchParams, "", true);
-    
+  const bidLogSearchAPI = async (searchParams: TLogBidAdminSearchRequest) => {
+    const endPoint = "logBid/search";
+    const { status, data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      searchParams,
+      "",
+      true
+    );
+
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200 && responseData) {
@@ -21,5 +26,5 @@ export const useBidLogSearchAPI = () => {
     }
   };
 
-  return { data, errors, bidLogSearchAPI }
+  return { data, errors, bidLogSearchAPI };
 };

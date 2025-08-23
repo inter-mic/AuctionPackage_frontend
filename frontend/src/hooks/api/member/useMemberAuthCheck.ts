@@ -1,18 +1,18 @@
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext } from "next";
 
 export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => {
-  const jsessionid = context.req.cookies['JSESSIONID'];
+  const cookieHeader = context.req.headers["cookie"] ?? "";
   const response = await fetch(`${process.env.NEXT_PUBLIC_MEMBER_API_URL}authCheck`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Cookie': `JSESSIONID=${jsessionid}`
-    }
+      Cookie: cookieHeader,
+    },
   });
   if (!response.ok) {
     return {
       redirect: {
-        destination: '/login',
+        destination: "/login",
         permanent: false,
       },
     };
@@ -21,29 +21,34 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
   const data = await response.json();
   return {
     props: {
-      userId: data.userId,
-      userName: data.userName,
-      faviconImagePath: data.faviconImagePath,
-      logoImagePath: data.logoImagePath,
-      memberApprovalFlg: data.memberApprovalFlg,
-      memberRegistrationFlg: data.memberRegistrationFlg,
-      nologinView: data.nologinView,
-      kiyakuPath: data.kiyakuPath,
-      privacyPolicyPath: data.privacyPolicyPath,
-      optionMemInvoice: data.optionMemInvoice,
-      companyName: data.companyName,
-      zipCode: data.zipCode,
-      todofukenName: data.todofukenName,
-      address1: data.address1,
-      address2: data.address2,
-      tel: data.tel,
-      fax: data.fax,
-      mail: data.mail,
-      companyUrl: data.companyUrl,
-      kobutsuBango: data.kobutsuBango,
-      copyRight: data.copyRight,
+      userId: data.userId || null,
+      userName: data.userName || null,
+      canBid: data.canBid ?? null,
+      faviconImagePath: data.faviconImagePath || null,
+      logoImagePath: data.logoImagePath || null,
+      memberApprovalFlg: data.memberApprovalFlg || false,
+      memberRegistrationFlg: data.memberRegistrationFlg || false,
+      nologinView: data.nologinView || false,
+      kiyakuPath: data.kiyakuPath || "",
+      privacyPolicyPath: data.privacyPolicyPath || "",
+      optionMemInvoice: data.optionMemInvoice || false,
+      optionMemShuppinList: data.optionMemShuppinList || false,
+      livebit: data.livebit || false,
+      auction: data.auction || false,
+      liveauction: data.liveauction || false,
+      tender: data.tender || false,
+      companyName: data.companyName || null,
+      zipCode: data.zipCode || null,
+      todofukenName: data.todofukenName || null,
+      address1: data.address1 || null,
+      address2: data.address2 || null,
+      tel: data.tel || null,
+      fax: data.fax || null,
+      mail: data.mail || null,
+      companyUrl: data.companyUrl || null,
+      kobutsuBango: data.kobutsuBango || null,
+      copyRight: data.copyRight || null,
       pageSettingList: data.pageSettingList || [],
-    }
+    },
   };
 };
-

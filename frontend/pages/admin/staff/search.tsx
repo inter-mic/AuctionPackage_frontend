@@ -1,34 +1,31 @@
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
+import { GetServerSideProps } from "next";
+import { texts } from "@/config/texts.ja";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 //API
-import { useStaffSearchAPI }  from '@/hooks/api/admin/staff/useStaffSearchAPI';
+import { useStaffSearchAPI } from "@/hooks/api/admin/staff/useStaffSearchAPI";
 //型定義
-import { PageProps } from '@/types/admin/adminPage';
+import { PageProps } from "@/types/admin/adminPage";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-
-
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
-      pageTitle: texts.menu.adminStaffList
+      pageTitle: texts.menu.adminStaffList,
     },
   };
 });
 
-const Page: React.FC<PageProps> = ({ kengen  }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  
+const Page: React.FC<PageProps> = ({ kengen }) => {
+  const { useEffect, texts } = useCommonSetup();
+
   useKengenRedirect(kengen, 402);
-  
+
   const { data, staffSearch } = useStaffSearchAPI();
 
   useEffect(() => {
@@ -39,7 +36,7 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
   //スタッフ登録画面に遷移
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, staffId: number) => {
     if (e.target instanceof HTMLInputElement) return;
-    window.open(`/admin/staff/register?staffId=${staffId}`, '_blank');
+    window.open(`/admin/staff/register?staffId=${staffId}`, "_blank");
   };
 
   return (
@@ -58,11 +55,11 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
-                  <th className="py-2 px-4 border-b" >{ texts.staff.staffId }</th>
-                  <th className="py-2 px-4 border-b" >{ texts.staff.loginId }</th>
-                  <th className="py-2 px-4 border-b" >{ texts.staff.staffName }</th>
-                  <th className="py-2 px-4 border-b" >{ texts.common.mail }</th>
-                  <th className="py-2 px-4 border-b" >{ texts.staff.kengenName }</th>
+                  <th className="py-2 px-4 border-b">{texts.staff.staffId}</th>
+                  <th className="py-2 px-4 border-b">{texts.staff.loginId}</th>
+                  <th className="py-2 px-4 border-b">{texts.staff.staffName}</th>
+                  <th className="py-2 px-4 border-b">{texts.common.mail}</th>
+                  <th className="py-2 px-4 border-b">{texts.staff.kengenName}</th>
                 </tr>
               </thead>
               <tbody>
@@ -83,11 +80,11 @@ const Page: React.FC<PageProps> = ({ kengen  }) => {
             </table>
           </div>
         ) : (
-          <p></p>    
+          <p></p>
         )}
       </div>
     </div>
-  );  
+  );
 };
 
 export default withAdminLayout(Page);

@@ -1,37 +1,36 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
+import React from "react";
+import { GetServerSideProps } from "next";
+import { texts } from "@/config/texts.ja";
 //ホック
-import { withAuth } from '@/hocs/withAdminAuth';
-import withAdminLayout from '@/hocs/withAdminLayout';
+import { withAuth } from "@/hocs/withAdminAuth";
+import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
-import { useKengenRedirect } from '@/hooks/useKengenRedirect';
-import { useExecutionPermission } from '@/hooks/useExecutionPermission';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useKengenRedirect } from "@/hooks/useKengenRedirect";
+import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 //API
-import { useMailTemplateSearchAPI } from '@/hooks/api/admin/mail/useMailTemplateSearchAPI';
-import { useMailShomeiSearchAPI } from '@/hooks/api/admin/mail/useMailShomeiSearchAPI';
-import { useMailShomeiRegistAPI } from '@/hooks/api/admin/mail/useMailShomeiRegistAPI';
+import { useMailTemplateSearchAPI } from "@/hooks/api/admin/mail/useMailTemplateSearchAPI";
+import { useMailShomeiSearchAPI } from "@/hooks/api/admin/mail/useMailShomeiSearchAPI";
+import { useMailShomeiRegistAPI } from "@/hooks/api/admin/mail/useMailShomeiRegistAPI";
 //型定義
-import { PageProps } from '@/types/admin/adminPage';
-import { TemplateData, ShomeiData, initialShomeiData } from '@/types/admin/mail/register';
+import { PageProps } from "@/types/admin/adminPage";
+import { TemplateData, ShomeiData, initialShomeiData } from "@/types/admin/mail/register";
 //ボタン
-import { MailTemplateRegistButton } from '@/components/ui/buttons/admin/mailTemplateRegistButton';
-import { MailShomeiRegistButton } from '@/components/ui/buttons/admin/mailShomeiRegistButton';
+import { MailTemplateRegistButton } from "@/components/ui/buttons/admin/mailTemplateRegistButton";
+import { MailShomeiRegistButton } from "@/components/ui/buttons/admin/mailShomeiRegistButton";
 //スタイル
-import breadcrumbStyles from '@/styles/breadcrumb.module.css';
+import breadcrumbStyles from "@/styles/breadcrumb.module.css";
 
-export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
-  const otherData = {};
+export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
-      pageTitle: texts.menu.adminMailRegist
+      pageTitle: texts.menu.adminMailRegist,
     },
   };
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, useEffect, texts } = useCommonSetup();
 
   useKengenRedirect(kengen, 505);
   const { executionPermission } = useExecutionPermission(kengen);
@@ -47,10 +46,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (templateData) {
       const initialState = templateData.reduce((acc: any, item: any) => {
-        acc[`subject_${item.templateId}`] = item.subject || '';
-        acc[`bodyPart2_${item.templateId}`] = item.bodyPart2 || '';
-        acc[`bodyPart4_${item.templateId}`] = item.bodyPart4 || '';
-        acc[`body_${item.templateId}`] = item.body || '';
+        acc[`subject_${item.templateId}`] = item.subject || "";
+        acc[`bodyPart2_${item.templateId}`] = item.bodyPart2 || "";
+        acc[`bodyPart4_${item.templateId}`] = item.bodyPart4 || "";
+        acc[`body_${item.templateId}`] = item.body || "";
         return acc;
       }, {});
       setTemplateItems(initialState);
@@ -59,12 +58,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const [shomei, setShomei] = useState<ShomeiData>(initialShomeiData);
   useEffect(() => {
-    if (shomeiData) { setShomei(shomeiData); }
+    if (shomeiData) {
+      setShomei(shomeiData);
+    }
   }, [shomeiData]);
 
   const [templateItems, setTemplateItems] = useState<{ [key: string]: string }>({});
   const [bodyParts, setBodyParts] = useState<{ [key: string]: string }>({});
-  const handleBodyPartChange = (templateId: number, partName: 'bodyPart2' | 'bodyPart4', newValue: string) => {
+  const handleBodyPartChange = (
+    templateId: number,
+    partName: "bodyPart2" | "bodyPart4",
+    newValue: string
+  ) => {
     setBodyParts((prev) => ({
       ...prev,
       [`${templateId}_${partName}`]: newValue,
@@ -81,17 +86,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const getDynamicBody = (result: TemplateData) => {
     const bodyPart2 = bodyParts[`${result.templateId}_bodyPart2`] || result.bodyPart2;
     const bodyPart4 = bodyParts[`${result.templateId}_bodyPart4`] || result.bodyPart4;
-    
+
     const parts = [
-      result.bodyPart1 ? result.bodyPart1.replace(/(\r\n|\n|\r)/g, '<br>'): '',
-      bodyPart2 ? bodyPart2.replace(/(\r\n|\n|\r)/g, '<br>').replace(/(<br>\s*)+$/, '')  : '',
-      result.bodyPart3 ? result.bodyPart3.replace(/(\r\n|\n|\r)/g, '<br>') : '',
-      bodyPart4 ? bodyPart4.replace(/(\r\n|\n|\r)/g, '<br>').replace(/(<br>\s*)+$/, '') : '',
-    ].filter(part => part); // 空文字列を除外
-  
-    return parts.join('<br>').replace(/(<br>\s*)+$/, ''); // 最後の不要な `<br>` を削除
+      result.bodyPart1 ? result.bodyPart1.replace(/(\r\n|\n|\r)/g, "<br>") : "",
+      bodyPart2 ? bodyPart2.replace(/(\r\n|\n|\r)/g, "<br>").replace(/(<br>\s*)+$/, "") : "",
+      result.bodyPart3 ? result.bodyPart3.replace(/(\r\n|\n|\r)/g, "<br>") : "",
+      bodyPart4 ? bodyPart4.replace(/(\r\n|\n|\r)/g, "<br>").replace(/(<br>\s*)+$/, "") : "",
+    ].filter((part) => part); // 空文字列を除外
+
+    return parts.join("<br>").replace(/(<br>\s*)+$/, ""); // 最後の不要な `<br>` を削除
   };
-  
 
   const handleShomeiChange = (name: string, value: string) => {
     setShomei((prevShomei) => ({ ...prevShomei, [name]: value }));
@@ -120,33 +124,48 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <table className="w-full bg-white">
                     <thead>
                       <tr>
-                        <th rowSpan={4} className="py-2 px-4 w-1/12 border-b">{texts.mail.templateSetsumei}</th>
-                        <th rowSpan={4} className="py-2 px-4 w-2/12 border-b">{texts.mail.subject}</th>
+                        <th rowSpan={4} className="py-2 px-4 w-1/12 border-b">
+                          {texts.mail.templateSetsumei}
+                        </th>
+                        <th rowSpan={4} className="py-2 px-4 w-2/12 border-b">
+                          {texts.mail.subject}
+                        </th>
                         <th className="py-2 px-4 w-1/12 border-b">{texts.mail.bodyPart1}</th>
-                        <th rowSpan={4} className="py-2 px-4 w-3/12 border-b">{texts.mail.body}</th>
+                        <th rowSpan={4} className="py-2 px-4 w-3/12 border-b">
+                          {texts.mail.body}
+                        </th>
                         <th rowSpan={4} className="py-2 px-4 border-b"></th>
                       </tr>
-                      <tr><th className="py-2 px-4 w-2/12 border-b">{texts.mail.bodyPart2}</th></tr>
-                      <tr><th className="py-2 px-4 w-1/12 border-b">{texts.mail.bodyPart3}</th></tr>
-                      <tr><th className="py-2 px-4 w-2/12 border-b">{texts.mail.bodyPart4}</th></tr>
+                      <tr>
+                        <th className="py-2 px-4 w-2/12 border-b">{texts.mail.bodyPart2}</th>
+                      </tr>
+                      <tr>
+                        <th className="py-2 px-4 w-1/12 border-b">{texts.mail.bodyPart3}</th>
+                      </tr>
+                      <tr>
+                        <th className="py-2 px-4 w-2/12 border-b">{texts.mail.bodyPart4}</th>
+                      </tr>
                     </thead>
                     <tbody>
                       {templateData &&
                         templateData.map((result) => (
                           <React.Fragment key={result.templateId}>
                             <tr key={`${result.templateId}-row1`}>
-                              <td rowSpan={4} className="py-2 px-4 w-1/12 bg-gray-100 border-b text-center align-text-top">
+                              <td
+                                rowSpan={4}
+                                className="py-2 px-4 w-1/12 bg-gray-100 border-b text-center align-text-top"
+                              >
                                 {result.templateSetsumei}
                               </td>
                               <td
                                 rowSpan={4}
                                 className="w-1/12 border text-left align-text-top"
-                                style={{ whiteSpace: 'pre-wrap' }}
+                                style={{ whiteSpace: "pre-wrap" }}
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
                                 onInput={(e) => {
                                   const newValue = (e.target as HTMLElement).innerText;
-                                  handleChange(result.templateId, 'subject')(newValue);
+                                  handleChange(result.templateId, "subject")(newValue);
                                 }}
                               >
                                 {result.subject}
@@ -159,7 +178,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                                 className="py-2 px-4 w-4/12 bg-gray-100 border-b text-left align-text-top"
                                 onInput={(e) => {
                                   const newValue = (e.target as HTMLElement).innerText;
-                                  handleChange(result.templateId, 'body')(newValue);
+                                  handleChange(result.templateId, "body")(newValue);
                                 }}
                                 dangerouslySetInnerHTML={{
                                   __html: getDynamicBody(result),
@@ -170,10 +189,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                                   <div className="text-right">
                                     <MailTemplateRegistButton
                                       templateId={result.templateId}
-                                      templateName={templateItems[`templateName_${result.templateId}`] || ''}
-                                      subject={templateItems[`subject_${result.templateId}`] || ''}
-                                      bodyPart2={templateItems[`bodyPart2_${result.templateId}`] || ''}
-                                      bodyPart4={templateItems[`bodyPart4_${result.templateId}`] || ''}
+                                      templateName={
+                                        templateItems[`templateName_${result.templateId}`] || ""
+                                      }
+                                      subject={templateItems[`subject_${result.templateId}`] || ""}
+                                      bodyPart2={
+                                        templateItems[`bodyPart2_${result.templateId}`] || ""
+                                      }
+                                      bodyPart4={
+                                        templateItems[`bodyPart4_${result.templateId}`] || ""
+                                      }
                                       body={getDynamicBody(result)}
                                     />
                                   </div>
@@ -183,13 +208,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                             <tr key={`${result.templateId}-row2`}>
                               <td
                                 className="w-4/12 border text-left align-text-top"
-                                style={{ whiteSpace: 'pre-wrap' }}
+                                style={{ whiteSpace: "pre-wrap" }}
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
                                 onInput={(e) => {
                                   const newValue = (e.target as HTMLElement).innerText;
-                                  handleChange(result.templateId, 'bodyPart2')(newValue);
-                                  handleBodyPartChange(result.templateId, 'bodyPart2', newValue);
+                                  handleChange(result.templateId, "bodyPart2")(newValue);
+                                  handleBodyPartChange(result.templateId, "bodyPart2", newValue);
                                 }}
                               >
                                 {result.bodyPart2}
@@ -198,7 +223,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                             <tr key={`${result.templateId}-row3`}>
                               <td
                                 className="py-2 px-4 w-4/12 bg-gray-100 border-b text-left align-text-top"
-                                style={{ whiteSpace: 'pre-wrap' }}
+                                style={{ whiteSpace: "pre-wrap" }}
                                 dangerouslySetInnerHTML={{
                                   __html: result.bodyPart3,
                                 }}
@@ -207,13 +232,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                             <tr key={`${result.templateId}-row4`}>
                               <td
                                 className="w-4/12 border text-left align-text-top"
-                                style={{ whiteSpace: 'pre-wrap' }}
+                                style={{ whiteSpace: "pre-wrap" }}
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
                                 onInput={(e) => {
                                   const newValue = (e.target as HTMLElement).innerText;
-                                  handleChange(result.templateId, 'bodyPart4')(newValue);
-                                  handleBodyPartChange(result.templateId, 'bodyPart4', newValue);
+                                  handleChange(result.templateId, "bodyPart4")(newValue);
+                                  handleBodyPartChange(result.templateId, "bodyPart4", newValue);
                                 }}
                               >
                                 {result.bodyPart4}
@@ -222,7 +247,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           </React.Fragment>
                         ))}
                     </tbody>
-
                   </table>
                 </div>
               </form>
@@ -246,13 +270,12 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           suppressContentEditableWarning={true}
                           onInput={(e) => {
                             const newValue = (e.target as HTMLElement).innerText;
-                            handleShomeiChange('shomei', newValue);
+                            handleShomeiChange("shomei", newValue);
                           }}
                           dangerouslySetInnerHTML={{
-                            __html: shomeiData?.shomei?.replace(/(\r\n|\n|\r)/g, '<br>') || '',
+                            __html: shomeiData?.shomei?.replace(/(\r\n|\n|\r)/g, "<br>") || "",
                           }}
-                        >
-                        </td>
+                        ></td>
                         <td>
                           {executionPermission(505, 2) && (
                             <div className="text-right">

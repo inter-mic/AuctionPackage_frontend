@@ -1,9 +1,9 @@
-import * as React from 'react';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import { texts } from '@/config/texts';
+import * as React from "react";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import { texts } from "@/config/texts.ja";
 
 interface RadioButtonProps {
   pageLoginFlg: boolean;
@@ -12,8 +12,8 @@ interface RadioButtonProps {
 
 export function LoginKbnRadioButton({ pageLoginFlg, onChange }: RadioButtonProps) {
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value === '1'; 
-    onChange(value); 
+    const value = event.target.value === "1";
+    onChange(value);
   };
 
   return (
@@ -22,7 +22,7 @@ export function LoginKbnRadioButton({ pageLoginFlg, onChange }: RadioButtonProps
         row
         aria-labelledby="demo-radio-buttons-group-label"
         name="radio-buttons-group"
-        value={pageLoginFlg ? '1' : '0'}
+        value={pageLoginFlg ? "1" : "0"}
         onChange={handleRadioChange}
       >
         <FormControlLabel value="0" control={<Radio />} label={texts.page.loginAll} />

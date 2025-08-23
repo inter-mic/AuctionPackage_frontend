@@ -1,22 +1,26 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
-import { useAuctionSearchAPI } from '@/hooks/api/admin/auction/useAuctionSearchAPI';
-
-
+import { useAuctionSearchAPI } from "@/hooks/api/admin/auction/useAuctionSearchAPI";
 
 type Props = {
   className?: string | null;
   onChange: (selectedId: string) => void;
   selectedId?: string | null;
-  disabled?: boolean;  
+  disabled?: boolean;
   kaisaiStatus: number;
 };
 
 //デフォルトが直近回となる開催回プルダウンメニュー
-export const KaisaiDefaultListPullDown = ({ className, onChange, selectedId, disabled, kaisaiStatus }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+export const KaisaiDefaultListPullDown = ({
+  className,
+  onChange,
+  selectedId,
+  disabled,
+  kaisaiStatus,
+}: Props) => {
+  const { useState, useEffect } = useCommonSetup();
   const { auction } = useAuctionSearchAPI(kaisaiStatus);
   const [selectedAuctionSeq, setSelectedAuctionSeq] = useState<string | null>(null);
   useEffect(() => {
@@ -43,15 +47,15 @@ export const KaisaiDefaultListPullDown = ({ className, onChange, selectedId, dis
   }, [auction]);
 
   return (
-    <select 
+    <select
       id="auctionSeq"
       name="auctionSeq"
-      className={className ?? ''}
+      className={className ?? ""}
       onChange={handleChange}
-      value={selectedAuctionSeq  ?? ''}
+      value={selectedAuctionSeq ?? ""}
       disabled={disabled}
-      >
-      {auction.map(data => (
+    >
+      {auction.map((data) => (
         <option key={data.auctionSeq} value={data.auctionSeq}>
           {data.auctionName}
         </option>

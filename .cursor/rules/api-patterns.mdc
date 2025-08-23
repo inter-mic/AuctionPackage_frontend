@@ -1,0 +1,88 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# APIパターンとデータフロー
+
+## APIフック構造
+APIフックは `src/hooks/api/` ディレクトリに配置され、以下のパターンに従います：
+
+### 基本パターン
+```typescript
+export const useApiNameAPI = () => {
+  const { apiRequest } = useApiRequest();
+  const [data, setData] = useState<DataType[]>([]);
+  const [errors, setErrors] = useState<Errors | null>(null);
+
+  const apiFunction = async (params: ParamType) => {
+    const result = await apiRequest(
+      "endPointKbn", // "admin", "member", "public"
+      "/endpoint",
+      "GET" | "POST" | "PUT",
+      body, // null for GET
+      successMessage,
+      true, // returnJson
+      headers,
+      showToast
+    );
+    
+    if (result.status === 200) {
+      setData(result.data);
+    } else if (result.status === 400) {
+      setErrors(result.data);
+    }
+  };
+
+  return { data, errors, apiFunction };
+};
+```
+
+### エンドポイント区分
+- `admin` - 管理者用API
+- `member` - 会員用API  
+- `public` - 公開API
+
+## 共通フック
+[useCommonSetup.ts](mdc:frontend/src/hooks/useCommonSetup.ts) で共通のフックとユーティリティを提供：
+
+```typescript
+export const useCommonSetup = () => {
+  const { texts } = useLocale();
+  const { apiRequest } = useApiRequest();
+  return {
+    useState,
+    useEffect,
+    useCallback,
+    useRouter,
+    texts,
+    apiRequest,
+  };
+};
+```
+
+## APIリクエスト処理
+[useApiRequest.tsx](mdc:frontend/src/hooks/api/useApiRequest.tsx) で統一的なAPI処理を実装：
+
+- 認証エラー (401) の自動リダイレクト
+- エラーメッセージの統一表示
+- トースト通知の自動表示
+- FormData対応
+
+## データフロー
+1. ページコンポーネントでAPIフックを使用
+2. APIフックが `useApiRequest` を呼び出し
+3. レスポンスに応じて状態を更新
+4. コンポーネントが状態変更を監視して再レンダリング
+
+## エラーハンドリング
+- 400エラー: バリデーションエラーとして処理
+- 401エラー: 自動ログイン画面リダイレクト
+- 404エラー: 結果なしメッセージ表示
+- その他: 汎用エラーメッセージ表示
+
+## 認証
+- `withAuth` HOCでページレベル認証
+- `withAdminAuth` で管理者認証
+- `withMemberAuth` で会員認証
+

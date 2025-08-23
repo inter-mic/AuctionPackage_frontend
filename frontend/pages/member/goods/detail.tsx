@@ -1,13 +1,15 @@
-import { GetServerSideProps } from 'next';
-import { texts } from '@/config/texts';
-import { withAuth } from '@/hocs/withMemberAuth';
-import GoodsDetailPageComponent from '@/components/member/goods/GoodsDetailPageComponent';
-import withMemberisLoginLayout from '@/hocs/withMemberisLoginLayout';
+import { GetServerSideProps } from "next";
+import { getTexts } from "@/config/texts";
+import { withAuth } from "@/hocs/withMemberAuth";
+import GoodsDetailPageComponent from "@/components/member/goods/GoodsDetailPageComponent";
+import withMemberisLoginLayout from "@/hocs/withMemberisLoginLayout";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
+  const { locale } = context;
+  const texts = getTexts(locale);
   return {
     props: {
-      pageTitle: texts.menu.memberGoodsDetail
+      pageTitle: texts.menu.memberGoodsDetail,
     },
   };
 });

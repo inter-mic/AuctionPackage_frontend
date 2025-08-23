@@ -1,24 +1,28 @@
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //型定義
-import { Errors } from '@/types/errors';
-import { infoData } from '@/types/admin/info/register';
-
+import { Errors } from "@/types/errors";
+import { TMtInfoRegistRequest } from "@/types/admin/info/register";
 
 export const useInfoRegistAPI = () => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
+  const { useState, texts, apiRequest } = useCommonSetup();
   const [errors, setErrors] = useState<Errors>();
-  const [responseData, setResponseData] = useState<infoData>();
-  const infoRegist = async (infoData: infoData ) => {
-    const endPoint = infoData.infoSeq
-      ? `MtInfo/update/${infoData.infoSeq}`
-      : 'MtInfo/insert';
-    const { status, data: responseData } = await apiRequest("admin", endPoint, 'POST', infoData, texts.message.regist, true);
+
+  const infoRegist = async (infoData: TMtInfoRegistRequest) => {
+    const endPoint = infoData.infoSeq ? `MtInfo/update/${infoData.infoSeq}` : "MtInfo/insert";
+    const { status, data: responseData } = await apiRequest(
+      "admin",
+      endPoint,
+      "POST",
+      infoData,
+      texts.message.regist,
+      true
+    );
     if (status == 400) {
       setErrors(responseData);
     } else if (status == 200) {
       window.location.reload();
     }
   };
-  return { responseData, errors, infoRegist };
+  return { errors, infoRegist };
 };

@@ -1,206 +1,323 @@
 .container {
-    display: flex;
-    height: 95vh; /* 画面全体の高さ */
-  }
-  
-  .leftColumn {
-    width: 25%;
-    display: flex;
-    flex-direction: column;
-  }
-  .rightColumn {
-    width: 75%;
-    display: flex;
-    flex-direction: column;
-    
-  }
-  
-  .topLeft {
-    height: 75%;
-    background-color: white;
-    margin:5px;
-    padding: 5px;
-  }
-  
-  .bottomLeft {
-    height: 25%;
-    background-color: white;
-    margin:5px;
-  }
-  
- 
-  
-  .topRight {
-    height: 30%;
-    background-color: white;
-    margin:5px;
-    padding: 10px 0px;
-  }
+  display: flex;
+  height: 95vh; /* 画面全体の高さ */
+}
 
-  .centerRight {
-    height: 15%;
-    background-color: #dacdcd;
-    margin:5px;
-    padding: 5px;
-  }
-  
-  .bottomRight {
-    height: 55%;
-    background-color: white;
-    margin:5px;
-    padding: 5px;
-  }
-  
-  
-  .labelRow {
-    display: flex; 
-    align-items: center;
-    justify-content: space-between; 
-    width: 100%; 
-    margin-bottom: 10px; 
-    min-height: 40px;
-    padding: 5px;
-  }
+.leftColumn {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+}
+.rightColumn {
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+}
 
-  
-  .goodslabel {
-    width: 20%; 
-   text-align: right;
-   padding-right: 5px;
-  }
-  
-  .goodsvalue {
-    width: 80%; 
-    padding: 5px;
-  }
+.topLeft {
+  height: 50%;
+  background-color: white;
+  margin: 5px;
+  padding: 5px;
+}
 
-  .auctionlabel {
-    width: 50%; 
-   text-align: right;
-   padding-right: 5px;
-  }
-  
-  .auctionvalue {
-    width: 50%; 
-    padding: 5px 10px;
-    font-size: 30px;
-    text-align: right;
+.bottomLeft {
+  height: 50%;
+  background-color: white;
+  margin: 5px;
+}
 
-  }
-  .select {
-    width: 80%;
-    padding: 5px;
-    border: 1px solid #d1d5db;
-  }
-  
-  .imageContainer {
-    width: 100%;
-    height: 100%;
-    position: relative; 
-    background-color: #f0f0f0; 
-  }
+.topRight {
+  height: 25%;
+  background-color: white;
+  margin: 5px;
+  padding: 10px 0px;
+}
 
- 
-  .leftButtons {
-    display: flex;
-    gap: 0.5rem; 
-    align-items: center;
-  }
-  
-  .rightButtons {
-    display: flex;
-    gap: 0.5rem; 
-    align-items: center;
-   
-  }
+.centerRight {
+  height: 15%;
+  background-color: #dacdcd;
+  margin: 5px;
+  padding: 5px;
+  display: flex;
+}
 
-  .gridContainer {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 16px; 
-    height: 100%;
-  }
-  
-  .gridContainer > div {
-    border-right: 1px solid #ddd;
-  }
-  .gridContainer > div:last-child {
-    border-right: none; 
-  }
+.bottomRight {
+  height: 60%;
+  background-color: white;
+  margin: 5px;
+  padding: 5px;
+}
 
-  .sectionTitle{
-    font-size: 20px;
-    font-weight: 500;
-  }
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  min-height: 40px;
+  padding: 5px;
+}
 
-  
-  .callButton, .navigationButton, .setButton, .startButton, .statusButton, .broadcastButton {
-    padding: 10px;
-    border: 1px solid red;
-    background-color: white;
-    cursor: pointer;
-  }
-  
-  .priceSection {
-    display: flex;
-    flex-direction: column;
-    
-    gap: 20px;
-  }
-  
-  .priceGroup {
-    display: flex;
-    align-items:  flex-end;
-    justify-content: flex-end; 
-    gap: 5px;
-    font-size: 25px;
-    margin-top:20px;
-  }
+.nextGoodsLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  .priceLabel{
-    margin: 0px 10px;
-  }
-    .priceInput {
-      border: 1px solid #ccc;
-      padding: 5px;
-      width: 300px;
-      height: 70px;
-      text-align: right;
-    }
-  
-  .adjustButtons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end; /* 右寄せ */
-    margin-top:10px;
-  }
+.goodslabel {
+  width: 25%;
+  text-align: right;
+  padding-right: 5px;
+}
 
-  .bottomSection {
-    display: flex;
-    justify-content: flex-end; /* 右寄せ */
-    gap: 10px; /* ボタン間のスペースを設定 */
-    margin-top: 10px; /* 上部との間隔を設定 */
-  }
+.goodsvalue {
+  width: 80%;
+  padding: 5px;
+}
 
-  .bidList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.auctionlabel {
+  width: 35%;
+  text-align: right;
+  padding-right: 5px;
+}
+
+.auctionuserid {
+  width: 20%;
+  padding: 5px 10px;
+  font-size: 30px;
+  text-align: right;
+}
+
+.auctionvalue {
+  width: 45%;
+  padding: 5px 10px;
+  font-size: 30px;
+  text-align: right;
+}
+.select {
+  width: 80%;
+  padding: 5px;
+  border: 1px solid #d1d5db;
+}
+
+.imageContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #f0f0f0;
+}
+
+.leftButtons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rightButtons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  height: 100%;
+}
+
+.gridContainer > div {
+  border-right: 1px solid #ddd;
+}
+.gridContainer > div:last-child {
+  border-right: none;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.callButton,
+.navigationButton,
+.setButton,
+.startButton,
+.statusButton,
+.broadcastButton {
+  padding: 10px;
+  border: 1px solid red;
+  background-color: white;
+  cursor: pointer;
+}
+
+.priceSection {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.priceGroup {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 25px;
+  margin-top: 20px;
+}
+
+.priceLabel {
+  margin: 0px 10px;
+}
+.priceInput {
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 300px;
+  height: 70px;
+  text-align: right;
+  font-size: 2rem;
+}
+
+.paddleInput {
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 150px;
+  height: 70px;
+  text-align: right;
+  font-size: 2rem;
+}
+
+.adjustButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* 右寄せ */
+  margin-top: 10px;
+}
+
+.bottomSection {
+  display: flex;
+  justify-content: flex-end; /* 右寄せ */
+  gap: 10px; /* ボタン間のスペースを設定 */
+  margin-top: 10px; /* 上部との間隔を設定 */
+}
+
+.bidList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bidItem {
+  display: flex;
+  justify-content: space-between; /* 左右に要素を配置 */
+  padding: 5px 15px; /* 適宜調整 */
+  border-bottom: 1px solid #ddd; /* 適宜調整 */
+}
+
+.listSpanLeft {
+  text-align: left; /* 左寄せ */
+  flex: 1; /* 左側のスペースを確保 */
+}
+
+.listSpanRight {
+  text-align: right; /* 右寄せ */
+  flex: 1; /* 右側のスペースを確保 */
+}
+
+.bidTime {
+  text-align: right; /* 右寄せ */
+  flex: 1; /* 右側のスペースを確保 */
+}
+
+.msgDiv {
+  color: #cb5201;
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+  padding-left: 100px;
+  animation: blinking 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes blinking {
+  0% {
+    opacity: 0;
   }
-  
-  .bidItem {
-    display: flex;
-    justify-content: space-between; /* 左右に要素を配置 */
-    padding: 8px 0; /* 適宜調整 */
-    border-bottom: 1px solid #ddd; /* 適宜調整 */
+  100% {
+    opacity: 1;
   }
-  
-  .bidUserId {
-    text-align: left; /* 左寄せ */
-    flex: 1; /* 左側のスペースを確保 */
+}
+
+.latestBid {
+  color: #fff;
+  background-color: rgba(212, 16, 16, 0.6);
+}
+
+.bidHistoryWrapper {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.gridContainer4 {
+  display: grid;
+  grid-template-columns: 30% 25% 25% 20%;
+  width: 100%;
+  height: 100%;
+}
+
+.currentInfoLabel {
+  font-size: 20px;
+  font-weight: 500;
+  grid-column: 1;
+  justify-self: start;
+  align-self: start;
+}
+
+.currentInfoData {
+  font-size: 55px;
+  font-weight: 500;
+  text-align: end;
+  padding-right: 15px;
+}
+
+.liveMessageDiv {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 5px;
+}
+
+.selectLiveMessage {
+  flex: 1;
+  min-width: 300px;
+  white-space: nowrap;
+  border: 1px solid #d1d5db;
+  padding: 5px;
+}
+
+.flowingMsgDiv {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scroll-left 20s linear infinite;
+  color: #cb5201;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
   }
-  
-  .bidPrice {
-    text-align: right; /* 右寄せ */
-    flex: 1; /* 右側のスペースを確保 */
+  100% {
+    transform: translateX(-100%);
   }
+}

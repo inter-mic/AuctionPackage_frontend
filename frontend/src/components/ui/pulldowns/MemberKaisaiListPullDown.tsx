@@ -1,10 +1,8 @@
-import React from 'react';
+import React from "react";
 //カスタムフック
-import { useCommonSetup } from '@/hooks/useCommonSetup';
+import { useCommonSetup } from "@/hooks/useCommonSetup";
 //API
-import { useAuctionSearchAPI } from '@/hooks/api/common/useAuctionSearchAPI';
-
-
+import { useAuctionSearchAPI } from "@/hooks/api/common/useAuctionSearchAPI";
 
 type Props = {
   className?: string | null;
@@ -14,9 +12,15 @@ type Props = {
   isLogin: boolean;
 };
 
-export const KaisaiListPullDown = ({ className, onChange, selectedId,  kaisaiStatus,isLogin }: Props) => {
-  const { useState, useEffect, useCallback, useRouter, texts, apiRequest } = useCommonSetup();
-  const { auction } = useAuctionSearchAPI(kaisaiStatus,isLogin);
+export const KaisaiListPullDown = ({
+  className,
+  onChange,
+  selectedId,
+  kaisaiStatus,
+  isLogin,
+}: Props) => {
+  const { useState, useEffect } = useCommonSetup();
+  const { auction } = useAuctionSearchAPI(kaisaiStatus, isLogin);
   const [selectedAuctionSeq, setSelectedAuctionSeq] = useState<string | null>(null);
   useEffect(() => {
     if (selectedId !== null && selectedId !== undefined) {
@@ -35,15 +39,15 @@ export const KaisaiListPullDown = ({ className, onChange, selectedId,  kaisaiSta
   };
 
   return (
-    <select 
+    <select
       id="auctionSeq"
       name="auctionSeq"
-      className={className ?? ''}
+      className={className ?? ""}
       onChange={handleChange}
-      value={selectedAuctionSeq  ?? ''}
-      >
+      value={selectedAuctionSeq ?? ""}
+    >
       <option value="">---</option>
-      {auction.map(data => (
+      {auction.map((data) => (
         <option key={data.auctionSeq} value={data.auctionSeq}>
           {data.auctionName}
         </option>
