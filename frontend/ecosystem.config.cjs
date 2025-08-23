@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "frontend",
-      cwd: "/opt/next-app/prod",
+      cwd: "/opt/next-app/current",
       script: "node_modules/next/dist/bin/next",
       interpreter_args: "--max-old-space-size=4096",
       interpreter: "/usr/bin/node",
@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       name: "nodeApp",
-      cwd: "/opt/next-app/prod",
+      cwd: "/opt/next-app/current",
       script: "./nodeApp.mjs",
       interpreter_args: "--max-old-space-size=1024",
       interpreter: "/usr/bin/node",
@@ -23,7 +23,7 @@ module.exports = {
     },
     {
       name: "nodeBatch",
-      cwd: "/opt/next-app/prod",
+      cwd: "/opt/next-app/current",
       script: "./nodeBatch.mjs",
       interpreter_args: "--max-old-space-size=2048",
       interpreter: "/usr/bin/node",
@@ -33,7 +33,7 @@ module.exports = {
     },
     {
       name: "nodeLive",
-      cwd: "/home/nextjs/frontend",
+      cwd: "/opt/next-app/current",
       script: "./nodeLive.mjs",
       interpreter_args: "--max-old-space-size=1024",
       interpreter: "/usr/bin/node",
