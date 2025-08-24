@@ -7,7 +7,7 @@ import styles from "@/styles/admin/Layout.module.css";
 import toastStyles from "@/styles/toast.module.css";
 import { PageProps } from "@/types/admin/adminPage";
 
-export const AdminNoHeaderLayoutComponent: React.FC<PageProps> = ({
+export const AdminNoLoginHeaderLayoutComponent: React.FC<PageProps> = ({
   pageTitle,
   faviconImagePath,
   children,

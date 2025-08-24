@@ -14,6 +14,8 @@ import RemainingTime from "@/components/member/auction/internetTender/RemainingT
 import ConfirmDialog from "@/components/ui/dialog/confirmDialog";
 //API
 import { useLiveJizenBidDeleteAPI } from "@/hooks/api/member/goods/useLiveJizenBidDeleteAPI";
+//カスタムフック
+import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
 //型定義
 import { TGoodsSelect } from "@/types/common/goods";
 //スタイル
@@ -57,12 +59,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
     liveJizenBidDeleteAPI(goodsId);
   };
 
-  const handleFavoriteToggle = (isFavorite: boolean) => {
-    setGoodsInfo(prev => ({
-      ...prev,
-      favoriteCount: isFavorite ? prev.favoriteCount + 1 : prev.favoriteCount - 1
-    }));
-  };
+  const { handleFavoriteToggle } = useFavoriteToggle(setGoodsInfo);
   return (
     <div
       className={`${styles.goodsCard} ${goodsInfo.spnKbn === "1" ? styles.cardHeightSmall : ""}`}

@@ -129,6 +129,7 @@ const Page: React.FC<TPageProps> = () => {
                       selectedAuctionKikanFrom !== null ? String(selectedAuctionKikanFrom) : ""
                     }
                     yearMonth={yearMonth}
+                    isFrom={true}
                   />
                 </div>
                 <div className={formSearchStyles.tilde}>{texts.common.tilde}</div>
@@ -139,6 +140,7 @@ const Page: React.FC<TPageProps> = () => {
                       selectedAuctionKikanTo !== null ? String(selectedAuctionKikanTo) : ""
                     }
                     yearMonth={yearMonth}
+                    isFrom={false}
                   />
                 </div>
               </div>
@@ -201,10 +203,11 @@ const Page: React.FC<TPageProps> = () => {
                   { value: "priceDesc", label: texts.goods.sort_rakusatsu_price_desc },
                 ]}
               />
-
-              {fetchMarketList.map((data) => (
-                <MemberMarketCard key={data.goodsId} data={data} texts={texts} />
-              ))}
+              <div className={memberStyles.memberContainer}>
+                {fetchMarketList.map((data) => (
+                  <MemberMarketCard key={data.goodsId} data={data} texts={texts} />
+                ))}
+              </div>
             </>
           ) : (
             <div></div>

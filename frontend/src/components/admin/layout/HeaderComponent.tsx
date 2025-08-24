@@ -367,12 +367,14 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
                       )}
                       {hasPermission(kengen, 204) && (
                         <li>
-                          <Link href="/admin/bid/search">{texts.menu.adminBidList}</Link>
+                          <Link href="/admin/auction/bid/search">{texts.menu.adminBidList}</Link>
                         </li>
                       )}
                       {hasPermission(kengen, 205) && (
                         <li>
-                          <Link href="/admin/bid/logSearch">{texts.menu.adminBidLogList}</Link>
+                          <Link href="/admin/auction/bid/logSearch">
+                            {texts.menu.adminBidLogList}
+                          </Link>
                         </li>
                       )}
                     </ul>
@@ -454,34 +456,44 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
                     <ul className={styles.subMenu}>
                       {hasPermission(kengen, 501) && (
                         <li>
-                          <Link href="/admin/info/register">{texts.menu.adminInfoRegist}</Link>
+                          <Link href="/admin/setting/info/register">
+                            {texts.menu.adminInfoRegist}
+                          </Link>
                         </li>
                       )}
                       {hasPermission(kengen, 502) && (
                         <li>
-                          <Link href="/admin/topImage/register">
+                          <Link href="/admin/setting/topImage/register">
                             {texts.menu.adminTopImageRegist}
                           </Link>
                         </li>
                       )}
                       {hasPermission(kengen, 503) && (
                         <li>
-                          <Link href="/admin/system/register">{texts.menu.adminSystemRegist}</Link>
+                          <Link href="/admin/setting/system/register">
+                            {texts.menu.adminSystemRegist}
+                          </Link>
                         </li>
                       )}
                       {hasPermission(kengen, 504) && (
                         <li>
-                          <Link href="/admin/admin/register">{texts.menu.adminAdminRegist}</Link>
+                          <Link href="/admin/setting/admin/register">
+                            {texts.menu.adminAdminRegist}
+                          </Link>
                         </li>
                       )}
                       {hasPermission(kengen, 505) && (
                         <li>
-                          <Link href="/admin/mail/register">{texts.menu.adminMailRegist}</Link>
+                          <Link href="/admin/setting/mail/register">
+                            {texts.menu.adminMailRegist}
+                          </Link>
                         </li>
                       )}
                       {hasPermission(kengen, 506) && (
                         <li>
-                          <Link href="/admin/page/register">{texts.menu.adminPageSetting}</Link>
+                          <Link href="/admin/setting/page/register">
+                            {texts.menu.adminPageSetting}
+                          </Link>
                         </li>
                       )}
                     </ul>

@@ -54,7 +54,7 @@ const MarketCardComponent: React.FC<Props> = ({ data, texts }) => {
           <span className={`${styles.auctionInfo}`}>{goodsInfo.auctionName}</span>
         </p>
         <p className={styles.goodsRowInfo}>
-          <span>{texts.auction.auctionData}</span>
+          <span>{texts.auction.auctionDate}</span>
           <span className={`${styles.auctionInfo}`}>{goodsInfo.auctionDatetime}</span>
         </p>
       </div>

@@ -113,6 +113,14 @@
 
 .auctionInfo {
   font-size: 1.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: inherit;
+  width: 80%;
+  text-align: right;
 }
 
 .remainingTime,

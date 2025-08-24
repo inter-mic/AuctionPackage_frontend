@@ -1,19 +1,21 @@
-import React from 'react';
-import { AdminNoHeaderLayoutComponent } from '@/components/admin/layout/AdminNoHeaderLayoutComponent';
-import { PageProps } from '@/types/admin/adminPage';
+import React from "react";
+import { AdminNoLoginHeaderLayoutComponent } from "@/components/admin/layout/AdminNoLoginHeaderLayoutComponent";
+import { PageProps } from "@/types/admin/adminPage";
 const withAdminNoHeaderLayout = <P extends PageProps>(Component: React.FC<P>) => {
   const WrappedComponent = (props: P) => {
     return (
-      <AdminNoHeaderLayoutComponent {...props}>
+      <AdminNoLoginHeaderLayoutComponent {...props}>
         <Component {...props} />
-      </AdminNoHeaderLayoutComponent>
+      </AdminNoLoginHeaderLayoutComponent>
     );
   };
 
-    // HOCにdisplayNameを設定
-    WrappedComponent.displayName = `withAdminNoHeaderLayout(${Component.displayName || Component.name || 'Component'})`;
+  // HOCにdisplayNameを設定
+  WrappedComponent.displayName = `withAdminNoHeaderLayout(${
+    Component.displayName || Component.name || "Component"
+  })`;
 
-    return WrappedComponent;
+  return WrappedComponent;
 };
 
 export default withAdminNoHeaderLayout;

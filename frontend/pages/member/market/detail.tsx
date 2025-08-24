@@ -22,6 +22,7 @@ import { TGoodsImageData } from "@/types/common/goodsImage";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/goods/GoodsDetail.module.css";
+import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async (context) => {
   const { locale } = context;
@@ -77,14 +78,8 @@ const Page: React.FC<TPageProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchImages]);
 
-  const {
-    popupOpen,
-    popupIndex,
-    handlePopupOpen,
-    handlePrev,
-    handleNext,
-    handleClose,
-  } = usePopupNavigation({ thumImages });
+  const { popupOpen, popupIndex, handlePopupOpen, handlePrev, handleNext, handleClose } =
+    usePopupNavigation({ thumImages });
 
   const { selectedImage, handleImageClick, handleMainImageClick } = useImageClickHandler({
     thumImages,
@@ -104,49 +99,59 @@ const Page: React.FC<TPageProps> = () => {
           onMainImageClick={handleMainImageClick}
           onThumbnailClick={handleImageClick}
         />
-      </div>
-      <div className={styles.details}>
-        <h2 className={`${styles.lotContainer}`}>
-          <div className={styles.lotLeft}>
-            <span className={styles.lotLabel}>
-              {texts.goods.lot} {fetchGoodsData?.lot}
-            </span>
-          </div>
-        </h2>
-        <h2 className={styles.goodsName}>{fetchGoodsData?.goodsName}</h2>
-
-        <div>
-          {goodsAddInfo.map((data) => {
-            if (!data || typeof data.seq === "undefined") return null;
-            const value = fetchGoodsData ? fetchGoodsData[`addInfo${data.seq}`] || "" : "";
-
-            return (
-              data.goodsAddinfo &&
-              value && (
-                <React.Fragment key={data.seq}>
-                  <div className={styles.addInfoContainer}>
-                    <label htmlFor={`addInfo${data.seq}`} className={styles.addInfoLabel}>
-                      {data.goodsAddinfo}
-                    </label>
-                    <p className={styles.description}>{value}</p>
-                  </div>
-                </React.Fragment>
-              )
-            );
-          })}
-        </div>
-        {fetchGoodsData && fetchGoodsData.biko && (
-          <div className={styles.detailContainer}>
-            <div className={styles.detailContent}>
-              <p
-                className={styles.biko}
-                dangerouslySetInnerHTML={{
-                  __html: fetchGoodsData.biko.replace(/\r?\n|\r/g, "<br />"),
-                }}
-              ></p>
+        <div className={styles.details}>
+          <h2 className={`${styles.lotContainer}`}>
+            <div className={styles.lotLeft}>
+              <span className={styles.lotLabel}>
+                {texts.goods.lot} {fetchGoodsData?.lot}
+              </span>
             </div>
+          </h2>
+          <h2 className={styles.goodsName}>{fetchGoodsData?.goodsName}</h2>
+
+          <div className={styles.rakusatsuPriceContainer}>
+            <p className={styles.rakusatsuPriceRow}>
+              <span className={styles.priceLabel}>{texts.goods.rakusatsuPrice}</span>
+              <span className={`${styles.rakusatsuPrice} `}>
+                <CurrencyYenIcon />
+                {fetchGoodsData?.rakusatsuPrice}
+              </span>
+            </p>
           </div>
-        )}
+
+          <div>
+            {goodsAddInfo.map((data) => {
+              if (!data || typeof data.seq === "undefined") return null;
+              const value = fetchGoodsData ? fetchGoodsData[`addInfo${data.seq}`] || "" : "";
+
+              return (
+                data.goodsAddinfo &&
+                value && (
+                  <React.Fragment key={data.seq}>
+                    <div className={styles.addInfoContainer}>
+                      <label htmlFor={`addInfo${data.seq}`} className={styles.addInfoLabel}>
+                        {data.goodsAddinfo}
+                      </label>
+                      <p className={styles.description}>{value}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              );
+            })}
+          </div>
+          {fetchGoodsData && fetchGoodsData.biko && (
+            <div className={styles.detailContainer}>
+              <div className={styles.detailContent}>
+                <p
+                  className={styles.biko}
+                  dangerouslySetInnerHTML={{
+                    __html: fetchGoodsData.biko.replace(/\r?\n|\r/g, "<br />"),
+                  }}
+                ></p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {popupOpen && thumImages.length > 0 && (

@@ -36,3 +36,4 @@ export const usePopupNavigation = ({ thumImages }: UsePopupNavigationProps) => {
     handleClose,
   };
 };
+

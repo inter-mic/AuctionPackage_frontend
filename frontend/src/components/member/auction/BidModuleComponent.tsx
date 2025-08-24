@@ -214,7 +214,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
           </>
         ) : (
           <>
-            {canBid && loginUserId === Number(fetchGoodsData?.shuppinUserId) && (
+            {loginUserId !== Number(fetchGoodsData?.shuppinUserId) && (
               <>
                 {fetchGoodsData?.spnKbn == "1" || fetchGoodsData?.spnKbn == "2" ? (
                   <span></span>
@@ -234,7 +234,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
                   </span>
                 )}
 
-                {fetchGoodsData?.spnKbn != "1" && bidState.auctionTimeStatus === 2 && (
+                {canBid && fetchGoodsData?.spnKbn != "1" && bidState.auctionTimeStatus === 2 && (
                   <div>
                     <button
                       onClick={
@@ -305,9 +305,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
           <div className="flex items-center gap-1">
             <>
               <Favorite className="text-gray-500" />
-              <span className={`${styles.bidCount}`}>
-                {bidState.favoriteCount} {texts.label.resultCount}
-              </span>
+              <span className={`${styles.bidCount}`}>{fetchGoodsData?.favoriteCount}</span>
             </>
           </div>
           {(fetchGoodsData?.spnKbn === "3" || fetchGoodsData?.spnKbn === "4") && (
@@ -321,7 +319,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
                     <span
                       className={`${styles.bidCount} ${isPriceUpdated ? styles.priceUpdated : ""}`}
                     >
-                      {bidState.bidCount} {texts.label.resultCount}
+                      {bidState.bidCount}
                     </span>
                   </>
                 )}

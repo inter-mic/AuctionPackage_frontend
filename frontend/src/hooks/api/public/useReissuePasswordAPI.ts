@@ -32,7 +32,7 @@ export const useReissuePasswordAPI = (registToken: string | null) => {
       setErrors(responseData);
     } else if (status == 200) {
       setResponseData(responseData);
-      const url = `/${AdminFlg ? "admin" : "member"}/login`;
+      const url = `/${AdminFlg ? "admin" : ""}/login`;
       router.push(url);
     }
   };

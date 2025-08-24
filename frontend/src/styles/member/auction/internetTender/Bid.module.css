@@ -1,6 +1,6 @@
 .priceSection {
   display: flex;
-  margin-bottom:30px;
+  margin-bottom: 30px;
   justify-content: center;
   align-items: center;
 }
@@ -10,8 +10,8 @@
   padding-top: 20px;
 }
 
-.priceContainer{
-  padding:20px 20px 20px 20px;
+.priceContainer {
+  padding: 20px 20px 20px 20px;
   background-color: #f5f5f5;
 }
 .goodsPrice {
@@ -25,23 +25,30 @@
   gap: 20px;
 }
 
-.currentPrice
-,.bidPrice {
+.currentPrice,
+.bidPrice {
   font-size: 2.8rem;
   margin: 0;
   line-height: 1;
 }
-.currentPrice{
-  color:#cb5201;
+.currentPrice {
+  color: #cb5201;
 }
-.bidPrice{
+.bidPrice {
   color: #808080;
+}
+
+.rakusatsuPrice {
+  font-size: 2.8rem;
+  margin: 0;
+  line-height: 1;
+  color: #cb5201;
 }
 
 .priceRow {
   display: flex;
-  align-items: center; 
-  gap:5px;
+  align-items: center;
+  gap: 5px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -51,38 +58,37 @@
 }
 .statusRow {
   display: flex;
-  align-items: center; 
+  align-items: center;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
 }
 
 .priceLabel {
   font-size: 1.3rem;
-  color:black;
+  color: black;
 }
 
 .price {
   font-size: 2.8rem;
   margin: 0;
   line-height: 1;
-  color:#cb5201;
+  color: #cb5201;
 }
 
 .bidModalButton {
-  margin: 0; 
-  min-width: 45%; 
-  background-color: #DCA42F;
-  color: #fff; 
+  margin: 0;
+  min-width: 45%;
+  background-color: #dca42f;
+  color: #fff;
   font-weight: bold;
-  padding: 1rem; 
+  padding: 1rem;
   border-radius: 0.25rem;
-  transition: background-color 0.3s ease; 
+  transition: background-color 0.3s ease;
 }
 
 .bidModalButton:hover {
-  opacity: .65; 
+  opacity: 0.65;
 }
 
 .goodsRowInfo {
@@ -93,13 +99,11 @@
   align-items: center;
 }
 
-
 @media (max-width: 768px) {
   .bidPrice {
     font-size: 2.8rem;
-
   }
-  
+
   .priceSection {
     display: grid;
     margin-top: 5px;
@@ -112,8 +116,8 @@
   }
 
   .priceRow {
-  margin-bottom:20px;
-  padding-left: 0px;
+    margin-bottom: 20px;
+    padding-left: 0px;
   }
   .goodsPrice {
     display: block;
@@ -128,5 +132,4 @@
     display: block;
     padding-right: 20px;
   }
-  
 }

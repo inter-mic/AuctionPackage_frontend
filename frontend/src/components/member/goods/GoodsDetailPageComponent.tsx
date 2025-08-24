@@ -9,6 +9,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
 import { useImageClickHandler } from "@/hooks/useImageClickHandler";
 import { usePopupNavigation } from "@/hooks/usePopupNavigation";
+import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
 //コンポーネント
 import FavoriteToggle from "@/components/member/goods/FavoriteToggleComponent";
 import BidModuleComponent from "@/components/member/auction/BidModuleComponent";
@@ -112,14 +113,8 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
   //タイムアウト防止のためセッション延長
   useSessionExtension({ isLogin });
 
-  const {
-    popupOpen,
-    popupIndex,
-    handlePopupOpen,
-    handlePrev,
-    handleNext,
-    handleClose,
-  } = usePopupNavigation({ thumImages });
+  const { popupOpen, popupIndex, handlePopupOpen, handlePrev, handleNext, handleClose } =
+    usePopupNavigation({ thumImages });
 
   const { selectedImage, handleImageClick, handleMainImageClick } = useImageClickHandler({
     thumImages,
@@ -130,17 +125,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
   });
 
   // お気に入りトグル時の処理
-  const handleFavoriteToggle = (isFavorite: boolean) => {
-    setLocalGoodsData((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        favoriteCount: isFavorite ? prev.favoriteCount + 1 : prev.favoriteCount - 1,
-      };
-    });
-  };
-
-
+  const { handleFavoriteToggle } = useFavoriteToggle(setLocalGoodsData);
 
   // タブ複製機能
   const handleDuplicateTabs = () => {

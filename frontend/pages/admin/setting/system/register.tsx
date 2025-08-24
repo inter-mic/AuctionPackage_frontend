@@ -328,7 +328,6 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
                       rows={10}
                       className="w-full px-3 py-2 mt-1 border rounded-md "
                     />
-                    <div>{texts.system.systemRegist_note_4}</div>
                   </div>
                 )}
 
