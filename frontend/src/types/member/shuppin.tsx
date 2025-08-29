@@ -15,5 +15,6 @@ export type TSpnSelect = {
   currentPrice: string;
   rakusatsuPrice: string;
   auctionKekkaStatusName: string;
+  isDisplayKikan: boolean;
   [key: string]: any;
 };

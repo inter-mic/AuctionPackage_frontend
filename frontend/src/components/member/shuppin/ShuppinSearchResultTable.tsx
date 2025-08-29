@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { TSpnSelect } from "@/types/member/shuppin";
 
 interface ShuppinSearchResultTableProps {
@@ -11,6 +12,11 @@ export const ShuppinSearchResultTable: React.FC<ShuppinSearchResultTableProps> =
   resultsList,
   texts,
 }) => {
+  const router = useRouter();
+
+  const handleDetailClick = (goodsId: number) => {
+    router.push(`/member/goods/detail?goodsId=${goodsId}`);
+  };
   return (
     <div className="w-full">
       <table className="w-full bg-white">
@@ -29,6 +35,7 @@ export const ShuppinSearchResultTable: React.FC<ShuppinSearchResultTableProps> =
             )}
             <th className="py-2 px-4 border-b">{texts.goods.kekkaStatus}</th>
             <th className="py-2 px-4 border-b">{texts.goods.rakusatsuPrice}</th>
+            <th className="py-2 px-4 border-b"></th>
           </tr>
         </thead>
         <tbody>
@@ -53,17 +60,23 @@ export const ShuppinSearchResultTable: React.FC<ShuppinSearchResultTableProps> =
                   <td className="py-2 px-4 border-b text-right">{result.startPrice}</td>
                   {resultsList[0]?.spnKbn === "3" ? (
                     <>
-                      <td className="py-2 px-4 border-b text-right">
-                        {result.currentPrice}
-                      </td>
+                      <td className="py-2 px-4 border-b text-right">{result.currentPrice}</td>
                     </>
                   ) : (
                     <></>
                   )}
-                  <td className="py-2 px-4 border-b text-right">
-                    {result.auctionKekkaStatusName}
-                  </td>
+                  <td className="py-2 px-4 border-b text-right">{result.auctionKekkaStatusName}</td>
                   <td className="py-2 px-4 border-b text-right">{result.rakusatsuPrice}</td>
+                  <td className="py-2 px-4 border-b text-center">
+                    {result.isDisplayKikan && (
+                      <button
+                        onClick={() => handleDetailClick(result.goodsId)}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                      >
+                        詳細
+                      </button>
+                    )}
+                  </td>
                 </tr>
               </React.Fragment>
             ))}
@@ -72,4 +85,3 @@ export const ShuppinSearchResultTable: React.FC<ShuppinSearchResultTableProps> =
     </div>
   );
 };
-

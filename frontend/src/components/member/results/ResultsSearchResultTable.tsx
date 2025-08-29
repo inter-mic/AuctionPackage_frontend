@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { TResultsSelect } from "@/types/member/results";
 
 interface ResultsSearchResultTableProps {
@@ -11,6 +12,11 @@ export const ResultsSearchResultTable: React.FC<ResultsSearchResultTableProps> =
   resultsList,
   texts,
 }) => {
+  const router = useRouter();
+
+  const handleDetailClick = (goodsId: number) => {
+    router.push(`/member/goods/detail?goodsId=${goodsId}`);
+  };
   return (
     <div className="w-full">
       <table className="w-full bg-white">
@@ -20,6 +26,7 @@ export const ResultsSearchResultTable: React.FC<ResultsSearchResultTableProps> =
             <th className="py-2 px-4 border-b">{texts.goods.lot}</th>
             <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
             <th className="py-2 px-4 border-b">{texts.goods.rakusatsuPrice}</th>
+            <th className="py-2 px-4 border-b"></th>
           </tr>
         </thead>
         <tbody>
@@ -42,6 +49,16 @@ export const ResultsSearchResultTable: React.FC<ResultsSearchResultTableProps> =
                   <td className="py-2 px-4 border-b text-left">{result.lot}</td>
                   <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
                   <td className="py-2 px-4 border-b text-right">{result.rakusatsuPrice}</td>
+                  <td className="py-2 px-4 border-b text-center">
+                    {result.isDisplayKikan && (
+                      <button
+                        onClick={() => handleDetailClick(result.goodsId)}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                      >
+                        詳細
+                      </button>
+                    )}
+                  </td>
                 </tr>
               </React.Fragment>
             ))}
@@ -50,4 +67,3 @@ export const ResultsSearchResultTable: React.FC<ResultsSearchResultTableProps> =
     </div>
   );
 };
-

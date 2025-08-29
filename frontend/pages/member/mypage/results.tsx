@@ -132,7 +132,7 @@ const Page: React.FC<TPageProps> = () => {
                 .toLocaleString()}
               totalPriceLabel={texts.mypageResult.rakusatsuTotalPrice}
             />
-            <div className="w-full sm:w-3/5 mx-auto">
+            <div className="w-full mx-auto">
               <ResultsSearchResultTable resultsList={fetchResultList} texts={texts} />
             </div>
           </>
