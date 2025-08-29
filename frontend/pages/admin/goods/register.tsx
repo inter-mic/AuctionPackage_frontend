@@ -13,6 +13,7 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 import { useLocale } from "@/hooks/useLocale";
+import { useModalManagement } from "@/hooks/useModalManagement";
 //API
 import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/admin/goods/useGoodsSearchByGoodsIdAPI";
 import { useGoodsSearchImageAPI } from "@/hooks/api/admin/goods/useGoodsSearchImageAPI";
@@ -68,6 +69,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect } = useCommonSetup();
   useKengenRedirect(kengen, 201);
   const { executionPermission } = useExecutionPermission(kengen);
+  
+  // モーダル管理
+  const {
+    isBidHistoryModalOpen,
+    isFavoriteModalOpen,
+    openBidHistoryModal,
+    closeBidHistoryModal,
+    openFavoriteModal,
+    closeFavoriteModal,
+  } = useModalManagement();
   const [spnKbn, setSpnkbn] = useState<string>("");
   const [goodsData, setGoodsData] = useState<TGoodsData>(initialGoodsData);
   const [kekkaData, setkekkaData] = useState<TGoodsKekkaData>(initialGoodsKekkaData);
@@ -165,8 +176,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const [shimeFlg, setShimeFlg] = useState(false);
   const [bitFlg, setBitFlg] = useState(false);
-  const [isBidHistoryModalOpen, setIsBidHistoryModalOpen] = useState(false);
-  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false);
   //データセット
   useEffect(() => {
     if (fetchGoodsData) {
@@ -429,19 +438,15 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const handleBidHistoryClick = () => {
-    setIsBidHistoryModalOpen(true);
-  };
-
-  const handleBidHistoryModalClose = () => {
-    setIsBidHistoryModalOpen(false);
+    if (goodsData.goodsId && goodsData.auctionSeq) {
+      openBidHistoryModal(goodsData.goodsId, goodsData.auctionSeq);
+    }
   };
 
   const handleFavoriteClick = () => {
-    setIsFavoriteModalOpen(true);
-  };
-
-  const handleFavoriteModalClose = () => {
-    setIsFavoriteModalOpen(false);
+    if (goodsData.goodsId) {
+      openFavoriteModal(goodsData.goodsId);
+    }
   };
   const { texts } = useLocale();
   return (
@@ -1099,14 +1104,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
       <BidHistoryModal
         isOpen={isBidHistoryModalOpen}
-        onClose={handleBidHistoryModalClose}
+        onClose={closeBidHistoryModal}
         goodsId={goodsData.goodsId || 0}
         auctionSeq={goodsData.auctionSeq || 0}
       />
 
       <FavoriteModal
         isOpen={isFavoriteModalOpen}
-        onClose={handleFavoriteModalClose}
+        onClose={closeFavoriteModal}
         goodsId={goodsData.goodsId || 0}
       />
     </div>

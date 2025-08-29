@@ -9,7 +9,7 @@ import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSort } from "@/hooks/useSort";
+import { useSort } from "@/hooks/sort/useSort";
 import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";

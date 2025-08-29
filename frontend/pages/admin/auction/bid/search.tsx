@@ -7,8 +7,8 @@ import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSort } from "@/hooks/useSort";
-import { usePagination } from "@/hooks/usePagination";
+import { useSort } from "@/hooks/sort/useSort";
+import { usePagination } from "@/hooks/paging/usePagination";
 import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
@@ -35,6 +35,7 @@ import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
 import { AdminPagination } from "@/components/admin/common/AdminPagination";
 import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
+import { BidSearchResultTable } from "@/components/admin/bid/BidSearchResultTable";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
@@ -271,62 +272,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
           >
             {executionPermission(204, 2) && <OutPutButton onClick={handleCsvExport} />}
           </AdminResultHeader>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">
-                  <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
-                </th>
-                <th className="py-2 px-4 border-b w-52">{texts.goods.auctionName}</th>
-                <th className="py-2 px-4 border-b w-24">{texts.goods.goodsId}</th>
-                <th className="py-2 px-4 border-b w-52">{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-24">{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b w-44">{texts.bid.bidPrice}</th>
-                <th className="py-2 px-4 border-b w-52">{texts.bid.bidTime}</th>
-                <th className="py-2 px-4 border-b">{texts.member.userName}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bidList.length > 0 &&
-                bidList.map((result) => (
-                  <tr
-                    key={`${result.goodsId}-${result.userId}`}
-                    className="cursor-pointer hover:bg-gray-100"
-                    onClick={(e) => handleRowClick(e, result.goodsId)}
-                  >
-                    <td
-                      className="py-2 px-4 border-b text-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(`${result.goodsId}-${result.userId}`)}
-                        onChange={() => handleSelect(`${result.goodsId}-${result.userId}`)}
-                      />
-                    </td>
-                    <td className="py-2 px-4 border-b text-left w-52">{result.auctionName}</td>
-                    <td className="py-2 px-4 border-b text-left w-24">{result.goodsId}</td>
-                    <td className="py-2 px-4 border-b text-left w-52">{result.sku}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
-                    <td className="py-2 px-4 border-b text-left w-24">{result.lot}</td>
-                    <td className="py-2 px-4 border-b text-right w-44">{result.bidPrice}</td>
-                    <td className="py-2 px-4 border-b text-right w-52">{result.bidTime}</td>
-                    <td
-                      className="py-2 px-4 border-b text-left hover:bg-blue-100 hover:cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRowUserClick(e, result.userId);
-                      }}
-                    >
-                      {result.userName}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <BidSearchResultTable
+            bidList={bidList}
+            selectAll={selectAll}
+            selectedIds={selectedIds}
+            onSelectAll={handleSelectAll}
+            onSelect={handleSelect}
+            onRowClick={handleRowClick}
+            onUserClick={handleRowUserClick}
+            texts={texts}
+          />
           <AdminPagination
             count={count}
             page={currentPage}

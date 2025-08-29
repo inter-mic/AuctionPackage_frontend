@@ -7,8 +7,8 @@ import withAdminLayout from "@/hocs/withAdminLayout";
 
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSort } from "@/hooks/useSort";
-import { usePagination } from "@/hooks/usePagination";
+import { useSort } from "@/hooks/sort/useSort";
+import { usePagination } from "@/hooks/paging/usePagination";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 //API

@@ -8,13 +8,14 @@ import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSort } from "@/hooks/useSort";
-import { usePagination } from "@/hooks/usePagination";
+import { useSort } from "@/hooks/sort/useSort";
+import { usePagination } from "@/hooks/paging/usePagination";
 import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 import { useToGoodsRegist } from "@/hooks/moveScreen/useToGoodsRegist";
 import { useToMemberRegist } from "@/hooks/moveScreen/useToMemberRegist";
+import { useModalManagement } from "@/hooks/useModalManagement";
 import { BidHistoryModal } from "@/components/ui/dialog/bidHistoryModal";
 import { FavoriteModal } from "@/components/ui/dialog/favoriteModal";
 //API
@@ -43,6 +44,7 @@ import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
 import { AdminPagination } from "@/components/admin/common/AdminPagination";
 import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
+import { GoodsSearchResultTable } from "@/components/admin/goods/GoodsSearchResultTable";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
@@ -57,6 +59,19 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   useKengenRedirect(kengen, 202);
   const { executionPermission } = useExecutionPermission(kengen);
+
+  // モーダル管理
+  const {
+    isBidHistoryModalOpen,
+    isFavoriteModalOpen,
+    selectedBidHistoryGoodsId,
+    selectedBidHistoryAuctionSeq,
+    selectedFavoriteGoodsId,
+    openBidHistoryModal,
+    closeBidHistoryModal,
+    openFavoriteModal,
+    closeFavoriteModal,
+  } = useModalManagement();
 
   const { goodsParams, formChange, resetForm } = useGoodsSearchParams();
 
@@ -209,11 +224,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const [hoveredRakusatsu, setHoveredRakusatsu] = useState<number | null>(null); // 落札者ホバー状態
   const [hoveredBidCount, setHoveredBidCount] = useState<number | null>(null); // 入札数ホバー状態
   const [hoveredFavoriteCount, setHoveredFavoriteCount] = useState<number | null>(null); // お気に入り数ホバー状態
-  const [isBidHistoryModalOpen, setIsBidHistoryModalOpen] = useState(false);
-  const [selectedBidHistoryGoodsId, setSelectedBidHistoryGoodsId] = useState<number>(0);
-  const [selectedBidHistoryAuctionSeq, setSelectedBidHistoryAuctionSeq] = useState<number>(0);
-  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false);
-  const [selectedFavoriteGoodsId, setSelectedFavoriteGoodsId] = useState<number>(0);
   const handleMouseEnterRow = (goodsId: number) => {
     setHoveredRow(goodsId);
   };
@@ -252,13 +262,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     auctionSeq: number
   ) => {
     e.stopPropagation(); // 行のクリックイベントを止める
-    setSelectedBidHistoryGoodsId(goodsId);
-    setSelectedBidHistoryAuctionSeq(auctionSeq);
-    setIsBidHistoryModalOpen(true);
-  };
-
-  const handleBidHistoryModalClose = () => {
-    setIsBidHistoryModalOpen(false);
+    openBidHistoryModal(goodsId, auctionSeq);
   };
 
   const handleMouseEnterFavoriteCount = (goodsId: number) => {
@@ -271,12 +275,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const handleFavoriteCountClick = (e: React.MouseEvent<HTMLElement>, goodsId: number) => {
     e.stopPropagation(); // 行のクリックイベントを止める
-    setSelectedFavoriteGoodsId(goodsId);
-    setIsFavoriteModalOpen(true);
-  };
-
-  const handleFavoriteModalClose = () => {
-    setIsFavoriteModalOpen(false);
+    openFavoriteModal(goodsId);
   };
 
   return (
@@ -492,195 +491,33 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </>
             )}
           </AdminResultHeader>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th rowSpan={2} className="py-2 px-4 border-b">
-                  <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
-                </th>
-                <th rowSpan={2} className="py-2 px-4 w-20 border-b">
-                  {texts.goods.thumbnailImageUrl}
-                </th>
-                <th className="py-2 px-4 border-b">{texts.goods.goodsId}</th>
-                <th className="py-2 px-4 border-b">{texts.goods.sku}</th>
-                <th rowSpan={2} className="py-2 px-4 border-b w-24">
-                  {texts.goods.lot}
-                </th>
-                {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
-                  <>
-                    <th rowSpan={2} className="py-2 px-4 border-b w-44">
-                      {texts.goods.startPrice}
-                    </th>
-                    <th rowSpan={2} className="py-2 px-4 border-b w-44">
-                      {texts.goods.rakusatsuPrice}
-                    </th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-2 px-4 border-b w-24">{texts.goods.favoriteCount}</th>
-                    <th className="py-2 px-4 border-b w-44">{texts.goods.startPrice}</th>
-                    <th rowSpan={2} className="py-2 px-4 border-b w-96">
-                      {texts.auction.bidKikan}
-                    </th>
-                  </>
-                )}
-                <th rowSpan={2} className="py-2 px-4 border-b">
-                  {texts.goods.kekkaStatus}
-                </th>
-                <th className="py-2 px-4 border-b">
-                  {texts.goods.shuppinUserName}/{texts.goods.shuppinCompanyName}
-                </th>
-              </tr>
-              <tr>
-                <th colSpan={2} className="py-2 px-4 border-b">
-                  {texts.goods.goodsName}
-                </th>
-                {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
-                  <></>
-                ) : (
-                  <>
-                    <th className="py-2 px-4 border-b w-24">{texts.goods.bidCount}</th>
-                    <th className="py-2 px-4 border-b w-44">{texts.goods.currentPrice}</th>
-                  </>
-                )}
-                <th className="py-2 px-4 border-b">
-                  {texts.goods.rakusatsuUserName}/{texts.goods.rakusatsuCompanyName}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {goodsData.length > 0 &&
-                goodsData.map((result) => (
-                  <React.Fragment key={result.goodsId}>
-                    <tr
-                      className={`cursor-pointer ${
-                        hoveredRow === result.goodsId ? "bg-gray-100" : ""
-                      }`}
-                      onMouseEnter={() => handleMouseEnterRow(result.goodsId)}
-                      onMouseLeave={handleMouseLeaveRow}
-                      onClick={(e) => handleRowClick(e, result.goodsId)}
-                    >
-                      <td
-                        rowSpan={2}
-                        className="py-2 px-4 border-b text-center"
-                        onClick={(e) => {
-                          e.stopPropagation(); // チェックボックスでイベントを止める
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(result.goodsId)}
-                          onChange={() => handleSelect(result.goodsId)}
-                        />
-                      </td>
-                      <td rowSpan={2} className="py-2 px-4 w-20 border-b text-right">
-                        <Image
-                          src={
-                            result.thumbnailImageUrl && result.thumbnailImageUrl.trim() !== ""
-                              ? result.thumbnailImageUrl
-                              : "/no_image.png"
-                          }
-                          alt=""
-                          width={100}
-                          height={100}
-                        />
-                      </td>
-                      <td className="py-2 px-4 border-b text-left">{result.goodsId}</td>
-                      <td className="py-2 px-4 border-b text-left">{result.sku}</td>
-                      <td rowSpan={2} className="py-2 px-4 border-b text-left w-24">
-                        {result.lot}
-                      </td>
-                      {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
-                        <>
-                          <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">
-                            {result.startPrice}
-                          </td>
-                          <td rowSpan={2} className="py-2 px-4 border-b text-right w-44">
-                            {result.rakusatsuPrice}
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td
-                            className={`py-2 px-4 border-b text-right w-24 cursor-pointer ${
-                              hoveredFavoriteCount === result.goodsId ? "bg-blue-100" : ""
-                            }`}
-                            onMouseEnter={() => handleMouseEnterFavoriteCount(result.goodsId)}
-                            onMouseLeave={handleMouseLeaveFavoriteCount}
-                            onClick={(e) => handleFavoriteCountClick(e, result.goodsId)}
-                          >
-                            {result.favoriteCount}
-                          </td>
-                          <td className="py-2 px-4 border-b text-right w-44">
-                            {result.startPrice}
-                          </td>
-                          <td rowSpan={2} className="py-2 px-4 border-b text-right w-96">
-                            {result.bidTime}
-                          </td>
-                        </>
-                      )}
-                      <td rowSpan={2} className="py-2 px-4 border-b text-left">
-                        {result.auctionKekkaStatusStr}
-                      </td>
-                      <td
-                        className={`py-2 px-4 border-b text-left ${
-                          hoveredShuppin === result.goodsId ? "bg-blue-100" : ""
-                        }`}
-                        onMouseEnter={() => handleMouseEnterShuppin(result.goodsId)}
-                        onMouseLeave={handleMouseLeaveShuppin}
-                        onClick={(e) => handleRowUserClick(e, result.shuppinUserId)} // 出品者名のクリックでイベントを止める
-                      >
-                        {result.shuppinUserName} {result.shuppinCompanyName}
-                      </td>
-                    </tr>
-
-                    <tr
-                      className={`cursor-pointer ${
-                        hoveredRow === result.goodsId ? "bg-gray-100" : ""
-                      }`}
-                      onMouseEnter={() => handleMouseEnterRow(result.goodsId)}
-                      onMouseLeave={handleMouseLeaveRow}
-                      onClick={(e) => handleRowClick(e, result.goodsId)}
-                    >
-                      <td colSpan={2} className="py-2 px-4 border-b text-left">
-                        {result.goodsName}
-                      </td>
-                      {goodsData[0].spnKbn === "1" || goodsData[0].spnKbn === "2" ? (
-                        <></>
-                      ) : (
-                        <>
-                          <td
-                            className={`py-2 px-4 border-b text-right w-24 cursor-pointer ${
-                              hoveredBidCount === result.goodsId ? "bg-blue-100" : ""
-                            }`}
-                            onMouseEnter={() => handleMouseEnterBidCount(result.goodsId)}
-                            onMouseLeave={handleMouseLeaveBidCount}
-                            onClick={(e) =>
-                              handleBidCountClick(e, result.goodsId, result.auctionSeq)
-                            }
-                          >
-                            {result.bidCount}
-                          </td>
-                          <td className="py-2 px-4 border-b text-right w-44">
-                            {result.currentPrice}
-                          </td>
-                        </>
-                      )}
-                      <td
-                        className={`py-2 px-4 border-b text-left ${
-                          hoveredRakusatsu === result.goodsId ? "bg-blue-100" : ""
-                        }`}
-                        onMouseEnter={() => handleMouseEnterRakusatsu(result.goodsId)}
-                        onMouseLeave={handleMouseLeaveRakusatsu}
-                        onClick={(e) => handleRowUserClick(e, result.rakusatsuUserId)} // 落札者名のクリックでイベントを止める
-                      >
-                        {result.rakusatsuUserName} {result.rakusatsuCompanyName}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-            </tbody>
-          </table>
+          <GoodsSearchResultTable
+            goodsData={goodsData}
+            selectAll={selectAll}
+            selectedIds={selectedIds}
+            hoveredRow={hoveredRow}
+            hoveredShuppin={hoveredShuppin}
+            hoveredRakusatsu={hoveredRakusatsu}
+            hoveredBidCount={hoveredBidCount}
+            hoveredFavoriteCount={hoveredFavoriteCount}
+            onSelectAll={handleSelectAll}
+            onSelect={handleSelect}
+            onRowClick={handleRowClick}
+            onUserClick={handleRowUserClick}
+            onMouseEnterRow={handleMouseEnterRow}
+            onMouseLeaveRow={handleMouseLeaveRow}
+            onMouseEnterShuppin={handleMouseEnterShuppin}
+            onMouseLeaveShuppin={handleMouseLeaveShuppin}
+            onMouseEnterRakusatsu={handleMouseEnterRakusatsu}
+            onMouseLeaveRakusatsu={handleMouseLeaveRakusatsu}
+            onMouseEnterBidCount={handleMouseEnterBidCount}
+            onMouseLeaveBidCount={handleMouseLeaveBidCount}
+            onBidCountClick={handleBidCountClick}
+            onMouseEnterFavoriteCount={handleMouseEnterFavoriteCount}
+            onMouseLeaveFavoriteCount={handleMouseLeaveFavoriteCount}
+            onFavoriteCountClick={handleFavoriteCountClick}
+            texts={texts}
+          />
           <AdminPagination
             count={count}
             page={currentPage}
@@ -694,14 +531,14 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
       <BidHistoryModal
         isOpen={isBidHistoryModalOpen}
-        onClose={handleBidHistoryModalClose}
+        onClose={closeBidHistoryModal}
         goodsId={selectedBidHistoryGoodsId}
         auctionSeq={selectedBidHistoryAuctionSeq}
       />
 
       <FavoriteModal
         isOpen={isFavoriteModalOpen}
-        onClose={handleFavoriteModalClose}
+        onClose={closeFavoriteModal}
         goodsId={selectedFavoriteGoodsId}
       />
     </div>

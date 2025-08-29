@@ -1,4 +1,6 @@
 export type TCategorySearch ={
-    categorySeq: string;
+    categorySeq: number;
+    oyaCategorySeq: number;
     categoryName: string;
+    sortOrder: number;
 }

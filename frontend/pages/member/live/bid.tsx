@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { useEffect, useState, useRef } from "react";
+import { useEffect } from "react";
 import { getTexts } from "@/config/texts";
 import Image from "next/image";
 import VideocamIcon from "@mui/icons-material/Videocam";
@@ -15,10 +15,9 @@ import { useSystemSearchAPI } from "@/hooks/api/member/useSystemSearchAPI";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/hooks/useLocale";
 import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
+import { useMemberLiveWebSocket } from "@/hooks/useMemberLiveWebSocket";
 //型定義
-import { TBidHisotry } from "@/types/member/live";
 import { TPageProps } from "@/types/member/memberPage";
-import { NextLotList } from "@/types/common/nextLotList";
 //コンポーネント
 import LiveBidStatusComponent from "@/components/member/auction/live/LiveBidStatusComponent";
 import NoLiveAuctionComponent from "@/components/member/auction/live/NoLiveAuctionComponent";
@@ -44,36 +43,46 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context) =
 });
 
 const Page: React.FC<TPageProps> = (PageProps) => {
-  const [viewOnlyChecked, setViewOnlyChecked] = useState<boolean>(false);
-  const [receivedData, setReceivedData] = useState<any>(null);
-  const [isBidDisabled, setIsBidDisabled] = useState(true);
-  const [bidStatus, setBidStatus] = useState(0);
-  const [bidResults, setBidResults] = useState(0);
-  const [bidHistory, setBidHistory] = useState<TBidHisotry[]>([]);
-  const [isBidComingSoonMsgFlg, setBidComingSoonMsgFlg] = useState(false);
-  const [isRakusatsuProcessingMsgFlg, setRakusatsuProcessingMsgFlg] = useState(false);
-  const [isPriceUpdated, setIsPriceUpdated] = useState(false);
-  const [nextLotList, setNextLotList] = useState<NextLotList[]>([]);
-  const [msg, setMsg] = useState<string | null>("");
-  const msgRef = useRef(msg);
-  const [marqueeKey, setMarqueeKey] = useState(0);
-  const [showBidEndPopup, setShowBidEndPopup] = useState(false);
-  const [bidEndData, setBidEndData] = useState<any>(null);
-
   //タイムアウト防止のためセッション延長
   useSessionExtension({ isLogin: true });
 
-  // msgが変わるたびにrefも更新
-  useEffect(() => {
-    msgRef.current = msg;
-  }, [msg]);
-
-  const ws = useRef<WebSocket | null>(null);
   const { texts } = useLocale();
   const { fetchSystemSettingData, systemSearchAPI } = useSystemSearchAPI();
   const { fetchAuction } = useCheckLiveAuctionAPI();
-  const [fetchLiveAuctionStatus, setFetchLiveAuctionStatus] = useState<number>(0);
   const { fetchPaddleNo, searchPaddleNoAPI } = useSearchPaddleNoAPI();
+
+  // ライブ入札状態管理
+  const {
+    viewOnlyChecked,
+    receivedData,
+    isBidDisabled,
+    bidStatus,
+    bidResults,
+    bidHistory,
+    isBidComingSoonMsgFlg,
+    isRakusatsuProcessingMsgFlg,
+    isPriceUpdated,
+    nextLotList,
+    msg,
+    marqueeKey,
+    showBidEndPopup,
+    bidEndData,
+    fetchLiveAuctionStatus,
+    showVideo,
+    showNextLotModal,
+    setViewOnlyChecked,
+    setFetchLiveAuctionStatus,
+
+    bid,
+    closeBidEndPopup,
+    toggleVideo,
+    toggleNextLotModal,
+  } = useMemberLiveWebSocket({
+    userId: PageProps.userId || 0,
+    fetchAuction,
+    fetchPaddleNo,
+    PageProps,
+  });
   useEffect(() => {
     if (fetchAuction?.auctionSeq !== undefined) {
       if (fetchAuction?.spnKbn === "1") {
@@ -112,115 +121,11 @@ const Page: React.FC<TPageProps> = (PageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchLiveAuctionStatus]);
 
-  // WebSocket接続関数
-  useEffect(() => {
-    // 既存の接続があれば閉じる
-    if (ws.current) {
-      ws.current.close();
-    }
-
-    ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_LIVE_URL}`);
-
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      // ping処理（サーバーからのpingは無視）
-      if (data.type === "ping") {
-        return;
-      }
-
-      //毎配信処理
-      setNextLotList(data.nextLotList);
-      setBidHistory(data.liveBidLog);
-      setReceivedData(data);
-      if (fetchAuction?.spnKbn === "1") {
-        setBidStatus(fetchPaddleNo === data.kenriPaddleNo ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0);
-        setIsBidDisabled(data.isBidDisabled || fetchPaddleNo === data.kenriPaddleNo);
-      } else {
-        setBidStatus(
-          PageProps.userId === data.kenriUserId ? 1 : data.isBelowSaiteiPriceFlg ? 5 : 0
-        );
-        setIsBidDisabled(data.isBidDisabled || PageProps.userId === data.kenriUserId);
-      }
-
-      if (data.msg === "" || msgRef.current !== data.msg) {
-        setMsg(data.msg);
-        setMarqueeKey((k) => k + 1);
-      }
-
-      setBidComingSoonMsgFlg(data.isBidComingSoonMsgFlg);
-      setRakusatsuProcessingMsgFlg(data.isRakusatsuProcessingMsgFlg);
-
-      //配信メッセージごと処理
-      if (data.type === "set") {
-        setShowBidEndPopup(false);
-        setBidEndData(null);
-      }
-      if (data.type === "updatePrice") {
-        setIsPriceUpdated(true);
-        setTimeout(() => setIsPriceUpdated(false), 1000);
-      }
-      if (data.type === "bidEnd") {
-        setBidResults(
-          !data.kenriPaddleNo ? 4 : String(fetchPaddleNo) === String(data.kenriPaddleNo) ? 2 : 3
-        );
-        setShowBidEndPopup(true);
-        setBidEndData(data);
-      }
-    };
-
-    // クリーンアップ関数
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchPaddleNo, fetchAuction]);
-
   const handleViewOnlyCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setViewOnlyChecked(event.target.checked);
   };
 
-  const getCommonData = () => ({
-    userId: PageProps.userId,
-    paddleNo: fetchPaddleNo,
-  });
-  const sendWebSocketMessage = (type: string, additionalData: Record<string, any> = {}) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const message = {
-        type,
-        ...getCommonData(),
-        ...additionalData,
-      };
-      ws.current.send(JSON.stringify(message));
-    }
-  };
-
-  // 入札用関数
-  const bid = async () => {
-    const currentTime = new Date().toISOString();
-    sendWebSocketMessage("onlineBid", {
-      bidPrice: receivedData?.nextPrice,
-      timestamp: currentTime,
-    });
-    setIsBidDisabled(true);
-  };
-
-  const [showVideo, setShowVideo] = useState(false);
-  const [showNextLotModal, setShowNextLotModal] = useState(false);
-  const toggleVideo = () => {
-    setShowVideo((prev) => !prev);
-  };
-  const toggleNextLotModal = () => {
-    setShowNextLotModal((prev) => !prev);
-  };
   const isMobile = useIsMobile();
-
-  const closeBidEndPopup = () => {
-    setShowBidEndPopup(false);
-    setBidEndData(null);
-  };
 
   // fetchLiveAuctionStatusに応じて表示を制御
   if (fetchLiveAuctionStatus === 0) {

@@ -2,8 +2,8 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSortHandler } from "@/hooks/useSortHandler";
-import { usePageChange } from "@/hooks/usePageChange";
+import { useSortHandler } from "@/hooks/sort/useSortHandler";
+import { usePageChange } from "@/hooks/paging/usePageChange";
 //コンポーネント
 import GoodsList from "@/components/member/goods/GoodsListComponent";
 import SearchFilter from "@/components/member/common/SearchFilterComponent";

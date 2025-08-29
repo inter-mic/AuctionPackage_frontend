@@ -6,8 +6,8 @@ import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSort } from "@/hooks/useSort";
-import { usePagination } from "@/hooks/usePagination";
+import { useSort } from "@/hooks/sort/useSort";
+import { usePagination } from "@/hooks/paging/usePagination";
 import { useCheckboxSelection } from "@/hooks/useCheckboxSelection";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
@@ -36,6 +36,7 @@ import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
 import { AdminPagination } from "@/components/admin/common/AdminPagination";
 import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
+import { BidLogSearchResultTable } from "@/components/admin/bid/BidLogSearchResultTable";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
@@ -338,76 +339,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               </div>
             )}
           </AdminResultHeader>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">
-                  <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
-                </th>
-                <th className="py-2 px-4 border-b w-52">{texts.goods.auctionName}</th>
-                <th className="py-2 px-4 border-b w-24">{texts.goods.goodsId}</th>
-                <th className="py-2 px-4 border-b w-52">{texts.goods.sku}</th>
-                <th className="py-2 px-4 border-b ">{texts.goods.goodsName}</th>
-                <th className="py-2 px-4 border-b w-24">{texts.goods.lot}</th>
-                <th className="py-2 px-4 border-b w-44">{texts.bid.bidPrice}</th>
-                <th className="py-2 px-4 border-b w-52">{texts.bid.bidTime}</th>
-                {searchSpnKbn === "1" && (
-                  <th className="py-2 px-4 border-b w-32">{texts.paddle.paddleNo}</th>
-                )}
-                {(searchSpnKbn === "1" || searchSpnKbn === "2") && (
-                  <th className="py-2 px-4 border-b w-32">{texts.bid.bidKbn}</th>
-                )}
-                <th className="py-2 px-4 border-b">
-                  {texts.member.userName}/{texts.member.companyName}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {bidList.length > 0 &&
-                bidList.map((result) => (
-                  <tr
-                    key={result.seq}
-                    className="cursor-pointer hover:bg-gray-100"
-                    onClick={(e) => handleRowClick(e, result.goodsId)}
-                  >
-                    <td
-                      className="py-2 px-4 border-b text-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(result.seq)}
-                        onChange={() => handleSelect(result.seq)}
-                      />
-                    </td>
-                    <td className="py-2 px-4 border-b text-left">{result.auctionName}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.goodsId}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.sku}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
-                    <td className="py-2 px-4 border-b text-left">{result.lot}</td>
-                    <td className="py-2 px-4 border-b text-right">{result.bidPrice}</td>
-                    <td className="py-2 px-4 border-b text-right">{result.bidTime}</td>
-                    {searchSpnKbn === "1" && (
-                      <td className="py-2 px-4 border-b text-left">{result.paddleNo}</td>
-                    )}
-                    {(searchSpnKbn === "1" || searchSpnKbn === "2") && (
-                      <td className="py-2 px-4 border-b text-left">{result.bidKbnName}</td>
-                    )}
-                    <td
-                      className="py-2 px-4 border-b text-left hover:bg-blue-100 hover:cursor-pointer" // ホバー時に色とカーソル変更
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRowUserClick(e, result.userId);
-                      }} // 新しいクリックイベント
-                    >
-                      {result.userName}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <BidLogSearchResultTable
+            bidList={bidList}
+            selectAll={selectAll}
+            selectedIds={selectedIds}
+            searchSpnKbn={searchSpnKbn}
+            onSelectAll={handleSelectAll}
+            onSelect={handleSelect}
+            onRowClick={handleRowClick}
+            onUserClick={handleRowUserClick}
+            texts={texts}
+          />
           <AdminPagination
             count={count}
             page={currentPage}

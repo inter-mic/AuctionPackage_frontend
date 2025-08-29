@@ -3,8 +3,8 @@ import Modal from "react-modal";
 import Pagination from "@mui/material/Pagination";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { useSort } from "@/hooks/useSort";
-import { usePagination } from "@/hooks/usePagination";
+import { useSort } from "@/hooks/sort/useSort";
+import { usePagination } from "@/hooks/paging/usePagination";
 //API
 import { useUserSearchAPI } from "@/hooks/api/admin/user/useUserSearchAPI";
 import { useUserSearchCountAPI } from "@/hooks/api/admin/user/useUserSearchCountAPI";

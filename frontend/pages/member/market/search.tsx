@@ -2,8 +2,8 @@ import { GetServerSideProps } from "next";
 import { getTexts } from "@/config/texts";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
-import { usePageChange } from "@/hooks/usePageChange";
-import { useSortHandler } from "@/hooks/useSortHandler";
+import { usePageChange } from "@/hooks/paging/usePageChange";
+import { useSortHandler } from "@/hooks/sort/useSortHandler";
 //ホック
 import { withAuth } from "@/hocs/withMemberAuth";
 import withMemberLayout from "@/hocs/withMemberLayout";
