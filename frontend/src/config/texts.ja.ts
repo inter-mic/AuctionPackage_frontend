@@ -193,7 +193,7 @@ export const texts = {
     mailcopy: "メールアドレスコピー",
     mailcopy_note:
       "※メールアドレスコピー：メールアドレスをコピーしてGmail等メーラーのBCCに貼り付ければ、一括送信が可能です",
-    auctionMailJushinFlg: "お知らせメール受信",
+    auctionMailJushinFlg: "お知らせメール",
     ginkoCode: "銀行コード",
     ginkoName: "銀行名",
     shitenCode: "支店コード",
