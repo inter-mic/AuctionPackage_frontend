@@ -5,7 +5,7 @@ interface BidSearchResultTableProps {
   bidList: TAdminGoodsAuctionBidSelect[];
   selectAll: boolean;
   selectedIds: string[];
-  onSelectAll: (checked: boolean) => void;
+  onSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSelect: (id: string) => void;
   onRowClick: (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => void;
   onUserClick: (e: React.MouseEvent<HTMLElement>, userId: string) => void;
@@ -27,7 +27,7 @@ export const BidSearchResultTable: React.FC<BidSearchResultTableProps> = ({
       <thead>
         <tr>
           <th className="py-2 px-4 border-b">
-            <input type="checkbox" checked={selectAll} onChange={(e) => onSelectAll(e.target.checked)} />
+            <input type="checkbox" checked={selectAll} onChange={onSelectAll} />
           </th>
           <th className="py-2 px-4 border-b w-52">{texts.goods.auctionName}</th>
           <th className="py-2 px-4 border-b w-24">{texts.goods.goodsId}</th>
@@ -81,4 +81,3 @@ export const BidSearchResultTable: React.FC<BidSearchResultTableProps> = ({
     </table>
   );
 };
-

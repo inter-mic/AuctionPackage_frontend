@@ -4,10 +4,10 @@ import { TAdminLogBidSelect } from "@/types/admin/goods/bid/logSearch";
 interface BidLogSearchResultTableProps {
   bidList: TAdminLogBidSelect[];
   selectAll: boolean;
-  selectedIds: string[];
+  selectedIds: number[];
   searchSpnKbn: string;
-  onSelectAll: (checked: boolean) => void;
-  onSelect: (id: string) => void;
+  onSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSelect: (id: number) => void;
   onRowClick: (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => void;
   onUserClick: (e: React.MouseEvent<HTMLElement>, userId: string) => void;
   texts: any;
@@ -29,7 +29,7 @@ export const BidLogSearchResultTable: React.FC<BidLogSearchResultTableProps> = (
       <thead>
         <tr>
           <th className="py-2 px-4 border-b">
-            <input type="checkbox" checked={selectAll} onChange={(e) => onSelectAll(e.target.checked)} />
+            <input type="checkbox" checked={selectAll} onChange={onSelectAll} />
           </th>
           <th className="py-2 px-4 border-b w-52">{texts.goods.auctionName}</th>
           <th className="py-2 px-4 border-b w-24">{texts.goods.goodsId}</th>
@@ -97,4 +97,3 @@ export const BidLogSearchResultTable: React.FC<BidLogSearchResultTableProps> = (
     </table>
   );
 };
-
