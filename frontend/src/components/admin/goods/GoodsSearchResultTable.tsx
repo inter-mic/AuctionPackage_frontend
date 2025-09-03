@@ -11,7 +11,7 @@ interface GoodsSearchResultTableProps {
   hoveredRakusatsu: number | null;
   hoveredBidCount: number | null;
   hoveredFavoriteCount: number | null;
-  onSelectAll: (checked: boolean) => void;
+  onSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSelect: (id: number) => void;
   onRowClick: (e: React.MouseEvent<HTMLTableRowElement>, goodsId: number) => void;
   onUserClick: (e: React.MouseEvent<HTMLElement>, userId: string) => void;
@@ -62,7 +62,7 @@ export const GoodsSearchResultTable: React.FC<GoodsSearchResultTableProps> = ({
       <thead>
         <tr>
           <th rowSpan={2} className="py-2 px-4 border-b">
-            <input type="checkbox" checked={selectAll} onChange={(e) => onSelectAll(e.target.checked)} />
+            <input type="checkbox" checked={selectAll} onChange={onSelectAll} />
           </th>
           <th rowSpan={2} className="py-2 px-4 w-20 border-b">
             {texts.goods.thumbnailImageUrl}
@@ -119,9 +119,7 @@ export const GoodsSearchResultTable: React.FC<GoodsSearchResultTableProps> = ({
           goodsData.map((result) => (
             <React.Fragment key={result.goodsId}>
               <tr
-                className={`cursor-pointer ${
-                  hoveredRow === result.goodsId ? "bg-gray-100" : ""
-                }`}
+                className={`cursor-pointer ${hoveredRow === result.goodsId ? "bg-gray-100" : ""}`}
                 onMouseEnter={() => onMouseEnterRow(result.goodsId)}
                 onMouseLeave={onMouseLeaveRow}
                 onClick={(e) => onRowClick(e, result.goodsId)}
@@ -177,9 +175,7 @@ export const GoodsSearchResultTable: React.FC<GoodsSearchResultTableProps> = ({
                     >
                       {result.favoriteCount}
                     </td>
-                    <td className="py-2 px-4 border-b text-right w-44">
-                      {result.startPrice}
-                    </td>
+                    <td className="py-2 px-4 border-b text-right w-44">{result.startPrice}</td>
                     <td rowSpan={2} className="py-2 px-4 border-b text-right w-96">
                       {result.bidTime}
                     </td>
@@ -201,9 +197,7 @@ export const GoodsSearchResultTable: React.FC<GoodsSearchResultTableProps> = ({
               </tr>
 
               <tr
-                className={`cursor-pointer ${
-                  hoveredRow === result.goodsId ? "bg-gray-100" : ""
-                }`}
+                className={`cursor-pointer ${hoveredRow === result.goodsId ? "bg-gray-100" : ""}`}
                 onMouseEnter={() => onMouseEnterRow(result.goodsId)}
                 onMouseLeave={onMouseLeaveRow}
                 onClick={(e) => onRowClick(e, result.goodsId)}
@@ -221,15 +215,11 @@ export const GoodsSearchResultTable: React.FC<GoodsSearchResultTableProps> = ({
                       }`}
                       onMouseEnter={() => onMouseEnterBidCount(result.goodsId)}
                       onMouseLeave={onMouseLeaveBidCount}
-                      onClick={(e) =>
-                        onBidCountClick(e, result.goodsId, result.auctionSeq)
-                      }
+                      onClick={(e) => onBidCountClick(e, result.goodsId, result.auctionSeq)}
                     >
                       {result.bidCount}
                     </td>
-                    <td className="py-2 px-4 border-b text-right w-44">
-                      {result.currentPrice}
-                    </td>
+                    <td className="py-2 px-4 border-b text-right w-44">{result.currentPrice}</td>
                   </>
                 )}
                 <td
@@ -249,4 +239,3 @@ export const GoodsSearchResultTable: React.FC<GoodsSearchResultTableProps> = ({
     </table>
   );
 };
-

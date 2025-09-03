@@ -2,7 +2,6 @@ import { GetServerSideProps } from "next";
 import React from "react";
 import { toast } from "react-toastify";
 import { texts } from "@/config/texts.ja";
-import Image from "next/image";
 //ホック
 import { withAuth } from "@/hocs/withAdminAuth";
 import withAdminLayout from "@/hocs/withAdminLayout";

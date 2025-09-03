@@ -35,10 +35,7 @@ import { SearchButton } from "@/components/ui/buttons/admin/searchButton";
 import { ClearButton } from "@/components/ui/buttons/admin/clearButton";
 import { OutPutButton } from "@/components/ui/buttons/admin/outputButton";
 import { AddressCopyButton } from "@/components/ui/buttons/admin/addressCopyButton";
-import {
-  MemberShoninOnButton,
-  MemberShoninOffButton,
-} from "@/components/ui/buttons/admin/memberShoninButton";
+
 //スタイル
 import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 
@@ -46,6 +43,7 @@ import formSearchStyles from "@/styles/admin/FormSearch.module.css";
 import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
 import { AdminPagination } from "@/components/admin/common/AdminPagination";
 import { AdminResultHeader } from "@/components/admin/common/AdminResultHeader";
+import { MemberSearchResultTable } from "@/components/admin/member/MemberSearchResultTable";
 
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
@@ -368,73 +366,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 </>
               )}
             </AdminResultHeader>
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">
-                    <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
-                  </th>
-                  <th className="py-2 px-4 border-b">{texts.member.userId}</th>
-                  <th className="py-2 px-4 border-b">{texts.member.userName} </th>
-                  <th className="py-2 px-4 border-b">{texts.member.companyName}</th>
-                  <th className="py-2 px-4 border-b">{texts.member.address}</th>
-                  <th className="py-2 px-4 border-b">{texts.common.mail}</th>
-                  <th className="py-2 px-4 border-b w-72">{texts.member.adminBiko}</th>
-                  <th className="py-2 px-4 border-b">{texts.member.shonin}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {memberData.map((result) => (
-                  <tr
-                    key={result.userId}
-                    className={`cursor-pointer hover:bg-gray-100 ${
-                      result.teishiFlg ? "bg-gray-300" : ""
-                    }`}
-                    onClick={(e) => handleRowClick(e, result.userId)}
-                  >
-                    <td
-                      className="py-2 px-4 border-b text-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(result.userId)}
-                        onChange={() => handleSelect(result.userId)}
-                      />
-                    </td>
-                    <td className="py-1 px-4 border-b text-left">{result.userId}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.userName}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.companyName}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.fullAddress}</td>
-                    <td className="py-1 px-4 border-b text-left">{result.mail}</td>
-                    <td
-                      className={`py-1 px-4 border-b text-left w-72 ${
-                        result.adminBiko ? "line-clamp-2" : ""
-                      }`}
-                    >
-                      {result.adminBiko}
-                    </td>
-
-                    <td className="py-1 px-4 border-b text-center">
-                      {executionPermission(102, 2) ? (
-                        result.shoninFlg ? (
-                          <MemberShoninOffButton
-                            userId={result.userId}
-                            onUpdate={updateShoninFlg}
-                          />
-                        ) : (
-                          <MemberShoninOnButton userId={result.userId} onUpdate={updateShoninFlg} />
-                        )
-                      ) : (
-                        <span></span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <MemberSearchResultTable
+              memberData={memberData}
+              selectAll={selectAll}
+              selectedIds={selectedIds}
+              onSelectAll={handleSelectAll}
+              onSelect={handleSelect}
+              onRowClick={handleRowClick}
+              onShoninUpdate={updateShoninFlg}
+              executionPermission={executionPermission}
+              texts={texts}
+            />
           </div>
           <AdminPagination
             count={count}
