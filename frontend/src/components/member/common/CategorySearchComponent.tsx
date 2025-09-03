@@ -5,8 +5,8 @@ import { useCategorySearchAPI } from "@/hooks/api/public/useCategorySearchAPI";
 import formSearchStyles from "@/styles/member/FormSearch.module.css";
 
 interface Props {
-  selectedCategories: string[];
-  onCategoryChange: (id: string) => void;
+  selectedCategories: number[];
+  onCategoryChange: (id: number) => void;
   categoryLabel?: string;
 }
 

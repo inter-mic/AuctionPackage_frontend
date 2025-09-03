@@ -46,8 +46,8 @@ const Page: React.FC<TPageProps> = () => {
   const { marketList, marketSearchAPI } = useMarketSearchAPI();
   const { marketCount, marketCountAPI } = useMarketCountAPI();
   const { marketParams, formChange, resetForm } = useMarketSearchParams();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const handleCategoryChange = (id: string) => {
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const handleCategoryChange = (id: number) => {
     setSelectedCategories((prev) =>
       prev.includes(id) ? prev.filter((categoryId) => categoryId !== id) : [...prev, id]
     );

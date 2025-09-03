@@ -80,7 +80,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
       setFetchGoodsList(goodsList);
     }
   }, [goodsList]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const [checkboxStates, setCheckboxStates] = useState({
     myBidCheck: false,
@@ -95,7 +95,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
       [name]: checked,
     }));
   };
-  const handleCategoryChange = (id: string) => {
+  const handleCategoryChange = (id: number) => {
     setSelectedCategories((prev) =>
       prev.includes(id) ? prev.filter((categoryId) => categoryId !== id) : [...prev, id]
     );
