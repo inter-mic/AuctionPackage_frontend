@@ -46,7 +46,8 @@
     "react-toastify": "^10.0.6",
     "react-zoom-pan-pinch": "^3.7.0",
     "slick-carousel": "^1.8.1",
-    "sockjs-client": "^1.6.1"
+    "sockjs-client": "^1.6.1",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@eslint/css": "^0.8.1",
