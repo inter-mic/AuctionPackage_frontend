@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: process.env.ENV_FILE ?? ".env.local" });
 import logger from "./logger.mjs";
 import { CommonWebSocketServer } from "./commonWebSocketServer.mjs";
 
