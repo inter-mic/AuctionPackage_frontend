@@ -27,6 +27,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         NODE_OPTIONS: "--max-old-space-size=1024",
+        ENV_FILE: "/opt/next-app/shared/.env.production",
       },
       watch: false,
       autorestart: true,
@@ -46,6 +47,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         NODE_OPTIONS: "--max-old-space-size=1024",
+        ENV_FILE: "/opt/next-app/shared/.env.production",
       },
       watch: false,
       autorestart: true,
@@ -65,6 +67,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         NODE_OPTIONS: "--max-old-space-size=1024",
+        ENV_FILE: "/opt/next-app/shared/.env.production",
       },
       watch: false,
       autorestart: true,
