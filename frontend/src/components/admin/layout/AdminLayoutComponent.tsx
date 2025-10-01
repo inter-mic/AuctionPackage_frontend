@@ -1,24 +1,38 @@
-import Head from 'next/head';
-import { ToastContainer } from 'react-toastify';
+import Head from "next/head";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //コンポーネント
-import { HeaderComponent } from '@/components/admin/layout/HeaderComponent';
-import styles from '@/styles/admin/Layout.module.css';
+import { HeaderComponent } from "@/components/admin/layout/HeaderComponent";
+import styles from "@/styles/admin/Layout.module.css";
 //スタイル
-import toastStyles from '@/styles/toast.module.css';
-import { PageProps } from '@/types/admin/adminPage';
+import toastStyles from "@/styles/toast.module.css";
+import { PageProps } from "@/types/admin/adminPage";
 
-export const AdminLayoutComponent: React.FC<PageProps> = ({ userName, pageTitle, faviconImagePath, logoImagePath, kengen,children }) => {
+export const AdminLayoutComponent: React.FC<PageProps> = ({
+  userName,
+  pageTitle,
+  faviconImagePath,
+  logoImagePath,
+  liveauction,
+  livebit,
+  kengen,
+  children,
+}) => {
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
         {faviconImagePath && <link rel="icon" href={faviconImagePath} />}
       </Head>
-      
-      <HeaderComponent  userName={userName}logoImagePath={logoImagePath || ""} kengen={kengen}/>
+
+      <HeaderComponent
+        userName={userName}
+        logoImagePath={logoImagePath || ""}
+        kengen={kengen}
+        liveauction={liveauction}
+        livebit={livebit}
+      />
       <div className={styles.contentWrapper}>
-     
         <div className={styles.mainContent}>
           <main className={styles.main}>
             {children}
