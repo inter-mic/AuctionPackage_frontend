@@ -79,7 +79,7 @@
 }
 .rakusatsuPriceRow {
   display: flex;
-  gap: 50px;
+  gap: 10px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -87,7 +87,12 @@
   font-weight: 600;
   line-height: 1.2;
 }
-
+.rakusatsuPrice {
+  color: #cb5201;
+  font-size: 2.8rem;
+  margin: 0;
+  line-height: 1;
+}
 .detailContainer {
   padding: 5px 0;
   margin: 10px 0;

@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+---
+
+# プロジェクト構造ガイド
+
+このプロジェクトはNext.jsベースのオークションシステムのフロントエンドです。
+
+## 主要なディレクトリ構造
+
+- **pages/**: Next.jsのページコンポーネント
+  - `admin/`: 管理者向けページ
+  - `member/`: 会員向けページ
+  - `goods/`: 商品関連ページ
+  - `live/`: ライブオークション関連ページ
+
+- **src/components/**: 再利用可能なコンポーネント
+  - `admin/`: 管理者向けコンポーネント
+  - `member/`: 会員向けコンポーネント
+  - `ui/`: 汎用UIコンポーネント
+  - `common/`: 共通コンポーネント
+
+- **src/hooks/**: カスタムフック
+  - `api/`: API関連フック
+  - `useApiRequest.tsx`: メインのAPIリクエストフック
+
+- **src/types/**: TypeScript型定義
+  - `admin/`: 管理者向け型定義
+  - `member/`: 会員向け型定義
+  - `common/`: 共通型定義
+
+- **src/styles/**: CSSスタイル
+  - `admin/`: 管理者向けスタイル
+  - `member/`: 会員向けスタイル
+
+- **src/config/**: 設定ファイル
+  - `texts.ts`: 多言語対応テキスト設定
+
+## 重要なファイル
+
+- [package.json](mdc:package.json): プロジェクトの依存関係とスクリプト
+- [tsconfig.json](mdc:tsconfig.json): TypeScript設定
+- [next.config.mjs](mdc:next.config.mjs): Next.js設定
+- [tailwind.config.cjs](mdc:tailwind.config.cjs): Tailwind CSS設定
+- [pages/_app.tsx](mdc:pages/_app.tsx): アプリケーションのエントリーポイント

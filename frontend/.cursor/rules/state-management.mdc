@@ -1,0 +1,127 @@
+---
+description: 状態管理とデータフローのパターン
+---
+
+# 状態管理パターン
+
+## ローカル状態管理
+
+### useState の使用パターン
+```typescript
+// フォームデータ
+const [formData, setFormData] = useState<TFormData>({
+  field1: "",
+  field2: "",
+});
+
+// ローディング状態
+const [isLoading, setIsLoading] = useState(false);
+
+// エラー状態
+const [errors, setErrors] = useState<Errors>({});
+```
+
+### フォーム状態の更新
+```typescript
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setFormData(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+```
+
+## カスタムフック
+
+### useCommonSetup
+```typescript
+const { useState, useEffect, texts } = useCommonSetup();
+```
+- 共通の状態管理
+- 多言語対応
+- よく使用されるフックの統合
+
+### API関連フック
+```typescript
+// データ取得
+const { data, fetchData } = useDataAPI();
+
+// データ送信
+const { submitData, isLoading } = useSubmitAPI();
+```
+
+## グローバル状態
+
+### 認証状態
+- セッション情報
+- ユーザー権限
+- ログイン状態
+
+### アプリケーション設定
+- システム設定
+- 画像パス
+- 権限情報
+
+## データフロー
+
+### 親子コンポーネント間
+```typescript
+// 親コンポーネント
+const ParentComponent = () => {
+  const [data, setData] = useState(null);
+  
+  return (
+    <ChildComponent 
+      data={data}
+      onDataChange={setData}
+    />
+  );
+};
+
+// 子コンポーネント
+interface Props {
+  data: any;
+  onDataChange: (data: any) => void;
+}
+```
+
+### イベント処理
+```typescript
+// フォーム送信
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  
+  try {
+    const result = await apiRequest(/* ... */);
+    if (result.status === 200) {
+      // 成功処理
+    }
+  } catch (error) {
+    // エラー処理
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
+## パフォーマンス最適化
+
+### useMemo と useCallback
+```typescript
+const memoizedValue = useMemo(() => {
+  return expensiveCalculation(data);
+}, [data]);
+
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b);
+}, [a, b]);
+```
+
+### 条件付きレンダリング
+```typescript
+{isLoading && <LoadingSpinner />}
+{errors && <ErrorMessage errors={errors} />}
+{data && <DataDisplay data={data} />}
+```

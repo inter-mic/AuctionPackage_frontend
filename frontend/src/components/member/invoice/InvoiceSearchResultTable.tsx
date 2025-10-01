@@ -50,3 +50,4 @@ export const InvoiceSearchResultTable: React.FC<InvoiceSearchResultTableProps> =
     </div>
   );
 };
+

@@ -19,7 +19,6 @@ export const useGoodsSearchAPI = () => {
       setErrors(responseData);
     } else if (status == 200 && responseData) {
       setGoodsList(responseData);
-
     }
   };
 

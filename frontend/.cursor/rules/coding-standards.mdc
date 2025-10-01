@@ -1,0 +1,60 @@
+---
+globs: *.ts,*.tsx
+---
+
+# コーディング規約
+
+## TypeScript/React規約
+
+### インポート順序
+1. React関連のインポート
+2. 外部ライブラリのインポート
+3. 内部コンポーネントのインポート
+4. 型定義のインポート
+5. APIフックのインポート
+6. スタイルのインポート
+
+例：
+```typescript
+import React from "react";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+//カスタムフック
+import { useCommonSetup } from "@/hooks/useCommonSetup";
+//型定義
+import { TAdminUserRegistRequest } from "@/types/admin/member/register";
+//コンポーネント
+import { TodofukenPullDown } from "@/components/ui/pulldowns/TodofukenPullDown";
+//API
+import { useUserAddinfoItemAPI } from "@/hooks/api/public/useUserAddinfoItemAPI";
+//スタイル
+import styles from "@/styles/CommonRegister.module.css";
+```
+
+### コンポーネント命名
+- コンポーネント名はPascalCase
+- ファイル名はコンポーネント名と同じ
+- 例：`MemberFormFields.tsx`
+
+### 型定義
+- 型名は`T`プレフィックスを使用
+- 例：`TAdminUserRegistRequest`
+
+### フック命名
+- カスタムフックは`use`プレフィックス
+- APIフックは`use[機能名]API`
+- 例：`useApiRequest`, `useUserAddinfoItemAPI`
+
+### スタイル
+- CSS Modulesを使用
+- クラス名はcamelCase
+- 例：`styles.commonInput`
+
+### エラーハンドリング
+- APIエラーは`useApiRequest`フックで統一処理
+- フォームエラーは`Errors`型を使用
+- トースト通知でユーザーにフィードバック
+
+### 日本語コメント
+- コード内のコメントは日本語で記述
+- セクション分けのコメントを使用

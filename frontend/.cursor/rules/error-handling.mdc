@@ -1,0 +1,163 @@
+---
+description: エラーハンドリングとバリデーションのパターン
+---
+
+# エラーハンドリング
+
+## APIエラーハンドリング
+
+### useApiRequestでの統一処理
+```typescript
+const { apiRequest } = useApiRequest();
+
+const result = await apiRequest(/* ... */);
+
+// ステータスコード別処理
+if (result.status === 200) {
+  // 成功処理
+} else if (result.status === 400) {
+  // バリデーションエラー
+  setErrors(result.data);
+} else if (result.status === 401) {
+  // 認証エラー（自動リダイレクト）
+} else if (result.status === 404) {
+  // データなし
+} else {
+  // システムエラー
+}
+```
+
+### エラーメッセージの表示
+```typescript
+// トースト通知
+toast.error("エラーメッセージ");
+
+// フォームエラー
+{errors?.fieldName && (
+  <p className="error-message">{errors.fieldName}</p>
+)}
+```
+
+## フォームバリデーション
+
+### クライアントサイドバリデーション
+```typescript
+const validateForm = (data: FormData): Errors => {
+  const errors: Errors = {};
+  
+  if (!data.requiredField) {
+    errors.requiredField = "必須項目です";
+  }
+  
+  if (data.email && !isValidEmail(data.email)) {
+    errors.email = "正しいメールアドレスを入力してください";
+  }
+  
+  return errors;
+};
+```
+
+### リアルタイムバリデーション
+```typescript
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  
+  // 入力値を更新
+  setFormData(prev => ({ ...prev, [name]: value }));
+  
+  // エラーをクリア
+  if (errors[name]) {
+    setErrors(prev => ({ ...prev, [name]: undefined }));
+  }
+};
+```
+
+## 型安全なエラーハンドリング
+
+### Errors型の定義
+```typescript
+export type Errors = {
+  [key: string]: string | undefined;
+};
+```
+
+### エラー状態の管理
+```typescript
+const [errors, setErrors] = useState<Errors>({});
+
+// エラーの設定
+setErrors({
+  field1: "エラーメッセージ1",
+  field2: "エラーメッセージ2"
+});
+
+// エラーのクリア
+setErrors({});
+```
+
+## 非同期処理のエラーハンドリング
+
+### try-catch パターン
+```typescript
+const handleAsyncOperation = async () => {
+  try {
+    setIsLoading(true);
+    const result = await apiRequest(/* ... */);
+    // 成功処理
+  } catch (error) {
+    console.error('Operation failed:', error);
+    toast.error("操作に失敗しました");
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
+### Promise チェーン
+```typescript
+apiRequest(/* ... */)
+  .then(result => {
+    if (result.status === 200) {
+      // 成功処理
+    }
+  })
+  .catch(error => {
+    console.error('API Error:', error);
+    toast.error("通信エラーが発生しました");
+  });
+```
+
+## ユーザーフレンドリーなエラーメッセージ
+
+### エラーメッセージの多言語対応
+```typescript
+const { texts } = useLocale();
+
+// エラーメッセージの表示
+toast.error(texts.message.error400);
+```
+
+### エラーの分類
+- **バリデーションエラー**: 入力値の問題
+- **認証エラー**: ログインが必要
+- **権限エラー**: アクセス権限なし
+- **システムエラー**: サーバー側の問題
+- **ネットワークエラー**: 通信の問題
+
+## ログとデバッグ
+
+### エラーログの記録
+```typescript
+console.error('Error details:', {
+  message: error.message,
+  stack: error.stack,
+  context: 'ComponentName'
+});
+```
+
+### 開発環境でのデバッグ
+```typescript
+if (process.env.NODE_ENV === 'development') {
+  console.log('Debug info:', debugData);
+}
+```

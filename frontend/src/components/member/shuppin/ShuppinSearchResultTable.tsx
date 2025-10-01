@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { TSpnSelect } from "@/types/member/shuppin";
+import { DetailButton } from "@/components/ui/buttons/member/detailButton";
 
 interface ShuppinSearchResultTableProps {
   resultsList: TSpnSelect[];
@@ -35,7 +36,7 @@ export const ShuppinSearchResultTable: React.FC<ShuppinSearchResultTableProps> =
             )}
             <th className="py-2 px-4 border-b">{texts.goods.kekkaStatus}</th>
             <th className="py-2 px-4 border-b">{texts.goods.rakusatsuPrice}</th>
-            <th className="py-2 px-4 border-b"></th>
+            <th className="py-2 px-4 border-b w-40"></th>
           </tr>
         </thead>
         <tbody>
@@ -67,14 +68,9 @@ export const ShuppinSearchResultTable: React.FC<ShuppinSearchResultTableProps> =
                   )}
                   <td className="py-2 px-4 border-b text-right">{result.auctionKekkaStatusName}</td>
                   <td className="py-2 px-4 border-b text-right">{result.rakusatsuPrice}</td>
-                  <td className="py-2 px-4 border-b text-center">
-                    {result.isDisplayKikan && (
-                      <button
-                        onClick={() => handleDetailClick(result.goodsId)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
-                      >
-                        詳細
-                      </button>
+                  <td className="py-2 px-4 border-b text-center w-40">
+                    {result.displayKikan && (
+                      <DetailButton onClick={() => handleDetailClick(result.goodsId)} />
                     )}
                   </td>
                 </tr>

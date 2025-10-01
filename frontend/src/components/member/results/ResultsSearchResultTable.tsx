@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { TResultsSelect } from "@/types/member/results";
+import { DetailButton } from "@/components/ui/buttons/member/detailButton";
 
 interface ResultsSearchResultTableProps {
   resultsList: TResultsSelect[];
@@ -26,7 +27,7 @@ export const ResultsSearchResultTable: React.FC<ResultsSearchResultTableProps> =
             <th className="py-2 px-4 border-b">{texts.goods.lot}</th>
             <th className="py-2 px-4 border-b">{texts.goods.goodsName}</th>
             <th className="py-2 px-4 border-b">{texts.goods.rakusatsuPrice}</th>
-            <th className="py-2 px-4 border-b"></th>
+            <th className="py-2 px-4 border-b w-40"></th>
           </tr>
         </thead>
         <tbody>
@@ -49,14 +50,9 @@ export const ResultsSearchResultTable: React.FC<ResultsSearchResultTableProps> =
                   <td className="py-2 px-4 border-b text-left">{result.lot}</td>
                   <td className="py-2 px-4 border-b text-left">{result.goodsName}</td>
                   <td className="py-2 px-4 border-b text-right">{result.rakusatsuPrice}</td>
-                  <td className="py-2 px-4 border-b text-center">
-                    {result.isDisplayKikan && (
-                      <button
-                        onClick={() => handleDetailClick(result.goodsId)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
-                      >
-                        詳細
-                      </button>
+                  <td className="py-2 px-4 border-b text-center w-40">
+                    {result.displayKikan && (
+                      <DetailButton onClick={() => handleDetailClick(result.goodsId)} />
                     )}
                   </td>
                 </tr>

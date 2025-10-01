@@ -103,7 +103,7 @@ export const texts = {
     riyoKiyakuDelete: "利用規約削除",
     privacyPolicyRegist: "プライバシーポリシー登録",
     privacyPolicyDelete: "プライバシーポリシー削除",
-    detail: "詳しく見る",
+    detail: "商品情報",
     toGoodsList: "出品一覧を確認する",
     liveApplication: "ライブ参加申込",
     bidToggle: "入札する",

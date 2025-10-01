@@ -1,0 +1,86 @@
+---
+alwaysApply: true
+---
+# API関連パターン
+
+## APIリクエストの基本パターン
+
+### useApiRequestフックの使用
+```typescript
+const { apiRequest, isLoading } = useApiRequest();
+
+const handleSubmit = async () => {
+  const result = await apiRequest(
+    "admin", // エンドポイント区分
+    "/api/endpoint", // エンドポイント
+    "POST", // メソッド
+    requestData, // リクエストボディ
+    "成功メッセージ", // 成功時のメッセージ
+    true, // JSONレスポンスを返すか
+    headers, // 追加ヘッダー
+    true // トーストを表示するか
+  );
+};
+```
+
+### エンドポイント区分
+- `"admin"`: 管理者向けAPI
+- `"member"`: 会員向けAPI  
+- `"public"`: 公開API
+
+### レスポンス処理
+- 200: 成功
+- 400: バリデーションエラー（エラーデータを返す）
+- 401: 認証エラー（自動リダイレクト）
+- 404: データなし
+- 500: システムエラー
+
+## カスタムAPIフックの作成
+
+### パターン
+```typescript
+export const use[機能名]API = () => {
+  const { apiRequest } = useApiRequest();
+  
+  const [data, setData] = useState(null);
+  
+  const fetchData = async (params) => {
+    const result = await apiRequest(
+      "endpointKbn",
+      "/api/endpoint",
+      "GET",
+      null,
+      "",
+      true
+    );
+    
+    if (result.status === 200) {
+      setData(result.data);
+    }
+  };
+  
+  return { data, fetchData };
+};
+```
+
+## 認証とセッション管理
+
+### 管理者認証
+- `withAdminAuth.ts`を使用
+- セッション確認とリダイレクト処理
+
+### 会員認証
+- `withMemberAuth.ts`を使用
+- ログイン状態の確認
+
+## 多言語対応
+
+### テキストの取得
+```typescript
+const { texts } = useLocale();
+// texts.member.userName などでアクセス
+```
+
+### APIリクエスト時の言語設定
+- `Accept-Language`ヘッダーで自動設定
+- ルーターのlocaleを使用

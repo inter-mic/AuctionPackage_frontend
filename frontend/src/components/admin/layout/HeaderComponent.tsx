@@ -20,9 +20,17 @@ interface HeaderProps {
   userName: string | null;
   logoImagePath: string;
   kengen: KengenMap[];
+  liveauction: boolean;
+  livebit: boolean;
 }
 
-export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps) {
+export function HeaderComponent({
+  userName,
+  logoImagePath,
+  kengen,
+  liveauction,
+  livebit,
+}: HeaderProps) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
@@ -158,46 +166,50 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
                 )}
               </ul>
             )}
-            <li className={styles.toggleMenu} onClick={() => toggleSubMenu("live")}>
-              {texts.menu.adminLiveTitle}
-            </li>
-            {isSubMenusOpen["live"] && (
-              <ul className={styles.adminDropdown}>
-                {hasPermission(kengen, 350) && (
-                  <li>
-                    <Link href="/admin/live/auctioneer?spnKbn=1">
-                      {texts.menu.adminAuctionner_1}
-                    </Link>
-                  </li>
+            {(livebit || liveauction) && (
+              <>
+                <li className={styles.toggleMenu} onClick={() => toggleSubMenu("live")}>
+                  {texts.menu.adminLiveTitle}
+                </li>
+                {isSubMenusOpen["live"] && (
+                  <ul className={styles.adminDropdown}>
+                    {hasPermission(kengen, 350) && (
+                      <li>
+                        <Link href="/admin/live/auctioneer?spnKbn=1">
+                          {texts.menu.adminAuctionner_1}
+                        </Link>
+                      </li>
+                    )}
+                    {hasPermission(kengen, 350) && (
+                      <li>
+                        <Link href="/admin/live/auctioneer?spnKbn=2">
+                          {texts.menu.adminAuctionner_2}
+                        </Link>
+                      </li>
+                    )}
+                    {hasPermission(kengen, 351) && (
+                      <li>
+                        <Link href="/admin/live/bidunit">{texts.menu.adminLiveBidUnitRegist}</Link>
+                      </li>
+                    )}
+                    {hasPermission(kengen, 352) && (
+                      <li>
+                        <Link href="/admin/live/message">{texts.menu.adminLiveMessageRegist}</Link>
+                      </li>
+                    )}
+                    {hasPermission(kengen, 353) && (
+                      <li>
+                        <Link href="/admin/live/paddle">{texts.menu.adminPaddleManagement}</Link>
+                      </li>
+                    )}
+                    {hasPermission(kengen, 354) && (
+                      <li>
+                        <Link href="/admin/live/screen">{texts.menu.adminLiveScreen}</Link>
+                      </li>
+                    )}
+                  </ul>
                 )}
-                {hasPermission(kengen, 350) && (
-                  <li>
-                    <Link href="/admin/live/auctioneer?spnKbn=2">
-                      {texts.menu.adminAuctionner_2}
-                    </Link>
-                  </li>
-                )}
-                {hasPermission(kengen, 351) && (
-                  <li>
-                    <Link href="/admin/live/bidunit">{texts.menu.adminLiveBidUnitRegist}</Link>
-                  </li>
-                )}
-                {hasPermission(kengen, 352) && (
-                  <li>
-                    <Link href="/admin/live/message">{texts.menu.adminLiveMessageRegist}</Link>
-                  </li>
-                )}
-                {hasPermission(kengen, 353) && (
-                  <li>
-                    <Link href="/admin/live/paddle">{texts.menu.adminPaddleManagement}</Link>
-                  </li>
-                )}
-                {hasPermission(kengen, 354) && (
-                  <li>
-                    <Link href="/admin/live/screen">{texts.menu.adminLiveScreen}</Link>
-                  </li>
-                )}
-              </ul>
+              </>
             )}
             <li className={styles.toggleMenu} onClick={() => toggleSubMenu("staff")}>
               {texts.menu.adminStaffTitle}
@@ -365,12 +377,12 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
                           <Link href="/admin/auction/register">{texts.menu.adminKaisaiRegist}</Link>
                         </li>
                       )}
-                      {hasPermission(kengen, 204) && (
+                      {hasPermission(kengen, 302) && (
                         <li>
                           <Link href="/admin/auction/bid/search">{texts.menu.adminBidList}</Link>
                         </li>
                       )}
-                      {hasPermission(kengen, 205) && (
+                      {hasPermission(kengen, 303) && (
                         <li>
                           <Link href="/admin/auction/bid/logSearch">
                             {texts.menu.adminBidLogList}
@@ -379,51 +391,57 @@ export function HeaderComponent({ userName, logoImagePath, kengen }: HeaderProps
                       )}
                     </ul>
                   )}
-                  <div className={styles.menuItem} onClick={() => toggleSubMenu("live")}>
-                    {texts.menu.adminLiveTitle}
-                    <span>{isSubMenusOpen["live"] ? <RemoveIcon /> : <AddIcon />}</span>
-                  </div>
-                  {isSubMenusOpen["live"] && (
-                    <ul className={styles.subMenu}>
-                      {hasPermission(kengen, 350) && (
-                        <li>
-                          <Link href="/admin/live/auctioneer?spnKbn=1">
-                            {texts.menu.adminAuctionner_1}
-                          </Link>
-                        </li>
+                  {(livebit || liveauction) && (
+                    <>
+                      <div className={styles.menuItem} onClick={() => toggleSubMenu("live")}>
+                        {texts.menu.adminLiveTitle}
+                        <span>{isSubMenusOpen["live"] ? <RemoveIcon /> : <AddIcon />}</span>
+                      </div>
+                      {isSubMenusOpen["live"] && (
+                        <ul className={styles.subMenu}>
+                          {hasPermission(kengen, 350) && (
+                            <li>
+                              <Link href="/admin/live/auctioneer?spnKbn=1">
+                                {texts.menu.adminAuctionner_1}
+                              </Link>
+                            </li>
+                          )}
+                          {hasPermission(kengen, 350) && (
+                            <li>
+                              <Link href="/admin/live/auctioneer?spnKbn=2">
+                                {texts.menu.adminAuctionner_2}
+                              </Link>
+                            </li>
+                          )}
+                          {hasPermission(kengen, 351) && (
+                            <li>
+                              <Link href="/admin/live/bidunit">
+                                {texts.menu.adminLiveBidUnitRegist}
+                              </Link>
+                            </li>
+                          )}
+                          {hasPermission(kengen, 352) && (
+                            <li>
+                              <Link href="/admin/live/message">
+                                {texts.menu.adminLiveMessageRegist}
+                              </Link>
+                            </li>
+                          )}
+                          {hasPermission(kengen, 353) && (
+                            <li>
+                              <Link href="/admin/live/paddle">
+                                {texts.menu.adminPaddleManagement}
+                              </Link>
+                            </li>
+                          )}
+                          {hasPermission(kengen, 354) && (
+                            <li>
+                              <Link href="/admin/live/screen">{texts.menu.adminLiveScreen}</Link>
+                            </li>
+                          )}
+                        </ul>
                       )}
-                      {hasPermission(kengen, 350) && (
-                        <li>
-                          <Link href="/admin/live/auctioneer?spnKbn=2">
-                            {texts.menu.adminAuctionner_2}
-                          </Link>
-                        </li>
-                      )}
-                      {hasPermission(kengen, 351) && (
-                        <li>
-                          <Link href="/admin/live/bidunit">
-                            {texts.menu.adminLiveBidUnitRegist}
-                          </Link>
-                        </li>
-                      )}
-                      {hasPermission(kengen, 352) && (
-                        <li>
-                          <Link href="/admin/live/message">
-                            {texts.menu.adminLiveMessageRegist}
-                          </Link>
-                        </li>
-                      )}
-                      {hasPermission(kengen, 353) && (
-                        <li>
-                          <Link href="/admin/live/paddle">{texts.menu.adminPaddleManagement}</Link>
-                        </li>
-                      )}
-                      {hasPermission(kengen, 354) && (
-                        <li>
-                          <Link href="/admin/live/screen">{texts.menu.adminLiveScreen}</Link>
-                        </li>
-                      )}
-                    </ul>
+                    </>
                   )}
                   <div className={styles.menuItem} onClick={() => toggleSubMenu("staff")}>
                     {texts.menu.adminStaffTitle}

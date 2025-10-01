@@ -10,6 +10,7 @@ import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
 import { useImageClickHandler } from "@/hooks/useImageClickHandler";
 import { usePopupNavigation } from "@/hooks/usePopupNavigation";
 import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
+import { useGoodsListContext } from "@/contexts/GoodsListContext";
 //コンポーネント
 import FavoriteToggle from "@/components/member/goods/FavoriteToggleComponent";
 import BidModuleComponent from "@/components/member/auction/BidModuleComponent";
@@ -18,12 +19,11 @@ import { ImageWrapperComponent } from "@/components/member/goods/ImageWrapperCom
 //API
 import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/common/useGoodsSearchByGoodsIdAPI";
 import { useGoodsSearchImageAPI } from "@/hooks/api/common/useGoodsSearchImageAPI";
-import { useGoodsSearchBeforeAfterLotAPI } from "@/hooks/api/common/useGoodsSearchBeforeAfterLotAPI";
 import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAPI";
-
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
 import { TGoodsImageData } from "@/types/common/goodsImage";
+import { TGoodsSelect } from "@/types/common/goods";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/goods/GoodsDetail.module.css";
@@ -35,12 +35,19 @@ interface Props extends TPageProps {
   isLogin: boolean;
   canBid: boolean;
   loginUserId: number;
+  goodsList?: TGoodsSelect[]; // 商品一覧の検索結果を追加
 }
 
-const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid }) => {
+const MemberGoodsSearchPageComponent: React.FC<Props> = ({
+  isLogin,
+  loginUserId,
+  canBid,
+  goodsList,
+}) => {
   const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const params = useSearchParams();
   const paramsGoodsId = params ? params.get("goodsId") : null;
+  const { goodsList: contextGoodsList } = useGoodsListContext();
   const { goodsAddInfo } = useGoodsAddinfoItemAPI();
   const { fetchGoodsData, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
@@ -90,25 +97,44 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({ isLogin, loginUserId,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchImages]);
 
-  //LOT前後
-  const { beforeAfterGoodsId, goodsSearchBeforeAfterLotAPI } = useGoodsSearchBeforeAfterLotAPI();
-  useEffect(() => {
-    const auctionSeq = localGoodsData?.auctionSeq ?? 0;
-    const lot = localGoodsData?.lot ?? "";
-    if (auctionSeq != 0 && lot != "") {
-      goodsSearchBeforeAfterLotAPI(auctionSeq, lot, isLogin);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localGoodsData?.auctionSeq, localGoodsData?.lot]);
-
+  // 商品一覧ベースの前後ナビゲーション
   const [beforeGoodsId, setBeforeGoodsId] = useState<number | undefined>(undefined);
   const [afterGoodsId, setAfterGoodsId] = useState<number | undefined>(undefined);
+
   useEffect(() => {
-    if (beforeAfterGoodsId) {
-      setBeforeGoodsId(beforeAfterGoodsId.beforeGoodsId);
-      setAfterGoodsId(beforeAfterGoodsId.afterGoodsId);
+    // プロップスまたはコンテキストから商品一覧を取得
+    const availableGoodsList = goodsList || contextGoodsList;
+
+    if (availableGoodsList && availableGoodsList.length > 0 && paramsGoodsId) {
+      const currentGoodsId = Number(paramsGoodsId);
+      const currentIndex = availableGoodsList.findIndex(
+        (goods) => goods.goodsId === currentGoodsId
+      );
+
+      if (currentIndex !== -1) {
+        // 前の商品IDを設定
+        const beforeIndex = currentIndex - 1;
+        setBeforeGoodsId(beforeIndex >= 0 ? availableGoodsList[beforeIndex].goodsId : undefined);
+
+        // 次の商品IDを設定
+        const afterIndex = currentIndex + 1;
+        setAfterGoodsId(
+          afterIndex < availableGoodsList.length
+            ? availableGoodsList[afterIndex].goodsId
+            : undefined
+        );
+      } else {
+        // 商品一覧に現在の商品が見つからない場合は、前後ボタンを無効化
+        setBeforeGoodsId(undefined);
+        setAfterGoodsId(undefined);
+      }
+    } else {
+      // 商品一覧が提供されていない場合は、前後ボタンを無効化
+      setBeforeGoodsId(undefined);
+      setAfterGoodsId(undefined);
     }
-  }, [beforeAfterGoodsId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [goodsList, contextGoodsList, paramsGoodsId]);
 
   //タイムアウト防止のためセッション延長
   useSessionExtension({ isLogin });

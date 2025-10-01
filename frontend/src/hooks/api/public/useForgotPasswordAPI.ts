@@ -28,6 +28,7 @@ export const useForgotPasswordAPI = () => {
       setErrors(responseData);
     } else {
       setResponseData(responseData);
+      setMail("");
     }
   };
 

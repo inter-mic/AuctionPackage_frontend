@@ -53,6 +53,33 @@ const Page: React.FC<TPageProps> = () => {
     );
   };
 
+  // YearMonthPullDownのデフォルト値をmarketParamsに反映
+  useEffect(() => {
+    if (yearMonth && yearMonth.length > 0) {
+      // 6ヶ月前の年月を計算
+      const getSixMonthsAgo = (): string => {
+        const now = new Date();
+        const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+        const year = sixMonthsAgo.getFullYear();
+        const month = String(sixMonthsAgo.getMonth() + 1).padStart(2, '0');
+        return `${year}${month}`;
+      };
+
+      const sixMonthsAgo = getSixMonthsAgo();
+      const sixMonthsAgoIndex = yearMonth.findIndex(item => item.yearMonth >= sixMonthsAgo);
+      const defaultFromValue = sixMonthsAgoIndex !== -1 ? yearMonth[sixMonthsAgoIndex].yearMonth : yearMonth[yearMonth.length - 1].yearMonth;
+      const defaultToValue = yearMonth[0].yearMonth;
+
+      // marketParamsにデフォルト値を設定
+      if (!marketParams.auctionKikanFrom) {
+        formChange({ target: { name: "auctionKikanFrom", value: defaultFromValue } } as React.ChangeEvent<HTMLInputElement>);
+      }
+      if (!marketParams.auctionKikanTo) {
+        formChange({ target: { name: "auctionKikanTo", value: defaultToValue } } as React.ChangeEvent<HTMLInputElement>);
+      }
+    }
+  }, [yearMonth, marketParams.auctionKikanFrom, marketParams.auctionKikanTo, formChange]);
+
   const [fetchMarketList, setFetchMarketList] = useState<TMarketSelect[]>([]);
   const formSearch = async () => {
     const params = {
@@ -70,6 +97,9 @@ const Page: React.FC<TPageProps> = () => {
   }, [marketList]);
   const formClear = () => {
     resetForm();
+    setSelectedCategories([]);
+    setSelectedAuctionKikanFrom(null);
+    setSelectedAuctionKikanTo(null);
   };
   const itemsPerPage = Number(`${process.env.NEXT_PUBLIC_PAGE_SIZE}`);
   const sortConfig = {
@@ -126,7 +156,7 @@ const Page: React.FC<TPageProps> = () => {
                   <YearMonthPullDown
                     onChange={(value) => handleAuctionKikan("auctionKikanFrom", value, true)}
                     selectedId={
-                      selectedAuctionKikanFrom !== null ? String(selectedAuctionKikanFrom) : ""
+                      selectedAuctionKikanFrom !== null ? String(selectedAuctionKikanFrom) : marketParams.auctionKikanFrom
                     }
                     yearMonth={yearMonth}
                     isFrom={true}
@@ -137,7 +167,7 @@ const Page: React.FC<TPageProps> = () => {
                   <YearMonthPullDown
                     onChange={(value) => handleAuctionKikan("auctionKikanTo", value, false)}
                     selectedId={
-                      selectedAuctionKikanTo !== null ? String(selectedAuctionKikanTo) : ""
+                      selectedAuctionKikanTo !== null ? String(selectedAuctionKikanTo) : marketParams.auctionKikanTo
                     }
                     yearMonth={yearMonth}
                     isFrom={false}

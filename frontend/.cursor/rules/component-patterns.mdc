@@ -1,0 +1,106 @@
+---
+globs: *.tsx
+---
+
+# コンポーネントパターン
+
+## コンポーネント構造
+
+### 基本的なコンポーネント構造
+```typescript
+import React from "react";
+// 必要なインポート
+
+interface Props {
+  // プロパティの型定義
+}
+
+export const ComponentName: React.FC<Props> = ({ prop1, prop2 }) => {
+  // カスタムフック
+  const { texts } = useCommonSetup();
+  
+  // 状態管理
+  const [state, setState] = useState(initialValue);
+  
+  // イベントハンドラー
+  const handleEvent = () => {
+    // 処理
+  };
+  
+  // レンダリング
+  return (
+    <div>
+      {/* JSX */}
+    </div>
+  );
+};
+```
+
+## フォームコンポーネント
+
+### フォームフィールドのパターン
+```typescript
+<div>
+  <div className="flex items-center">
+    <RequiredMark />
+    <label htmlFor="fieldName" className="formlabel">
+      {texts.member.fieldName}
+    </label>
+  </div>
+  <input
+    id="fieldName"
+    name="fieldName"
+    type="text"
+    value={formData.fieldName || ""}
+    onChange={handleChange}
+    className={`${styles.commonInput} ${styles.input50}`}
+  />
+  {errors?.fieldName && (
+    <p className={`error-message ${styles.input50}`}>{errors.fieldName}</p>
+  )}
+</div>
+```
+
+### フォームバリデーション
+- `Errors`型を使用
+- エラーメッセージは日本語で表示
+- 必須項目には`<RequiredMark />`を使用
+
+## UIコンポーネント
+
+### ボタンコンポーネント
+- `src/components/ui/buttons/`に配置
+- 用途別に分類（Primary, Secondary, Danger等）
+
+### プルダウンコンポーネント
+- `src/components/ui/pulldowns/`に配置
+- データ取得と選択状態管理を含む
+
+### ダイアログコンポーネント
+- `src/components/ui/dialog/`に配置
+- モーダル表示とイベント処理
+
+## レイアウトコンポーネント
+
+### 管理者レイアウト
+- `src/components/admin/layout/`に配置
+- 認証状態の確認
+- 権限に基づくメニュー表示
+
+### 会員レイアウト
+- `src/components/member/layout/`に配置
+- 会員向けナビゲーション
+
+## スタイリング
+
+### CSS Modules
+- コンポーネント固有のスタイル
+- クラス名はcamelCase
+
+### Tailwind CSS
+- ユーティリティクラス
+- レスポンシブデザイン
+
+### 共通スタイル
+- `src/styles/globals.css`
+- テーブル、フォーム等の共通スタイル

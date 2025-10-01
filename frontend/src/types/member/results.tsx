@@ -10,6 +10,6 @@ export type TResultsSelect = {
   lot: string;
   rakusatsuPrice: string;
   thumbnailImageUrl: string;
-  isDisplayKikan: boolean;
+  displayKikan: boolean;
   [key: string]: any;
 };

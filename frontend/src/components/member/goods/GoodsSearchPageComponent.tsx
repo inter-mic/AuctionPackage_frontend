@@ -2,6 +2,7 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useGoodsListContext } from "@/contexts/GoodsListContext";
 import { useSortHandler } from "@/hooks/sort/useSortHandler";
 import { usePageChange } from "@/hooks/paging/usePageChange";
 //コンポーネント
@@ -47,6 +48,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
   const { goodsCount, goodsCountAPI } = useGoodsCountAPI();
   const [fetchGoodsList, setFetchGoodsList] = useState<TGoodsSelect[]>([]);
   const { goodsParams, formChange, resetForm } = useGoodsSearchParams();
+  const { setGoodsList } = useGoodsListContext();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const toggleFilter = () => setIsFilterOpen((prev) => !prev);
   const params = useSearchParams();
@@ -76,10 +78,11 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auctionKeisaiChuList]);
   useEffect(() => {
-    if (goodsList) {
+    if (goodsList && goodsList.length > 0) {
       setFetchGoodsList(goodsList);
+      setGoodsList(goodsList); // コンテキストに商品一覧を保存
     }
-  }, [goodsList]);
+  }, [goodsList, setGoodsList]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const [checkboxStates, setCheckboxStates] = useState({

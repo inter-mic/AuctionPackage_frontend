@@ -1,0 +1,132 @@
+---
+globs: *.css,*.tsx
+---
+
+# スタイリングガイドライン
+
+## CSS Modules
+
+### ファイル命名
+- コンポーネント名 + `.module.css`
+- 例：`CommonRegister.module.css`
+
+### クラス命名規則
+```css
+/* camelCase を使用 */
+.commonInput {
+  /* スタイル */
+}
+
+.input50 {
+  width: 50%;
+}
+
+.input100 {
+  width: 100%;
+}
+
+.errorMessage {
+  color: #f56565;
+  font-size: 0.875rem;
+}
+```
+
+### 使用例
+```typescript
+import styles from "@/styles/CommonRegister.module.css";
+
+<input className={`${styles.commonInput} ${styles.input50}`} />
+```
+
+## Tailwind CSS
+
+### レスポンシブデザイン
+```typescript
+<div className="lg:w-3/12 sm:w-full">
+  {/* 大画面: 25%, 小画面: 100% */}
+</div>
+
+<div className="flex items-center space-x-2">
+  {/* フレックスレイアウト */}
+</div>
+```
+
+### よく使用されるクラス
+- `flex items-center`: フレックス中央揃え
+- `space-x-2`: 横方向のスペース
+- `w-full`: 幅100%
+- `text-center`: テキスト中央揃え
+- `error-message`: エラーメッセージスタイル
+
+## グローバルスタイル
+
+### テーブルスタイル
+```css
+table {
+  width: 100%;
+  background-color: white;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ede6e6;
+  text-align: right;
+}
+
+th {
+  background-color: #979DA6;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+```
+
+### フォームスタイル
+```css
+.formlabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4B5563;
+}
+
+.error-message {
+  background-color: #fca5a5;
+}
+```
+
+## レスポンシブデザイン
+
+### ブレークポイント
+- `sm`: 640px以上
+- `md`: 768px以上
+- `lg`: 1024px以上
+- `xl`: 1280px以上
+
+### モバイル対応
+```css
+@media (max-width: 768px) {
+  .auction-prev-arrow,
+  .auction-next-arrow {
+    display: none;
+  }
+}
+```
+
+## コンポーネント別スタイル
+
+### ボタン
+- Primary: メインアクション
+- Secondary: サブアクション
+- Danger: 削除等の危険なアクション
+
+### フォーム
+- 必須項目: `<RequiredMark />`を使用
+- エラー表示: 赤背景のエラーメッセージ
+- 入力フィールド: 統一されたスタイル
+
+### テーブル
+- ヘッダー: グレー背景
+- セル: 白背景、薄いボーダー
+- レスポンシブ: 横スクロール対応

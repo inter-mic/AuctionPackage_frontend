@@ -173,6 +173,21 @@
   opacity: 0.65;
 }
 
+.detailButton {
+  height: 2.5rem;
+  background-color: #dca42f;
+  color: #fff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 2px 0;
+}
+
+.detailButton:hover {
+  opacity: 0.65;
+}
+
 @media (max-width: 768px) {
   .loginButton,
   .signupButton,

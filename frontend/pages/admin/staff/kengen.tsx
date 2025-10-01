@@ -112,7 +112,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   };
 
   const [kengenIdData, setKengenIdData] = useState<number>();
-  const { kengenGroupRegist } = useKengenGroupRegistAPI();
+  const { kengenGroupRegist, kengenRegistErrors } = useKengenGroupRegistAPI();
   const handleSubmit = () => {
     if (kengenIdData) {
       kengenGroupRegist(kengenIdData, formattedData);
@@ -153,7 +153,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       {kengenData && kengenData.length > 0 ? (
         <div className="flex flex-col items-center justify-center my-3 bg-gray-100">
           <div className="w-full space-y-3 bg-white shadow-md md:max-w-full md:rounded">
-            <div className="p-4 xl:w-1/5 sm:w-full">
+            <div className="p-4 xl:w-1/2 sm:w-full">
               <label className={styles.label}>
                 <RequiredMark />
                 {texts.kengen.kengenName}
@@ -166,7 +166,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                 onChange={handleKengenNameChange}
                 className={`${styles.input}`}
               />
-              {errors?.kengenName && <p className="error-message">{errors.kengenName}</p>}
+              {kengenRegistErrors?.kengenName && (
+                <p className="error-message">{kengenRegistErrors.kengenName}</p>
+              )}
             </div>
             <div className="p-4">
               <div className="mx-2 text-left">{texts.kengen.kengen_note_1}</div>
