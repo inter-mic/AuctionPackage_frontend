@@ -5,6 +5,7 @@ module.exports = {
       cwd: "/opt/next-app/current/AuctionPackage_frontend/frontend",
       script: "npm",
       args: "start",
+      env_file: "/opt/next-app/shared/.env.production",
       env: {
         NODE_ENV: "production",
         NODE_OPTIONS: "--max-old-space-size=1024",

@@ -3,18 +3,12 @@ import { GetServerSidePropsContext } from "next";
 export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => {
   const cookieHeader = context.req.headers["cookie"] ?? "";
   
-  // HttpOnly Cookieの存在確認
-  const hasSecureCookies = cookieHeader.includes('sessionId') || cookieHeader.includes('authToken');
-  const hasHttpOnlyCookies = cookieHeader.includes('sessionId') && cookieHeader.includes('authToken');
-  
   const response = await fetch(`${process.env.NEXT_PUBLIC_MEMBER_API_URL}authCheck`, {
     method: "POST",
     credentials: "include",
     headers: {
       Cookie: cookieHeader,
       'Content-Type': 'application/json',
-      'X-Secure-Cookies': hasSecureCookies ? 'true' : 'false',
-      'X-HttpOnly-Cookies': hasHttpOnlyCookies ? 'true' : 'false',
     },
   });
   
