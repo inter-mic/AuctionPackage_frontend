@@ -70,7 +70,10 @@ export function middleware(request: NextRequest) {
     });
 
     if (secureCookies.length > 0) {
-      response.headers.set("Set-Cookie", secureCookies);
+      // 複数のクッキーを個別に設定
+      secureCookies.forEach(cookie => {
+        response.headers.append("Set-Cookie", cookie);
+      });
     }
   }
 
