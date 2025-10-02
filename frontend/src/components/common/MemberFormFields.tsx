@@ -579,8 +579,8 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
       {userAddinfo.map(
         (data) =>
           data.userAddinfo && (
-            <>
-              <div key={data.seq}>
+            <React.Fragment key={data.seq}>
+              <div>
                 <label htmlFor="" className="formlabel">
                   {data.userAddinfo}
                 </label>
@@ -593,7 +593,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
                   className={`${styles.commonInput} ${styles.input100}`}
                 />
               </div>
-            </>
+            </React.Fragment>
           )
       )}
     </>
