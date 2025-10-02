@@ -11,6 +11,7 @@ export interface SecurityHeadersConfig {
   contentSecurityPolicy: boolean;
   xXSSProtection: boolean;
   httpOnlyCookies: boolean;
+  cacheControl: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export const getDefaultSecurityHeadersConfig = (): SecurityHeadersConfig => {
     contentSecurityPolicy: true,
     xXSSProtection: true,
     httpOnlyCookies: true,
+    cacheControl: true, // キャッシュ防止
   };
 };
 
@@ -42,6 +44,14 @@ export const getXContentTypeOptionsHeader = (): string => {
  */
 export const getXXSSProtectionHeader = (): string => {
   return '1; mode=block';
+};
+
+/**
+ * Cache-Controlヘッダーの設定
+ * キャッシュを防止して情報漏洩を防ぐ
+ */
+export const getCacheControlHeader = (): string => {
+  return 'no-store, no-cache, must-revalidate, proxy-revalidate';
 };
 
 /**
@@ -66,6 +76,14 @@ export const generateSecurityHeaders = (config: SecurityHeadersConfig = getDefau
   // 機微情報の漏洩を防止（リファラー情報を一切送信しない）
   if (config.referrerPolicy) {
     headers['Referrer-Policy'] = config.referrerPolicy;
+  }
+
+  // Cache-Control: no-store
+  // キャッシュを防止して情報漏洩を防ぐ
+  if (config.cacheControl) {
+    headers['Cache-Control'] = getCacheControlHeader();
+    headers['Pragma'] = 'no-cache';
+    headers['Expires'] = '0';
   }
 
   return headers;
@@ -109,6 +127,7 @@ export const validateSecurityHeaders = (headers: Record<string, string>): {
   xssProtection: boolean;
   frameProtection: boolean;
   referrerPolicy: boolean;
+  cacheControl: boolean;
   overallSecurity: boolean;
   allRecommendations: string[];
 } => {
@@ -116,14 +135,16 @@ export const validateSecurityHeaders = (headers: Record<string, string>): {
   const xssProtection = headers['x-xss-protection'] === '1; mode=block';
   const frameProtection = !!headers['x-frame-options'];
   const referrerPolicy = !!headers['referrer-policy'];
+  const cacheControl = headers['cache-control']?.includes('no-store') || false;
 
-  const overallSecurity = mimeSniffing.isSecure && xssProtection && frameProtection && referrerPolicy;
+  const overallSecurity = mimeSniffing.isSecure && xssProtection && frameProtection && referrerPolicy && cacheControl;
 
   const allRecommendations = [
     ...mimeSniffing.recommendations,
     ...(xssProtection ? [] : ['X-XSS-Protectionヘッダーを追加してください']),
     ...(frameProtection ? [] : ['X-Frame-Optionsヘッダーを追加してください']),
     ...(referrerPolicy ? [] : ['Referrer-Policyヘッダーを追加してください']),
+    ...(cacheControl ? [] : ['Cache-Controlヘッダーにno-storeを追加してください']),
   ];
 
   return {
@@ -131,6 +152,7 @@ export const validateSecurityHeaders = (headers: Record<string, string>): {
     xssProtection,
     frameProtection,
     referrerPolicy,
+    cacheControl,
     overallSecurity,
     allRecommendations,
   };

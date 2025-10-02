@@ -4,6 +4,8 @@ import { getSecureCookieOptions, validateCookieSecurity } from "@/utils/cookieUt
 import { getFrameOptionsForPath, generateCSPFrameAncestors } from "@/utils/frameProtectionUtils";
 import { generateSecurityHeaders } from "@/utils/securityHeadersUtils";
 import { getCSPConfigForPath, generateCSPHeader } from "@/utils/cspUtils";
+import { migrateAWSALBCookies, isAWSALBCookie } from "@/utils/awsAlbCookieUtils";
+import { replaceAWSALBCookies } from "@/utils/awsAlbCookieReplacement";
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -29,6 +31,11 @@ export function middleware(request: NextRequest) {
     response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   }
 
+  // Cache-Controlヘッダーの設定（キャッシュ防止）
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+
   // セキュアなクッキーの検証と移行処理
   const existingCookies = request.cookies.getAll();
   const cookieMap: Record<string, string> = {};
@@ -41,12 +48,17 @@ export function middleware(request: NextRequest) {
   const sessionCookies = ["sessionId", "authToken", "userId", "userName"];
   const needsMigration = sessionCookies.some((name) => cookieMap[name]);
 
+  // AWS ALBクッキーを検出
+  const awsAlbCookies = ["AWSALB", "AWSALBCORS"];
+  const hasAwsAlbCookies = awsAlbCookies.some((name) => cookieMap[name]);
+
   // 既存のCookieにセキュア属性がない場合の警告と移行
   const hasInsecureCookies = existingCookies.some(
     (cookie) =>
       (cookie.name.includes("session") ||
        cookie.name.includes("auth") ||
-       cookie.name.includes("token")) &&
+       cookie.name.includes("token") ||
+       awsAlbCookies.includes(cookie.name)) &&
       !cookie.name.includes("__Host-") // 既にセキュアなクッキーでない場合
   );
 
@@ -61,6 +73,7 @@ export function middleware(request: NextRequest) {
     // セッション関連のクッキーをセキュア属性付きで再設定
     const secureCookies: string[] = [];
     
+    // セッション関連クッキーの処理
     sessionCookies.forEach((cookieName) => {
       const cookieValue = cookieMap[cookieName];
       if (cookieValue) {
@@ -68,6 +81,11 @@ export function middleware(request: NextRequest) {
         secureCookies.push(secureCookie);
       }
     });
+
+    // AWS ALBクッキーの処理（削除と代替）
+    const { deletionCookies, replacementCookies } = replaceAWSALBCookies(cookieMap);
+    secureCookies.push(...deletionCookies);
+    secureCookies.push(...replacementCookies);
 
     if (secureCookies.length > 0) {
       // 複数のクッキーを個別に設定

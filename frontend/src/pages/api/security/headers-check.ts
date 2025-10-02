@@ -33,6 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'X-Frame-Options': res.getHeader('X-Frame-Options') || 'Not Set',
       'Content-Security-Policy': res.getHeader('Content-Security-Policy') || 'Not Set',
       'Referrer-Policy': res.getHeader('Referrer-Policy') || 'Not Set',
+      'Cache-Control': res.getHeader('Cache-Control') || 'Not Set',
+      'Pragma': res.getHeader('Pragma') || 'Not Set',
+      'Expires': res.getHeader('Expires') || 'Not Set',
       'Strict-Transport-Security': res.getHeader('Strict-Transport-Security') || 'Not Set',
     };
 
