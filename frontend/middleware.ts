@@ -4,8 +4,7 @@ import { getSecureCookieOptions, validateCookieSecurity } from "@/utils/cookieUt
 import { getFrameOptionsForPath, generateCSPFrameAncestors } from "@/utils/frameProtectionUtils";
 import { generateSecurityHeaders } from "@/utils/securityHeadersUtils";
 import { getCSPConfigForPath, generateCSPHeader } from "@/utils/cspUtils";
-import { migrateAWSALBCookies, isAWSALBCookie } from "@/utils/awsAlbCookieUtils";
-import { replaceAWSALBCookies } from "@/utils/awsAlbCookieReplacement";
+
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -82,10 +81,6 @@ export function middleware(request: NextRequest) {
       }
     });
 
-    // AWS ALBクッキーの処理（削除と代替）
-    const { deletionCookies, replacementCookies } = replaceAWSALBCookies(cookieMap);
-    secureCookies.push(...deletionCookies);
-    secureCookies.push(...replacementCookies);
 
     if (secureCookies.length > 0) {
       // 複数のクッキーを個別に設定

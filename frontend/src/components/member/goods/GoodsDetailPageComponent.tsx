@@ -153,14 +153,6 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
   // お気に入りトグル時の処理
   const { handleFavoriteToggle } = useFavoriteToggle(setLocalGoodsData);
 
-  // タブ複製機能
-  const handleDuplicateTabs = () => {
-    const currentUrl = window.location.href;
-    for (let i = 0; i < tabCount; i++) {
-      window.open(currentUrl, "_blank");
-    }
-  };
-
   return (
     <>
       <div className={styles.headerContainer}>
@@ -187,30 +179,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
         )}
       </div>
 
-      {/* タブ複製機能 */}
-      <div
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#f5f5f5",
-          borderBottom: "1px solid #ddd",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-        }}
-      >
-        <TextField
-          type="number"
-          label="タブ数"
-          value={tabCount}
-          onChange={(e) => setTabCount(Math.max(1, parseInt(e.target.value) || 1))}
-          inputProps={{ min: 1, max: 10 }}
-          size="small"
-          style={{ width: "120px" }}
-        />
-        <Button variant="contained" onClick={handleDuplicateTabs} size="small">
-          タブを複製
-        </Button>
-      </div>
+     
 
       <div className={`${memberStyles.memberContainer} py-5`}>
         <ImageWrapperComponent

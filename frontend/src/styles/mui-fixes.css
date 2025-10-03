@@ -1,0 +1,51 @@
+/* Material-UIのCSSクラス名の一貫性を保つための修正 */
+
+/* MuiSvgIconのクラス名を統一 */
+.MuiSvgIcon-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: content-box;
+  outline: 0;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  text-decoration: none;
+  color: inherit;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.MuiSvgIcon-fontSizeMedium {
+  font-size: 1.5rem;
+}
+
+.MuiSvgIcon-fontSizeSmall {
+  font-size: 1.25rem;
+}
+
+.MuiSvgIcon-fontSizeLarge {
+  font-size: 2.1875rem;
+}
+
+/* 一貫性を保つための追加スタイル */
+.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
+  font-size: 1.5rem !important;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+  .MuiSvgIcon-fontSizeMedium {
+    font-size: 1.25rem;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .MuiSvgIcon-root {
+    color: inherit;
+  }
+}
