@@ -194,7 +194,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
             <div className={styles.lotLeft}>
               {isLogin ? (
                 <>
-                  {beforeGoodsId !== 0 && (
+                  {beforeGoodsId !== undefined && beforeGoodsId !== 0 && (
                     <Link href={`/member/goods/detail?goodsId=${beforeGoodsId}`} passHref>
                       <KeyboardArrowLeftIcon className={styles.clickableIcon} />
                     </Link>
@@ -202,7 +202,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
                   <span className={styles.lotLabel}>
                     {texts.goods.lot} {localGoodsData?.lot}
                   </span>
-                  {afterGoodsId !== 0 && (
+                  {afterGoodsId !== undefined && afterGoodsId !== 0 && (
                     <Link href={`/member/goods/detail?goodsId=${afterGoodsId}`} passHref>
                       <KeyboardArrowRightIcon className={styles.clickableIcon} />
                     </Link>
@@ -210,7 +210,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
                 </>
               ) : (
                 <>
-                  {beforeGoodsId !== 0 && (
+                  {beforeGoodsId !== undefined && beforeGoodsId !== 0 && (
                     <Link href={`/goods/detail?goodsId=${beforeGoodsId}`} passHref>
                       <KeyboardArrowLeftIcon className={styles.clickableIcon} />
                     </Link>
@@ -218,7 +218,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
                   <span className={styles.lotLabel}>
                     {texts.goods.lot} {localGoodsData?.lot}
                   </span>
-                  {afterGoodsId !== 0 && (
+                  {afterGoodsId !== undefined && afterGoodsId !== 0 && (
                     <Link href={`/goods/detail?goodsId=${afterGoodsId}`} passHref>
                       <KeyboardArrowRightIcon className={styles.clickableIcon} />
                     </Link>

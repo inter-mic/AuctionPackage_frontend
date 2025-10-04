@@ -304,7 +304,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
         <div className={styles.goodsRowInfo}>
           <div className="flex items-center gap-1">
             <>
-              <Favorite className="text-gray-500" />
+              <Favorite sx={{ color: "#6b7280 !important" }} />
               <span className={`${styles.bidCount}`}>{fetchGoodsData?.favoriteCount}</span>
             </>
           </div>
@@ -315,7 +315,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
                   <div></div>
                 ) : (
                   <>
-                    <GavelIcon className="text-gray-500" />
+                    <GavelIcon sx={{ color: "#6b7280 !important" }} />
                     <span
                       className={`${styles.bidCount} ${isPriceUpdated ? styles.priceUpdated : ""}`}
                     >
@@ -326,7 +326,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
               </div>
               <div className="flex items-center gap-1">
                 <>
-                  <AccessTimeIcon className="text-gray-500" />
+                  <AccessTimeIcon sx={{ color: "#6b7280 !important" }} />
                   <span className={styles.remainingTime}>
                     <RemainingTimeComponent initialTime={bidState.remainingTime || ""} />
                   </span>

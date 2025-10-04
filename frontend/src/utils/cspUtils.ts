@@ -48,7 +48,7 @@ export const getDefaultCSPConfig = (): CSPConfig => {
     directives: {
       'default-src': ["'self'"],
       'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // 開発環境用
-      'style-src': ["'self'", "'unsafe-inline'"],
+      'style-src': ["'self'", "'unsafe-inline'", "data:"],
       'img-src': ["'self'", "data:", "https:"],
       'font-src': ["'self'", "data:"],
       'connect-src': apiUrls,
@@ -86,7 +86,7 @@ export const getProductionCSPConfig = (): CSPConfig => {
     directives: {
       'default-src': ["'self'"],
       'script-src': ["'self'"], // 本番環境ではunsafe-inlineを削除
-      'style-src': ["'self'"], // 本番環境ではunsafe-inlineを削除
+      'style-src': ["'self'", "'unsafe-inline'", "data:"], // Material-UIのインラインスタイルとdata URIを許可
       'img-src': ["'self'", "data:", "https:"],
       'font-src': ["'self'", "data:"],
       'connect-src': apiUrls,

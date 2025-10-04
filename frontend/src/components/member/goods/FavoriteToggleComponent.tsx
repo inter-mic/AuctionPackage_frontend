@@ -39,10 +39,15 @@ const FavoriteToggleComponent: React.FC<Props> = ({ goodsId, initialFavoriteStat
   return (
     <Checkbox
       icon={<FavoriteBorder />}
-      checkedIcon={<Favorite sx={{ color: "red" }} />}
+      checkedIcon={<Favorite sx={{ color: "#f44336" }} />}
       checked={isFavorite}
       onChange={(event, checked) => toggleFavorite(event, checked)}
-      sx={{ color: "gray" }}
+      sx={{ 
+        color: "gray",
+        '&.Mui-checked': {
+          color: '#f44336', // 赤色を明示的に設定
+        },
+      }}
       onClick={handleFavoriteClick as React.MouseEventHandler<HTMLButtonElement>}
     />
   );

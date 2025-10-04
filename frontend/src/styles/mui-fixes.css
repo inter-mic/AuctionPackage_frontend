@@ -49,3 +49,17 @@
     color: inherit;
   }
 }
+
+/* お気に入りボタンの色を明示的に設定 */
+.MuiCheckbox-root.Mui-checked {
+  color: #f44336 !important;
+}
+
+.MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
+  color: #f44336 !important;
+}
+
+/* お気に入りアイコンの色を明示的に設定 */
+.MuiCheckbox-root .MuiSvgIcon-root[data-testid="FavoriteIcon"] {
+  color: #f44336 !important;
+}
