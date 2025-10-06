@@ -1,0 +1,65 @@
+name: Deploy via CodeDeploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: {}  # コンソールから手動実行も可
+
+permissions:
+  id-token: write      # ← OIDC必須
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-1
+  ROLE_ARN: arn:aws:iam::443370689486:role/mic-dev-codeDeploy    # ←あなたのロールARN
+  ARTIFACT_BUCKET: inter-mic-codedeploy                          # ←あなたのバケット名
+  APP_NAME: mic-dev-AuctionPackage-frontend                      # ←CodeDeployのアプリ名
+  DG_NAME: mic-dev-AuctionPackage-frontend                       # ←CodeDeployのデプロイグループ名
+  PREFIX: mic-dev/AuctionPackage-frontend                        # ←S3の保存先プレフィックス
+  BUNDLE_NAME: deployment.zip
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: codedeploy-${{ github.ref }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # （任意）Node のセットアップと依存解決をここで行ってもOK
+      # Next.jsの "ビルド済み" を上げたいならこの後に npm ci / npm run build を実行し、
+      # .next も含めてzipへ。EC2でビルドする運用なら不要。
+      # - uses: actions/setup-node@v4
+      #   with: { node-version: "20" }
+      # - run: npm ci && npm run build
+
+      - name: Create bundle
+        run: |
+          zip -r "${{ env.BUNDLE_NAME }}" . -x ".git/*" ".next/cache/*" "node_modules/*"
+          ls -lh ${{ env.BUNDLE_NAME }}
+
+      - name: Upload bundle to S3 (timestamped + latest)
+        run: |
+          TS=$(date +%Y%m%d%H%M%S)
+          S3_KEY_TS="${{ env.PREFIX }}/$TS/${{ env.BUNDLE_NAME }}"
+          S3_KEY_LATEST="${{ env.PREFIX }}/latest/${{ env.BUNDLE_NAME }}"
+          aws s3 cp "${{ env.BUNDLE_NAME }}" "s3://${{ env.ARTIFACT_BUCKET }}/${S3_KEY_TS}"
+          aws s3 cp "${{ env.BUNDLE_NAME }}" "s3://${{ env.ARTIFACT_BUCKET }}/${S3_KEY_LATEST}"
+          echo "S3_KEY_LATEST=$S3_KEY_LATEST" >> $GITHUB_ENV
+
+      - name: Create CodeDeploy deployment
+        run: |
+          aws deploy create-deployment \
+            --application-name "${{ env.APP_NAME }}" \
+            --deployment-group-name "${{ env.DG_NAME }}" \
+            --s3-location bucket=${{ env.ARTIFACT_BUCKET }},key=${{ env.S3_KEY_LATEST }},bundleType=zip \
+            --file-exists-behavior OVERWRITE
