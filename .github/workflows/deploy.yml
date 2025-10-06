@@ -11,7 +11,7 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-1
-  ROLE_ARN: arn:aws:iam::443370689486:role/mic-dev-codeDeploy    # ←あなたのロールARN
+  ROLE_ARN: arn:aws:iam::443370689486:role/mic-dev-github        # ←あなたのロールARN
   ARTIFACT_BUCKET: inter-mic-codedeploy                          # ←あなたのバケット名
   APP_NAME: mic-dev-AuctionPackage-frontend                      # ←CodeDeployのアプリ名
   DG_NAME: mic-dev-AuctionPackage-frontend                       # ←CodeDeployのデプロイグループ名
