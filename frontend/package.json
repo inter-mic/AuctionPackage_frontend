@@ -11,7 +11,8 @@
     "node": "node server.js",
     "dev:stg": "dotenv -e .env.local.stg -- next dev",
     "build:stg": "dotenv -e .env.local.stg -- next build",
-    "start:stg": "dotenv -e .env.local.stg -- next start"
+    "start:stg": "dotenv -e .env.local.stg -- next start",
+    "package:deploy": "zip -r ../deploy.zip appspec.yml scripts/ package.json package-lock.json tsconfig.json next.config.js public/ src/ .npmrc -x \"node_modules/*\" \".next/cache/*\" \".git/*\""
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
