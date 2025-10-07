@@ -3,7 +3,7 @@ os: linux
 
 files:
   # S3のzipの中身（リポジトリルート）を一旦ここへ展開
-  - source: /
+  - source: frontend/
     destination: /opt/next-app/_incoming
     overwrite: true
 
