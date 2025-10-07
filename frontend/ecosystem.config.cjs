@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "frontend",
-      cwd: "/opt/next-app/current/AuctionPackage_frontend/frontend",
+      cwd: "/opt/next-app/current/",
       script: "npm",
       args: "start",
       env_file: "/opt/next-app/shared/.env.production",
