@@ -137,3 +137,4 @@ export const generateFrameTestHTML = (targetUrl: string): string => {
 </html>
   `;
 };
+

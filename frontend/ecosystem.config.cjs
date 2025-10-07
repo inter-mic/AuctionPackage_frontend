@@ -5,11 +5,11 @@ module.exports = {
       cwd: "/opt/next-app/current/",
       script: "npm",
       args: "start",
-      env_file: "/opt/next-app/shared/.env.production",
       env: {
         NODE_ENV: "production",
         NODE_OPTIONS: "--max-old-space-size=1024",
         PORT: "3000",
+        ENV_FILE: "/opt/next-app/shared/.env.production",
       },
       watch: false,
       autorestart: true,

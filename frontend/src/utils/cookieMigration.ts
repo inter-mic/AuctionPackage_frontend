@@ -105,3 +105,4 @@ export const validateCookieMigration = (cookieHeaders: string[]): boolean => {
            header.includes('SameSite=');
   });
 };
+

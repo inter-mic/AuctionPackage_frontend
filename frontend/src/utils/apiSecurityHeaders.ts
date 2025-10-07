@@ -60,3 +60,4 @@ export const validateApiSecurityHeaders = (res: NextApiResponse): {
     missingHeaders,
   };
 };
+

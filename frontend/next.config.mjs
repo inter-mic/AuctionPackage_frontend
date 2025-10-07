@@ -2,6 +2,9 @@
 const nextConfig = {
   poweredByHeader: false,
   transpilePackages: ["mui-file-input"],
+  // Amazon Linux上でのパス設定
+  basePath: process.env.NODE_ENV === 'production' ? '/current' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/current' : '',
   // Material-UIのCSSクラス名の一貫性を保つ
   compiler: {
     emotion: true,
