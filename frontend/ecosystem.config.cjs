@@ -23,7 +23,7 @@ module.exports = {
     },
     {
       name: "nodeApp",
-      cwd: "/opt/next-app/current/AuctionPackage_frontend/frontend",
+      cwd: "/opt/next-app/current",
       script: "./nodeApp.mjs",
       env: {
         NODE_ENV: "production",
@@ -43,7 +43,7 @@ module.exports = {
     },
     {
       name: "nodeBatch",
-      cwd: "/opt/next-app/current/AuctionPackage_frontend/frontend",
+      cwd: "/opt/next-app/current",
       script: "./nodeBatch.mjs",
       env: {
         NODE_ENV: "production",
@@ -63,7 +63,7 @@ module.exports = {
     },
     {
       name: "nodeLive",
-      cwd: "/opt/next-app/current/AuctionPackage_frontend/frontend",
+      cwd: "/opt/next-app/current",
       script: "./nodeLive.mjs",
       env: {
         NODE_ENV: "production",
