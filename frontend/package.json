@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "dotenv -e ${ENV_FILE:-.env.local} -- next start",
+    "start": "next start",
     "lint": "next lint",
     "node": "node server.js",
     "dev:stg": "dotenv -e .env.local.stg -- next dev",
