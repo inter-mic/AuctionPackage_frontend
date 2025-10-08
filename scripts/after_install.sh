@@ -6,27 +6,38 @@ INCOMING="$BASE/_incoming"
 TS="$(date +%Y%m%d%H%M%S)"
 RELEASE_DIR="$BASE/releases/$TS"
 
-# リリースを作成して中身を移動
+# 権限（appuser 実行前提。BeforeInstall で一度 chown 済みなら不要）
+# sudo chown -R appuser:appuser "$BASE" || true
+
+# リリース作成 & 受領物配置
 mkdir -p "$RELEASE_DIR"
-# rsync で .git, node_modules, .next/cache などは不要なら除外
 rsync -a --delete \
   --exclude ".git" \
   --exclude "node_modules" \
   --exclude ".next/cache" \
   "$INCOMING"/ "$RELEASE_DIR"/
 
-# （任意）環境変数ファイルを各リリースに配置
-# 例：/opt/next-app/.env.production を配布
-if [ -f "$BASE/.env.production" ]; then
-  cp "$BASE/.env.production" "$RELEASE_DIR"/.env.production
+# 環境変数（任意）
+[ -f "$BASE/.env.production" ] && cp "$BASE/.env.production" "$RELEASE_DIR/.env.production"
+
+# ===== ここからアプリ直下でビルド（= current 直下に揃える） =====
+cd "$RELEASE_DIR"
+
+# 前提チェック（落ちるなら明示的に失敗させる）
+if [ ! -f package.json ]; then
+  echo "ERROR: package.json not found at $RELEASE_DIR" >&2; exit 20
+fi
+if [ ! -f package-lock.json ] && [ ! -f npm-shrinkwrap.json ]; then
+  echo "ERROR: lockfile not found at $RELEASE_DIR" >&2; exit 21
 fi
 
-# Node パッケージ & ビルド
-cd "$RELEASE_DIR"
-# pnpm / yarn ならここを差し替え
+# Node 依存 & ビルド
 npm ci
 npm run build
 
-# 古いリリースの自動削除（最新3つだけ残す）
+# 切替（current → 新リリース）
+ln -sfn "$RELEASE_DIR" "$BASE/current"
+
+# 古いリリースを整理（最新3つ残す）
 cd "$BASE/releases"
 ls -1dt */ | tail -n +4 | xargs -r rm -rf

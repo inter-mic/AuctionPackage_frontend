@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "frontend",
-      cwd: "/opt/next-app/current/",
+      cwd: "/opt/next-app/current",
       script: "npm",
       args: "start",
       env: {
