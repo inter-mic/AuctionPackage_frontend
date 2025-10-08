@@ -31,6 +31,18 @@ if [ ! -f package-lock.json ] && [ ! -f npm-shrinkwrap.json ]; then
   echo "ERROR: lockfile not found at $RELEASE_DIR" >&2; exit 21
 fi
 
+# 共有の .env をリリースにコピー
+ENV_SRC="/opt/next-app/shared/.env.production"
+ENV_DST="$RELEASE_DIR/.env.production"  
+
+if [ -s "$ENV_SRC" ]; then
+  umask 077                         # 600で落ちるように
+  cp "$ENV_SRC" "$ENV_DST"          # 所有者=appuserのままコピー
+  echo "Copied: $ENV_SRC -> $ENV_DST"
+else
+  echo "WARN: $ENV_SRC not found or empty" >&2
+fi
+
 # Node 依存 & ビルド
 npm ci
 npm run build
