@@ -2,9 +2,6 @@
 const nextConfig = {
   poweredByHeader: false,
   transpilePackages: ["mui-file-input"],
-  // Amazon Linux上でのパス設定
-  basePath: process.env.NODE_ENV === 'production' ? '/current' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/current' : '',
   // Material-UIのCSSクラス名の一貫性を保つ
   compiler: {
     emotion: true,
@@ -17,10 +14,13 @@ const nextConfig = {
   },
   // 環境変数の設定
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/',
-    NEXT_PUBLIC_MEMBER_API_URL: process.env.NEXT_PUBLIC_MEMBER_API_URL || 'http://localhost:3001/member/',
-    NEXT_PUBLIC_ADMIN_API_URL: process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3001/admin/',
-    NEXT_PUBLIC_PUBLIC_API_URL: process.env.NEXT_PUBLIC_PUBLIC_API_URL || 'http://localhost:3001/public/',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/",
+    NEXT_PUBLIC_MEMBER_API_URL:
+      process.env.NEXT_PUBLIC_MEMBER_API_URL || "http://localhost:3001/member/",
+    NEXT_PUBLIC_ADMIN_API_URL:
+      process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:3001/admin/",
+    NEXT_PUBLIC_PUBLIC_API_URL:
+      process.env.NEXT_PUBLIC_PUBLIC_API_URL || "http://localhost:3001/public/",
   },
   images: {
     remotePatterns: [
@@ -38,15 +38,15 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         has: [
           {
-            type: 'header',
-            key: 'x-forwarded-proto',
-            value: 'http',
+            type: "header",
+            key: "x-forwarded-proto",
+            value: "http",
           },
         ],
-        destination: 'https://:path*',
+        destination: "https://:path*",
         permanent: true,
       },
     ];
@@ -55,19 +55,19 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         headers: [
           {
-            key: 'Cache-Control',
-            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
           },
           {
-            key: 'Pragma',
-            value: 'no-cache',
+            key: "Pragma",
+            value: "no-cache",
           },
           {
-            key: 'Expires',
-            value: '0',
+            key: "Expires",
+            value: "0",
           },
         ],
       },
