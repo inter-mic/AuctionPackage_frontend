@@ -25,7 +25,6 @@ export interface CSPDirective {
 
 export interface CSPConfig {
   directives: CSPDirective;
-  reportUri?: string;
   reportOnly?: boolean;
 }
 
@@ -64,7 +63,6 @@ export const getDefaultCSPConfig = (): CSPConfig => {
       'upgrade-insecure-requests': true,
       'block-all-mixed-content': true,
     },
-    reportUri: '/api/security/csp-report',
     reportOnly: false,
   };
 };
@@ -102,7 +100,6 @@ export const getProductionCSPConfig = (): CSPConfig => {
       'upgrade-insecure-requests': true,
       'block-all-mixed-content': true,
     },
-    reportUri: '/api/security/csp-report',
     reportOnly: false,
   };
 };
@@ -129,9 +126,8 @@ export const formatCSPDirective = (directives: CSPDirective): string => {
  */
 export const generateCSPHeader = (config: CSPConfig = getDefaultCSPConfig()): string => {
   const directiveString = formatCSPDirective(config.directives);
-  const reportUri = config.reportUri ? `; report-uri ${config.reportUri}` : '';
   
-  return `Content-Security-Policy: ${directiveString}${reportUri}`;
+  return `Content-Security-Policy: ${directiveString}`;
 };
 
 /**
@@ -139,9 +135,8 @@ export const generateCSPHeader = (config: CSPConfig = getDefaultCSPConfig()): st
  */
 export const generateCSPReportOnlyHeader = (config: CSPConfig = getDefaultCSPConfig()): string => {
   const directiveString = formatCSPDirective(config.directives);
-  const reportUri = config.reportUri ? `; report-uri ${config.reportUri}` : '';
   
-  return `Content-Security-Policy-Report-Only: ${directiveString}${reportUri}`;
+  return `Content-Security-Policy-Report-Only: ${directiveString}`;
 };
 
 /**
@@ -178,31 +173,3 @@ export const getCSPConfigForPath = (pathname: string): CSPConfig => {
   return baseConfig;
 };
 
-/**
- * CSP違反の検証
- */
-export const validateCSPViolation = (report: any): {
-  isValid: boolean;
-  violations: string[];
-  recommendations: string[];
-} => {
-  const violations: string[] = [];
-  const recommendations: string[] = [];
-
-  if (report['blocked-uri']) {
-    violations.push(`Blocked resource: ${report['blocked-uri']}`);
-    recommendations.push(`Add ${report['blocked-uri']} to the appropriate CSP directive`);
-  }
-
-  if (report['violated-directive']) {
-    violations.push(`Violated directive: ${report['violated-directive']}`);
-  }
-
-  const isValid = violations.length === 0;
-
-  return {
-    isValid,
-    violations,
-    recommendations,
-  };
-};
