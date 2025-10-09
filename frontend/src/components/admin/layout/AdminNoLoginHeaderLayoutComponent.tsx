@@ -17,6 +17,10 @@ export const AdminNoLoginHeaderLayoutComponent: React.FC<PageProps> = ({
       <Head>
         <title>{pageTitle}</title>
         {faviconImagePath && <link rel="icon" href={faviconImagePath} />}
+        <meta httpEquiv="Cache-Control" content="no-store, no-cache, must-revalidate, proxy-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
       <div className={styles.contentWrapper}>
@@ -25,8 +29,7 @@ export const AdminNoLoginHeaderLayoutComponent: React.FC<PageProps> = ({
             {children}
             <ToastContainer
               position="top-center"
-              toastClassName={toastStyles.toastCustomWidth}
-              style={{ zIndex: 11000, top: 70 }}
+              toastClassName={`${toastStyles.toastCustomWidth} toast-high-z-index`}
             />
           </main>
         </div>

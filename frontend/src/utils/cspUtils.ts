@@ -158,8 +158,8 @@ export const getCSPConfigForPath = (pathname: string): CSPConfig => {
       directives: {
         ...baseConfig.directives,
         'frame-ancestors': ["'none'"], // 管理者ページは完全にフレーム内表示を禁止
-        'script-src': ["'self'"], // 管理者ページではunsafe-inlineを禁止
-        'style-src': ["'self'"], // 管理者ページではunsafe-inlineを禁止
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Material-UIとNext.jsのインラインスクリプトを許可
+        'style-src': ["'self'", "'unsafe-inline'", "data:"], // Material-UIのインラインスタイルとdata URIを許可
       },
     };
   }

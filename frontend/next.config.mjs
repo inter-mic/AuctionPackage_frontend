@@ -71,6 +71,38 @@ const nextConfig = {
           },
         ],
       },
+      // CSSファイル専用のキャッシュ防止設定
+      {
+        source: "/_next/static/css/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
+          },
+          {
+            key: "ETag",
+            value: `"${Date.now()}"`,
+          },
+        ],
+      },
+      // 静的ファイル全般のキャッシュ防止
+      {
+        source: "/_next/static/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+        ],
+      },
     ];
   },
 };

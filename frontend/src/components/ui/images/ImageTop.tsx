@@ -191,7 +191,7 @@ export const ImageTopList: React.FC<ImageSortableListProps> = ({ images, onImage
           items={images.map((image) => image.imageSeq)}
           strategy={verticalListSortingStrategy}
         >
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
+          <div className="image-container">
             {images.map((image) =>
               !image.isDeleteFlg ? (
                 <ImageThumbnail
@@ -222,16 +222,7 @@ export const ImageTopList: React.FC<ImageSortableListProps> = ({ images, onImage
       </DndContext>
 
       <div
-        style={{
-          width: "100%",
-          height: "100px",
-          border: "2px dashed #ccc",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: dropZoneActive ? "#e0e0e0" : "#f9f9f9",
-          marginTop: "20px",
-        }}
+        className={`drop-zone ${dropZoneActive ? "drop-zone-active" : ""}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}

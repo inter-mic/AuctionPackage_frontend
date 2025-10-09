@@ -68,10 +68,9 @@ export function HeaderComponent({
               <Image
                 src={logoImagePath}
                 alt=""
-                className={styles.logo}
                 width={100}
                 height={100} // 明示的に指定
-                style={{ width: "100px", height: "50px", objectFit: "contain" }}
+                className={`${styles.logo} logo-image`}
                 priority
               />
             )}
