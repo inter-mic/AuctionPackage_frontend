@@ -14,6 +14,7 @@ import withAdminLayout from "@/hocs/withAdminLayout";
 import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
+import { useDateTimeHandlers } from "@/hooks/useDateTimeHandlers";
 //API
 import { useAuctionGetInfoAPI } from "@/hooks/api/admin/auction/useAuctionGetInfoAPI";
 import { useAuctionRegistAPI } from "@/hooks/api/admin/auction/useAuctionRegistAPI";
@@ -85,39 +86,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     }
   };
 
-  const handleDateChange =
-    (field: keyof TAdminAuctionRegistRequest) => (date: Dayjs | null, name: string) => {
-      // Invalid Dateの場合は処理をスキップ
-      if (date && !date.isValid()) {
-        return;
-      }
-
-      setFetchedData((prev) => {
-        const updatedData = { ...prev, [field]: date };
-        return updatedData;
-      });
-      if (errors?.[name]) {
-        setFormErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: "",
-        }));
-      }
-    };
-
-  const handleTimeChange =
-    (field: keyof TAdminAuctionRegistRequest) => (time: string | null, name: string) => {
-      setFetchedData((prev) => {
-        const updatedData = { ...prev, [field]: time };
-        return updatedData;
-      });
-      if (errors?.[name]) {
-        setFormErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: "",
-        }));
-      }
-    };
-
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const handleImageFileChange = (file: File | null) => {
     setSelectedImageFile(file);
@@ -162,6 +130,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       fetchedData.onlinebidApplicationEndDate,
       fetchedData.onlinebidApplicationEndtime
     );
+
+    const paymentDeadlineDateString = fetchedData.paymentDeadlineDate 
+      ? fetchedData.paymentDeadlineDate.local().format('YYYY-MM-DD')
+      : null;
+
     const dataToSubmit = {
       ...fetchedData,
       auctionDatetime,
@@ -171,11 +144,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       bidEndtime,
       onlinebidApplicationStarttime,
       onlinebidApplicationEndtime,
+      paymentDeadlineDate: paymentDeadlineDateString as any, // API送信用に文字列として送信
       auctionDate: null,
       displayStartDate: null,
       displayEndDate: null,
       bidStartDate: null,
       bidEndDate: null,
+      
     };
     auctionRegist(dataToSubmit, selectedImageFile, selectedListFile);
   };
@@ -189,6 +164,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       setFormErrors(errors);
     }
   }, [errors]);
+
+  // 日付・時刻変更ハンドラー
+  const { handleDateChange, handleTimeChange } = useDateTimeHandlers({
+    setData: setFetchedData,
+    errors,
+    setFormErrors,
+  });
 
   //削除処理
   const { auctionDelete } = useAuctionDeleteAPI();

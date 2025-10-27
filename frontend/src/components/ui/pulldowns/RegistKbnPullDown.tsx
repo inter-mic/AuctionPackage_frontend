@@ -36,7 +36,7 @@ export const RegistKbnPullDown = ({ className, onChange, selectedId }: Props) =>
       value={selectedRegistKbn ?? ""}
     >
       <option value="1">{texts.goods.goodsId}</option>
-      <option value="2">{texts.goods.SKU}</option>
+      <option value="2">{texts.goods.sku}</option>
     </select>
   );
 };

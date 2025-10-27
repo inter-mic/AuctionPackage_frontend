@@ -164,6 +164,16 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (paramsGoodsId) {
       goodsSearchByGoodsIdAPI(true, Number(paramsGoodsId), "", "");
+    } else {
+      // goodsIdパラメータがない場合は新規登録としてフォームをリセット
+      setGoodsData(initialGoodsData);
+      setkekkaData(initialGoodsKekkaData);
+      setImages([]);
+      setSelectedKaisai("");
+      setSelectedCategory("");
+      setShimeFlg(false);
+      setBitFlg(false);
+      setFormErrors({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsGoodsId]);

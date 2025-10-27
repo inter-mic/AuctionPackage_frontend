@@ -56,7 +56,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (paramsUserId) {
       userGetInfo(paramsUserId);
     } else {
+      // userIdパラメータがない場合は新規登録としてフォームをリセット
       setMember({});
+      setFormErrors({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsUserId]);

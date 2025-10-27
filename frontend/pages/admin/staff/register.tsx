@@ -49,6 +49,10 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   useEffect(() => {
     if (paramsStaffId) {
       staffGetInfo(paramsStaffId);
+    } else {
+      // staffIdパラメータがない場合は新規登録としてフォームをリセット
+      setStaff({});
+      setFormErrors({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsStaffId]);

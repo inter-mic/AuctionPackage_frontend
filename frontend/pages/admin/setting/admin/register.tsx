@@ -356,23 +356,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               />
               {formErrors?.invoiceNo && <p className="error-message">{formErrors.invoiceNo}</p>}
             </div>
-            <div>
-              <label htmlFor="furikomiKozaName" className="block text-sm font-medium text-gray-700">
-                {texts.admin.furikomiKozaName}
-                {texts.admin.admin_note_4}
-              </label>
-              <input
-                id="furikomiKozaName"
-                name="furikomiKozaName"
-                type="text"
-                value={admin.furikomiKozaName || ""}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
-              />
-              {formErrors?.furikomiKozaName && (
-                <p className="error-message">{formErrors.furikomiKozaName}</p>
-              )}
-            </div>
+            
             <div>
               <label
                 htmlFor="furikomiGinkoName"
@@ -448,6 +432,23 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
               />
               {formErrors?.furikomiKozaNo && (
                 <p className="error-message">{formErrors.furikomiKozaNo}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="furikomiKozaName" className="block text-sm font-medium text-gray-700">
+                {texts.admin.furikomiKozaName}
+                {texts.admin.admin_note_4}
+              </label>
+              <input
+                id="furikomiKozaName"
+                name="furikomiKozaName"
+                type="text"
+                value={admin.furikomiKozaName || ""}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 mt-1 border  focus:outline-none `}
+              />
+              {formErrors?.furikomiKozaName && (
+                <p className="error-message">{formErrors.furikomiKozaName}</p>
               )}
             </div>
             {executionPermission(101, 2) && (

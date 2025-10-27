@@ -246,7 +246,6 @@ export const texts = {
     currentUserName: "最高額入札ユーザー名",
     currentCompanyName: "最高額入札会社名",
     sku: "自社管理番号",
-    SKU: "SKU",
     goodsSetsumei: "商品説明",
     goodsSetsumei_note1: "※縦に４行まで表示されます",
     biko: "備考",
@@ -402,7 +401,7 @@ export const texts = {
     kobutsuBango: "古物商番号",
     copyRight: "コピーライト",
     invoiceNo: "インボイス登録番号",
-    furikomiKozaName: "振込先口座名",
+    furikomiKozaName: "振込先口座名義（カナ）",
     furikomiGinkoName: "振込先銀行名",
     furikomiShitenName: "振込先支店名",
     furikomiKozaShurui: "振込先口座種類",
@@ -430,7 +429,7 @@ export const texts = {
     riyoKiyaku: "利用規約",
     privacyPolicy: "プライバシーポリシー",
     zipCodeUpload: "郵便番号データアップロード",
-    systemRegist_note_1: "※管理者のみ：会員側の画面で新規会員登録画面が非表示となります。",
+    systemRegist_note_1: "※管理者のみ：会員からの新規会員登録を受け付けない場合に設定してください。",
     systemRegist_note_2:
       "※承認する：会員側で新規会員登録があった場合、管理者側で承認作業をしたのちにログイン情報がメール送信されます。",
     systemRegist_note_3:
