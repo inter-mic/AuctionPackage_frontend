@@ -226,21 +226,23 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
                 </>
               )}
             </div>
-            {isLogin && (
-              <div className={styles.favoriteRight}>
-                {localGoodsData?.chumokuFlg && (
-                  <div className={styles.badge}>{texts.goods.chumokuFlg}</div>
-                )}
-                {loginUserId === Number(localGoodsData?.shuppinUserId) && (
-                  <div className={styles.badge}>{texts.label.mySpn}</div>
-                )}
-                <FavoriteToggle
-                  goodsId={Number(paramsGoodsId)}
-                  initialFavoriteState={localGoodsData?.myFavoriteFlg ?? false}
-                  onFavoriteToggle={handleFavoriteToggle}
-                />
-              </div>
-            )}
+            <div className={styles.favoriteRight}>
+              {localGoodsData?.chumokuFlg && (
+                <div className={styles.badge}>{texts.goods.chumokuFlg}</div>
+              )}
+              {isLogin && (
+                <>
+                  {loginUserId === Number(localGoodsData?.shuppinUserId) && (
+                    <div className={styles.badge}>{texts.label.mySpn}</div>
+                  )}
+                  <FavoriteToggle
+                    goodsId={Number(paramsGoodsId)}
+                    initialFavoriteState={localGoodsData?.myFavoriteFlg ?? false}
+                    onFavoriteToggle={handleFavoriteToggle}
+                  />
+                </>
+              )}
+            </div>
           </h2>
           <h2 className={styles.goodsName}>{localGoodsData?.goodsName}</h2>
 

@@ -64,7 +64,7 @@ export function HeaderComponent({
       <header className={styles.header}>
         <div className={styles.logo}>
           <Link href="/admin/dashboard">
-            {logoImagePath && (
+            {logoImagePath ? (
               <Image
                 src={logoImagePath}
                 alt=""
@@ -73,6 +73,8 @@ export function HeaderComponent({
                 className={`${styles.logo} logo-image`}
                 priority
               />
+            ) : (
+              <span className={styles.toggleMenu}>TOP</span>
             )}
           </Link>
         </div>

@@ -443,6 +443,8 @@ export const texts = {
     systemRegist_note_9: "※ファイル形式は.zipのみになります。",
     systemRegist_note_10:
       "※こちらのリンクからファイルをダウンロードして、アップロードしてください。",
+      systemRegist_note_11:
+      "※会員側のライブ参加画面に表示されます 。",
   },
   addInfoItem: {
     item: "項目",

@@ -281,7 +281,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
             <div className="w-full space-y-20">
               <form onSubmit={handleSystemSubmit} className="space-y-10">
                 <div className="content-area space-y-2">
-                  <div>{texts.system.memberRegistration}</div>
+                  <div className="text-xl font-medium">{texts.system.memberRegistration}</div>
                   <MemberRegistrationPullDown
                     className={`w-80 px-3 py-2 mt-1 border rounded-md `}
                     onChange={(value) =>
@@ -295,7 +295,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
                 </div>
 
                 <div className="content-area space-y-2">
-                  <div className="">{texts.system.memberApproval}</div>
+                  <div className="text-xl font-medium">{texts.system.memberApproval}</div>
                   <MemberApprovalPullDown
                     className={`w-80 px-3 py-2 mt-1 border rounded-md `}
                     onChange={(value) => handleMemberApprovalChange("memberApprovalFlg", value)}
@@ -308,7 +308,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
                 </div>
 
                 <div className="content-area space-y-2">
-                  <div>{texts.system.nologinView}</div>
+                  <div className="text-xl font-medium">{texts.system.nologinView}</div>
                   <NologinViewPullDown
                     className={`w-80 px-3 py-2 mt-1 border rounded-md `}
                     onChange={(value) => handleNologinViewChange("nologinView", value)}
@@ -318,8 +318,10 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
                 </div>
 
                 {optionLiveYoutube && (
+                  <>
                   <div className="content-area space-y-2">
-                    <div>{texts.system.youtubeLink}</div>
+                    <div className="text-xl font-medium">{texts.system.youtubeLink}</div>
+                    <div>{texts.system.systemRegist_note_11}</div>
                     <textarea
                       id="youtubeIframe"
                       name="youtubeIframe"
@@ -329,6 +331,8 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
                       className="w-full px-3 py-2 mt-1 border rounded-md "
                     />
                   </div>
+                 
+                  </>
                 )}
 
                 {executionPermission(503, 2) && (
@@ -348,7 +352,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
             <div className="w-full space-y-20">
               <form className="space-y-10">
                 <div className="content-area space-y-2">
-                  <div>{texts.system.faviconImage}</div>
+                  <div className="text-xl font-medium">{texts.system.faviconImage}</div>
                   {executionPermission(503, 2) && data && (
                     <>
                       {!faviconImageFlg ? (
@@ -385,7 +389,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
             <div className="w-full space-y-20">
               <form className="space-y-10">
                 <div className="content-area space-y-2">
-                  <div>{texts.system.logoImage}</div>
+                  <div className="text-xl font-medium">{texts.system.logoImage}</div>
                   {executionPermission(503, 2) && data && (
                     <>
                       {!logoImageFlg ? (
@@ -422,7 +426,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
             <div className="w-full space-y-20">
               <form className="space-y-10">
                 <div className="content-area space-y-2">
-                  <div>{texts.system.riyoKiyaku}</div>
+                  <div className="text-xl font-medium">{texts.system.riyoKiyaku}</div>
                   {executionPermission(503, 2) && data && (
                     <>
                       {!riyoKiyakuFlg ? (
@@ -459,7 +463,7 @@ const Page: React.FC<PageProps> = ({ kengen, optionLiveYoutube }) => {
             <div className="w-full space-y-20">
               <form className="space-y-10">
                 <div className="content-area space-y-2">
-                  <div>{texts.system.privacyPolicy}</div>
+                  <div className="text-xl font-medium">{texts.system.privacyPolicy}</div>
                   {executionPermission(503, 2) && data && (
                     <>
                       {!privacyPolicyFlg ? (

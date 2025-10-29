@@ -12,6 +12,18 @@
   height: 40px;
 }
 
+.logoText {
+  font-size: 24px;
+  font-weight: bold;
+  color: #262626;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logoText:hover {
+  color: #aaa;
+}
+
 .menu {
   display: flex;
   list-style: none;
