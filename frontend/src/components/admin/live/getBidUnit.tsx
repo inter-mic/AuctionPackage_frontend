@@ -1,13 +1,10 @@
 import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 export function getBidUnit(
   spnKbn: string | string[] | undefined,
-  goodsBidUnit: string | null,
   fetchBidUnitList: TMtLiveBidUnit[],
   price: string | null
 ): string | null {
-  if (spnKbn === "2") {
-    return goodsBidUnit?.replace(/,/g, "") || null;
-  }
+
   const numericPrice = Number(price?.replace(/,/g, ""));
 
   if (isNaN(numericPrice)) return null;

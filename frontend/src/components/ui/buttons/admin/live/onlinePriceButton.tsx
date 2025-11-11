@@ -96,7 +96,6 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
       const next = formatPriceMultiplication(nextPrice);
       const fetchBitUnit = getBidUnit(
         spnKbn,
-        fetchGoodsData?.bidUnit,
         fetchBidUnitList,
         next.toString()
       );

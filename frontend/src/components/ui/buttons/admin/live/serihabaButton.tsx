@@ -16,7 +16,6 @@ interface SerihabaButtonProps {
   disabled: boolean;
   currentPrice: string;
   nextPrice: string;
-  fetchGoodsData: { bidUnit: string | null };
   fetchBidUnitList: TMtLiveBidUnit[];
   setBidUnit: (price: string) => void;
   onUpdatePrices: (current: string, next: string) => void;
@@ -30,7 +29,6 @@ export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonPro
       disabled,
       currentPrice,
       nextPrice,
-      fetchGoodsData,
       onUpdatePrices,
       fetchBidUnitList,
       setBidUnit,
@@ -47,7 +45,6 @@ export const SerihabaButton = forwardRef<SerihabaButtonHandle, SerihabaButtonPro
       const baseForUnit = isplus ? next : current - 1;
       const fetchBitUnit = getBidUnit(
         spnKbn,
-        fetchGoodsData?.bidUnit,
         fetchBidUnitList,
         baseForUnit.toString()
       );

@@ -22,7 +22,7 @@ import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
 import { TPageProps } from "@/types/member/memberPage";
 import { TGoodsSelect } from "@/types/common/goods";
 import { TAuction } from "@/types/common/MtAuction";
-import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
+import { TMtAuctionBidUnit,TMtLiveBidUnit } from "@/types/common/bidUnit";
 //ボタン
 import { SearchButton } from "@/components/ui/buttons/member/searchButton";
 import { ClearButton } from "@/components/ui/buttons/member/clearButton";
@@ -36,13 +36,15 @@ interface MemberGoodsSearchPageProps extends TPageProps {
   loginUserId: number;
   canBid: boolean;
   auctionBidUnitList: TMtAuctionBidUnit[];
+  liveBidUnitList: TMtLiveBidUnit[];
 }
 
 const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
   isLogin,
   loginUserId,
   canBid,
-  auctionBidUnitList
+  auctionBidUnitList,
+  liveBidUnitList
 }) => {
   const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const router = useRouter();
@@ -322,6 +324,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
               loginUserId={loginUserId}
               canBid={canBid}
               auctionBidUnitList={auctionBidUnitList}
+              liveBidUnitList={liveBidUnitList}
             />
           </>
         ) : (

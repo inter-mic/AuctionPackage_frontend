@@ -2,16 +2,16 @@ import { GetServerSidePropsContext } from "next";
 
 export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => {
   const cookieHeader = context.req.headers["cookie"] ?? "";
-  
+
   const response = await fetch(`${process.env.NEXT_PUBLIC_MEMBER_API_URL}authCheck`, {
     method: "POST",
     credentials: "include",
     headers: {
       Cookie: cookieHeader,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
-  
+
   if (!response.ok) {
     return {
       redirect: {
@@ -53,7 +53,7 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
       copyRight: data.copyRight || null,
       pageSettingList: data.pageSettingList || [],
       auctionBidUnitList: data.auctionBidUnitList || [],
-      livebitBidUnitList: data.livebitBidUnitList || [],
+      liveBidUnitList: data.liveBidUnitList || [],
     },
   };
 };

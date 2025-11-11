@@ -17,7 +17,7 @@ import AuctionImageSlider from "@/components/ui/images/ImageSliderAuction";
 import GoodsList from "@/components/member/goods/GoodsListComponent";
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
-import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
+import { TMtAuctionBidUnit,TMtLiveBidUnit } from "@/types/common/bidUnit";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/Top.module.css";
@@ -27,8 +27,9 @@ interface Props extends TPageProps {
   loginUserId: number;
   canBid: boolean;
   auctionBidUnitList: TMtAuctionBidUnit[];
+  liveBidUnitList: TMtLiveBidUnit[];
 }
-const TopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid, auctionBidUnitList }) => {
+const TopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid, auctionBidUnitList, liveBidUnitList }) => {
   const { useEffect, texts } = useCommonSetup();
   //TOP画像
   const { topImageList } = useTopImageSearchAPI(isLogin);
@@ -110,6 +111,7 @@ const TopPageComponent: React.FC<Props> = ({ isLogin, loginUserId, canBid, aucti
                 loginUserId={loginUserId}
                 canBid={canBid}
                 auctionBidUnitList={auctionBidUnitList}
+                liveBidUnitList={liveBidUnitList}
               />
             </div>
           </>

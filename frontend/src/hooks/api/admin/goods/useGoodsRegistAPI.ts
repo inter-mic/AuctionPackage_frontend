@@ -32,7 +32,7 @@ export const useGoodsRegistAPI = () => {
       saiteiRakusatsuPrice: goodsData.saiteiRakusatsuPrice
         ? goodsData.saiteiRakusatsuPrice.replace(/,/g, "")
         : null,
-      bidUnit: goodsData.bidUnit ? goodsData.bidUnit.replace(/,/g, "") : null,
+      
     };
     if (images != null) {
       images.forEach((image, index) => {

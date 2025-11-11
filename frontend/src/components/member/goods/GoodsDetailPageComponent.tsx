@@ -253,6 +253,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
               canBid={canBid}
               loginUserId={loginUserId}
               auctionBidUnitList={isLogin ? auctionBidUnitList : []}
+              livebitBidUnitList={ []}
             />
           )}
 

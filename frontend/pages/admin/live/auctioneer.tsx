@@ -245,7 +245,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
       //次価格セット
       const fetchBitUnit = getBidUnit(
         spnKbn,
-        fetchLiveBidInfoData.bidUnit,
         fetchBidUnitList,
         fetchLiveBidInfoData.currentPrice
       );
@@ -700,7 +699,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     const current = formatPriceMultiplication(value);
     const fetchBitUnit = getBidUnit(
       spnKbn,
-      fetchGoodsData?.bidUnit,
       fetchBidUnitList,
       current.toString()
     );
@@ -1136,7 +1134,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     disabled={!isStartButtonClicked}
                     currentPrice={currentPrice}
                     nextPrice={nextPrice}
-                    fetchGoodsData={fetchGoodsData}
                     fetchBidUnitList={fetchBidUnitList}
                     spnKbn={spnKbn}
                     setBidUnit={setBidUnit}
@@ -1152,7 +1149,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                     disabled={!isStartButtonClicked}
                     currentPrice={currentPrice}
                     nextPrice={nextPrice}
-                    fetchGoodsData={fetchGoodsData}
                     fetchBidUnitList={fetchBidUnitList}
                     spnKbn={spnKbn}
                     setBidUnit={setBidUnit}

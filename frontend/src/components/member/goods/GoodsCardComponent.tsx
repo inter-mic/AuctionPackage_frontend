@@ -29,7 +29,7 @@ interface Props {
   canBid: boolean;
   texts: any;
   auctionBidUnitList: TMtAuctionBidUnit[];
-  livebitBidUnitList: TMtLiveBidUnit[];
+  liveBidUnitList: TMtLiveBidUnit[];
 }
 
 const GoodsCardComponent: React.FC<Props> = ({
@@ -39,7 +39,7 @@ const GoodsCardComponent: React.FC<Props> = ({
   canBid,
   texts,
   auctionBidUnitList,
-  livebitBidUnitList,
+  liveBidUnitList,
 }) => {
   const [goodsInfo, setGoodsInfo] = useState(data);
   useEffect(() => {
@@ -236,7 +236,7 @@ const GoodsCardComponent: React.FC<Props> = ({
         bidGoodsId={goodsInfo.goodsId}
         bidPrice={goodsInfo.bidPrice !== "" ? goodsInfo.bidPrice : goodsInfo.startPrice.toString()}
         startPrice={goodsInfo.startPrice.toString()}
-        liveBidUnitList={livebitBidUnitList}
+        liveBidUnitList={liveBidUnitList}
       />
     </div>
   );

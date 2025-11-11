@@ -43,6 +43,18 @@ export const getDefaultCSPConfig = (): CSPConfig => {
     process.env.NEXT_PUBLIC_PUBLIC_API_URL,
   ].filter((url): url is string => Boolean(url)); // undefinedを除外し、型を保証
 
+  // WebSocket接続先を取得
+  const wsUrls = [
+    "ws://localhost:8080",
+    "wss://localhost:8080",
+    process.env.NEXT_PUBLIC_WS_APP_URL,
+    process.env.NEXT_PUBLIC_WS_BATCH_URL,
+    process.env.NEXT_PUBLIC_WS_LIVE_URL,
+  ].filter((url): url is string => Boolean(url)); // undefinedを除外し、型を保証
+
+  // API URLとWebSocket URLを結合
+  const connectSrc = [...apiUrls, ...wsUrls];
+
   return {
     directives: {
       'default-src': ["'self'"],
@@ -50,7 +62,7 @@ export const getDefaultCSPConfig = (): CSPConfig => {
       'style-src': ["'self'", "'unsafe-inline'", "data:"],
       'img-src': ["'self'", "data:", "https:"],
       'font-src': ["'self'", "data:"],
-      'connect-src': apiUrls,
+      'connect-src': connectSrc,
       'frame-src': ["'none'"],
       'object-src': ["'none'"],
       'media-src': ["'self'"],
@@ -80,6 +92,16 @@ export const getProductionCSPConfig = (): CSPConfig => {
     process.env.NEXT_PUBLIC_PUBLIC_API_URL,
   ].filter((url): url is string => Boolean(url)); // undefinedを除外し、型を保証
 
+  // WebSocket接続先を取得
+  const wsUrls = [
+    process.env.NEXT_PUBLIC_WS_APP_URL,
+    process.env.NEXT_PUBLIC_WS_BATCH_URL,
+    process.env.NEXT_PUBLIC_WS_LIVE_URL,
+  ].filter((url): url is string => Boolean(url)); // undefinedを除外し、型を保証
+
+  // API URLとWebSocket URLを結合
+  const connectSrc = [...apiUrls, ...wsUrls];
+
   return {
     directives: {
       'default-src': ["'self'"],
@@ -87,7 +109,7 @@ export const getProductionCSPConfig = (): CSPConfig => {
       'style-src': ["'self'", "'unsafe-inline'", "data:"], // Material-UIのインラインスタイルとdata URIを許可
       'img-src': ["'self'", "data:", "https:"],
       'font-src': ["'self'", "data:"],
-      'connect-src': apiUrls,
+      'connect-src': connectSrc,
       'frame-src': ["'none'"],
       'object-src': ["'none'"],
       'media-src': ["'self'"],
