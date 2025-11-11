@@ -715,34 +715,11 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                   <div className={styles.flexItem}>
                     {spnKbn !== "1" && (
                       <>
-                        <label htmlFor="bidUnit" className={styles.label}>
-                          <RequiredMark />
-                          {texts.goods.bidUnit}
-                        </label>
-                        <input
-                          id="bidUnit"
-                          name="bidUnit"
-                          onChange={handleGoodsDataChange}
-                          value={goodsData.bidUnit || ""}
-                          className={`${styles.input} text-right `}
-                          disabled={bitFlg}
-                        />
-                        {formErrors?.bidUnit && (
-                          <p className="error-message">{formErrors.bidUnit}</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.flexContainer}>
-                  <div className={styles.flexItem}>
-                    {spnKbn !== "1" && (
-                      <>
                         <label htmlFor="saiteiRakusatsuPrice" className={styles.label}>
                           {texts.goods.saiteiRakusatsuPrice}
                           <br />
                           <label className={styles.note}>
-                            ※{texts.goods.saiteiRakusatsuPrice_note_1}
+                            
                           </label>
                         </label>
                         <input
@@ -752,6 +729,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                           value={goodsData.saiteiRakusatsuPrice || ""}
                           className={`${styles.input} text-right `}
                           disabled={bitFlg}
+                          placeholder="※設定しない場合は空白"
                         />
                         {formErrors?.saiteiRakusatsuPrice && (
                           <p className="error-message">{formErrors.saiteiRakusatsuPrice}</p>
@@ -759,11 +737,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       </>
                     )}
                   </div>
+                  
+                </div>
+                <div className={styles.flexContainer}>
+                  
                   <div className={styles.flexItem}>
                     <label htmlFor="shuppinUserId" className={styles.label}>
                       {texts.goods.shuppinUserId}
-                      <br />
-                      <label className={styles.note}>※{texts.goods.shuppinUserId_note_1}</label>
                     </label>
 
                     <div className="flex items-center space-x-2">
@@ -774,6 +754,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                         value={goodsData.shuppinUserId || ""}
                         className={`${styles.input} flex-1`}
                         disabled={bitFlg}
+                        placeholder="※自社出品時は空白で登録"
                       />
                       {goodsData.shuppinUserId && (
                         <MemberRegisterButton userId={goodsData.shuppinUserId} />
@@ -783,8 +764,6 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       <p className="error-message">{formErrors.shuppinUserId}</p>
                     )}
                   </div>
-                </div>
-                <div className={styles.flexContainer}>
                   <div className={styles.flexItem}>
                     <label className={styles.label}>{texts.goods.shuppinUserName}</label>
                     <input
@@ -795,6 +774,9 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       disabled
                     />
                   </div>
+                </div>
+                <div className={styles.flexContainer}>
+                  
                   <div className={styles.flexItem}>
                     <label className={styles.label}>{texts.goods.shuppinCompanyName}</label>
                     <input
@@ -805,6 +787,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
                       disabled
                     />
                   </div>
+                  
                 </div>
               </div>
             </div>

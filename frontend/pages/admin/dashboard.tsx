@@ -162,6 +162,9 @@ const Page: React.FC<PageProps & { kengen: KengenMap[] }> = ({ kengen, liveaucti
         {hasPermission(kengen, 303) && (
           <Button label={texts.menu.adminBidLogList} url="/admin/auction/bid/logSearch" />
         )}
+        {hasPermission(kengen, 304) && (
+          <Button label={texts.menu.adminAuctionBidUnitRegist} url="/admin/auction/bidunit" />
+        )}
       </Section>
       {(livebit || liveauction) && (
         <Section title={texts.menu.adminLiveTitle}>

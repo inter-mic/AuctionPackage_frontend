@@ -165,6 +165,11 @@ export function HeaderComponent({
                     <Link href="/admin/auction/bid/logSearch">{texts.menu.adminBidLogList}</Link>
                   </li>
                 )}
+                 {hasPermission(kengen, 304) && (
+                  <li>
+                    <Link href="/admin/auction/bidunit">{texts.menu.adminAuctionBidUnitRegist}</Link>
+                  </li>
+                )}
               </ul>
             )}
             {(livebit || liveauction) && (

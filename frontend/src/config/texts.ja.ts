@@ -29,6 +29,7 @@ export const texts = {
     adminCategoryRegist: "カテゴリー管理",
     adminAuctionTitle: "オークション管理",
     adminKaisaiRegist: "開催回管理",
+    adminAuctionBidUnitRegist: "オークション入札単位管理",
     adminLiveTitle: "ライブ管理",
     adminLiveBidUnitRegist: "ライブ入札単位管理",
     adminLiveMessageRegist: "ライブメッセージ管理",

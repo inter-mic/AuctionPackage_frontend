@@ -23,6 +23,7 @@ import Favorite from "@mui/icons-material/Favorite";
 //型定義
 import { TGoodsSelect } from "@/types/common/goods";
 import { TAuctionWebSocketData } from "@/types/member/AuctionWebSocket";
+import { TMtAuctionBidUnit, TMtLiveBidUnit } from "@/types/common/bidUnit";
 //スタイル
 import ButtonStyles from "@/styles/Button.module.css";
 import styles from "@/styles/member/auction/internetTender/Bid.module.css";
@@ -32,8 +33,18 @@ interface Props {
   canBid: boolean;
   loginUserId: number;
   fetchGoodsData: TGoodsSelect | undefined;
+  auctionBidUnitList?: TMtAuctionBidUnit[];
+  livebitBidUnitList: TMtLiveBidUnit[];
 }
-const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUserId, canBid }) => {
+
+const BidModuleComponent: React.FC<Props> = ({
+  fetchGoodsData,
+  isLogin,
+  loginUserId,
+  canBid,
+  auctionBidUnitList,
+  livebitBidUnitList,
+}) => {
   const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   const [isBidModalOpen, setBidModalOpen] = useState(false);
@@ -283,7 +294,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
                   bidSpnkbn={fetchGoodsData?.spnKbn || ""}
                   bidGoodsId={fetchGoodsData?.goodsId || 0}
                   bidPrice={bidState.nextBidPrice || fetchGoodsData?.startCurrentPrice || ""}
-                  bidUnit={fetchGoodsData?.bidUnit || ""}
+                  auctionBidUnitList={auctionBidUnitList}
                 />
 
                 <LiveJizenBidModalComponent
@@ -294,7 +305,7 @@ const BidModuleComponent: React.FC<Props> = ({ fetchGoodsData, isLogin, loginUse
                   bidGoodsId={fetchGoodsData?.goodsId || 0}
                   bidPrice={bidState.bidPrice || fetchGoodsData?.startCurrentPrice || ""}
                   startPrice={fetchGoodsData?.startPrice || ""}
-                  bidUnit={fetchGoodsData?.bidUnit || ""}
+                  liveBidUnitList={livebitBidUnitList}
                 />
               </>
             )}

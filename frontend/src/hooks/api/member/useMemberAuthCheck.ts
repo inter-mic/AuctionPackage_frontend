@@ -52,6 +52,8 @@ export const useMemberAuthCheck = async (context: GetServerSidePropsContext) => 
       kobutsuBango: data.kobutsuBango || null,
       copyRight: data.copyRight || null,
       pageSettingList: data.pageSettingList || [],
+      auctionBidUnitList: data.auctionBidUnitList || [],
+      livebitBidUnitList: data.livebitBidUnitList || [],
     },
   };
 };

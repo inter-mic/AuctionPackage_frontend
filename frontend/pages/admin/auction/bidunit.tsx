@@ -9,9 +9,9 @@ import { useCommonSetup } from "@/hooks/useCommonSetup";
 import { useKengenRedirect } from "@/hooks/useKengenRedirect";
 import { useExecutionPermission } from "@/hooks/useExecutionPermission";
 //API
-import { useLiveBidUnitSearchAPI } from "@/hooks/api/admin/live/bidunit/useLiveBidUnitSearchAPI";
-import { useLiveBidUnitInsertAPI } from "@/hooks/api/admin/live/bidunit/useLiveBidUnitInsertAPI";
-import { useLiveBidUnitUpdateAPI } from "@/hooks/api/admin/live/bidunit/useLiveBidUnitUpdateAPI";
+import { useAuctionBidUnitSearchAPI } from "@/hooks/api/admin/auction/bidunit/useAuctionBidUnitSearchAPI";
+import { useAuctionBidUnitInsertAPI } from "@/hooks/api/admin/auction/bidunit/useAuctionBidUnitInsertAPI";
+import { useAuctionBidUnitUpdateAPI } from "@/hooks/api/admin/auction/bidunit/useAuctionBidUnitUpdateAPI";
 //型定義
 import { PageProps } from "@/types/admin/adminPage";
 import { TMtLiveBidUnit } from "@/types/common/bidUnit";
@@ -21,17 +21,17 @@ import { BidUnitManagementComponent } from "@/components/admin/bidunit/BidUnitMa
 export const getServerSideProps: GetServerSideProps = withAuth(async () => {
   return {
     props: {
-      pageTitle: texts.menu.adminLiveBidUnitRegist,
+      pageTitle: texts.menu.adminAuctionBidUnitRegist,
     },
   };
 });
 
 const Page: React.FC<PageProps> = ({ kengen }) => {
   const { useState, useEffect, texts } = useCommonSetup();
-  useKengenRedirect(kengen, 351);
+  useKengenRedirect(kengen, 302);
   const { executionPermission } = useExecutionPermission(kengen);
-  const { liveBidUnitList } = useLiveBidUnitSearchAPI();
-  const [newLiveBidUnit, setNewLiveBidUnit] = useState<TMtLiveBidUnit>({
+  const { auctionBidUnitList } = useAuctionBidUnitSearchAPI();
+  const [newAuctionBidUnit, setNewAuctionBidUnit] = useState<TMtLiveBidUnit>({
     seq: 0,
     unitFrom: "",
     unitTo: "",
@@ -39,7 +39,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   });
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
-  const handleNewLiveBidUnitChange = (
+  const handleNewAuctionBidUnitChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     const { name, value } = e.target;
@@ -47,7 +47,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (!numericWithCommaRegex.test(value)) {
       return; // 無効な入力は無視
     }
-    setNewLiveBidUnit((prev) => ({ ...prev, [name]: value.replace(/[^0-9]/g, "") }));
+    setNewAuctionBidUnit((prev) => ({ ...prev, [name]: value.replace(/[^0-9]/g, "") }));
   };
 
   const handleInputChange = (seq: number, field: keyof TMtLiveBidUnit, value: string) => {
@@ -70,12 +70,13 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   const handleDelete = (seq: number) => {
     setFetchList((prev) => prev.filter((item) => item.seq !== seq)); // 指定した seq のアイテムを削除
   };
-  const { errors, liveBidUnitInsertAPI } = useLiveBidUnitInsertAPI();
+
+  const { errors, auctionBidUnitInsertAPI } = useAuctionBidUnitInsertAPI();
   const handleNewSubmit = () => {
-    if (!newLiveBidUnit) {
+    if (!newAuctionBidUnit) {
       return;
     }
-    liveBidUnitInsertAPI(newLiveBidUnit);
+    auctionBidUnitInsertAPI(newAuctionBidUnit);
   };
 
   useEffect(() => {
@@ -86,17 +87,17 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 
   const [fetchList, setFetchList] = useState<TMtLiveBidUnit[]>([]);
   useEffect(() => {
-    if (liveBidUnitList) {
-      setFetchList(liveBidUnitList);
+    if (auctionBidUnitList) {
+      setFetchList(auctionBidUnitList);
     }
-  }, [liveBidUnitList]);
+  }, [auctionBidUnitList]);
 
-  const { updateErrors, liveBidUnitUpdateAPI } = useLiveBidUnitUpdateAPI();
+  const { updateErrors, auctionBidUnitUpdateAPI } = useAuctionBidUnitUpdateAPI();
   const handleUpdateSubmit = () => {
-    if (!newLiveBidUnit) {
+    if (!newAuctionBidUnit) {
       return;
     }
-    liveBidUnitUpdateAPI(fetchList);
+    auctionBidUnitUpdateAPI(fetchList);
   };
   useEffect(() => {
     if (updateErrors) {
@@ -107,16 +108,18 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
   return (
     <div>
       <div className={breadcrumbStyles.breadcrumb}>
-        <span className={breadcrumbStyles.breadcrumbItem}>{texts.menu.adminLiveBidUnitRegist}</span>
+        <span className={breadcrumbStyles.breadcrumbItem}>
+          {texts.menu.adminAuctionBidUnitRegist}
+        </span>
       </div>
       <BidUnitManagementComponent
-        breadcrumbText={texts.menu.adminLiveBidUnitRegist}
-        kengenId={351}
+        breadcrumbText={texts.menu.adminAuctionBidUnitRegist}
+        kengenId={302}
         executionPermission={executionPermission}
         fetchList={fetchList}
-        newLiveBidUnit={newLiveBidUnit}
+        newLiveBidUnit={newAuctionBidUnit}
         formErrors={formErrors}
-        onNewLiveBidUnitChange={handleNewLiveBidUnitChange}
+        onNewLiveBidUnitChange={handleNewAuctionBidUnitChange}
         onInputChange={handleInputChange}
         onDelete={handleDelete}
         onNewSubmit={handleNewSubmit}
@@ -127,3 +130,5 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
 };
 
 export default withAdminLayout(Page);
+
+

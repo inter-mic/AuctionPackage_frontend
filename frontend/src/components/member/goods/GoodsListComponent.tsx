@@ -2,6 +2,7 @@ import React from "react";
 import { toast } from "react-toastify";
 //型定義
 import { TGoodsSelect } from "@/types/common/goods";
+import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
 
 //コンポーネント
 import MemberGoodsCard from "@/components/member/goods/GoodsCardComponent";
@@ -18,8 +19,9 @@ interface Props {
   isLogin: boolean;
   canBid: boolean;
   loginUserId: number;
+  auctionBidUnitList: TMtAuctionBidUnit[];
 }
-const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId, canBid }) => {
+const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId, canBid, auctionBidUnitList }) => {
   const { useState, useEffect, useCallback, texts } = useCommonSetup();
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -143,6 +145,7 @@ const GoodsListComponent: React.FC<Props> = ({ list, isLogin, loginUserId, canBi
             loginUserId={loginUserId}
             canBid={canBid}
             texts={texts}
+            auctionBidUnitList={auctionBidUnitList}
           />
         ))}
       </div>

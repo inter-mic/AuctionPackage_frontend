@@ -1,3 +1,5 @@
+//型定義
+import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
 export type TPageProps = {
   children: React.ReactNode;
   userId: number | null;
@@ -15,6 +17,7 @@ export type TPageProps = {
   kobutsuBango: string | null;
   copyRight: string | null;
   pageSettingList: TtPageSetting[];
+  auctionBidUnitList: TMtAuctionBidUnit[];
   optionMemInvoice: boolean | false;
   optionMemShuppinList: boolean | false;
   liveauction: boolean | false;

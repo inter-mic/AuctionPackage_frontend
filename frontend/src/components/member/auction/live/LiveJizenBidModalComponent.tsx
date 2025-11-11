@@ -1,8 +1,10 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Modal from "@mui/material/Modal";
 import { useLocale } from "@/hooks/useLocale";
 //API
 import { useLiveJizenBidRegistAPI } from "@/hooks/api/member/goods/useLiveJizenBidRegistAPI";
+//型定義
+import { TMtLiveBidUnit } from "@/types/common/bidUnit";
 //アイコン
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -19,7 +21,7 @@ interface Props {
   bidGoodsId: number;
   bidPrice: string;
   startPrice: string;
-  bidUnit: string;
+  liveBidUnitList?: TMtLiveBidUnit[];
 }
 
 const LiveJizenBidModalComponent: React.FC<Props> = ({
@@ -30,28 +32,88 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
   bidGoodsId,
   bidPrice,
   startPrice,
-  bidUnit,
+  liveBidUnitList = [],
 }) => {
-  const parseCurrency = (value: string): number => parseInt(value.replace(/,/g, ""), 10);
+  const parseCurrency = (value: string | number | undefined): number => {
+    if (value === undefined || value === null) return 0;
+    const stringValue = typeof value === 'string' ? value : String(value);
+    return parseInt(stringValue.replace(/,/g, ""), 10) || 0;
+  };
   const { texts } = useLocale();
   const initialPrice = parseCurrency(startPrice);
-  const unitPrice = parseCurrency(bidUnit);
 
-  const [currentBid, setCurrentBid] = useState<number>(Number(bidPrice.replace(/,/g, "")));
-  useEffect(() => {
-    setCurrentBid(Number(bidPrice.replace(/,/g, "")));
-  }, [bidPrice]);
+  const [currentBid, setCurrentBid] = useState<number>(parseCurrency(bidPrice));
 
-  const unitValue = parseFloat(bidUnit.replace(/,/g, "")) || 0;
+  // 重複するbitUnitを除外したリストを作成
+  const uniqueBidUnitList = React.useMemo(() => {
+    const seen = new Set<number>();
+    return liveBidUnitList.filter(unit => {
+      const bitUnit = parseCurrency(unit.bitUnit);
+      if (seen.has(bitUnit)) {
+        return false;
+      }
+      seen.add(bitUnit);
+      return true;
+    });
+  }, [liveBidUnitList]);
+
+  // 各入札単位のボタンが有効かどうかを判定
+  const isUnitButtonEnabled = useCallback((unitValue: number, isIncrease: boolean): boolean => {
+    const newPrice = isIncrease ? currentBid + unitValue : currentBid - unitValue;
+    
+    // 減少の場合は初期価格未満にならないかチェック
+    if (!isIncrease && newPrice < initialPrice) {
+      return false;
+    }
+
+    if (liveBidUnitList.length === 0) {
+      return true;
+    }
+   
+    // 現在の価格と新しい価格がその単位の範囲内にあるかチェック
+    for (const unit of liveBidUnitList) {
+      const unitFrom = parseCurrency(unit.unitFrom);
+      const unitTo = parseCurrency(unit.unitTo);
+      const bidUnit = parseCurrency(unit.bitUnit);
+      
+      // この単位が使用可能かどうかを判定
+      if (bidUnit === unitValue) {
+        const isCurrentPriceInRange = currentBid >= unitFrom && currentBid <= unitTo;
+        const isNewPriceInRange = newPrice >= unitFrom && newPrice <= unitTo;
+        
+        // +ボタンの場合：現在の価格がその範囲内にあればOK
+        // -ボタンの場合：現在の価格と新しい価格の両方がその範囲内にあればOK
+        if (isIncrease) {
+          if (isCurrentPriceInRange) {
+            return true;
+          }
+        } else {
+          if (isNewPriceInRange) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
+  }, [currentBid, initialPrice, liveBidUnitList]);
+
   // +ボタンで価格を増やす処理
-  const handleIncrease = useCallback(() => {
-    setCurrentBid((prev) => prev + unitPrice);
-  }, [unitPrice]);
+  const handleIncrease = useCallback((unitValue: number) => {
+    setCurrentBid((prev) => prev + unitValue);
+  }, []);
 
-  // -ボタンで価格を減らす処理 (ただし初期価格未満には下げない)
-  const handleDecrease = useCallback(() => {
-    setCurrentBid((prev) => Math.max(initialPrice, prev - unitPrice));
-  }, [initialPrice, unitPrice]);
+  // -ボタンで価格を減らす処理
+  const handleDecrease = useCallback((unitValue: number) => {
+    setCurrentBid((prev) => Math.max(initialPrice, prev - unitValue));
+  }, [initialPrice]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      // isOpen=falseのときのみ更新
+      setCurrentBid(parseCurrency(bidPrice));
+    }
+  }, [bidPrice, isOpen]);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const formatNumberWithCommas = (value: string) => {
@@ -122,44 +184,69 @@ const LiveJizenBidModalComponent: React.FC<Props> = ({
           </span>
         </div>
 
-        <div className={styles.bidLabel}>{texts.goods.bidPrice}</div>
-        <div className={styles.priceSection}>
-          <div className={styles.inputContainer}>
-            <CurrencyYenIcon
-              sx={{
-                color: "red",
-                fontSize: "2.5rem",
-                paddingBottom: "10px",
-              }}
-            />
-            <input
-              ref={inputRef}
-              type="text"
-              value={formatNumberWithCommas(currentBid.toString())}
-              onChange={handleInputChange}
-              className={styles.bidPriceInput}
-            />
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* 左側（PCでは左、SPでは上）：入札金額入力 */}
+          <div className="w-full md:w-1/2">
+            <div className={styles.bidLabel}>{texts.goods.bidPrice}</div>
+            <div className="flex items-center">
+              <CurrencyYenIcon
+                sx={{
+                  color: "red",
+                  fontSize: "2.5rem",
+                  marginRight: "8px",
+                }}
+              />
+              <input
+                ref={inputRef}
+                type="text"
+                value={formatNumberWithCommas(currentBid.toString())}
+                onChange={handleInputChange}
+                className={styles.bidPriceInput}
+              />
+            </div>
           </div>
 
-          <div className={styles.adjustButtonsContainer}>
-            <button
-              onClick={handleDecrease}
-              className="bg-gray-300 text-white 
-            hover:bg-opacity-50 py-2  ml-1 lg:w-44 w-32 rounded-full"
-            >
-              <RemoveIcon className="lg:mr-4" />
-              <CurrencyYenIcon />
-              {unitValue.toLocaleString()}
-            </button>
-            <button
-              onClick={handleIncrease}
-              className="bg-gray-300 text-white  
-            hover:bg-opacity-50 py-2  ml-1 lg:w-44 w-32 rounded-full"
-            >
-              <AddIcon className="lg:mr-4" />
-              <CurrencyYenIcon />
-              {unitValue.toLocaleString()}
-            </button>
+          {/* 右側（PCでは右、SPでは下）：＋－ボタン */}
+          <div className="w-full md:w-1/2">
+            <div className={styles.bidLabel}>&nbsp;</div>
+            <div className="flex flex-col gap-2">
+              {uniqueBidUnitList.map((unit) => {
+                const unitValue = parseCurrency(unit.bitUnit);
+                const isDecreaseEnabled = isUnitButtonEnabled(unitValue, false);
+                const isIncreaseEnabled = isUnitButtonEnabled(unitValue, true);
+                
+                return (
+                  <div key={unit.seq} className="flex gap-2">
+                    <button
+                      onClick={() => handleDecrease(unitValue)}
+                      disabled={!isDecreaseEnabled}
+                      className={`py-2 w-1/2 rounded-full ${
+                        isDecreaseEnabled
+                          ? "bg-yellow-200 text-gray-800 border border-yellow-400 hover:bg-opacity-90"
+                          : "bg-gray-200 text-gray-400 border-2 border-gray-300 cursor-not-allowed"
+                      }`}
+                    >
+                      <RemoveIcon className="mr-2" />
+                      <CurrencyYenIcon />
+                      {unitValue.toLocaleString()}
+                    </button>
+                    <button
+                      onClick={() => handleIncrease(unitValue)}
+                      disabled={!isIncreaseEnabled}
+                      className={`py-2 w-1/2 rounded-full ${
+                        isIncreaseEnabled
+                          ? "bg-yellow-200 text-gray-800 border border-yellow-400 hover:bg-opacity-90"
+                          : "bg-gray-200 text-gray-400 border-2 border-gray-300 cursor-not-allowed"
+                      }`}
+                    >
+                      <AddIcon className="mr-2" />
+                      <CurrencyYenIcon />
+                      {unitValue.toLocaleString()}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
         {formErrors?.bidPrice && <p className="error-message">{formErrors.bidPrice}</p>}

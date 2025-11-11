@@ -21,7 +21,6 @@ export type TGoodsData = {
   currentKenriUserName: string | null;
   currentKenriCompanyName: string | null;
   saiteiRakusatsuPrice: string | null;
-  bidUnit: string | null;
   bidStarttime: string | null;
   bidEndtime: string | null;
   displayStarttime: string | null;
@@ -69,7 +68,6 @@ export const initialGoodsData: TGoodsData = {
   currentKenriUserName: null,
   currentKenriCompanyName: null,
   saiteiRakusatsuPrice: null,
-  bidUnit: null,
   bidStarttime: null,
   bidEndtime: null,
   displayStarttime: null,

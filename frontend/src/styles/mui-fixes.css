@@ -63,3 +63,36 @@
 .MuiCheckbox-root .MuiSvgIcon-root[data-testid="FavoriteIcon"] {
   color: #f44336 !important;
 }
+
+/* Radioボタンの位置揃え修正 */
+.MuiRadio-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px;
+}
+
+.MuiRadio-root .MuiSvgIcon-root {
+  display: block;
+  vertical-align: middle;
+}
+
+/* Radioボタンの選択時の中の点の位置調整 */
+.MuiRadio-root .MuiSvgIcon-root[data-testid="RadioButtonCheckedIcon"] {
+  margin-left: -24px;
+}
+
+/* FormControlLabelの位置揃え */
+.MuiFormControlLabel-root {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: -11px;
+  margin-right: 16px;
+}
+
+.MuiFormControlLabel-root .MuiRadio-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

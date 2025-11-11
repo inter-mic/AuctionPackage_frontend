@@ -1,8 +1,6 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
@@ -24,6 +22,7 @@ import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAP
 import { TPageProps } from "@/types/member/memberPage";
 import { TGoodsImageData } from "@/types/common/goodsImage";
 import { TGoodsSelect } from "@/types/common/goods";
+import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/goods/GoodsDetail.module.css";
@@ -35,7 +34,7 @@ interface Props extends TPageProps {
   isLogin: boolean;
   canBid: boolean;
   loginUserId: number;
-  goodsList?: TGoodsSelect[]; // 商品一覧の検索結果を追加
+  goodsList?: TGoodsSelect[];
 }
 
 const MemberGoodsSearchPageComponent: React.FC<Props> = ({
@@ -43,6 +42,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
   loginUserId,
   canBid,
   goodsList,
+  auctionBidUnitList,
 }) => {
   const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const params = useSearchParams();
@@ -252,6 +252,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
               isLogin={isLogin}
               canBid={canBid}
               loginUserId={loginUserId}
+              auctionBidUnitList={isLogin ? auctionBidUnitList : []}
             />
           )}
 

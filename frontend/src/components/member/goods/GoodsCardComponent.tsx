@@ -18,6 +18,7 @@ import { useLiveJizenBidDeleteAPI } from "@/hooks/api/member/goods/useLiveJizenB
 import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
 //型定義
 import { TGoodsSelect } from "@/types/common/goods";
+import { TMtAuctionBidUnit, TMtLiveBidUnit } from "@/types/common/bidUnit";
 //スタイル
 import styles from "@/styles/member/goods/GoodsList.module.css";
 import ButtonStyles from "@/styles/Button.module.css";
@@ -27,9 +28,19 @@ interface Props {
   loginUserId: number;
   canBid: boolean;
   texts: any;
+  auctionBidUnitList: TMtAuctionBidUnit[];
+  livebitBidUnitList: TMtLiveBidUnit[];
 }
 
-const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBid, texts }) => {
+const GoodsCardComponent: React.FC<Props> = ({
+  data,
+  isLogin,
+  loginUserId,
+  canBid,
+  texts,
+  auctionBidUnitList,
+  livebitBidUnitList,
+}) => {
   const [goodsInfo, setGoodsInfo] = useState(data);
   useEffect(() => {
     setGoodsInfo(data);
@@ -214,7 +225,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
         bidSpnkbn={goodsInfo.spnKbn}
         bidGoodsId={goodsInfo.goodsId}
         bidPrice={goodsInfo.nextBidPrice || goodsInfo.startCurrentPrice.toString()}
-        bidUnit={goodsInfo.bidUnit.toString()}
+        auctionBidUnitList={auctionBidUnitList}
       />
 
       <LiveJizenBidModal
@@ -225,7 +236,7 @@ const GoodsCardComponent: React.FC<Props> = ({ data, isLogin, loginUserId, canBi
         bidGoodsId={goodsInfo.goodsId}
         bidPrice={goodsInfo.bidPrice !== "" ? goodsInfo.bidPrice : goodsInfo.startPrice.toString()}
         startPrice={goodsInfo.startPrice.toString()}
-        bidUnit={goodsInfo.bidUnit.toString()}
+        liveBidUnitList={livebitBidUnitList}
       />
     </div>
   );

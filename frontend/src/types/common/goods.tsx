@@ -34,7 +34,6 @@ export type TGoodsSelect = {
   currentKenriUserId: number;
   currentPrice: string;
   startCurrentPrice: string;
-  bidUnit: string;
   bidCount: number;
   favoriteCount: number;
   rakusatsuPrice: string;

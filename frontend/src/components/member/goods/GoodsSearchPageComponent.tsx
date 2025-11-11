@@ -17,12 +17,12 @@ import { useGoodsSearchAPI } from "@/hooks/api/common/useGoodsSearchAPI";
 import { useGoodsCountAPI } from "@/hooks/api/common/useGoodsCountAPI";
 import { useGoodsSearchParams } from "@/hooks/searchParams/common/useGoodsSearchParams";
 import { useAuctionKeisaiChuSearchAPI } from "@/hooks/api/common/useAuctionKeisaiChuSearchAPI";
-
 import { useSessionExtension } from "@/hooks/useMemberSessionExtension";
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
 import { TGoodsSelect } from "@/types/common/goods";
 import { TAuction } from "@/types/common/MtAuction";
+import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
 //ボタン
 import { SearchButton } from "@/components/ui/buttons/member/searchButton";
 import { ClearButton } from "@/components/ui/buttons/member/clearButton";
@@ -35,16 +35,18 @@ interface MemberGoodsSearchPageProps extends TPageProps {
   isLogin: boolean;
   loginUserId: number;
   canBid: boolean;
+  auctionBidUnitList: TMtAuctionBidUnit[];
 }
 
 const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
   isLogin,
   loginUserId,
   canBid,
+  auctionBidUnitList
 }) => {
   const { useState, useEffect, useRouter, texts } = useCommonSetup();
   const router = useRouter();
-  const { goodsList, goodsSearchAPI } = useGoodsSearchAPI();
+  const { goodsList: apiGoodsList, goodsSearchAPI } = useGoodsSearchAPI();
   const { goodsCount, goodsCountAPI } = useGoodsCountAPI();
   const [fetchGoodsList, setFetchGoodsList] = useState<TGoodsSelect[]>([]);
   const { goodsParams, formChange, resetForm } = useGoodsSearchParams();
@@ -78,11 +80,11 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auctionKeisaiChuList]);
   useEffect(() => {
-    if (goodsList && goodsList.length > 0) {
-      setFetchGoodsList(goodsList);
-      setGoodsList(goodsList); // コンテキストに商品一覧を保存
+    if (apiGoodsList && apiGoodsList.length > 0) {
+      setFetchGoodsList(apiGoodsList);
+      setGoodsList(apiGoodsList); // コンテキストに商品一覧を保存
     }
-  }, [goodsList, setGoodsList]);
+  }, [apiGoodsList, setGoodsList]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const [checkboxStates, setCheckboxStates] = useState({
@@ -319,6 +321,7 @@ const MemberGoodsSearchPage: React.FC<MemberGoodsSearchPageProps> = ({
               isLogin={isLogin}
               loginUserId={loginUserId}
               canBid={canBid}
+              auctionBidUnitList={auctionBidUnitList}
             />
           </>
         ) : (
