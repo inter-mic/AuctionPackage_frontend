@@ -16,8 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // HTMLレスポンスを返す
     res.setHeader('Content-Type', 'text/html');
     return res.status(200).send(testHTML);
-  } catch (error) {
-    console.error('MIME sniffing test error:', error);
+  } catch  {
     return res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -77,10 +77,11 @@ export const generateCSPFrameAncestors = (pathname: string): string => {
       return "frame-ancestors 'none'";
     case 'SAMEORIGIN':
       return "frame-ancestors 'self'";
-    case 'ALLOW-FROM':
+    case 'ALLOW-FROM': {
       const config = getDefaultFrameProtectionConfig();
       const allowedOrigin = config.allowedOrigins?.[0] || 'https://trusted-domain.com';
       return `frame-ancestors ${allowedOrigin}`;
+    }
     default:
       return "frame-ancestors 'self'";
   }

@@ -43,8 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       userName: userName || null,
       sessionId,
     });
-  } catch (error) {
-    console.error('Session verification error:', error);
+  } catch {
     return res.status(500).json({ message: 'Internal server error' });
   }
 }

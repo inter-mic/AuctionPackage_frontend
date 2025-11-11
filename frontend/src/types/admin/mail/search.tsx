@@ -1,5 +1,4 @@
-export interface SearchParams {
-}
+
 
 export interface TemplateResult {
     templateId: number;

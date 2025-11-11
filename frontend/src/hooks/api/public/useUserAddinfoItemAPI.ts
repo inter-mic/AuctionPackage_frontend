@@ -18,7 +18,7 @@ export const useUserAddinfoItemAPI = () => {
         });
         const data: UserAddinfoItem[] = await res.json();
         setUserAddInfo(data);
-      } catch (error) {
+      } catch {
         // エラーハンドリングは不要（または別で処理）
       } finally {
         // 後処理なし

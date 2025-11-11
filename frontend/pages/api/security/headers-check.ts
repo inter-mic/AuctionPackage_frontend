@@ -52,8 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       httpOnlyValidation,
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
-    console.error('Headers check error:', error);
+  } catch  {
     return res.status(500).json({ message: 'Internal server error' });
   }
 }

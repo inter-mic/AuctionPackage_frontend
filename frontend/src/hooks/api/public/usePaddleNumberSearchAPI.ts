@@ -15,7 +15,7 @@ export const usePaddleNumberSearchAPI = () => {
         });
         const data: TMtPaddleNumber[] = await res.json();
         setPaddleKbnList(data);
-      } catch (error) {
+      } catch {
         //  エラーハンドリングは不要
       } finally {
         // 後処理なし

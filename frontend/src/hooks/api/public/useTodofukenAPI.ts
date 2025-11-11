@@ -18,7 +18,7 @@ export const useTodofukenAPI = () => {
         );
         const data: Todofuken[] = await res.json();
         setTodofuken(data);
-      } catch (error) {
+      } catch {
         // エラーハンドリングは不要（または別で処理）
       } finally {
         // 後処理なし

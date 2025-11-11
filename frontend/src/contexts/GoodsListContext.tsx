@@ -20,8 +20,8 @@ export const GoodsListProvider: React.FC<GoodsListProviderProps> = ({ children }
       try {
         const stored = sessionStorage.getItem('goodsList');
         return stored ? JSON.parse(stored) : [];
-      } catch (error) {
-        console.error('Failed to parse stored goods list:', error);
+      } catch {
+       
         return [];
       }
     }

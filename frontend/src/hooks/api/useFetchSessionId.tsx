@@ -11,7 +11,7 @@ const useFetchSessionId = () => {
         }
         const data = await response.json();
         setJSessionId(data.JSESSIONID);
-      } catch (error) {
+      } catch {
         // エラーハンドリングは不要（または別で処理）
       } finally {
         // 後処理なし

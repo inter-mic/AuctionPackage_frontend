@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
 import breadcrumbStyles from "@/styles/breadcrumb.module.css";
-import { Dayjs } from "dayjs";
 import Image from "next/image";
 
 import { texts } from "@/config/texts.ja";

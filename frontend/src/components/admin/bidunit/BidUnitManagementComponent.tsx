@@ -22,7 +22,6 @@ interface BidUnitManagementComponentProps {
 }
 
 export const BidUnitManagementComponent: React.FC<BidUnitManagementComponentProps> = ({
-  breadcrumbText,
   kengenId,
   executionPermission,
   fetchList,

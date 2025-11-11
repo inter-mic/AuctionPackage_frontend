@@ -31,8 +31,7 @@ export const detectInsecureCookies = (cookieString: string): string[] => {
  * セッション関連のクッキーをセキュアな形式に移行
  */
 export const migrateSessionCookies = (
-  existingCookies: Record<string, string>,
-  options: CookieMigrationOptions = {}
+  existingCookies: Record<string, string>
 ): string[] => {
   const secureCookies: string[] = [];
   const sessionCookieNames = ['sessionId', 'authToken', 'userId', 'userName', 'JSESSIONID'];
@@ -81,7 +80,7 @@ export const executeCookieMigration = (
     };
   }
 
-  const migratedCookies = migrateSessionCookies(existingCookies, options);
+  const migratedCookies = migrateSessionCookies(existingCookies);
   const secureCookies = totalCookies - migratedCookies.length;
 
   return {

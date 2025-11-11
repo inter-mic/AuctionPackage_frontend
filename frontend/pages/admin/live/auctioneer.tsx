@@ -587,7 +587,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
             isBidDisabled: true,
           });
         }
-        lotSearch;
+        lotSearch();
       } else {
         if (result.errorMessage) {
           toast.error(result.errorMessage);
@@ -792,7 +792,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         return;
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [
       furakusatsuConfirmOpen,
       spnKbn,

@@ -95,7 +95,7 @@ export const useApiRequest = () => {
         });
         return { status: res.status, data: responseData.data };
       }
-    } catch (error) {
+    } catch {
       toast.update(toastId, {
         render: "通信エラーが発生しました",
         type: "error",

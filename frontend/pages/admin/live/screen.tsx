@@ -58,7 +58,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
         ws.current.close();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   return (

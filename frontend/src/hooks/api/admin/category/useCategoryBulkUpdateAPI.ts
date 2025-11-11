@@ -28,7 +28,7 @@ export const useCategoryBulkUpdateAPI = () => {
       if (status === 200) {
         return { success: true };
       }
-    } catch (error) {
+    } catch {
       return { success: false };
     } finally {
       setIsLoading(false);

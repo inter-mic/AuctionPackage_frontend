@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getSecureCookieOptions, validateCookieSecurity } from "@/utils/cookieUtils";
-import { getFrameOptionsForPath, generateCSPFrameAncestors } from "@/utils/frameProtectionUtils";
+import { getFrameOptionsForPath } from "@/utils/frameProtectionUtils";
 import { generateSecurityHeaders } from "@/utils/securityHeadersUtils";
 import { getCSPConfigForPath, generateCSPHeader } from "@/utils/cspUtils";
 
@@ -45,11 +44,9 @@ export function middleware(request: NextRequest) {
 
   // セッション関連のCookieが存在する場合にセキュア属性付きで移行
   const sessionCookies = ["sessionId", "authToken", "userId", "userName"];
-  const needsMigration = sessionCookies.some((name) => cookieMap[name]);
 
   // AWS ALBクッキーを検出
   const awsAlbCookies = ["AWSALB", "AWSALBCORS"];
-  const hasAwsAlbCookies = awsAlbCookies.some((name) => cookieMap[name]);
 
   // 既存のCookieにセキュア属性がない場合の警告と移行
   const hasInsecureCookies = existingCookies.some(
@@ -62,12 +59,8 @@ export function middleware(request: NextRequest) {
   );
 
   if (hasInsecureCookies) {
-    console.warn(
-      "Insecure cookies detected. Migrating to secure cookies with Secure, HttpOnly, and SameSite attributes."
-    );
+   
 
-    // セキュアなクッキーオプションを取得
-    const secureOptions = getSecureCookieOptions();
     
     // セッション関連のクッキーをセキュア属性付きで再設定
     const secureCookies: string[] = [];

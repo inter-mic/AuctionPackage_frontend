@@ -204,7 +204,7 @@ const Page: React.FC<PageProps> = ({ kengen }) => {
     if (onlineBidShoninResponseErrors) {
       setOnlineBidShoninErrors(onlineBidShoninResponseErrors);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [onlineBidShoninResponseErrors]);
 
   //削除処理

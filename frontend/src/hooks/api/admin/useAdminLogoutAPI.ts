@@ -12,7 +12,7 @@ export const useAdminLogoutAPI = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-    } catch (error) {
+    } catch {
       // エラーハンドリングは不要
     }
   };

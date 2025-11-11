@@ -75,7 +75,7 @@ const Page: React.FC<TPageProps> = () => {
     } else {
       setThumImages([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [fetchImages]);
 
   const { popupOpen, popupIndex, handlePopupOpen, handlePrev, handleNext, handleClose } =

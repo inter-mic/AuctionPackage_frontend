@@ -69,7 +69,7 @@ export const KaisaiListPullDown = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedAuctionSeq(event.target.value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   };
 
   return (

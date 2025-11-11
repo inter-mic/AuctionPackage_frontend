@@ -46,7 +46,6 @@ export const OnlinePriceButton = forwardRef<OnlinePriceButtonHandle, OnlinePrice
     {
       disabled,
       onlineBidHistory,
-      fetchGoodsData,
       firstPreBidPrice,
       firstPreBidUserId,
       kenriUpdatePrice,

@@ -21,23 +21,8 @@ export function middleware(request: NextRequest) {
     cookieMap[cookie.name] = cookie.value;
   });
 
-  // セッション関連のCookieが存在する場合にHttpOnly属性付きで移行
-  const sessionCookies = ["sessionId", "authToken", "userId", "userName"];
-  const needsMigration = sessionCookies.some((name) => cookieMap[name]);
 
-  // 既存のCookieにHttpOnly属性がない場合の警告
-  const hasInsecureCookies = existingCookies.some(
-    (cookie) =>
-      cookie.name.includes("session") ||
-      cookie.name.includes("auth") ||
-      cookie.name.includes("token")
-  );
 
-  if (hasInsecureCookies) {
-    console.warn(
-      "Insecure cookies detected. Consider migrating to HttpOnly cookies for better security."
-    );
-  }
 
   return response;
 }

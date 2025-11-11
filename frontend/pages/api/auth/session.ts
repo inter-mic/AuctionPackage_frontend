@@ -43,8 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sessionId,
       authToken,
     });
-  } catch (error) {
-    console.error('Session creation error:', error);
+  } catch  {
     return res.status(500).json({ message: 'Internal server error' });
   }
 }

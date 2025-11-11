@@ -22,7 +22,6 @@ import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAP
 import { TPageProps } from "@/types/member/memberPage";
 import { TGoodsImageData } from "@/types/common/goodsImage";
 import { TGoodsSelect } from "@/types/common/goods";
-import { TMtAuctionBidUnit } from "@/types/common/bidUnit";
 //スタイル
 import memberStyles from "@/styles/member/MemberCommon.module.css";
 import styles from "@/styles/member/goods/GoodsDetail.module.css";
@@ -55,8 +54,6 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
   const [localGoodsData, setLocalGoodsData] = useState(fetchGoodsData);
   const router = useRouter();
 
-  // タブ複製用の状態
-  const [tabCount, setTabCount] = useState<number>(1);
 
   useEffect(() => {
     if (paramsGoodsId) {
@@ -94,7 +91,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
     } else {
       setThumImages([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [fetchImages]);
 
   // 商品一覧ベースの前後ナビゲーション
@@ -133,7 +130,7 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
       setBeforeGoodsId(undefined);
       setAfterGoodsId(undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [goodsList, contextGoodsList, paramsGoodsId]);
 
   //タイムアウト防止のためセッション延長

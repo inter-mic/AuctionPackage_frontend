@@ -85,7 +85,7 @@ export const useCsvApiRequest = () => {
           autoClose: 3000,
         });
       }
-    } catch (error) {
+    } catch {
       toast.update(toastId, {
         render: "通信エラーが発生しました",
         type: "error",

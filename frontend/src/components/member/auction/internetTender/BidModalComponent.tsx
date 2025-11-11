@@ -61,23 +61,7 @@ const BidModalComponent: React.FC<Props> = ({
     });
   }, [auctionBidUnitList]);
 
-  // 現在の価格に応じた入札単位を取得
-  const getApplicableBidUnit = useCallback((price: number): number => {
-    if (auctionBidUnitList.length === 0) {
-      return 0;
-    }
-
-    for (const unit of auctionBidUnitList) {
-      const unitFrom = parseCurrency(unit.unitFrom);
-      const unitTo = parseCurrency(unit.unitTo);
-      
-      if (price >= unitFrom && price <= unitTo) {
-        return parseCurrency(unit.bitUnit);
-      }
-    }
-    
-    return 0;
-  }, [auctionBidUnitList]);
+ 
 
   // 各入札単位のボタンが有効かどうかを判定
   const isUnitButtonEnabled = useCallback((unitValue: number, isIncrease: boolean): boolean => {

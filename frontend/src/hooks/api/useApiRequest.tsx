@@ -98,7 +98,7 @@ export const useApiRequest = () => {
         let responseData;
         try {
           responseData = returnJson ? await res.json() : true;
-        } catch (error) {
+        } catch {
           // エラーハンドリングは不要
         }
 
@@ -135,7 +135,7 @@ export const useApiRequest = () => {
         }
         return { status: res.status, data: false };
       }
-    } catch (error) {
+    } catch {
       if (showToast) {
         toast.update(toastId!, {
           render: "通信エラーが発生しました",

@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 
 export const CombineDateTime = (date: Dayjs | null, time: string | null): string | null => {
   if (!date || !time) return null;
