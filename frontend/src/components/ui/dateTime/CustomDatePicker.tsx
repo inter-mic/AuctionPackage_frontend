@@ -1,7 +1,7 @@
 import React from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/node/AdapterDayjs/index.js";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/ja";
 import { useTheme } from "@mui/material/styles";

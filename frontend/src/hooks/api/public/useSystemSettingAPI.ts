@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 
 
 export const useSystemSettingAPI = async (context: GetServerSidePropsContext,memberRegistrationCheck:boolean,nologinViewCheck:boolean) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}systemSetting/search`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_PUBLIC_API_URL}systemSetting/search`, {
     method: 'POST',
     credentials: 'include',
   });

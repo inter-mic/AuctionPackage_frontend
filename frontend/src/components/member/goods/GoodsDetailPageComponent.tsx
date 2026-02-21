@@ -14,10 +14,13 @@ import FavoriteToggle from "@/components/member/goods/FavoriteToggleComponent";
 import BidModuleComponent from "@/components/member/auction/BidModuleComponent";
 import ImagePopupComponent from "@/components/member/goods/ImagePopupComponent";
 import { ImageWrapperComponent } from "@/components/member/goods/ImageWrapperComponent";
+import { ViewerCountPopup } from "@/components/member/goods/ViewerCountPopup";
 //API
 import { useGoodsSearchByGoodsIdAPI } from "@/hooks/api/common/useGoodsSearchByGoodsIdAPI";
 import { useGoodsSearchImageAPI } from "@/hooks/api/common/useGoodsSearchImageAPI";
 import { useGoodsAddinfoItemAPI } from "@/hooks/api/public/useGoodsAddinfoItemAPI";
+import { useViewersTouchAPI } from "@/hooks/api/member/viewers/useViewersTouchAPI";
+import { useViewersRemoveAPI } from "@/hooks/api/member/viewers/useViewersRemoveAPI";
 //型定義
 import { TPageProps } from "@/types/member/memberPage";
 import { TGoodsImageData } from "@/types/common/goodsImage";
@@ -50,8 +53,12 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
   const { goodsAddInfo } = useGoodsAddinfoItemAPI();
   const { fetchGoodsData, goodsSearchByGoodsIdAPI } = useGoodsSearchByGoodsIdAPI();
   const { fetchImages, goodsSearchImage } = useGoodsSearchImageAPI();
+  const { touchViewersAPI } = useViewersTouchAPI();
+  const { removeViewersAPI } = useViewersRemoveAPI();
   const [thumImages, setThumImages] = useState<TGoodsImageData[]>([]);
   const [localGoodsData, setLocalGoodsData] = useState(fetchGoodsData);
+  const [viewerCount, setViewerCount] = useState<number | null>(null);
+  const [showViewerPopup, setShowViewerPopup] = useState(false);
   const router = useRouter();
 
 
@@ -149,6 +156,33 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
 
   // お気に入りトグル時の処理
   const { handleFavoriteToggle } = useFavoriteToggle(setLocalGoodsData);
+
+  // 閲覧数の取得と表示
+  useEffect(() => {
+    if (paramsGoodsId && isLogin && loginUserId) {
+      const goodsId = Number(paramsGoodsId);
+      const sessionId = String(loginUserId);
+
+      // 閲覧数を取得
+      const fetchViewerCount = async () => {
+        const result = await touchViewersAPI(goodsId, sessionId);
+        console.log(result);
+        if (result && result.length > 0) {
+          const count = result[0].count;
+          setViewerCount(count);
+          setShowViewerPopup(true);
+        }
+      };
+
+      fetchViewerCount();
+
+      // クリーンアップ関数：画面を閉じたときに閲覧数を削除
+      return () => {
+        removeViewersAPI(goodsId, sessionId);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsGoodsId, isLogin, loginUserId]);
 
   return (
     <>
@@ -297,6 +331,13 @@ const MemberGoodsSearchPageComponent: React.FC<Props> = ({
           currentIndex={popupIndex}
           onPrev={handlePrev}
           onNext={handleNext}
+        />
+      )}
+
+      {showViewerPopup && viewerCount !== null && (
+        <ViewerCountPopup
+          count={viewerCount}
+          onClose={() => setShowViewerPopup(false)}
         />
       )}
     </>

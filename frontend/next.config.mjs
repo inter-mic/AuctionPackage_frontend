@@ -14,13 +14,13 @@ const nextConfig = {
   },
   // 環境変数の設定
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/",
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/",
     NEXT_PUBLIC_MEMBER_API_URL:
-      process.env.NEXT_PUBLIC_MEMBER_API_URL || "http://localhost:3001/member/",
+      process.env.NEXT_PUBLIC_MEMBER_API_URL || "http://localhost:8080/member/",
     NEXT_PUBLIC_ADMIN_API_URL:
-      process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:3001/admin/",
+      process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:8080/admin/",
     NEXT_PUBLIC_PUBLIC_API_URL:
-      process.env.NEXT_PUBLIC_PUBLIC_API_URL || "http://localhost:3001/public/",
+      process.env.NEXT_PUBLIC_PUBLIC_API_URL || "http://localhost:8080/public/",
   },
   images: {
     remotePatterns: [
