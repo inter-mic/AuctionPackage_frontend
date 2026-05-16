@@ -3,6 +3,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 //カスタムフック
 import { useCommonSetup } from "@/hooks/useCommonSetup";
+import { useFormFieldHandlers } from "@/hooks/useFormFieldHandlers";
 //型定義
 import { TAdminUserRegistRequest } from "@/types/admin/member/register";
 import { Errors } from "@/types/errors";
@@ -42,18 +43,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
   }, [member]);
 
   const { address, zipCodeSearch } = useZipCodeSearchAPI();
-  const handleZipCodeChange = () => {
-    const zipCode1 = (document.getElementById("zipCode1") as HTMLInputElement).value;
-    const zipCode2 = (document.getElementById("zipCode2") as HTMLInputElement).value;
-    handleChange({
-      target: { name: "zipCode", value: `${zipCode1}-${zipCode2}` },
-    } as React.ChangeEvent<HTMLInputElement>);
 
-    if (zipCode1.length === 3 && zipCode2.length === 4) {
-      const paramZipCode = zipCode1 + zipCode2;
-      zipCodeSearch(paramZipCode);
-    }
-  };
   useEffect(() => {
     if (address) {
       handleChange({
@@ -66,32 +56,6 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
-  const handleTelChange = () => {
-    const tel1 = (document.getElementById("tel1") as HTMLInputElement).value;
-    const tel2 = (document.getElementById("tel2") as HTMLInputElement).value;
-    const tel3 = (document.getElementById("tel3") as HTMLInputElement).value;
-    handleChange({
-      target: { name: "tel", value: `${tel1}-${tel2}-${tel3}` },
-    } as React.ChangeEvent<HTMLInputElement>);
-  };
-
-  const handleFaxChange = () => {
-    const fax1 = (document.getElementById("fax1") as HTMLInputElement).value;
-    const fax2 = (document.getElementById("fax2") as HTMLInputElement).value;
-    const fax3 = (document.getElementById("fax3") as HTMLInputElement).value;
-    handleChange({
-      target: { name: "fax", value: `${fax1}-${fax2}-${fax3}` },
-    } as React.ChangeEvent<HTMLInputElement>);
-  };
-
-  const handleMobileChange = () => {
-    const mobile1 = (document.getElementById("mobile1") as HTMLInputElement).value;
-    const mobile2 = (document.getElementById("mobile2") as HTMLInputElement).value;
-    const mobile3 = (document.getElementById("mobile3") as HTMLInputElement).value;
-    handleChange({
-      target: { name: "mobile", value: `${mobile1}-${mobile2}-${mobile3}` },
-    } as React.ChangeEvent<HTMLInputElement>);
-  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChange(e);
   };
@@ -102,7 +66,100 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
       target: { name, value },
     } as React.ChangeEvent<HTMLInputElement>);
   };
+  const { handleZipCodeChange, handlePhoneChange } = useFormFieldHandlers({
+    handleChange,
+    zipCodeSearch,
+  });
 
+  // IME入力中かどうかを追跡する状態
+  const [isComposing, setIsComposing] = useState<{ [key: string]: boolean }>({});
+  // IME入力開始時のハンドラー
+  const handleCompositionStart = (e: React.CompositionEvent<HTMLInputElement>) => {
+    const inputId = (e.target as HTMLInputElement).id;
+    setIsComposing((prev) => ({ ...prev, [inputId]: true }));
+  };
+  // 数字のみを入力可能にするヘルパー関数
+  const handleNumericInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const inputId = (e.target as HTMLInputElement).id;
+    // IME入力中はブロックしない
+    if (isComposing[inputId]) {
+      return;
+    }
+    // 数字、Backspace、Delete、Tab、Arrow keys、Home、End、Enter を許可
+    const allowedKeys = [
+      "Backspace",
+      "Delete",
+      "Tab",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Home",
+      "End",
+      "Enter",
+    ];
+    if (
+      allowedKeys.includes(e.key) ||
+      (e.ctrlKey && ["a", "c", "v", "x"].includes(e.key.toLowerCase()))
+    ) {
+      return;
+    }
+    // 数字以外のキーをブロック
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  // 入力値を数字のみに制限する関数
+  const handleNumericChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    originalHandler?: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  ) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (value !== e.target.value) {
+      // 数字以外の文字が含まれている場合は、数字のみの値に置き換える
+      const syntheticEvent = {
+        ...e,
+        target: {
+          ...e.target,
+          value: value,
+        },
+      } as React.ChangeEvent<HTMLInputElement>;
+      if (originalHandler) {
+        originalHandler(syntheticEvent);
+      }
+    } else {
+      // 数字のみの場合はそのまま元のハンドラーを呼び出す
+      if (originalHandler) {
+        originalHandler(e);
+      }
+    }
+  };
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    const inputId = (e.target as HTMLInputElement).id;
+    setIsComposing((prev) => ({ ...prev, [inputId]: false }));
+    // IME入力が終了したら、数字以外を削除
+    const input = e.currentTarget;
+    const originalValue = input.value;
+    const value = originalValue.replace(/[^0-9]/g, "");
+    if (value !== originalValue) {
+      input.value = value;
+      // 各フィールドのonChangeハンドラーを呼び出す
+      const syntheticEvent = {
+        target: input,
+        currentTarget: input,
+      } as React.ChangeEvent<HTMLInputElement>;
+      if (inputId.startsWith("zipCode")) {
+        handleNumericChange(syntheticEvent, () => handleZipCodeChange("zipCode"));
+      } else if (inputId.startsWith("tel")) {
+        handleNumericChange(syntheticEvent, () => handlePhoneChange("tel"));
+      } else if (inputId.startsWith("fax")) {
+        handleNumericChange(syntheticEvent, () => handlePhoneChange("fax"));
+      } else if (inputId.startsWith("mobile")) {
+        handleNumericChange(syntheticEvent, () => handlePhoneChange("mobile"));
+      }
+    }
+  };
   const [auctionMailJushinFlg, setAuctionMailJushinFlg] = useState("1");
   useEffect(() => {
     if (member.userId === undefined) {
@@ -115,7 +172,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
   }, [member]);
   const handleAuctionMailJushinFlg = (
     _event: React.MouseEvent<HTMLElement>,
-    newAlignment: string | null
+    newAlignment: string | null,
   ) => {
     if (newAlignment !== null) {
       setAuctionMailJushinFlg(newAlignment);
@@ -286,18 +343,28 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           <input
             id="zipCode1"
             name="zipCode1"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.zipCode?.split("-")[0] || ""}
-            onChange={handleZipCodeChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handleZipCodeChange("zipCode"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
           <input
             id="zipCode2"
             name="zipCode2"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.zipCode?.split("-")[1] || ""}
-            onChange={handleZipCodeChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handleZipCodeChange("zipCode"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
@@ -353,27 +420,42 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           <input
             id="tel1"
             name="tel1"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.tel?.split("-")[0] || ""}
-            onChange={handleTelChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("tel"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
           <input
             id="tel2"
             name="tel2"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.tel?.split("-")[1] || ""}
-            onChange={handleTelChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("tel"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
           <input
             id="tel3"
             name="tel3"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.tel?.split("-")[2] || ""}
-            onChange={handleTelChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("tel"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
@@ -389,8 +471,13 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
             id="fax1"
             name="fax1"
             type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.fax?.split("-")[0] || ""}
-            onChange={handleFaxChange}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onKeyPress={handleNumericInput}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("fax"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
@@ -398,8 +485,13 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
             id="fax2"
             name="fax2"
             type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.fax?.split("-")[1] || ""}
-            onChange={handleFaxChange}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onKeyPress={handleNumericInput}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("fax"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
@@ -407,8 +499,13 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
             id="fax3"
             name="fax3"
             type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.fax?.split("-")[2] || ""}
-            onChange={handleFaxChange}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onKeyPress={handleNumericInput}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("fax"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
@@ -423,27 +520,42 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
           <input
             id="mobile1"
             name="mobile1"
-            type="nummber"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.mobile?.split("-")[0] || ""}
-            onChange={handleMobileChange}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onKeyPress={handleNumericInput}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("mobile"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
           <input
             id="mobile2"
             name="mobile2"
-            type="nummber"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.mobile?.split("-")[1] || ""}
-            onChange={handleMobileChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("mobile"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
           <span>-</span>
           <input
             id="mobile3"
             name="mobile3"
-            type="nummber"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={member.mobile?.split("-")[2] || ""}
-            onChange={handleMobileChange}
+            onKeyPress={handleNumericInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={(e) => handleNumericChange(e, () => handlePhoneChange("mobile"))}
             className={`${styles.commonInput} ${styles.input100}`}
           />
         </div>
@@ -594,7 +706,7 @@ export const MemberFormFields: React.FC<Props> = ({ member, handleChange, errors
                 />
               </div>
             </React.Fragment>
-          )
+          ),
       )}
     </>
   );
